@@ -2,7 +2,7 @@
 <html lang="he" dir="rtl">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
 <title>מיון בדרכים שונות | חן קלימיאן</title>
 <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&family=Rubik:wght@500;600;700&display=swap" rel="stylesheet">
 <style>
@@ -620,13 +620,21 @@ function rotCheck(){
 $('rotbtn').onclick = () => { rotOff = !rotOff; rotCheck(); };
 if (!framed){ $('back').style.display = 'flex'; $('closebtn').style.display = 'flex'; }
 function leaveGame(preferClose){
-  const back = () => {
-    if (history.length > 1) { history.back(); return; }
-    if (document.referrer && !/github\.io/.test(document.referrer)) { location.href = document.referrer; return; }
-    location.href = 'https://www.talkwithkids.co.il/';
+  const home = 'https://www.talkwithkids.co.il/';
+  const fallback = () => {
+    let r = document.referrer || '';
+    if (r && !/github\.io/.test(r) && r.replace(/https?:\/\/[^\/]+\/?/, '')) { location.href = r; return; }
+    location.href = home;
   };
-  if (preferClose){ try { window.close(); } catch (e) {} setTimeout(back, 400); }
-  else { back(); }
+  // נפתח בדף חדש באותו חלון: חוזרים אחורה אל השיעור
+  if (history.length > 1) {
+    history.back();
+    setTimeout(() => { if (!document.hidden) fallback(); }, 1200);   // אם לא זז, לא נשארים תקועים
+    return;
+  }
+  // נפתח בלשונית חדשה: סוגרים אותה, ואם הדפדפן לא נותן, חוזרים לאתר
+  try { window.close(); } catch (e) {}
+  setTimeout(fallback, 400);
 }
 $('back').onclick = () => leaveGame(false);   // חזרה לעמוד השיעור שממנו הגענו (באותו חלון)
 $('closebtn').onclick = () => leaveGame(true); // סגירת החלון (אם נפתח בלשונית נפרדת)
@@ -641,7 +649,10 @@ async function goFull(){
       return;
     } catch (e) {}
   }
-  if (framed) window.open(standaloneUrl(), '_blank');
+  if (framed){   // מנסים לעבור לדף חדש באותו חלון (אז כפתור חזור בדפדפן מחזיר לשיעור); אם נחסם, נפתחת לשונית חדשה
+    try { window.top.location.href = standaloneUrl(); return; } catch (e) {}
+    window.open(standaloneUrl(), '_blank');
+  }
 }
 $('fs').onclick = goFull;
 document.addEventListener('fullscreenchange', rotCheck); document.addEventListener('webkitfullscreenchange', rotCheck);
