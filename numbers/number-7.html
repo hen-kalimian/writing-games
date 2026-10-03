@@ -63,6 +63,8 @@ body{
 .title .hl{color:var(--blue-deep)}
 .sub{text-align:center;margin:0 0 10px;font-size:14.5px;color:var(--muted)}
 
+/* Safari/אייפד: touch-action חייב להיות על אלמנט HTML עוטף כדי שגרירה למטה לא תגלול את הדף */
+.boardbox{touch-action:none;-webkit-touch-callout:none;overscroll-behavior:none}
 svg.board{
   display:block;width:100%;height:auto;
   background:var(--mint-bg);
@@ -119,6 +121,7 @@ button.again{border-color:var(--mint-deep);background:var(--mint-bg);color:var(-
   <h1 class="title" id="title"></h1>
   <p class="sub">עוקבים עם האצבע אחרי הקו, לפי המספרים</p>
 
+  <div class="boardbox" id="boardbox">
   <svg class="board" id="board" role="img" aria-label="לוח כתיבה">
     <g id="guides"></g>
     <g id="layers"></g>
@@ -129,6 +132,7 @@ button.again{border-color:var(--mint-deep);background:var(--mint-bg);color:var(-
     </g>
     <path class="spark" id="spark" d=""/>
   </svg>
+  </div>
 
   <div class="btns">
     <button id="btn-demo" type="button">הראי לי איך</button>
@@ -241,6 +245,10 @@ function setProg(s, k, smooth){
   s.mk.style.transition = 'transform ' + tr + ', opacity .3s';
   s.mk.style.transform = 'translate(' + (pt.x - s.cps[0].x) + 'px,' + (pt.y - s.cps[0].y) + 'px)';
 }
+
+/* מניעת גלילה של הדף בזמן כתיבה (iOS ו-WebView שלא מכבדים touch-action) */
+const boardbox = document.getElementById('boardbox');
+['touchstart', 'touchmove'].forEach(ev => boardbox.addEventListener(ev, e => { if (e.cancelable) e.preventDefault(); }, { passive: false }));
 
 /* ---------- צליל: המספר נאמר בקול נשי רגיל כשנוגעים בעיגול ---------- */
 const AU = {};
