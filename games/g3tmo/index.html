@@ -2,6 +2,7 @@
 <html lang="he" dir="rtl">
 <head>
 <meta charset="utf-8">
+<meta name="robots" content="noindex,nofollow">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
 <title>תרגילי חיבור תאומים תחום ה-20 | חן קלימיאן</title>
 <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&family=Rubik:wght@500;600;700&display=swap" rel="stylesheet">
@@ -106,6 +107,25 @@ svg.ov{inset:0;width:100%;height:100%;touch-action:none}
   </div></div>
 </div>
 
+<script>
+/* שער כניסה (חן, 3.10.26): המשחק נפתח רק למי שהגיע מלחיצה באתר של חן (או מתוך הטמעה בו), כדי שהקישור לא יועבר הלאה.
+   זו הרתעה ולא הגנה מוחלטת: אין שרת, ולכן בודקים מאיפה הגיעו. מי שנכנס פעם אחת בלשונית נשאר מורשה בה (sessionStorage). */
+(function(){
+  const okHost = h => /(^|\.)talkwithkids\.co\.il$/.test(h) || /(^|\.)(wixusercontent\.com|filesusr\.com|usrfiles\.com|wix\.com|wixsite\.com|editorx\.io)$/.test(h) || /^(localhost|127\.0\.0\.1)$/.test(h);
+  let ok = false;
+  try { ok = sessionStorage.getItem('wgok') === '1'; } catch (e) {}
+  if (!ok) {
+    const hosts = [];
+    try { hosts.push(new URL(document.referrer).hostname); } catch (e) {}
+    try { for (const o of (location.ancestorOrigins || [])) hosts.push(new URL(o).hostname); } catch (e) {}
+    ok = hosts.some(okHost);
+    if (ok) { try { sessionStorage.setItem('wgok', '1'); } catch (e) {} }
+  }
+  if (ok) return;
+  document.body.innerHTML = '<div style="position:fixed;inset:0;display:grid;place-items:center;background:linear-gradient(180deg,#F0FAF5,#F1F6FB);font-family:Rubik,Arial,sans-serif;direction:rtl;text-align:center;padding:24px"><div><div style="font-size:24px;font-weight:700;color:#2E3A45;margin-bottom:10px">המשחק הזה זמין לתלמידות התוכנית באתר</div><div style="font-size:16px;color:#6b7a88;margin-bottom:20px">כדי לשחק, נכנסים לאתר ולוחצים על המשחק בתוך השיעור.</div><a href="https://www.talkwithkids.co.il/" style="display:inline-block;background:#5b8db8;color:#fff;text-decoration:none;font-weight:600;padding:12px 26px;border-radius:999px">לכניסה לאתר של חן קלימיאן</a></div></div>';
+  throw new Error('wg-blocked');
+})();
+</script>
 <script>
 /*CFGLINE*/
 const CFG = {"slides": [{"i": 0, "t": "S", "img": "img/s0.jpg", "acts": []}, {"i": 1, "t": "T", "img": "img/s1.jpg", "acts": [{"intro": null, "advance": false, "idle": null, "shapes": [{"d": "M 495.5 602.8 L 495.5 670.1 C 495.5 673.9 492.4 677.1 488.5 677.1 L 363.1 677.1 C 359.2 677.1 356.1 673.9 356.1 670.1 L 356.1 535.4 C 356.1 531.6 359.2 528.4 363.1 528.4 L 488.5 528.4 C 492.4 528.4 495.5 531.6 495.5 535.4 Z", "bb": [356, 528, 496, 677], "r1": null, "r2": null, "ans": ["6"], "link": null, "tx": 0, "ty": 0, "idle": null}, {"d": "M 501.0 156.5 L 501.0 218.9 C 501.0 222.7 497.9 225.9 494.0 225.9 L 360.6 225.9 C 356.7 225.9 353.6 222.7 353.6 218.9 L 353.6 94.1 C 353.6 90.3 356.7 87.1 360.6 87.1 L 494.0 87.1 C 497.9 87.1 501.0 90.3 501.0 94.1 Z", "bb": [354, 87, 501, 226], "r1": null, "r2": null, "ans": ["2"], "link": null, "tx": 0, "ty": 0, "idle": null}, {"d": "M 496.1 360.0 L 496.1 424.1 C 496.1 427.9 493.0 431.1 489.1 431.1 L 359.4 431.1 C 355.5 431.1 352.4 427.9 352.4 424.1 L 352.4 295.9 C 352.4 292.1 355.5 288.9 359.4 288.9 L 489.1 288.9 C 493.0 288.9 496.1 292.1 496.1 295.9 Z", "bb": [352, 289, 496, 431], "r1": null, "r2": null, "ans": ["4"], "link": null, "tx": 0, "ty": 0, "idle": null}]}]}, {"i": 2, "t": "T", "img": "img/s2.jpg", "acts": [{"intro": null, "advance": false, "idle": null, "shapes": [{"d": "M 495.5 602.8 L 495.5 670.1 C 495.5 673.9 492.4 677.1 488.5 677.1 L 363.1 677.1 C 359.2 677.1 356.1 673.9 356.1 670.1 L 356.1 535.4 C 356.1 531.6 359.2 528.4 363.1 528.4 L 488.5 528.4 C 492.4 528.4 495.5 531.6 495.5 535.4 Z", "bb": [356, 528, 496, 677], "r1": null, "r2": null, "ans": ["12"], "link": null, "tx": 0, "ty": 0, "idle": null}, {"d": "M 501.0 156.5 L 501.0 218.9 C 501.0 222.7 497.9 225.9 494.0 225.9 L 360.6 225.9 C 356.7 225.9 353.6 222.7 353.6 218.9 L 353.6 94.1 C 353.6 90.3 356.7 87.1 360.6 87.1 L 494.0 87.1 C 497.9 87.1 501.0 90.3 501.0 94.1 Z", "bb": [354, 87, 501, 226], "r1": null, "r2": null, "ans": ["8"], "link": null, "tx": 0, "ty": 0, "idle": null}, {"d": "M 496.1 360.0 L 496.1 424.1 C 496.1 427.9 493.0 431.1 489.1 431.1 L 359.4 431.1 C 355.5 431.1 352.4 427.9 352.4 424.1 L 352.4 295.9 C 352.4 292.1 355.5 288.9 359.4 288.9 L 489.1 288.9 C 493.0 288.9 496.1 292.1 496.1 295.9 Z", "bb": [352, 289, 496, 431], "r1": null, "r2": null, "ans": ["10"], "link": null, "tx": 0, "ty": 0, "idle": null}]}]}, {"i": 3, "t": "T", "img": "img/s3.jpg", "acts": [{"intro": null, "advance": false, "idle": null, "shapes": [{"d": "M 496.1 360.0 L 496.1 424.1 C 496.1 427.9 493.0 431.1 489.1 431.1 L 359.4 431.1 C 355.5 431.1 352.4 427.9 352.4 424.1 L 352.4 295.9 C 352.4 292.1 355.5 288.9 359.4 288.9 L 489.1 288.9 C 493.0 288.9 496.1 292.1 496.1 295.9 Z", "bb": [352, 289, 496, 431], "r1": null, "r2": null, "ans": ["16"], "link": null, "tx": 0, "ty": 0, "idle": null}, {"d": "M 495.5 602.8 L 495.5 670.1 C 495.5 673.9 492.4 677.1 488.5 677.1 L 363.1 677.1 C 359.2 677.1 356.1 673.9 356.1 670.1 L 356.1 535.4 C 356.1 531.6 359.2 528.4 363.1 528.4 L 488.5 528.4 C 492.4 528.4 495.5 531.6 495.5 535.4 Z", "bb": [356, 528, 496, 677], "r1": null, "r2": null, "ans": ["18"], "link": null, "tx": 0, "ty": 0, "idle": null}, {"d": "M 501.0 156.5 L 501.0 218.9 C 501.0 222.7 497.9 225.9 494.0 225.9 L 360.6 225.9 C 356.7 225.9 353.6 222.7 353.6 218.9 L 353.6 94.1 C 353.6 90.3 356.7 87.1 360.6 87.1 L 494.0 87.1 C 497.9 87.1 501.0 90.3 501.0 94.1 Z", "bb": [354, 87, 501, 226], "r1": null, "r2": null, "ans": ["14"], "link": null, "tx": 0, "ty": 0, "idle": null}]}]}, {"i": 4, "t": "T", "img": "img/s4.jpg", "acts": [{"intro": null, "advance": false, "idle": null, "shapes": [{"d": "M 907.5 240.8 L 907.5 330.4 C 907.5 334.3 904.3 337.4 900.5 337.4 L 716.0 337.4 C 712.2 337.4 709.0 334.3 709.0 330.4 L 709.0 151.1 C 709.0 147.2 712.2 144.1 716.0 144.1 L 900.5 144.1 C 904.3 144.1 907.5 147.2 907.5 151.1 Z", "bb": [709, 144, 907, 337], "r1": null, "r2": null, "ans": ["20"], "link": null, "tx": 0, "ty": 0, "idle": null}]}]}], "title": "תרגילי חיבור תאומים תחום ה-20", "hash": "g3tmo", "brand": "מספרים בקלות - חן קלימיאן", "writeBase": "../../letters/"};

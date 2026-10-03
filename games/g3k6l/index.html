@@ -2,6 +2,7 @@
 <html lang="he" dir="rtl">
 <head>
 <meta charset="utf-8">
+<meta name="robots" content="noindex,nofollow">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
 <title>חיבור בתחום ה-20 | חן קלימיאן</title>
 <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&family=Rubik:wght@500;600;700&display=swap" rel="stylesheet">
@@ -106,6 +107,25 @@ svg.ov{inset:0;width:100%;height:100%;touch-action:none}
   </div></div>
 </div>
 
+<script>
+/* שער כניסה (חן, 3.10.26): המשחק נפתח רק למי שהגיע מלחיצה באתר של חן (או מתוך הטמעה בו), כדי שהקישור לא יועבר הלאה.
+   זו הרתעה ולא הגנה מוחלטת: אין שרת, ולכן בודקים מאיפה הגיעו. מי שנכנס פעם אחת בלשונית נשאר מורשה בה (sessionStorage). */
+(function(){
+  const okHost = h => /(^|\.)talkwithkids\.co\.il$/.test(h) || /(^|\.)(wixusercontent\.com|filesusr\.com|usrfiles\.com|wix\.com|wixsite\.com|editorx\.io)$/.test(h) || /^(localhost|127\.0\.0\.1)$/.test(h);
+  let ok = false;
+  try { ok = sessionStorage.getItem('wgok') === '1'; } catch (e) {}
+  if (!ok) {
+    const hosts = [];
+    try { hosts.push(new URL(document.referrer).hostname); } catch (e) {}
+    try { for (const o of (location.ancestorOrigins || [])) hosts.push(new URL(o).hostname); } catch (e) {}
+    ok = hosts.some(okHost);
+    if (ok) { try { sessionStorage.setItem('wgok', '1'); } catch (e) {} }
+  }
+  if (ok) return;
+  document.body.innerHTML = '<div style="position:fixed;inset:0;display:grid;place-items:center;background:linear-gradient(180deg,#F0FAF5,#F1F6FB);font-family:Rubik,Arial,sans-serif;direction:rtl;text-align:center;padding:24px"><div><div style="font-size:24px;font-weight:700;color:#2E3A45;margin-bottom:10px">המשחק הזה זמין לתלמידות התוכנית באתר</div><div style="font-size:16px;color:#6b7a88;margin-bottom:20px">כדי לשחק, נכנסים לאתר ולוחצים על המשחק בתוך השיעור.</div><a href="https://www.talkwithkids.co.il/" style="display:inline-block;background:#5b8db8;color:#fff;text-decoration:none;font-weight:600;padding:12px 26px;border-radius:999px">לכניסה לאתר של חן קלימיאן</a></div></div>';
+  throw new Error('wg-blocked');
+})();
+</script>
 <script>
 /*CFGLINE*/
 const CFG = {"slides": [{"i": 0, "t": "S", "img": "img/s0.jpg", "acts": []}, {"i": 1, "t": "T", "img": "img/s1.jpg", "acts": [{"intro": null, "advance": false, "idle": null, "shapes": [{"d": "M 402.3 207.1 L 402.3 236.2 C 402.3 240.1 399.2 243.2 395.3 243.2 L 334.7 243.2 C 330.8 243.2 327.7 240.1 327.7 236.2 L 327.7 178.1 C 327.7 174.2 330.8 171.1 334.7 171.1 L 395.3 171.1 C 399.2 171.1 402.3 174.2 402.3 178.1 Z", "bb": [328, 171, 402, 243], "r1": null, "r2": null, "ans": ["17"], "link": null, "tx": 0, "ty": 0, "idle": null}, {"d": "M 398.0 384.7 L 398.0 416.3 C 398.0 420.2 394.9 423.3 391.0 423.3 L 339.5 423.3 C 335.6 423.3 332.5 420.2 332.5 416.3 L 332.5 353.1 C 332.5 349.3 335.6 346.1 339.5 346.1 L 391.0 346.1 C 394.9 346.1 398.0 349.3 398.0 353.1 Z", "bb": [332, 346, 398, 423], "r1": null, "r2": null, "ans": ["18"], "link": null, "tx": 0, "ty": 0, "idle": null}, {"d": "M 396.5 554.7 L 396.5 582.6 C 396.5 586.5 393.4 589.6 389.5 589.6 L 336.2 589.6 C 332.3 589.6 329.2 586.5 329.2 582.6 L 329.2 526.8 C 329.2 522.9 332.3 519.8 336.2 519.8 L 389.5 519.8 C 393.4 519.8 396.5 522.9 396.5 526.8 Z", "bb": [329, 520, 397, 590], "r1": null, "r2": null, "ans": ["17"], "link": null, "tx": 0, "ty": 0, "idle": null}]}]}, {"i": 2, "t": "T", "img": "img/s2.jpg", "acts": [{"intro": null, "advance": false, "idle": null, "shapes": [{"d": "M 431.4 361.2 L 431.4 388.5 C 431.4 392.4 428.3 395.5 424.4 395.5 L 372.1 395.5 C 368.2 395.5 365.1 392.4 365.1 388.5 L 365.1 334.0 C 365.1 330.1 368.2 327.0 372.1 327.0 L 424.4 327.0 C 428.3 327.0 431.4 330.1 431.4 334.0 Z", "bb": [365, 327, 431, 396], "r1": null, "r2": null, "ans": ["19"], "link": null, "tx": 0, "ty": 0, "idle": null}, {"d": "M 439.0 520.5 L 439.0 543.5 C 439.0 547.3 435.9 550.5 432.0 550.5 L 359.5 550.5 C 355.6 550.5 352.5 547.3 352.5 543.5 L 352.5 497.5 C 352.5 493.6 355.6 490.5 359.5 490.5 L 432.0 490.5 C 435.9 490.5 439.0 493.6 439.0 497.5 Z", "bb": [352, 490, 439, 550], "r1": null, "r2": null, "ans": ["20"], "link": null, "tx": 0, "ty": 0, "idle": null}, {"d": "M 439.4 236.8 L 439.4 263.8 C 439.4 267.7 436.2 270.8 432.4 270.8 L 374.1 270.8 C 370.3 270.8 367.1 267.7 367.1 263.8 L 367.1 209.7 C 367.1 205.8 370.3 202.7 374.1 202.7 L 432.4 202.7 C 436.2 202.7 439.4 205.8 439.4 209.7 Z", "bb": [367, 203, 439, 271], "r1": null, "r2": null, "ans": ["17"], "link": null, "tx": 0, "ty": 0, "idle": null}]}]}], "title": "חיבור בתחום ה-20", "hash": "g3k6l", "brand": "מספרים בקלות - חן קלימיאן", "writeBase": "../../letters/"};
