@@ -165,6 +165,15 @@ if (/[?&]embed/.test(location.search)) {
   document.querySelector('.brand').style.display = 'none';
   document.querySelector('.sub').style.display = 'none';
   document.getElementById('title').style.margin = '4px 0 8px';
+  if (/[?&]fit/.test(location.search)) {   // המשחק מקבל חלון בגודל סופי, והכרטיס מתכווץ כדי להיכנס בו בלי גלילה
+    document.body.style.cssText += ';margin:0;overflow:hidden;min-height:0;height:100vh;display:flex;align-items:center;justify-content:center';
+    const fitCard = () => {
+      const m = document.querySelector('main'); m.style.transform = ''; m.style.transformOrigin = 'center center';
+      const r = m.getBoundingClientRect(), k = Math.min(1, innerWidth / (r.width + 16), innerHeight / (r.height + 16));
+      m.style.transform = 'scale(' + k + ')';
+    };
+    addEventListener('load', fitCard); addEventListener('resize', fitCard); setTimeout(fitCard, 300);
+  }
 }
 document.getElementById('title').innerHTML = CFG.titleHtml;
 svg.setAttribute('viewBox', '0 0 ' + CFG.viewW + ' ' + H);
@@ -355,9 +364,9 @@ function confetti(){
     c.innerHTML = shape === 0 ? '<circle cx="10" cy="10" r="8.5" ' + common + '/>'
       : shape === 1 ? '<path d="M10 2 L18 17 L2 17 Z" ' + common + '/>'
       : '<rect x="2.5" y="2.5" width="15" height="15" rx="3" ' + common + '/>';
-    c.style.cssText = 'right:' + (Math.random() * 94) + '%;animation-duration:' + (2.2 + Math.random() * 1.6) + 's;animation-delay:' + (Math.random() * .6) + 's';
+    c.style.cssText = 'right:' + (Math.random() * 94) + '%;animation-duration:' + (1.4 + Math.random() * 1.0) + 's;animation-delay:' + (Math.random() * .25) + 's';
     card.appendChild(c);
-    setTimeout(() => c.remove(), 4800);
+    setTimeout(() => c.remove(), 3000);
   }
 }
 

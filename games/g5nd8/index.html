@@ -169,8 +169,8 @@ function confetti(n){
     c.setAttribute('viewBox', '0 0 20 20'); c.setAttribute('width', size); c.setAttribute('height', size); c.setAttribute('class', 'confetti');
     const common = 'fill="' + col + '" stroke="#CFE0EC" stroke-width="1.6" stroke-linejoin="round"';
     c.innerHTML = shape === 0 ? '<circle cx="10" cy="10" r="8.5" ' + common + '/>' : shape === 1 ? '<path d="M10 2 L18 17 L2 17 Z" ' + common + '/>' : '<rect x="2.5" y="2.5" width="15" height="15" rx="3" ' + common + '/>';
-    c.style.cssText = 'left:' + (Math.random() * 96) + '%;animation-duration:' + (2.2 + Math.random() * 1.6) + 's;animation-delay:' + (Math.random() * .6) + 's';
-    stage.appendChild(c); setTimeout(() => c.remove(), 4800);
+    c.style.cssText = 'left:' + (Math.random() * 96) + '%;animation-duration:' + (1.4 + Math.random() * 1.0) + 's;animation-delay:' + (Math.random() * .25) + 's';
+    stage.appendChild(c); setTimeout(() => c.remove(), 3000);
   }
 }
 function popAt(x, y){
@@ -196,7 +196,7 @@ function go(i){
   if (i > LAST){ return finish(); }
   if (SL[i].skip) return go(i + (i >= cur ? 1 : -1));
   token++; stopVoice(); clearTimeout(idleT);
-  stage.innerHTML = ''; pulseNext(false);
+  stage.innerHTML = ''; document.querySelectorAll('.fover').forEach(x => x.remove()); pulseNext(false);
   cur = i;
   const s = SL[i];
   $('barfill').style.width = Math.round(100 * i / LAST) + '%';
@@ -336,7 +336,7 @@ function renderP(s, t){
         st.tx = 0; st.ty = 0; place(); st.lock = true; g.setAttribute('class', 'piece lock'); remaining--;
         ding(); const c = sh.bb; popAt((c[0] + c[2]) / 2, (c[1] + c[3]) / 2);
         say(sh.r1, () => {});
-        if (remaining === 0){ setTimeout(() => { if (t !== token) return; base.style.filter = 'none'; confetti(); cheer(); finishStep(t, 3500); }, 700); }
+        if (remaining === 0){ setTimeout(() => { if (t !== token) return; base.style.filter = 'none'; confetti(); cheer(); finishStep(t, 2300); }, 700); }
       } else { boop(); }
     };
     g.addEventListener('pointerup', drop); g.addEventListener('pointercancel', drop);
@@ -405,7 +405,7 @@ function renderQ(s, t){
           best._used = true; const e2 = layerEl(best, false); e2.style.filter = 'hue-rotate(' + HUES[k % 4] + 'deg)'; stage.appendChild(e2); popSticker(e2, best); stickerSnd = best.snd;
         }
       }
-      say(sh.r1 || stickerSnd, () => { if (t !== token) return; k++; if (k < s.acts.length) { ring.remove(); startAct(); } else { confetti(); finishStep(t, 3000); } });
+      say(sh.r1 || stickerSnd, () => { if (t !== token) return; k++; if (k < s.acts.length) { ring.remove(); startAct(); } else { confetti(); finishStep(t, 2000); } });
     } else {
       boop(); const tgt = s.layers ? stage : im; tgt.classList.remove('shake'); void tgt.getBoundingClientRect(); tgt.classList.add('shake');
       const sh = a.shapes[0]; if (sh && sh.r2) say(sh.r2, armIdle);
@@ -474,20 +474,34 @@ function renderDraw(s, t){
     drawing = false; ding(); si++;
     if (si >= 3){ si = 0; gi++; cheer(); }
     setup();
-    if (gi >= groups.length){ confetti(); cheer(); finishStep(t, 3500); }
+    if (gi >= groups.length){ confetti(); cheer(); finishStep(t, 2300); }
   }
   say(s.acts[0].intro);
 }
+function placeFover(){
+  const f = document.querySelector('.fover'); if (!f) return;
+  const r = stage.getBoundingClientRect();
+  f.style.left = r.left + 'px'; f.style.top = r.top + 'px'; f.style.width = r.width + 'px'; f.style.height = r.height + 'px';
+}
+addEventListener('resize', placeFover); addEventListener('orientationchange', () => setTimeout(placeFover, 250));
+document.addEventListener('fullscreenchange', () => setTimeout(placeFover, 150)); document.addEventListener('webkitfullscreenchange', () => setTimeout(placeFover, 150));
 function renderF(s, t){
   if (CFG.lion13 && s.i === 13) return renderDraw(s, t);
   if (!WRITE[s.i]) return renderFollow(s, t);
+  if (!$('app').classList.contains('rot')){
+    // כתיבה באצבע: ה-iframe מחוץ לבמה המוקטנת (בלי שום transform מעליו), כי באייפון הלחיצות בתוכו זזו ממקומן
+    // והקו השלישי והכפתורים לא הגיבו. הדף של האות מתאים את עצמו לגודל שהוא מקבל.
+    const f = document.createElement('iframe'); f.className = 'fover'; f.src = CFG.writeBase + 'letter-' + WRITE[s.i] + '.html?embed=1&fit=1&v=5'; f.setAttribute('allow', 'autoplay');
+    f.style.cssText = 'position:fixed;border:0;z-index:4;background:linear-gradient(180deg,#F0FAF5,#F1F6FB)';
+    $('app').appendChild(f); placeFover(); say(s.acts[0].intro); return;
+  }
   const w = document.createElement('div'); w.className = 'fwrap'; stage.appendChild(w);
   const f = document.createElement('iframe'); f.src = CFG.writeBase + 'letter-' + WRITE[s.i] + '.html?embed=1&v=4'; f.setAttribute('allow', 'autoplay');
   f.style.transform = 'scale(' + (740 / 700) + ')';
   w.appendChild(f);
   say(s.acts[0].intro);
 }
-addEventListener('message', e => { if (e.data && e.data.wgDone && SL[cur] && SL[cur].t === 'F'){ confetti(); ding(); finishStep(token, 4000); } });
+addEventListener('message', e => { if (e.data && e.data.wgDone && SL[cur] && SL[cur].t === 'F'){ confetti(); ding(); finishStep(token, 2600); } });
 
 /* ---------- לוח צלילים (A): לוחצים על חלקים בתמונה ושומעים ---------- */
 function renderA(s, t){
@@ -543,7 +557,7 @@ function renderT(s, t){
       if (answers.includes(v)){
         locked = true; inp.disabled = true; inp.style.borderStyle = 'solid'; inp.style.borderColor = '#4FB38C'; inp.style.background = 'rgba(196,232,215,.75)';
         ding(); ok++;
-        if (ok >= total){ setTimeout(() => { if (t !== token) return; confetti(); cheer(); finishStep(t, 3000); }, 500); }
+        if (ok >= total){ setTimeout(() => { if (t !== token) return; confetti(); cheer(); finishStep(t, 2000); }, 500); }
       } else if (force || v.length >= maxLen){
         boop(); inp.animate([{ transform: 'translateX(-8px)' }, { transform: 'translateX(8px)' }, { transform: 'translateX(0)' }], { duration: 300 });
         inp.style.borderColor = '#EF406E'; setTimeout(() => { inp.value = ''; inp.style.borderColor = '#5F8DB5'; }, 500);
@@ -588,7 +602,7 @@ function renderFollow(s, t){
     if (seen.size >= samples[k].length * .8){
       const g = geo[k]; g.setAttribute('fill', 'rgba(79,179,140,.55)'); g.setAttribute('pointer-events', 'none');
       ding(); k++; seen = new Set(); showCurrent();
-      if (k >= shapes.length){ drawing = false; setTimeout(() => { if (t !== token) return; confetti(); cheer(); finishStep(t, 3000); }, 400); }
+      if (k >= shapes.length){ drawing = false; setTimeout(() => { if (t !== token) return; confetti(); cheer(); finishStep(t, 2000); }, 400); }
     }
   });
   const up = () => { drawing = false; if (trail){ const tr = trail; setTimeout(() => tr.remove(), 500); trail = null; } };
