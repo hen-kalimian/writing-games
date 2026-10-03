@@ -422,6 +422,13 @@ function reset(){
   setTimeout(() => demo(false), 700);
 }
 
+/* כשהמשחק נפתח לבד (לא בתוך השיעור): כפתורי חזרה וסגירה */
+if (window.self === window.top){
+  const mk = (txt, right, fn) => { const b = document.createElement('button'); b.textContent = txt; b.style.cssText = 'position:fixed;top:10px;' + (right ? 'right:10px' : 'left:10px') + ';z-index:30;padding:7px 14px;font-size:13px'; b.onclick = fn; document.body.appendChild(b); };
+  const back = () => { if (history.length > 1) history.back(); else { try { window.close(); } catch (e) {} setTimeout(() => { location.href = 'https://www.talkwithkids.co.il/'; }, 400); } };
+  mk('חזרה לשיעור', true, back);
+  mk('סגירה', false, () => { try { window.close(); } catch (e) {} setTimeout(back, 400); });
+}
 build();
 setTimeout(() => demo(false), 900);
 

@@ -84,7 +84,8 @@ svg.ov{inset:0;width:100%;height:100%;touch-action:none}
 <div id="app">
   <div class="top">
     <div class="tools">
-      <button class="fsbtn" id="back" style="display:none;border-color:var(--blue-deep);color:var(--blue-deep);background:var(--blue-bg)">חזרה לאתר</button>
+      <button class="fsbtn" id="back" style="display:none;border-color:var(--blue-deep);color:var(--blue-deep);background:var(--blue-bg)">חזרה לשיעור</button>
+      <button class="fsbtn" id="closebtn" style="display:none;border-color:var(--pink);color:var(--pink);background:#fff">סגירה</button>
       <button class="fsbtn" id="rotbtn" style="display:none;border-color:var(--blue-deep);color:var(--blue-deep);background:var(--blue-bg)"><svg viewBox="0 0 24 24"><path d="M20 12a8 8 0 1 1-3-6.2M20 4v5h-5"/></svg><span>בלי סיבוב</span></button>
       <button class="ico" id="mute" aria-label="צליל"><svg viewBox="0 0 24 24"><path d="M4 9v6h4l5 4V5L8 9H4z"/><path d="M16 9a4 4 0 0 1 0 6M18.5 6.5a8 8 0 0 1 0 11" id="waves"/></svg></button>
       <button class="fsbtn" id="fs" aria-label="מסך מלא לרוחב"><svg viewBox="0 0 24 24"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg>מסך מלא</button>
@@ -271,6 +272,17 @@ function renderMenu(s, t){
 /* ---------- וידאו: מתחיל מיד ---------- */
 function renderV(s, t){
   const w = document.createElement('div'); w.className = 'vwrap'; stage.appendChild(w);
+  if (s.yt){   // סרטון מיוטיוב (משחקים שהסרטון שלהם שם)
+    stopVoice();
+    const f = document.createElement('iframe');
+    f.src = 'https://www.youtube-nocookie.com/embed/' + s.yt + '?autoplay=1&rel=0&playsinline=1&modestbranding=1';
+    f.setAttribute('allow', 'autoplay; fullscreen; encrypted-media'); f.setAttribute('allowfullscreen', '');
+    f.style.cssText = 'width:86%;aspect-ratio:16/9;max-height:90%;border:0;border-radius:26px;box-shadow:0 10px 30px rgba(46,58,69,.25);background:#000';
+    w.appendChild(f);
+    const b2 = document.createElement('button'); b2.className = 'btn vnext'; b2.textContent = 'ממשיכים'; b2.onclick = next; w.appendChild(b2);
+    setTimeout(() => { b2.style.display = 'block'; pulseNext(true); }, 6000);
+    return;
+  }
   const v = document.createElement('video'); v.src = s.video; v.controls = true; v.playsInline = true; v.autoplay = true; v.setAttribute('webkit-playsinline', ''); v.preload = 'auto';
   w.appendChild(v);
   const b = document.createElement('button'); b.className = 'btn vnext'; b.textContent = 'ממשיכים'; b.onclick = next; w.appendChild(b);
@@ -606,15 +618,18 @@ function rotCheck(){
   fit();
 }
 $('rotbtn').onclick = () => { rotOff = !rotOff; rotCheck(); };
-if (!framed) $('back').style.display = 'flex';
-$('back').onclick = () => {
-  try { window.close(); } catch (e) {}
-  setTimeout(() => {
-    if (document.referrer && !/github\.io/.test(document.referrer)) location.href = document.referrer;
-    else if (history.length > 1) history.back();
-    else location.href = 'https://www.talkwithkids.co.il/';
-  }, 350);
-};
+if (!framed){ $('back').style.display = 'flex'; $('closebtn').style.display = 'flex'; }
+function leaveGame(preferClose){
+  const back = () => {
+    if (history.length > 1) { history.back(); return; }
+    if (document.referrer && !/github\.io/.test(document.referrer)) { location.href = document.referrer; return; }
+    location.href = 'https://www.talkwithkids.co.il/';
+  };
+  if (preferClose){ try { window.close(); } catch (e) {} setTimeout(back, 400); }
+  else { back(); }
+}
+$('back').onclick = () => leaveGame(false);   // חזרה לעמוד השיעור שממנו הגענו (באותו חלון)
+$('closebtn').onclick = () => leaveGame(true); // סגירת החלון (אם נפתח בלשונית נפרדת)
 addEventListener('resize', rotCheck); addEventListener('orientationchange', () => setTimeout(rotCheck, 200));
 async function goFull(){
   const isFs = document.fullscreenElement || document.webkitFullscreenElement;
