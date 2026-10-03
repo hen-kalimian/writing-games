@@ -160,6 +160,12 @@ const markers = document.getElementById('markers');
 const card = document.getElementById('card');
 
 document.getElementById('series').textContent = CFG.series;
+/* מצב הטמעה בתוך משחק אחר (?embed): בלי כיתוב וכותרת, והודעה להורה כשהאות הושלמה */
+if (/[?&]embed/.test(location.search)) {
+  document.querySelector('.brand').style.display = 'none';
+  document.querySelector('.sub').style.display = 'none';
+  document.getElementById('title').style.margin = '4px 0 8px';
+}
 document.getElementById('title').innerHTML = CFG.titleHtml;
 svg.setAttribute('viewBox', '0 0 ' + CFG.viewW + ' ' + H);
 svg.style.aspectRatio = CFG.viewW + ' / ' + H;
@@ -328,6 +334,7 @@ function finishStroke(fromRelease){
 
 /* ---------- סיום: נצנוץ וקונפטי עדין, בלי משפט מוקלט (חן: לא נשמע טוב) ---------- */
 function celebrate(){
+  try { parent.postMessage({ wgDone: true }, '*'); } catch (e) {}
   S.forEach(s => { s.prog.style.transition = 'stroke .7s ease'; s.prog.setAttribute('stroke', UNI); });
   const sp = document.getElementById('spark');
   sp.classList.remove('go'); void sp.getBoundingClientRect(); sp.classList.add('go');
