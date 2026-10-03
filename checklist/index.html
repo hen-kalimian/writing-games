@@ -1,0 +1,250 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>הצ'קליסט שלי בתוכנית ההכשרה</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --mint:#CDEFE2; --mint-deep:#7CC9B0; --mint-wash:#EEF9F5;
+  --sky:#BFE3F4; --sky-deep:#6FAFD2; --sky-wash:#EFF8FD;
+  --pink:#F9D4DF; --pink-deep:#E98FAB;
+  --ink:#4B5B69; --muted:#7A8995; --white:#fff; --bg:#FBFDFE;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font-family:Rubik,'Open Sans',Arial,sans-serif;line-height:1.5;padding:20px 14px 48px;-webkit-text-size-adjust:100%}
+.wrap{max-width:760px;margin:0 auto}
+/* אפקט קו עיפרון: מסגרת עם פינות לא סימטריות */
+.sketch{border:2px solid var(--ink);border-radius:255px 18px 225px 18px/18px 225px 18px 255px}
+.sketch-soft{border:2px solid var(--ink);border-radius:18px 225px 18px 255px/225px 18px 255px 18px}
+
+header.hero{position:relative;background:linear-gradient(180deg,var(--mint-wash),var(--sky-wash));padding:22px 20px 20px;text-align:center;margin-bottom:18px}
+header.hero svg.doodle{width:74px;height:74px;display:block;margin:0 auto 4px}
+h1{font-size:25px;line-height:1.25;margin:0 0 6px;font-weight:700}
+.sub{margin:0;color:var(--muted);font-size:15px}
+.steps{margin-top:14px;display:inline-flex;align-items:center;gap:8px;background:var(--pink);padding:7px 16px;font-weight:600;font-size:15px}
+.steps b{font-size:20px}
+#cheer{margin:8px 0 0;font-size:14.5px;color:var(--ink);min-height:22px}
+
+.ms{background:var(--white);margin-bottom:14px;overflow:hidden}
+.ms-head{width:100%;display:flex;align-items:center;gap:12px;background:none;border:0;padding:14px 16px;font:inherit;color:inherit;cursor:pointer;text-align:right}
+.ms-head:focus-visible{outline:3px solid var(--sky-deep);outline-offset:-3px}
+.ms-num{flex:none;width:38px;height:38px;display:grid;place-items:center;font-weight:700;font-size:18px;background:var(--sky)}
+.ms-num.sketch{border-radius:50% 46% 52% 48%/48% 52% 46% 50%}
+.ms-title{flex:1;min-width:0}
+.ms-title strong{display:block;font-size:17px;line-height:1.3}
+.bar{height:11px;background:var(--sky-wash);border:2px solid var(--ink);border-radius:999px;margin-top:8px;overflow:hidden;position:relative}
+.bar>i{position:absolute;inset:0 auto 0 0;right:0;left:auto;width:0;background:linear-gradient(90deg,var(--mint-deep),var(--sky-deep));transition:width .5s ease;border-radius:999px}
+.pct{flex:none;min-width:46px;text-align:center;font-weight:700;font-size:15px}
+.chev{flex:none;width:22px;height:22px;transition:transform .25s;stroke:var(--ink)}
+.ms[data-open="true"] .chev{transform:rotate(180deg)}
+.ms.done{background:var(--mint-wash)}
+.ms.done .ms-num{background:var(--mint-deep);color:#fff}
+.ms-body{display:none;padding:2px 14px 14px}
+.ms[data-open="true"] .ms-body{display:block}
+
+.topic{border-top:2px dashed var(--sky);padding:12px 4px 10px;transition:background .4s}
+.topic:first-child{border-top:0}
+.topic.done{background:linear-gradient(90deg,transparent,var(--mint-wash))}
+.topic h3{margin:0 0 6px;font-size:15.5px;font-weight:600;display:flex;align-items:center;gap:8px}
+.topic h3 .star{width:20px;height:20px;opacity:0;transform:scale(.3) rotate(-30deg);transition:all .4s cubic-bezier(.3,1.6,.5,1);stroke:var(--pink-deep);fill:var(--pink)}
+.topic.done h3 .star{opacity:1;transform:scale(1) rotate(0)}
+.chk{display:flex;align-items:flex-start;gap:11px;padding:7px 2px;cursor:pointer;font-size:15px;-webkit-tap-highlight-color:transparent}
+.chk input{position:absolute;opacity:0;width:1px;height:1px}
+.box{flex:none;width:26px;height:26px;border:2px solid var(--ink);border-radius:7px 10px 6px 11px/10px 6px 11px 7px;background:#fff;display:grid;place-items:center;transition:background .2s,transform .15s}
+.box svg{width:18px;height:18px;stroke:var(--ink);stroke-width:3.2;fill:none;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:26;stroke-dashoffset:26;transition:stroke-dashoffset .3s ease}
+.chk input:checked + .box{background:var(--mint)}
+.chk input:checked + .box svg{stroke-dashoffset:0}
+.chk input:focus-visible + .box{outline:3px solid var(--sky-deep);outline-offset:2px}
+.chk:active .box{transform:scale(.9)}
+.chk span.t{padding-top:2px}
+.chk input:checked ~ span.t{color:var(--muted)}
+.single .chk{font-size:16px}
+
+.save{display:flex;flex-direction:column;align-items:center;gap:8px;margin-top:22px}
+.save button{display:inline-flex;align-items:center;gap:10px;background:var(--mint);color:var(--ink);font:inherit;font-weight:700;font-size:18px;padding:12px 30px;cursor:pointer;transition:transform .15s,background .2s}
+.save button:hover{background:#BDE8D8}
+.save button:active{transform:scale(.96)}
+.save button:focus-visible{outline:3px solid var(--sky-deep);outline-offset:3px}
+.save button svg{width:30px;height:30px;stroke:var(--ink);stroke-width:3.4;fill:none;stroke-linecap:round;stroke-linejoin:round}
+#saved{min-height:22px;font-size:14px;color:var(--muted)}
+#warn{display:none;margin-top:12px;background:var(--pink);padding:8px 14px;font-size:14px;text-align:center}
+
+.confetti{position:fixed;top:-20px;pointer-events:none;opacity:0;z-index:50;animation:fall linear forwards}
+@keyframes fall{0%{opacity:1;transform:translateY(0) rotate(0)}85%{opacity:1}100%{opacity:0;transform:translateY(105vh) rotate(260deg)}}
+#banner{position:fixed;inset:auto 14px 20px;max-width:520px;margin:0 auto;background:#fff;padding:14px 18px;text-align:center;font-weight:600;font-size:17px;z-index:60;display:none;box-shadow:0 8px 24px rgba(75,91,105,.18)}
+@media(max-width:480px){h1{font-size:22px}.ms-title strong{font-size:16px}}
+@media(prefers-reduced-motion:reduce){.confetti{display:none}.bar>i,.box svg,.topic h3 .star,.chev{transition:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="hero sketch">
+    <!-- איור קו: עיפרון, כוכב וספר פתוח -->
+    <svg class="doodle" viewBox="0 0 80 80" fill="none" stroke="#4B5B69" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M12 58c8-4 18-4 28 2 10-6 20-6 28-2V24c-8-4-18-4-28 2-10-6-20-6-28-2z" fill="#EFF8FD"/>
+      <path d="M40 26v34"/>
+      <path d="M52 8l3 7 7 1-5 5 1 7-6-4-6 4 1-7-5-5 7-1z" fill="#F9D4DF"/>
+      <path d="M17 70l9-9 4 4-9 9z" fill="#CDEFE2"/>
+    </svg>
+    <h1>הצ'קליסט שלי בתוכנית ההכשרה</h1>
+    <p class="sub">אפשר להתחיל מכל נושא, בכל סדר ובקצב שלך. כל סימון הוא צעד קדימה.</p>
+    <div class="steps sketch-soft">צעדים שעשיתי עד עכשיו: <b id="total">0</b></div>
+    <p id="cheer"></p>
+  </header>
+
+  <main id="list"></main>
+
+  <div class="save">
+    <button id="saveBtn" class="sketch" type="button">
+      <svg viewBox="0 0 32 32" aria-hidden="true"><path d="M6 17l7 7L26 8"/></svg>
+      שמירת התקדמות
+    </button>
+    <div id="saved" role="status" aria-live="polite"></div>
+    <div id="warn" class="sketch-soft">נראה שהדפדפן הזה לא מאפשר לשמור. ההתקדמות תישאר רק כל עוד הדף פתוח. כדאי לפתוח את הקישור בדפדפן הרגיל.</div>
+  </div>
+</div>
+<div id="banner" class="sketch" role="status"></div>
+
+<script>
+/* ===== התוכן: אבני דרך ונושאים (מתוך התוכניות "הכשרה מקצועית" ו"הכשרה עסקית") ===== */
+const MILESTONES = [
+  { id: 'm1', title: 'יסודות לימוד האותיות והכתיבה', topics: [
+    'שיעור 1: האותיות, התפתחות, מיפוי והקניה ראשונית',
+    'שיעור 2: האותיות, מטרות ופעילויות להטמעה',
+    'שיעור 3: התפתחות הכתיבה וגרפומוטוריקה' ] },
+  { id: 'm2', title: 'העמקת הידע: מודעות פונולוגית וקריאה', topics: [
+    'שיעור 4: מודעות פונולוגית',
+    'שיעור 5: התפתחות הקריאה והכתיבה',
+    'שיעור 6: מעבר מהברות למילים ולקריאה שוטפת' ] },
+  { id: 'm3', title: 'הרחבת תחומי ההתמחות: חשבון ומיפוי', topics: [
+    'שיעור 7: מוכנות בחשבון, ספירה, מנייה והספרות',
+    'שיעור 8: מוכנות בחשבון, הרצף, חיבור וחיסור',
+    'שיעור 9: מיפוי בשיטת קוראים בקלות' ] },
+  { id: 'm4', title: 'ניהול קבוצה: סיום ההכשרה המקצועית', topics: [
+    'שיעור 10: מבנה השיעור וחוברת המערכים',
+    'שיעור 11: כלים להתמודדות עם אתגרים בקבוצה',
+    'שיעור 12: בינה מלאכותית ליצירת חומרי למידה ומשחק',
+    'שיעור בונוס: פיצוח שגיאות כתיב',
+    'שיעור בונוס: מוכנות חברתית רגשית בקבוצות' ] },
+  { id: 'm5', title: 'בניית העסק', topics: [
+    'איך מתחילים ואיך משווקים ברשתות החברתיות',
+    'פרסום ממומן',
+    'פתיחת עסק והנהלת חשבונות',
+    'הקמת דף נחיתה ואתר משלך',
+    'תמחור ומכירות',
+    'עיצוב פוסטים, חומרי למידה ופלאיירים בקאנבה',
+    'איך הופכים את ההורים למשווקים שלך' ] },
+  { id: 'm6', title: 'הגשת העבודה המסכמת ופתיחת קבוצה', single: [
+    'הגשתי את העבודה המסכמת',
+    'פתחתי את הקבוצה הראשונה שלי' ] }
+];
+const BOXES = [
+  'צפיתי וסיכמתי את השיעור',
+  'אני מיישמת את החומר ופועלת לפי הנלמד',
+  'השתתפתי בקבוצת הוואטסאפ (שאלתי שאלה או עניתי למשתתפת אחרת)'
+];
+const KEY = 'hen-training-checklist-v1';
+const CHECK = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l5 5L19 7"/></svg>';
+const STAR = '<svg class="star" viewBox="0 0 24 24" stroke-width="1.8" stroke-linejoin="round" aria-hidden="true"><path d="M12 2.5l2.8 6 6.5.8-4.8 4.5 1.3 6.5L12 17l-5.8 3.3 1.3-6.5L2.7 9.3l6.5-.8z"/></svg>';
+const CHEV = '<svg class="chev" viewBox="0 0 24 24" fill="none" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>';
+
+/* ===== שמירה בדפדפן (LocalStorage), עם גיבוי בזיכרון אם הדפדפן חוסם ===== */
+let store = { checks: {}, open: {} }, canSave = true;
+function load() {
+  try { const raw = localStorage.getItem(KEY); if (raw) { const j = JSON.parse(raw); store.checks = j.checks || {}; store.open = j.open || {}; } }
+  catch (e) { canSave = false; }
+}
+function persist() {
+  try { localStorage.setItem(KEY, JSON.stringify({ checks: store.checks, open: store.open, at: Date.now() })); return true; }
+  catch (e) { canSave = false; document.getElementById('warn').style.display = 'block'; return false; }
+}
+
+/* ===== תצוגה ===== */
+const $ = id => document.getElementById(id);
+const items = m => m.single ? m.single.map((t, i) => ({ id: m.id + '-s' + i, n: 1 })) : m.topics.flatMap((t, i) => [0, 1, 2].map(b => ({ id: m.id + '-t' + i + '-' + b })));
+function esc(s) { return String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c])); }
+function render() {
+  $('list').innerHTML = MILESTONES.map((m, mi) => {
+    const body = m.single
+      ? '<div class="single">' + m.single.map((t, i) => row(m.id + '-s' + i, t)).join('') + '</div>'
+      : m.topics.map((t, i) => '<div class="topic" id="' + m.id + '-t' + i + '"><h3>' + STAR + esc(t) + '</h3>' + BOXES.map((b, k) => row(m.id + '-t' + i + '-' + k, b)).join('') + '</div>').join('');
+    return '<section class="ms sketch" id="' + m.id + '" data-open="' + (store.open[m.id] ? 'true' : 'false') + '">' +
+      '<button class="ms-head" type="button" aria-expanded="' + (store.open[m.id] ? 'true' : 'false') + '" aria-controls="' + m.id + '-body">' +
+      '<span class="ms-num sketch">' + (mi + 1) + '</span>' +
+      '<span class="ms-title"><strong>' + esc(m.title) + '</strong><div class="bar" role="progressbar" aria-valuemin="0" aria-valuemax="100"><i></i></div></span>' +
+      '<span class="pct">0%</span>' + CHEV + '</button>' +
+      '<div class="ms-body" id="' + m.id + '-body">' + body + '</div></section>';
+  }).join('');
+  update(true);
+}
+function row(id, text) {
+  return '<label class="chk"><input type="checkbox" data-id="' + id + '"' + (store.checks[id] ? ' checked' : '') + '><span class="box">' + CHECK + '</span><span class="t">' + esc(text) + '</span></label>';
+}
+
+/* ===== התקדמות, חגיגות ועידוד ===== */
+const CHEERS = ['כל התחלה היא הישג. תבחרי נושא שקורץ לך.', 'איזה יופי, את כבר בתנועה!', 'צעד אחרי צעד, וזה כבר נראה מרשים.', 'את מתקדמת נהדר, תמשיכי בקצב שלך.', 'הרבה כבר מאחוריך. כל הכבוד!'];
+function update(silent) {
+  let total = 0;
+  MILESTONES.forEach(m => {
+    const ids = items(m), done = ids.filter(x => store.checks[x.id]).length, pct = Math.round(100 * done / ids.length);
+    total += done;
+    const el = $(m.id);
+    el.querySelector('.bar > i').style.width = pct + '%';
+    el.querySelector('.bar').setAttribute('aria-valuenow', pct);
+    el.querySelector('.pct').textContent = pct + '%';
+    const was = el.classList.contains('done'), now = done === ids.length;
+    el.classList.toggle('done', now);
+    if (!silent && now && !was) celebrate('סיימת אבן דרך! ' + m.title, true);
+    if (m.topics) m.topics.forEach((t, i) => {
+      const tEl = $(m.id + '-t' + i), all = [0, 1, 2].every(b => store.checks[m.id + '-t' + i + '-' + b]), wasT = tEl.classList.contains('done');
+      tEl.classList.toggle('done', all);
+      if (!silent && all && !wasT && !now) celebrate('נושא הושלם! כל הכבוד', false);
+    });
+  });
+  $('total').textContent = total;
+  const lvl = total === 0 ? 0 : Math.min(CHEERS.length - 1, 1 + Math.floor(total / 12));
+  $('cheer').textContent = CHEERS[lvl];
+}
+function confetti(n) {
+  const cols = ['#CDEFE2', '#BFE3F4', '#F9D4DF', '#FFFFFF', '#7CC9B0', '#E98FAB'];
+  for (let i = 0; i < n; i++) {
+    const c = document.createElement('div'), s = 9 + Math.random() * 10;
+    c.className = 'confetti';
+    c.style.cssText = 'left:' + (Math.random() * 98) + '%;width:' + s + 'px;height:' + s + 'px;background:' + cols[i % cols.length] + ';border:1.6px solid #4B5B69;border-radius:' + (i % 3 ? '50%' : '3px') + ';animation-duration:' + (1.3 + Math.random() * .9) + 's;animation-delay:' + (Math.random() * .25) + 's';
+    document.body.appendChild(c); setTimeout(() => c.remove(), 2800);
+  }
+}
+let bannerT;
+function celebrate(msg, big) {
+  confetti(big ? 46 : 18);
+  const b = $('banner'); b.textContent = (big ? '🎉 ' : '⭐ ') + msg; b.style.display = 'block';
+  clearTimeout(bannerT); bannerT = setTimeout(() => { b.style.display = 'none'; }, big ? 3600 : 2200);
+}
+
+/* ===== אירועים ===== */
+$('list').addEventListener('change', e => {
+  const cb = e.target.closest('input[data-id]'); if (!cb) return;
+  if (cb.checked) store.checks[cb.dataset.id] = 1; else delete store.checks[cb.dataset.id];
+  persist(); update(false);
+});
+$('list').addEventListener('click', e => {
+  const h = e.target.closest('.ms-head'); if (!h) return;
+  const ms = h.parentElement, open = ms.dataset.open !== 'true';
+  ms.dataset.open = open ? 'true' : 'false'; h.setAttribute('aria-expanded', open ? 'true' : 'false');
+  store.open[ms.id] = open ? 1 : 0; persist();
+});
+$('saveBtn').addEventListener('click', () => {
+  const ok = persist();
+  $('saved').textContent = ok ? 'ההתקדמות נשמרה ✓ כשתחזרי לאותו קישור, הכל יחכה לך.' : 'לא הצלחתי לשמור בדפדפן הזה.';
+  if (ok) confetti(10);
+});
+load(); render();
+if (!canSave) $('warn').style.display = 'block';
+</script>
+</body>
+</html>
