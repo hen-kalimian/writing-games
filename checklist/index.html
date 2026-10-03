@@ -159,7 +159,16 @@ function load() {
   try { const raw = localStorage.getItem(KEY); if (raw) { const j = JSON.parse(raw); store.checks = j.checks || {}; store.open = j.open || {}; } }
   catch (e) { canSave = false; }
 }
+/* שמירה בחשבון: כשהצ'קליסט מוטמע בדף החברות באתר, הדף מעביר את ההתקדמות לטבלה בוויקס לפי המשתמשת המחוברת,
+   ולכן היא זמינה מכל דפדפן ומכל מכשיר. מחוץ לאתר נשארת שמירה בדפדפן בלבד. */
+let cloud = false, cloudT = null;
+function cloudSave() {
+  if (!cloud) return;
+  clearTimeout(cloudT);
+  cloudT = setTimeout(() => { try { parent.postMessage({ type: 'save', state: { checks: store.checks, open: store.open } }, '*'); } catch (e) {} }, 500);
+}
 function persist() {
+  cloudSave();
   try { localStorage.setItem(KEY, JSON.stringify({ checks: store.checks, open: store.open, at: Date.now() })); return true; }
   catch (e) { canSave = false; document.getElementById('warn').style.display = 'block'; return false; }
 }
@@ -240,11 +249,24 @@ $('list').addEventListener('click', e => {
 });
 $('saveBtn').addEventListener('click', () => {
   const ok = persist();
+  if (cloud) { cloudSave(); $('saved').textContent = 'שומרת בחשבון שלך...'; clearTimeout(cloudT); try { parent.postMessage({ type: 'save', state: { checks: store.checks, open: store.open } }, '*'); } catch (e) {} confetti(10); return; }
   $('saved').textContent = ok ? 'ההתקדמות נשמרה ✓ כשתחזרי לאותו קישור, הכל יחכה לך.' : 'לא הצלחתי לשמור בדפדפן הזה.';
   if (ok) confetti(10);
 });
 load(); render();
 if (!canSave) $('warn').style.display = 'block';
+if (window.parent !== window) {
+  window.addEventListener('message', e => {
+    if (e.source !== window.parent || !e.data || typeof e.data !== 'object') return;
+    if (e.data.type === 'state') {
+      cloud = true; $('warn').style.display = 'none';
+      if (e.data.state) { store.checks = e.data.state.checks || {}; store.open = e.data.state.open || {}; render(); }
+      else cloudSave();   // הפעם הראשונה בחשבון: מעבירים לשם את מה שכבר סומן
+    }
+    if (e.data.type === 'saved') $('saved').textContent = 'ההתקדמות נשמרה בחשבון שלך ✓ היא תחכה לך מכל מכשיר.';
+  });
+  try { parent.postMessage({ type: 'ready' }, '*'); } catch (e) {}
+}
 </script>
 </body>
 </html>
