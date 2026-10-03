@@ -288,11 +288,11 @@ function renderP(s, t){
   const ov = overlay();
   const defs = document.createElementNS(NS, 'defs'); ov.appendChild(defs);
   let remaining = 0;
-  const pieces = [];
+  const pieces = [], scatter = [], ghosts = [];
   a.shapes.forEach((sh, k) => {
     const cp = document.createElementNS(NS, 'clipPath'); cp.setAttribute('id', 'cp' + k);
     const pp = document.createElementNS(NS, 'path'); pp.setAttribute('d', sh.d); cp.appendChild(pp); defs.appendChild(cp);
-    const ghost = document.createElementNS(NS, 'path'); ghost.setAttribute('d', sh.d); ghost.setAttribute('class', 'ghost'); ghost.setAttribute('fill', 'rgba(255,255,255,.9)'); ov.appendChild(ghost);
+    const ghost = document.createElementNS(NS, 'path'); ghost.setAttribute('d', sh.d); ghost.setAttribute('class', 'ghost'); ghost.setAttribute('fill', 'rgba(255,255,255,.9)'); ghost.style.opacity = 0; ghost.style.transition = 'opacity .9s'; ghosts.push(ghost); ov.appendChild(ghost);
   });
   a.shapes.forEach((sh, k) => {
     const g = document.createElementNS(NS, 'g'); g.setAttribute('class', 'piece');
@@ -301,15 +301,16 @@ function renderP(s, t){
     inner.appendChild(im); g.appendChild(inner);
     const rim = document.createElementNS(NS, 'path'); rim.setAttribute('d', sh.d); rim.setAttribute('fill', 'none'); rim.setAttribute('stroke', '#fff'); rim.setAttribute('stroke-width', 5); rim.setAttribute('stroke-linejoin', 'round'); g.appendChild(rim);
     const hitp = document.createElementNS(NS, 'path'); hitp.setAttribute('d', sh.d); hitp.setAttribute('fill', 'transparent'); hitp.setAttribute('stroke', 'transparent'); hitp.setAttribute('stroke-width', 44); hitp.setAttribute('stroke-linejoin', 'round'); hitp.style.pointerEvents = 'all'; g.appendChild(hitp);
-    const st = { tx: sh.tx, ty: sh.ty, lock: false };
+    const st = { tx: sh.tx, ty: sh.ty, lock: false, sx: sh.tx, sy: sh.ty, busy: false };
     const near0 = Math.hypot(st.tx, st.ty) < 8;
     const place = () => g.setAttribute('transform', 'translate(' + st.tx + ',' + st.ty + ')');
+    if (near0){ st.lock = true; g.setAttribute('class', 'piece lock'); }
+    else { remaining++; st.tx = 0; st.ty = 0; st.busy = true; st.place = place; scatter.push(st); }   // מתחילים כשהתמונה שלמה
     place();
-    if (near0){ st.lock = true; g.setAttribute('class', 'piece lock'); } else remaining++;
     ov.appendChild(g);
     let drag = null;
     g.addEventListener('pointerdown', e => {
-      if (st.lock || t !== token) return; e.preventDefault();
+      if (st.lock || st.busy || t !== token) return; e.preventDefault();
       g.setPointerCapture(e.pointerId);
       const p = toStage(e); drag = { dx: p.x - st.tx, dy: p.y - st.ty };
       ov.appendChild(g); // להעלות לחזית
@@ -327,6 +328,17 @@ function renderP(s, t){
     g.addEventListener('pointerup', drop); g.addEventListener('pointercancel', drop);
   });
   if (remaining === 0){ base.style.filter = 'none'; }
+  // התמונה שלמה, ואז החלקים מתרחקים כדי שהילד יבין לאן להחזיר אותם
+  setTimeout(() => {
+    if (t !== token) return;
+    ghosts.forEach(gh => { gh.style.opacity = 1; });
+    const t0 = performance.now();
+    (function step(now){
+      const u = Math.min((now - t0) / 1200, 1), e = u < .5 ? 2 * u * u : 1 - Math.pow(-2 * u + 2, 2) / 2;
+      scatter.forEach(sp => { if (!sp.lock) { sp.tx = sp.sx * e; sp.ty = sp.sy * e; sp.place(); } });
+      if (u < 1 && t === token) requestAnimationFrame(step); else scatter.forEach(sp => { sp.busy = false; });
+    })(t0);
+  }, 1800);
   say(a.intro, () => { if (remaining === 0) finishStep(t, 800); });
 }
 
