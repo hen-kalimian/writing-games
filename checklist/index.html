@@ -28,6 +28,10 @@ h1{font-size:25px;line-height:1.25;margin:0 0 6px;font-weight:700}
 .sub{margin:0;color:var(--muted);font-size:15px}
 .steps{margin-top:14px;display:inline-flex;align-items:center;gap:8px;background:var(--pink);padding:7px 16px;font-weight:600;font-size:15px}
 .steps b{font-size:20px}
+.acct{margin-top:12px;font-size:14px;color:var(--ink)}
+.loginbtn{background:var(--sky);color:var(--ink);font:inherit;font-weight:600;font-size:14px;padding:6px 14px;cursor:pointer;margin-inline-start:6px}
+.loginbtn:hover{background:#A9D8EE}
+.link{background:none;border:0;font:inherit;font-size:13px;color:var(--muted);text-decoration:underline;cursor:pointer;margin-inline-start:6px}
 #cheer{margin:8px 0 0;font-size:14.5px;color:var(--ink);min-height:22px}
 
 .ms{background:var(--white);margin-bottom:14px;overflow:hidden}
@@ -95,6 +99,7 @@ h1{font-size:25px;line-height:1.25;margin:0 0 6px;font-weight:700}
     <p class="sub">אפשר להתחיל מכל נושא, בכל סדר ובקצב שלך. כל סימון הוא צעד קדימה.</p>
     <div class="steps sketch-soft">צעדים שעשיתי עד עכשיו: <b id="total">0</b></div>
     <p id="cheer"></p>
+    <div id="acct" class="acct"></div>
   </header>
 
   <main id="list"></main>
@@ -159,13 +164,71 @@ function load() {
   try { const raw = localStorage.getItem(KEY); if (raw) { const j = JSON.parse(raw); store.checks = j.checks || {}; store.open = j.open || {}; } }
   catch (e) { canSave = false; }
 }
-/* שמירה בחשבון: כשהצ'קליסט מוטמע בדף החברות באתר, הדף מעביר את ההתקדמות לטבלה בוויקס לפי המשתמשת המחוברת,
-   ולכן היא זמינה מכל דפדפן ומכל מכשיר. מחוץ לאתר נשארת שמירה בדפדפן בלבד. */
-let cloud = false, cloudT = null;
-function cloudSave() {
+/* ===== שמירה בחשבון (חן, 4.10.26: "שיעבוד גם מדפדפן אחר, אותו יוזר") =====
+   התחברות עם המשתמש של האתר (ויקס), וההתקדמות נשמרת בטבלה בוויקס לפי המשתמשת. בלי התחברות נשארת שמירה בדפדפן. */
+const CLIENT_ID = '058da38e-a911-4b84-876e-e5efedfa9ae9', COLLECTION = 'ChecklistProgress';
+const REDIRECT = 'https://hen-kalimian.github.io/writing-games/checklist/';
+const TOK = 'hen-ck-wix-tokens', OA = 'hen-ck-wix-oauth';
+let wix = null, cloud = false, cloudItem = null, cloudT = null;
+async function sdk() {
+  if (wix) return wix;
+  const [{ createClient, OAuthStrategy }, { items }] = await Promise.all([import('https://esm.sh/@wix/sdk@1.21.16'), import('https://esm.sh/@wix/data@1.0.525')]);
+  let tokens; try { tokens = JSON.parse(localStorage.getItem(TOK) || 'null'); } catch (e) {}
+  wix = createClient({ auth: OAuthStrategy({ clientId: CLIENT_ID, ...(tokens ? { tokens } : {}) }), modules: { items } });
+  return wix;
+}
+const keepTokens = () => { try { if (wix) localStorage.setItem(TOK, JSON.stringify(wix.auth.getTokens())); } catch (e) {} };
+function cloudStatus(msg, loggedIn) {
+  $('acct').innerHTML = loggedIn
+    ? '<span>' + msg + '</span> <button type="button" id="logout" class="link">התנתקות</button>'
+    : '<span>' + msg + '</span> <button type="button" id="login" class="loginbtn sketch-soft">התחברות עם המשתמש שלי באתר</button>';
+}
+async function cloudLoad() {
+  try {
+    const c = await sdk();
+    const r = await c.items.query(COLLECTION).find();
+    keepTokens();
+    cloudItem = r.items[0] || null;
+    cloud = true;
+    if (cloudItem) { const s = JSON.parse(cloudItem.data || '{}'); store.checks = s.checks || {}; store.open = s.open || {}; render(); }
+    else cloudSave(true);   // הפעם הראשונה בחשבון: מעבירים לשם את מה שכבר סומן
+    cloudStatus('מחוברת. ההתקדמות נשמרת בחשבון שלך ✓ ותופיע בכל מכשיר.', true);
+  } catch (e) {
+    cloud = false; localStorage.removeItem(TOK); wix = null;
+    cloudStatus('כדי שההתקדמות תישמר בחשבון שלך ותופיע בכל מכשיר:', false);
+  }
+}
+async function cloudSaveNow() {
+  if (!cloud) return false;
+  try {
+    const c = await sdk(), data = JSON.stringify({ checks: store.checks, open: store.open });
+    if (cloudItem) cloudItem = await c.items.update(COLLECTION, { ...cloudItem, data });
+    else cloudItem = await c.items.insert(COLLECTION, { title: 'progress', data });
+    keepTokens(); return true;
+  } catch (e) { return false; }
+}
+function cloudSave(now) {
   if (!cloud) return;
   clearTimeout(cloudT);
-  cloudT = setTimeout(() => { try { parent.postMessage({ type: 'save', state: { checks: store.checks, open: store.open } }, '*'); } catch (e) {} }, 500);
+  cloudT = setTimeout(cloudSaveNow, now ? 0 : 600);
+}
+async function startLogin() {
+  const c = await sdk();
+  const od = c.auth.generateOAuthData(REDIRECT, REDIRECT);
+  localStorage.setItem(OA, JSON.stringify(od));
+  const { authUrl } = await c.auth.getAuthUrl(od);
+  location.href = authUrl + '&lang=he';
+}
+async function finishLoginIfReturned() {
+  if (!/[#?&]code=/.test(location.hash + location.search)) return false;
+  try {
+    const c = await sdk(), od = JSON.parse(localStorage.getItem(OA) || 'null');
+    const r = c.auth.parseFromUrl(); if (!od || !r.code) return false;
+    const tokens = await c.auth.getMemberTokens(r.code, r.state, od);
+    c.auth.setTokens(tokens); keepTokens(); localStorage.removeItem(OA);
+    history.replaceState(null, '', location.pathname);
+    return true;
+  } catch (e) { history.replaceState(null, '', location.pathname); return false; }
 }
 function persist() {
   cloudSave();
@@ -249,24 +312,21 @@ $('list').addEventListener('click', e => {
 });
 $('saveBtn').addEventListener('click', () => {
   const ok = persist();
-  if (cloud) { cloudSave(); $('saved').textContent = 'שומרת בחשבון שלך...'; clearTimeout(cloudT); try { parent.postMessage({ type: 'save', state: { checks: store.checks, open: store.open } }, '*'); } catch (e) {} confetti(10); return; }
+  if (cloud) { $('saved').textContent = 'שומרת בחשבון שלך...'; cloudSaveNow().then(okc => { $('saved').textContent = okc ? 'ההתקדמות נשמרה בחשבון שלך ✓ היא תחכה לך מכל מכשיר.' : 'לא הצלחתי לשמור בחשבון. אפשר לנסות שוב.'; }); confetti(10); return; }
   $('saved').textContent = ok ? 'ההתקדמות נשמרה ✓ כשתחזרי לאותו קישור, הכל יחכה לך.' : 'לא הצלחתי לשמור בדפדפן הזה.';
   if (ok) confetti(10);
 });
 load(); render();
 if (!canSave) $('warn').style.display = 'block';
-if (window.parent !== window) {
-  window.addEventListener('message', e => {
-    if (e.source !== window.parent || !e.data || typeof e.data !== 'object') return;
-    if (e.data.type === 'state') {
-      cloud = true; $('warn').style.display = 'none';
-      if (e.data.state) { store.checks = e.data.state.checks || {}; store.open = e.data.state.open || {}; render(); }
-      else cloudSave();   // הפעם הראשונה בחשבון: מעבירים לשם את מה שכבר סומן
-    }
-    if (e.data.type === 'saved') $('saved').textContent = 'ההתקדמות נשמרה בחשבון שלך ✓ היא תחכה לך מכל מכשיר.';
-  });
-  try { parent.postMessage({ type: 'ready' }, '*'); } catch (e) {}
-}
+document.addEventListener('click', async e => {
+  if (e.target.id === 'login') { e.target.disabled = true; e.target.textContent = 'עוברת להתחברות...'; try { await startLogin(); } catch (err) { e.target.disabled = false; e.target.textContent = 'לא הצלחתי, אפשר לנסות שוב'; } }
+  if (e.target.id === 'logout') { cloud = false; cloudItem = null; wix = null; localStorage.removeItem(TOK); store = { checks: {}, open: {} }; try { localStorage.removeItem(KEY); } catch (er) {} render(); cloudStatus('התנתקת. כדי שההתקדמות תישמר בחשבון שלך ותופיע בכל מכשיר:', false); }
+});
+(async () => {
+  cloudStatus('כדי שההתקדמות תישמר בחשבון שלך ותופיע בכל מכשיר:', false);
+  const returned = await finishLoginIfReturned();
+  if (returned || localStorage.getItem(TOK)) { $('acct').firstChild && ($('acct').firstChild.textContent = 'מתחברת...'); await cloudLoad(); }
+})();
 </script>
 </body>
 </html>
