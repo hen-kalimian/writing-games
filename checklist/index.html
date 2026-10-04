@@ -34,6 +34,24 @@ h1{font-size:25px;line-height:1.25;margin:0 0 6px;font-weight:700}
 .link{background:none;border:0;font:inherit;font-size:13px;color:var(--muted);text-decoration:underline;cursor:pointer;margin-inline-start:6px}
 #cheer{margin:8px 0 0;font-size:14.5px;color:var(--ink);min-height:22px}
 
+.stepper{display:flex;justify-content:center;gap:8px;margin:0 0 14px;flex-wrap:wrap}
+.dot{width:40px;height:40px;display:grid;place-items:center;background:#fff;font:inherit;font-weight:700;font-size:16px;color:var(--ink);cursor:pointer;padding:0;position:relative}
+.dot.sketch{border-radius:50% 46% 52% 48%/48% 52% 46% 50%}
+.dot.done{background:var(--mint-deep);color:#fff}
+.dot.cur{background:var(--sky);box-shadow:0 0 0 3px var(--sky-wash),0 0 0 5px var(--sky-deep)}
+.dot.cur.done{background:var(--mint-deep)}
+.dot:focus-visible{outline:3px solid var(--sky-deep);outline-offset:3px}
+.slide{background:var(--white);padding:18px 16px 16px;animation:slidein .35s ease}
+@keyframes slidein{from{opacity:0;transform:translateX(-18px)}to{opacity:1;transform:none}}
+.slide.done{background:var(--mint-wash)}
+.slide-head{display:flex;align-items:center;gap:12px;margin-bottom:6px}
+.slide-kick{font-size:13.5px;color:var(--muted);font-weight:500;display:block}
+.slide-body{padding:6px 2px 4px}
+.slide-nav{display:flex;justify-content:space-between;gap:10px;margin-top:14px}
+.nav{background:var(--sky);color:var(--ink);font:inherit;font-weight:600;font-size:16px;padding:10px 22px;cursor:pointer;min-width:110px}
+.nav:hover{background:#A9D8EE}
+.nav[disabled]{opacity:.35;cursor:default}
+.nav:focus-visible{outline:3px solid var(--sky-deep);outline-offset:3px}
 .ms{background:var(--white);margin-bottom:14px;overflow:hidden}
 .ms-head{width:100%;display:flex;align-items:center;gap:12px;background:none;border:0;padding:14px 16px;font:inherit;color:inherit;cursor:pointer;text-align:right}
 .ms-head:focus-visible{outline:3px solid var(--sky-deep);outline-offset:-3px}
@@ -57,7 +75,8 @@ h1{font-size:25px;line-height:1.25;margin:0 0 6px;font-weight:700}
 .topic h3{margin:0 0 6px;font-size:15.5px;font-weight:600;display:flex;align-items:center;gap:8px}
 .topic h3 .star{width:20px;height:20px;opacity:0;transform:scale(.3) rotate(-30deg);transition:all .4s cubic-bezier(.3,1.6,.5,1);stroke:var(--pink-deep);fill:var(--pink)}
 .topic.done h3 .star{opacity:1;transform:scale(1) rotate(0)}
-.chk{display:flex;align-items:flex-start;gap:11px;padding:7px 2px;cursor:pointer;font-size:15px;-webkit-tap-highlight-color:transparent}
+.chk{display:flex;align-items:flex-start;gap:11px;padding:9px 2px;cursor:pointer;font-size:16px;-webkit-tap-highlight-color:transparent}
+.chk+.chk{border-top:2px dashed var(--sky-wash)}
 .chk input{position:absolute;opacity:0;width:1px;height:1px}
 .box{flex:none;width:26px;height:26px;border:2px solid var(--ink);border-radius:7px 10px 6px 11px/10px 6px 11px 7px;background:#fff;display:grid;place-items:center;transition:background .2s,transform .15s}
 .box svg{width:18px;height:18px;stroke:var(--ink);stroke-width:3.2;fill:none;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:26;stroke-dashoffset:26;transition:stroke-dashoffset .3s ease}
@@ -82,7 +101,7 @@ h1{font-size:25px;line-height:1.25;margin:0 0 6px;font-weight:700}
 @keyframes fall{0%{opacity:1;transform:translateY(0) rotate(0)}85%{opacity:1}100%{opacity:0;transform:translateY(105vh) rotate(260deg)}}
 #banner{position:fixed;inset:auto 14px 20px;max-width:520px;margin:0 auto;background:#fff;padding:14px 18px;text-align:center;font-weight:600;font-size:17px;z-index:60;display:none;box-shadow:0 8px 24px rgba(75,91,105,.18)}
 @media(max-width:480px){h1{font-size:22px}.ms-title strong{font-size:16px}}
-@media(prefers-reduced-motion:reduce){.confetti{display:none}.bar>i,.box svg,.topic h3 .star,.chev{transition:none}}
+@media(prefers-reduced-motion:reduce){.slide{animation:none}.confetti{display:none}.bar>i,.box svg,.topic h3 .star,.chev{transition:none}}
 </style>
 </head>
 <body>
@@ -118,50 +137,72 @@ h1{font-size:25px;line-height:1.25;margin:0 0 6px;font-weight:700}
 <script>
 /* ===== התוכן: אבני דרך ונושאים (מתוך התוכניות "הכשרה מקצועית" ו"הכשרה עסקית") ===== */
 const MILESTONES = [
-  { id: 'm1', title: 'יסודות לימוד האותיות והכתיבה', topics: [
-    'שיעור 1: האותיות, התפתחות, מיפוי והקניה ראשונית',
-    'שיעור 2: האותיות, מטרות ופעילויות להטמעה',
-    'שיעור 3: התפתחות הכתיבה וגרפומוטוריקה' ] },
-  { id: 'm2', title: 'העמקת הידע: מודעות פונולוגית וקריאה', topics: [
-    'שיעור 4: מודעות פונולוגית',
-    'שיעור 5: התפתחות הקריאה והכתיבה',
-    'שיעור 6: מעבר מהברות למילים ולקריאה שוטפת' ] },
-  { id: 'm3', title: 'הרחבת תחומי ההתמחות: חשבון ומיפוי', topics: [
-    'שיעור 7: מוכנות בחשבון, ספירה, מנייה והספרות',
-    'שיעור 8: מוכנות בחשבון, הרצף, חיבור וחיסור',
-    'שיעור 9: מיפוי בשיטת קוראים בקלות' ] },
-  { id: 'm4', title: 'ניהול קבוצה: סיום ההכשרה המקצועית', topics: [
-    'שיעור 10: מבנה השיעור וחוברת המערכים',
-    'שיעור 11: כלים להתמודדות עם אתגרים בקבוצה',
-    'שיעור 12: בינה מלאכותית ליצירת חומרי למידה ומשחק',
-    'שיעור בונוס: פיצוח שגיאות כתיב',
-    'שיעור בונוס: מוכנות חברתית רגשית בקבוצות' ] },
-  { id: 'm5', title: 'בניית העסק', topics: [
-    'איך מתחילים ואיך משווקים ברשתות החברתיות',
-    'פרסום ממומן',
-    'פתיחת עסק והנהלת חשבונות',
-    'הקמת דף נחיתה ואתר משלך',
-    'תמחור ומכירות',
-    'עיצוב פוסטים, חומרי למידה ופלאיירים בקאנבה',
-    'איך הופכים את ההורים למשווקים שלך' ] },
-  { id: 'm6', title: 'הגשת העבודה המסכמת ופתיחת קבוצה', single: [
+  { id: 'm1', title: 'יסודות לימוד האותיות והכתיבה', items: [
+    'צפיתי בשיעור 1: האותיות, התפתחות, מיפוי והקניה ראשונית',
+    'ביצעתי את משימת המיפוי לילד או לילדה',
+    'צפיתי בשיעור 2: האותיות, מטרות ופעילויות להטמעה',
+    'בחרתי אות אחת ויישמתי פעילות להטמעה שלה',
+    'צפיתי בשיעור 3: התפתחות הכתיבה וגרפומוטוריקה',
+    'ניסיתי תרגיל גרפומוטורי עם ילד או ילדה',
+    'סיכמתי לעצמי את שיעורים 1 עד 3',
+    'שאלתי או עניתי בקבוצת הוואטסאפ' ] },
+  { id: 'm2', title: 'העמקת הידע: מודעות פונולוגית וקריאה', items: [
+    'צפיתי בשיעור 4: מודעות פונולוגית',
+    'שיחקתי משחק פונולוגי עם ילד (למשל חריזה או פירוק להברות)',
+    'צפיתי בשיעור 5: התפתחות הקריאה והכתיבה',
+    'זיהיתי באיזה שלב בהתפתחות הקריאה נמצא ילד שאני מכירה',
+    'צפיתי בשיעור 6: מעבר מהברות למילים ולקריאה שוטפת',
+    'התאמנתי בקריאת הברות ומילים עם ילד',
+    'סיכמתי לעצמי את שיעורים 4 עד 6',
+    'שיתפתי בקבוצת הוואטסאפ מה עבד לי' ] },
+  { id: 'm3', title: 'הרחבת תחומי ההתמחות: חשבון ומיפוי', items: [
+    'צפיתי בשיעור 7: מוכנות בחשבון, ספירה, מנייה והספרות',
+    'עשיתי פעילות ספירה ומנייה עם ילד',
+    'צפיתי בשיעור 8: מוכנות בחשבון, הרצף, חיבור וחיסור',
+    'ביצעתי פעילות חיבור וחיסור עם חפצים',
+    'צפיתי בשיעור 9: מיפוי בשיטת קוראים בקלות',
+    'ביצעתי מיפוי בשיטת קוראים בקלות לילד או לילדה',
+    'סיכמתי לעצמי את שיעורים 7 עד 9',
+    'שאלתי או עניתי בקבוצת הוואטסאפ' ] },
+  { id: 'm4', title: 'ניהול קבוצה: סיום ההכשרה המקצועית', items: [
+    'צפיתי בשיעור 10: מבנה השיעור וחוברת המערכים',
+    'הכנתי מערך לשיעור ראשון מתוך החוברת',
+    'צפיתי בשיעור 11: כלים להתמודדות עם אתגרים בקבוצה',
+    'כתבתי לעצמי איך אתמודד עם האתגר שהכי מדאיג אותי בקבוצה',
+    'צפיתי בשיעור 12: בינה מלאכותית ליצירת חומרי למידה ומשחק',
+    'יצרתי חומר למידה או משחק בעזרת בינה מלאכותית',
+    'צפיתי בשיעור הבונוס: פיצוח שגיאות כתיב',
+    'צפיתי בשיעור הבונוס: מוכנות חברתית רגשית בקבוצות',
+    'סיכמתי לעצמי את שיעורים 10 עד 12',
+    'שיתפתי בקבוצת הוואטסאפ איך אני מתכוננת לקבוצה הראשונה' ] },
+  { id: 'm5', title: 'בניית העסק', items: [
+    'צפיתי בהדרכה: איך מתחילים ואיך משווקים ברשתות החברתיות',
+    'פרסמתי את הפוסט הראשון שלי',
+    'צפיתי בהדרכה: פרסום ממומן',
+    'החלטתי אם ואיך אפרסם בתשלום',
+    'צפיתי בהדרכה: פתיחת עסק והנהלת חשבונות',
+    'קבעתי איך אפתח את העסק ומי ינהל לי את החשבונות',
+    'צפיתי בהדרכה: הקמת דף נחיתה ואתר משלך',
+    'הקמתי דף נחיתה ראשון',
+    'צפיתי בהדרכה: תמחור ומכירות',
+    'קבעתי מחיר לקבוצה שלי',
+    'צפיתי בהדרכה: עיצוב פוסטים, חומרי למידה ופלאיירים בקאנבה',
+    'עיצבתי פוסט או פלאייר בקאנבה',
+    'צפיתי בהדרכה: איך הופכים את ההורים למשווקים שלך',
+    'ביקשתי המלצה מהורה מרוצה' ] },
+  { id: 'm6', title: 'הגשת העבודה המסכמת ופתיחת קבוצה', items: [
     'הגשתי את העבודה המסכמת',
     'פתחתי את הקבוצה הראשונה שלי' ] }
 ];
-const BOXES = [
-  'צפיתי וסיכמתי את השיעור',
-  'אני מיישמת את החומר ופועלת לפי הנלמד',
-  'השתתפתי בקבוצת הוואטסאפ (שאלתי שאלה או עניתי למשתתפת אחרת)'
-];
-const KEY = 'hen-training-checklist-v1';
+const KEY = 'hen-training-checklist-v2';
 const CHECK = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l5 5L19 7"/></svg>';
 const STAR = '<svg class="star" viewBox="0 0 24 24" stroke-width="1.8" stroke-linejoin="round" aria-hidden="true"><path d="M12 2.5l2.8 6 6.5.8-4.8 4.5 1.3 6.5L12 17l-5.8 3.3 1.3-6.5L2.7 9.3l6.5-.8z"/></svg>';
 const CHEV = '<svg class="chev" viewBox="0 0 24 24" fill="none" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>';
 
 /* ===== שמירה בדפדפן (LocalStorage), עם גיבוי בזיכרון אם הדפדפן חוסם ===== */
-let store = { checks: {}, open: {} }, canSave = true;
+let store = { checks: {}, cur: 0 }, canSave = true;
 function load() {
-  try { const raw = localStorage.getItem(KEY); if (raw) { const j = JSON.parse(raw); store.checks = j.checks || {}; store.open = j.open || {}; } }
+  try { const raw = localStorage.getItem(KEY); if (raw) { const j = JSON.parse(raw); store.checks = j.checks || {}; store.cur = j.cur || 0; } }
   catch (e) { canSave = false; }
 }
 /* ===== שמירה בחשבון (חן, 4.10.26: "שיעבוד גם מדפדפן אחר, אותו יוזר") =====
@@ -190,7 +231,7 @@ async function cloudLoad() {
     keepTokens();
     cloudItem = r.items[0] || null;
     cloud = true;
-    if (cloudItem) { const s = JSON.parse(cloudItem.data || '{}'); store.checks = s.checks || {}; store.open = s.open || {}; render(); }
+    if (cloudItem) { const s = JSON.parse(cloudItem.data || '{}'); store.checks = s.checks || {}; render(); }
     else cloudSave(true);   // הפעם הראשונה בחשבון: מעבירים לשם את מה שכבר סומן
     cloudStatus('מחוברת. ההתקדמות נשמרת בחשבון שלך ✓ ותופיע בכל מכשיר.', true);
   } catch (e) {
@@ -201,7 +242,7 @@ async function cloudLoad() {
 async function cloudSaveNow() {
   if (!cloud) return false;
   try {
-    const c = await sdk(), data = JSON.stringify({ checks: store.checks, open: store.open });
+    const c = await sdk(), data = JSON.stringify({ checks: store.checks });
     if (cloudItem) cloudItem = await c.items.update(COLLECTION, { ...cloudItem, data });
     else cloudItem = await c.items.insert(COLLECTION, { title: 'progress', data });
     keepTokens(); return true;
@@ -232,51 +273,49 @@ async function finishLoginIfReturned() {
 }
 function persist() {
   cloudSave();
-  try { localStorage.setItem(KEY, JSON.stringify({ checks: store.checks, open: store.open, at: Date.now() })); return true; }
+  try { localStorage.setItem(KEY, JSON.stringify({ checks: store.checks, cur: store.cur, at: Date.now() })); return true; }
   catch (e) { canSave = false; document.getElementById('warn').style.display = 'block'; return false; }
 }
 
 /* ===== תצוגה ===== */
 const $ = id => document.getElementById(id);
-const items = m => m.single ? m.single.map((t, i) => ({ id: m.id + '-s' + i, n: 1 })) : m.topics.flatMap((t, i) => [0, 1, 2].map(b => ({ id: m.id + '-t' + i + '-' + b })));
+const items = m => m.items.map((t, i) => ({ id: m.id + '-i' + i }));
 function esc(s) { return String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c])); }
+const isDone = m => items(m).every(x => store.checks[x.id]);
+const pctOf = m => { const ids = items(m); return Math.round(100 * ids.filter(x => store.checks[x.id]).length / ids.length); };
 function render() {
-  $('list').innerHTML = MILESTONES.map((m, mi) => {
-    const body = m.single
-      ? '<div class="single">' + m.single.map((t, i) => row(m.id + '-s' + i, t)).join('') + '</div>'
-      : m.topics.map((t, i) => '<div class="topic" id="' + m.id + '-t' + i + '"><h3>' + STAR + esc(t) + '</h3>' + BOXES.map((b, k) => row(m.id + '-t' + i + '-' + k, b)).join('') + '</div>').join('');
-    return '<section class="ms sketch" id="' + m.id + '" data-open="' + (store.open[m.id] ? 'true' : 'false') + '">' +
-      '<button class="ms-head" type="button" aria-expanded="' + (store.open[m.id] ? 'true' : 'false') + '" aria-controls="' + m.id + '-body">' +
-      '<span class="ms-num sketch">' + (mi + 1) + '</span>' +
-      '<span class="ms-title"><strong>' + esc(m.title) + '</strong><div class="bar" role="progressbar" aria-valuemin="0" aria-valuemax="100"><i></i></div></span>' +
-      '<span class="pct">0%</span>' + CHEV + '</button>' +
-      '<div class="ms-body" id="' + m.id + '-body">' + body + '</div></section>';
-  }).join('');
+  store.cur = Math.max(0, Math.min(MILESTONES.length - 1, store.cur | 0));
+  const mi = store.cur, m = MILESTONES[mi], pct = pctOf(m), n = MILESTONES.length;
+  $('list').innerHTML =
+    '<nav class="stepper" aria-label="שלבי ההכשרה">' + MILESTONES.map((x, i) =>
+      '<button type="button" class="dot sketch' + (i === mi ? ' cur' : '') + (isDone(x) ? ' done' : '') + '" data-go="' + i + '" aria-label="שלב ' + (i + 1) + (isDone(x) ? ' (הושלם)' : '') + '"' + (i === mi ? ' aria-current="step"' : '') + '>' + (i + 1) + '</button>').join('') + '</nav>' +
+    '<section class="slide sketch' + (isDone(m) ? ' done' : '') + '" id="' + m.id + '">' +
+      '<div class="slide-head"><span class="ms-num sketch">' + (mi + 1) + '</span>' +
+      '<span class="ms-title"><span class="slide-kick">שלב ' + (mi + 1) + ' מתוך ' + n + '</span><strong>' + esc(m.title) + '</strong>' +
+      '<div class="bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="' + pct + '"><i style="width:' + pct + '%"></i></div></span>' +
+      '<span class="pct">' + pct + '%</span></div>' +
+      '<div class="slide-body">' + m.items.map((t, i) => row(m.id + '-i' + i, t)).join('') + '</div>' +
+      '<div class="slide-nav">' +
+        '<button type="button" class="nav sketch-soft" data-step="-1"' + (mi === 0 ? ' disabled' : '') + '>הקודם</button>' +
+        '<button type="button" class="nav sketch-soft" data-step="1"' + (mi === n - 1 ? ' disabled' : '') + '>הבא</button>' +
+      '</div></section>';
   update(true);
 }
+function go(i) { store.cur = i; persist(); render(); window.scrollTo({ top: 0, behavior: 'smooth' }); }
 function row(id, text) {
   return '<label class="chk"><input type="checkbox" data-id="' + id + '"' + (store.checks[id] ? ' checked' : '') + '><span class="box">' + CHECK + '</span><span class="t">' + esc(text) + '</span></label>';
 }
 
 /* ===== התקדמות, חגיגות ועידוד ===== */
 const CHEERS = ['כל התחלה היא הישג. תבחרי נושא שקורץ לך.', 'איזה יופי, את כבר בתנועה!', 'צעד אחרי צעד, וזה כבר נראה מרשים.', 'את מתקדמת נהדר, תמשיכי בקצב שלך.', 'הרבה כבר מאחוריך. כל הכבוד!'];
+let wasDone = {};
 function update(silent) {
   let total = 0;
   MILESTONES.forEach(m => {
-    const ids = items(m), done = ids.filter(x => store.checks[x.id]).length, pct = Math.round(100 * done / ids.length);
+    const done = items(m).filter(x => store.checks[x.id]).length, now = isDone(m);
     total += done;
-    const el = $(m.id);
-    el.querySelector('.bar > i').style.width = pct + '%';
-    el.querySelector('.bar').setAttribute('aria-valuenow', pct);
-    el.querySelector('.pct').textContent = pct + '%';
-    const was = el.classList.contains('done'), now = done === ids.length;
-    el.classList.toggle('done', now);
-    if (!silent && now && !was) celebrate('סיימת אבן דרך! ' + m.title, true);
-    if (m.topics) m.topics.forEach((t, i) => {
-      const tEl = $(m.id + '-t' + i), all = [0, 1, 2].every(b => store.checks[m.id + '-t' + i + '-' + b]), wasT = tEl.classList.contains('done');
-      tEl.classList.toggle('done', all);
-      if (!silent && all && !wasT && !now) celebrate('נושא הושלם! כל הכבוד', false);
-    });
+    if (!silent && now && !wasDone[m.id]) celebrate('סיימת שלב! ' + m.title, true);
+    wasDone[m.id] = now;
   });
   $('total').textContent = total;
   const lvl = total === 0 ? 0 : Math.min(CHEERS.length - 1, 1 + Math.floor(total / 12));
@@ -302,13 +341,18 @@ function celebrate(msg, big) {
 $('list').addEventListener('change', e => {
   const cb = e.target.closest('input[data-id]'); if (!cb) return;
   if (cb.checked) store.checks[cb.dataset.id] = 1; else delete store.checks[cb.dataset.id];
-  persist(); update(false);
+  persist();
+  const m = MILESTONES[store.cur], pct = pctOf(m), sec = $(m.id), done = isDone(m);
+  sec.querySelector('.bar > i').style.width = pct + '%';
+  sec.querySelector('.bar').setAttribute('aria-valuenow', pct);
+  sec.querySelector('.pct').textContent = pct + '%';
+  sec.classList.toggle('done', done);
+  document.querySelector('.dot.cur').classList.toggle('done', done);
+  update(false);
 });
 $('list').addEventListener('click', e => {
-  const h = e.target.closest('.ms-head'); if (!h) return;
-  const ms = h.parentElement, open = ms.dataset.open !== 'true';
-  ms.dataset.open = open ? 'true' : 'false'; h.setAttribute('aria-expanded', open ? 'true' : 'false');
-  store.open[ms.id] = open ? 1 : 0; persist();
+  const d = e.target.closest('[data-go]'); if (d) return go(+d.dataset.go);
+  const s = e.target.closest('[data-step]'); if (s && !s.disabled) go(store.cur + +s.dataset.step);
 });
 $('saveBtn').addEventListener('click', () => {
   const ok = persist();
@@ -320,7 +364,7 @@ load(); render();
 if (!canSave) $('warn').style.display = 'block';
 document.addEventListener('click', async e => {
   if (e.target.id === 'login') { e.target.disabled = true; e.target.textContent = 'עוברת להתחברות...'; try { await startLogin(); } catch (err) { e.target.disabled = false; e.target.textContent = 'לא הצלחתי, אפשר לנסות שוב'; } }
-  if (e.target.id === 'logout') { cloud = false; cloudItem = null; wix = null; localStorage.removeItem(TOK); store = { checks: {}, open: {} }; try { localStorage.removeItem(KEY); } catch (er) {} render(); cloudStatus('התנתקת. כדי שההתקדמות תישמר בחשבון שלך ותופיע בכל מכשיר:', false); }
+  if (e.target.id === 'logout') { cloud = false; cloudItem = null; wix = null; localStorage.removeItem(TOK); store = { checks: {}, cur: 0 }; try { localStorage.removeItem(KEY); } catch (er) {} render(); cloudStatus('התנתקת. כדי שההתקדמות תישמר בחשבון שלך ותופיע בכל מכשיר:', false); }
 });
 (async () => {
   cloudStatus('כדי שההתקדמות תישמר בחשבון שלך ותופיע בכל מכשיר:', false);
