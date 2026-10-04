@@ -574,8 +574,37 @@ function renderTrace(s, t){
   say(s.acts[0].intro);
 }
 
+/* ---------- מעבר על קו מקווקו באיור (כתב, פרפר וכו'), עם זיהוי נכון/לא נכון (חן, 4.10.26) ----------
+   s.cover.pts = נקודות לאורך הקו המקווקו (קואורדינטות הבמה). מעבירים אצבע על הקו: נקודות שנפגעו נצבעות.
+   מעבר שרוב התנועה שלו מחוץ לקו נפסל (לא נספר), והשקף מסתיים כשרוב הקו כוסה. */
+function renderCover(s, t){
+  img(s);
+  const ov = overlay();
+  const P = s.cover.pts, R = s.cover.r || 30, FAR = R * 2.1;
+  const dots = P.map(p => { const c = document.createElementNS(NS, 'circle'); c.setAttribute('cx', p[0]); c.setAttribute('cy', p[1]); c.setAttribute('r', 8); c.setAttribute('fill', '#EF406E'); c.setAttribute('opacity', 0); ov.appendChild(c); return c; });
+  const got = new Array(P.length).fill(0);
+  const total = () => got.reduce((a, b) => a + (b ? 1 : 0), 0);
+  let drag = null, done = false;
+  const near = p => { let best = 1e9; for (let i = 0; i < P.length; i++){ const d = Math.hypot(p.x - P[i][0], p.y - P[i][1]); if (d < best) best = d; } return best; };
+  const mark = p => { drag.all++; if (near(p) < FAR) drag.on++; for (let i = 0; i < P.length; i++) if (!got[i] && Math.hypot(p.x - P[i][0], p.y - P[i][1]) < R){ got[i] = 1; drag.hit.push(i); dots[i].setAttribute('opacity', .9); } };
+  ov.addEventListener('pointerdown', e => {
+    if (t !== token || done || drag) return; e.preventDefault();
+    drag = { pid: e.pointerId, hit: [], on: 0, all: 0 }; ov.setPointerCapture(e.pointerId); mark(toStage(e));
+  });
+  ov.addEventListener('pointermove', e => { if (drag && e.pointerId === drag.pid) mark(toStage(e)); });
+  const up = e => {
+    if (!drag || (e && e.pointerId !== drag.pid)) return;
+    const d = drag; drag = null;
+    if (d.all > 4 && d.on / d.all < .72){ d.hit.forEach(i => { got[i] = 0; dots[i].setAttribute('opacity', 0); }); boop(); return; }   // ציור מחוץ לקו: לא נספר
+    if (total() >= P.length * .82 && !done){ done = true; dots.forEach(c => c.setAttribute('opacity', .9)); popSnd(); setTimeout(() => { if (t !== token) return; confetti(); cheer(); finishStep(t, 2300); }, 300); }
+  };
+  ov.addEventListener('pointerup', up); ov.addEventListener('pointercancel', up);
+  say(s.acts[0].intro);
+}
+
 function renderF(s, t){
   if (s.trace) return renderTrace(s, t);
+  if (s.cover) return renderCover(s, t);
   if (CFG.lion13 && s.i === 13) return renderDraw(s, t);
   if (!WRITE[s.i]) return renderFollow(s, t);
   if (!$('app').classList.contains('rot')){
