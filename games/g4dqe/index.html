@@ -1,0 +1,799 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex,nofollow">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<title>שיעור 9 - הגדרה והשוואה(1) | חן קלימיאן</title>
+<link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&family=Rubik:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--mint-bg:#F0FAF5;--blue-bg:#F1F6FB;--mint:#8FD3B6;--mint-deep:#4FB38C;--blue:#B7CDE0;--blue-deep:#5F8DB5;--pink:#EF406E;--gold:#D9A441;--ink:#2E3A45;--muted:#7A8793}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;height:100%;overflow:hidden;overscroll-behavior:none;background:#fff}
+body{font-family:'Open Sans',system-ui,sans-serif;color:var(--ink);-webkit-user-select:none;user-select:none}
+#app{position:fixed;inset:0;display:flex;flex-direction:column;background:radial-gradient(circle at 8% 10%,var(--mint-bg) 0 160px,transparent 161px),radial-gradient(circle at 94% 92%,var(--blue-bg) 0 190px,transparent 191px),#fff}
+.top{height:44px;display:flex;align-items:center;justify-content:space-between;padding:0 12px;flex:none}
+.brand{position:relative;font-family:Rubik,sans-serif;font-weight:600;font-size:14px;color:var(--blue-deep);padding-bottom:3px}
+.brand::after{content:"";position:absolute;right:0;bottom:0;width:100%;height:2.5px;border-radius:3px;background:var(--pink);transform:rotate(-.6deg)}
+.tools{display:flex;gap:8px}
+.ico{width:34px;height:34px;border-radius:50%;border:2px solid var(--blue);background:var(--blue-bg);color:var(--blue-deep);display:grid;place-items:center;cursor:pointer;padding:0}
+.ico svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+#app.rot{inset:auto;top:0;left:100%;width:100vh;height:100vw;transform-origin:top left;transform:rotate(90deg)}
+.fsbtn{height:34px;padding:0 14px;border-radius:999px;border:2px solid var(--mint-deep);background:var(--mint-bg);color:var(--mint-deep);font-family:Rubik,sans-serif;font-weight:500;font-size:14px;cursor:pointer;display:flex;align-items:center;gap:6px}
+.fsbtn svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
+#app.compact .top{position:absolute;top:4px;left:0;right:0;height:32px;z-index:6;pointer-events:none}
+#app.compact .top>*{pointer-events:auto}
+#app.compact #main{position:absolute;inset:0;flex:none}
+#app.compact .bottom{position:absolute;left:0;right:0;bottom:6px;height:44px;z-index:6;pointer-events:none;justify-content:space-between}
+#app.compact .bottom .bar{display:none}
+#app.compact .bottom .nav{pointer-events:auto;width:40px;height:40px}
+#app.compact .fsbtn{height:28px;font-size:12px;padding:0 10px}
+#app.compact .ico{width:28px;height:28px}
+#app.compact .brand{font-size:12px}
+#main{position:relative;flex:1;overflow:hidden;touch-action:none}
+#stage{position:absolute;left:50%;top:50%;width:1024px;height:768px;transform-origin:center center;background:#fff;border-radius:34px 40px 36px 42px / 40px 34px 42px 36px;overflow:hidden;border:6px solid var(--blue);box-shadow:0 14px 40px rgba(95,141,181,.18)}
+#stage>*{position:absolute}
+.bg{inset:0;width:100%;height:100%;object-fit:fill;pointer-events:none}
+.bottom{height:62px;flex:none;display:flex;align-items:center;gap:12px;padding:0 14px}
+.nav{width:46px;height:46px;border-radius:50%;border:2.5px solid var(--blue);background:#fff;color:var(--blue-deep);display:grid;place-items:center;cursor:pointer;padding:0;flex:none}
+.nav svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:2.8;stroke-linecap:round;stroke-linejoin:round}
+.nav:disabled{opacity:.35;cursor:default}
+.nav.pulse{border-color:var(--pink);color:var(--pink);animation:pulse 1.2s infinite}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(239,64,110,.45)}100%{box-shadow:0 0 0 14px rgba(239,64,110,0)}}
+.bar{flex:1;height:10px;border-radius:6px;background:var(--blue-bg);border:1.5px solid var(--blue);overflow:hidden}
+.bar i{display:block;height:100%;width:0;background:var(--mint);border-radius:6px;transition:width .4s}
+/* מסך התחלה */
+#start{position:absolute;inset:0;z-index:20;display:grid;place-items:center;background:rgba(255,255,255,.92);text-align:center}
+#start .box{max-width:340px;padding:24px}
+#start h1{font-family:Rubik,sans-serif;font-weight:700;font-size:28px;margin:10px 0 4px}
+#start p{margin:0 0 18px;color:var(--muted)}
+.play{width:92px;height:92px;border-radius:50%;border:0;background:var(--mint-deep);color:#fff;cursor:pointer;display:grid;place-items:center;margin:0 auto;box-shadow:0 10px 24px rgba(79,179,140,.4)}
+.play svg{width:42px;height:42px;fill:#fff}
+.btn{font-family:Rubik,sans-serif;font-weight:500;font-size:16px;padding:11px 24px;border-radius:999px;cursor:pointer;border:2px solid var(--mint-deep);background:var(--mint-bg);color:var(--mint-deep)}
+/* תפריט אותיות */
+.menu{inset:0;background:linear-gradient(180deg,#F7EFFA,#EEF6FB)}
+.menu h2{position:absolute;top:40px;left:0;right:0;text-align:center;margin:0;font-family:Rubik,sans-serif;font-weight:700;font-size:44px;color:var(--ink)}
+.card{position:absolute;width:300px;height:200px;border-radius:40px 46px 42px 48px / 46px 40px 48px 42px;background:#fff;border:5px solid var(--blue);display:grid;place-items:center;font-family:Rubik,sans-serif;font-weight:700;font-size:150px;line-height:1;cursor:pointer;transition:transform .15s}
+.card:hover{transform:scale(1.04)}
+.card:active{transform:scale(.97)}
+.card .tick{position:absolute;top:10px;left:14px;width:46px;height:46px;border-radius:50%;background:var(--mint-deep);color:#fff;display:none;place-items:center;font-size:28px;font-family:Open Sans}
+.card.done .tick{display:grid}
+/* וידאו */
+.vwrap{inset:0;background:linear-gradient(180deg,#EAF3F8,#F6EEFA);display:grid;place-items:center}
+.vwrap video{max-width:94%;max-height:92%;border-radius:26px;background:#000;box-shadow:0 10px 30px rgba(46,58,69,.25)}
+.vnext{position:absolute;bottom:26px;left:50%;transform:translateX(-50%);z-index:3;display:none}
+/* חידונים ופאזל */
+svg.ov{inset:0;width:100%;height:100%;touch-action:none}
+.hit{fill:transparent;cursor:pointer;pointer-events:all}
+.shake{animation:shake .4s}
+@keyframes shake{20%{translate:-8px 0}40%{translate:8px 0}60%{translate:-5px 0}80%{translate:5px 0}}
+.piece{cursor:grab}
+.piece.lock{cursor:default}
+.ghost{stroke:#5F8DB5;stroke-width:3;stroke-dasharray:10 8;opacity:.7;pointer-events:none}
+.pop{position:absolute;pointer-events:none;border-radius:50%;border:8px solid #F7BFD1;animation:popr .6s ease-out forwards}
+@keyframes popr{0%{opacity:1;transform:scale(.2)}100%{opacity:0;transform:scale(2.2)}}
+.fwrap{inset:0;display:grid;place-items:center;background:linear-gradient(180deg,#F0FAF5,#F1F6FB)}
+.fwrap iframe{border:0;width:500px;height:700px;transform-origin:center center}
+.confetti{position:absolute;pointer-events:none;top:-20px;opacity:0;animation:fall linear forwards;z-index:15}
+@keyframes fall{0%{opacity:1;transform:translateY(0) rotate(0)}85%{opacity:1}100%{opacity:0;transform:translateY(860px) rotate(260deg)}}
+.end{inset:0;z-index:12;background:rgba(255,255,255,.94);display:grid;place-items:center;text-align:center;font-family:Rubik,sans-serif}
+.end h1{font-size:52px;margin:0 0 20px}
+@media (prefers-reduced-motion:reduce){.confetti,.nav.pulse,.pop{animation:none}}
+</style>
+</head>
+<body>
+<div id="app">
+  <div class="top">
+    <div class="tools">
+      <button class="fsbtn" id="back" style="display:none;border-color:var(--blue-deep);color:var(--blue-deep);background:var(--blue-bg)">חזרה לשיעור</button>
+      <button class="fsbtn" id="closebtn" style="display:none;border-color:var(--pink);color:var(--pink);background:#fff">סגירה</button>
+      <button class="fsbtn" id="rotbtn" style="display:none;border-color:var(--blue-deep);color:var(--blue-deep);background:var(--blue-bg)"><svg viewBox="0 0 24 24"><path d="M20 12a8 8 0 1 1-3-6.2M20 4v5h-5"/></svg><span>בלי סיבוב</span></button>
+      <button class="ico" id="mute" aria-label="צליל"><svg viewBox="0 0 24 24"><path d="M4 9v6h4l5 4V5L8 9H4z"/><path d="M16 9a4 4 0 0 1 0 6M18.5 6.5a8 8 0 0 1 0 11" id="waves"/></svg></button>
+      <button class="fsbtn" id="fs" aria-label="מסך מלא לרוחב"><svg viewBox="0 0 24 24"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg>מסך מלא</button>
+    </div>
+    <span class="brand" id="brand"></span>
+  </div>
+  <div id="main"><div id="stage"></div></div>
+  <div class="bottom">
+    <button class="nav" id="prev" aria-label="הקודם"><svg viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg></button>
+    <div class="bar"><i id="barfill"></i></div>
+    <button class="nav" id="next" aria-label="הבא"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></button>
+  </div>
+  <div id="start"><div class="box">
+    <div class="brand" style="display:inline-block" id="brand2"></div>
+    <h1 id="gtitle"></h1><p>לחצו כדי להתחיל. אפשר גם למסך מלא.</p>
+    <button class="play" id="go" aria-label="התחלה"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></button>
+    <div style="margin-top:16px"><button class="btn" id="gofs">התחילו במסך מלא לרוחב</button></div>
+  </div></div>
+</div>
+
+<script>
+/* שער כניסה (חן, 3.10.26): המשחק נפתח רק למי שהגיע מלחיצה באתר של חן (או מתוך הטמעה בו), כדי שהקישור לא יועבר הלאה.
+   זו הרתעה ולא הגנה מוחלטת: אין שרת, ולכן בודקים מאיפה הגיעו. מי שנכנס פעם אחת בלשונית נשאר מורשה בה (sessionStorage). */
+(function(){
+  const okHost = h => /(^|\.)talkwithkids\.co\.il$/.test(h) || /(^|\.)(wixusercontent\.com|filesusr\.com|usrfiles\.com|wix\.com|wixsite\.com|editorx\.io)$/.test(h) || /^(localhost|127\.0\.0\.1)$/.test(h);
+  let ok = false;
+  try { ok = sessionStorage.getItem('wgok') === '1'; } catch (e) {}
+  if (!ok) {
+    const hosts = [];
+    try { hosts.push(new URL(document.referrer).hostname); } catch (e) {}
+    try { for (const o of (location.ancestorOrigins || [])) hosts.push(new URL(o).hostname); } catch (e) {}
+    // הפניה מהמשחק עצמו (כפתור מסך מלא בתוך השיעור פותח את אותו משחק בחלון הראשי): אותו אתר, לכן מותר
+    ok = hosts.some(okHost) || /^(localhost|127\.0\.0\.1)$/.test(location.hostname) || (document.referrer && (() => { try { return new URL(document.referrer).hostname === location.hostname; } catch (e) { return false; } })());
+    if (ok) { try { sessionStorage.setItem('wgok', '1'); } catch (e) {} }
+  }
+  if (ok) return;
+  document.body.innerHTML = '<div style="position:fixed;inset:0;display:grid;place-items:center;background:linear-gradient(180deg,#F0FAF5,#F1F6FB);font-family:Rubik,Arial,sans-serif;direction:rtl;text-align:center;padding:24px"><div><div style="font-size:24px;font-weight:700;color:#2E3A45;margin-bottom:10px">המשחק הזה זמין לתלמידות התוכנית באתר</div><div style="font-size:16px;color:#6b7a88;margin-bottom:20px">כדי לשחק, נכנסים לאתר ולוחצים על המשחק בתוך השיעור.</div><a href="https://www.talkwithkids.co.il/" style="display:inline-block;background:#5b8db8;color:#fff;text-decoration:none;font-weight:600;padding:12px 26px;border-radius:999px">לכניסה לאתר של חן קלימיאן</a></div></div>';
+  throw new Error('wg-blocked');
+})();
+</script>
+<script>
+/*CFGLINE*/
+const CFG = {"slides": [{"i": 0, "t": "R", "img": "img/s0.jpg", "acts": [{"intro": "aud/photo1__activity0__activity0.mp3", "advance": true, "idle": null, "shapes": []}], "layers": [{"t": "bg", "src": "lay/s0_0.jpg", "w": 2048, "h": 1536, "m": [1, 0, 0, 1, 0, 0], "show": 0, "tog": false}, {"t": "txt", "src": "lay/s0_1.webp", "w": 768, "h": 131, "m": [1, 0, 0, 1, 1.9793853759765625, 128.6597900390625], "show": 0, "tog": false}, {"t": "txt", "src": "lay/s0_2.webp", "w": 768, "h": 115, "m": [1, 0, 0, 1, 1.484527587890625, -101.93814086914062], "show": 0, "tog": false}]}, {"i": 1, "t": "V", "video": "../../vid/7948a73344c611.mp4", "acts": [{"intro": null, "advance": false, "idle": null, "shapes": []}]}, {"i": 2, "t": "A", "img": "img/s2.jpg", "acts": [{"intro": "aud/photo3__activity0__activity0.mp3", "advance": false, "idle": null, "shapes": [{"d": "M 473.1 250.8 L 473.1 312.7 C 473.1 316.6 470.0 319.7 466.1 319.7 L 314.9 319.7 C 311.1 319.7 307.9 316.6 307.9 312.7 L 307.9 188.8 C 307.9 185.0 311.1 181.8 314.9 181.8 L 466.1 181.8 C 470.0 181.8 473.1 185.0 473.1 188.8 Z", "bb": [308, 182, 473, 320], "r1": "aud/photo3__activity0__shape1__record1_1.mp3", "r2": null, "ans": [], "link": null, "tx": 0, "ty": 0, "idle": null}, {"d": "M 471.6 403.7 L 471.6 465.6 C 471.6 469.5 468.5 472.6 464.6 472.6 L 313.5 472.6 C 309.6 472.6 306.5 469.5 306.5 465.6 L 306.5 341.8 C 306.5 337.9 309.6 334.8 313.5 334.8 L 464.6 334.8 C 468.5 334.8 471.6 337.9 471.6 341.8 Z", "bb": [306, 335, 472, 473], "r1": "aud/photo3__activity0__shape2__record1_2.mp3", "r2": null, "ans": [], "link": null, "tx": 0, "ty": 0, "idle": null}, {"d": "M 473.1 554.6 L 473.1 616.6 C 473.1 620.4 470.0 623.6 466.1 623.6 L 314.9 623.6 C 311.1 623.6 307.9 620.4 307.9 616.6 L 307.9 492.7 C 307.9 488.8 311.1 485.7 314.9 485.7 L 466.1 485.7 C 470.0 485.7 473.1 488.8 473.1 492.7 Z", "bb": [308, 486, 473, 624], "r1": "aud/photo3__activity0__shape3__record1_3.mp3", "r2": null, "ans": [], "link": null, "tx": 0, "ty": 0, "idle": null}, {"d": "M 298.4 251.8 L 298.4 313.7 C 298.4 317.6 295.3 320.7 291.4 320.7 L 140.3 320.7 C 136.4 320.7 133.3 317.6 133.3 313.7 L 133.3 189.8 C 133.3 186.0 136.4 182.8 140.3 182.8 L 291.4 182.8 C 295.3 182.8 298.4 186.0 298.4 189.8 Z", "bb": [133, 183, 298, 321], "r1": "aud/photo3__activity0__shape4__record1_4.mp3", "r2": null, "ans": [], "link": null, "tx": 0, "ty": 0, "idle": null}, {"d": "M 297.9 402.7 L 297.9 464.7 C 297.9 468.5 294.8 471.7 290.9 471.7 L 139.8 471.7 C 135.9 471.7 132.8 468.5 132.8 464.7 L 132.8 340.8 C 132.8 336.9 135.9 333.8 139.8 333.8 L 290.9 333.8 C 294.8 333.8 297.9 336.9 297.9 340.8 Z", "bb": [133, 334, 298, 472], "r1": "aud/photo3__activity0__shape5__record1_5.mp3", "r2": null, "ans": [], "link": null, "tx": 0, "ty": 0, "idle": null}, {"d": "M 296.9 555.1 L 296.9 617.1 C 296.9 620.9 293.8 624.1 289.9 624.1 L 138.8 624.1 C 134.9 624.1 131.8 620.9 131.8 617.1 L 131.8 493.2 C 131.8 489.3 134.9 486.2 138.8 486.2 L 289.9 486.2 C 293.8 486.2 296.9 489.3 296.9 493.2 Z", "bb": [132, 486, 297, 624], "r1": "aud/photo3__activity0__shape6__record1_6.mp3", "r2": null, "ans": [], "link": null, "tx": 0, "ty": 0, "idle": null}]}]}, {"i": 3, "t": "A", "img": "img/s3.jpg", "acts": [{"intro": null, "advance": false, "idle": null, "shapes": [{"d": "M 474.0 253.7 L 474.0 309.4 C 474.0 313.2 470.9 316.4 467.0 316.4 L 315.0 316.4 C 311.2 316.4 308.0 313.2 308.0 309.4 L 308.0 198.1 C 308.0 194.2 311.2 191.1 315.0 191.1 L 467.0 191.1 C 470.9 191.1 474.0 194.2 474.0 198.1 Z", "bb": [308, 191, 474, 316], "r1": "aud/photo4__activity0__shape1__record1_1.mp3", "r2": null, "ans": [], "link": null, "tx": 0, "ty": 0, "idle": null}, {"d": "M 475.0 404.7 L 475.0 460.3 C 475.0 464.2 471.9 467.3 468.0 467.3 L 316.0 467.3 C 312.1 467.3 309.0 464.2 309.0 460.3 L 309.0 349.0 C 309.0 345.2 312.1 342.0 316.0 342.0 L 468.0 342.0 C 471.9 342.0 475.0 345.2 475.0 349.0 Z", "bb": [309, 342, 475, 467], "r1": "aud/photo4__activity0__shape2__record1_2.mp3", "r2": null, "ans": [], "link": null, "tx": 0, "ty": 0, "idle": null}, {"d": "M 473.5 555.6 L 473.5 611.2 C 473.5 615.1 470.4 618.2 466.5 618.2 L 314.5 618.2 C 310.7 618.2 307.5 615.1 307.5 611.2 L 307.5 500.0 C 307.5 496.1 310.7 493.0 314.5 493.0 L 466.5 493.0 C 470.4 493.0 473.5 496.1 473.5 500.0 Z", "bb": [308, 493, 474, 618], "r1": "aud/photo4__activity0__shape3__record1_3.mp3", "r2": null, "ans": [], "link": null, "tx": 0, "ty": 0, "idle": null}, {"d": "M 297.3 249.3 L 297.3 304.9 C 297.3 308.8 294.2 311.9 290.3 311.9 L 138.4 311.9 C 134.5 311.9 131.4 308.8 131.4 304.9 L 131.4 193.7 C 131.4 189.8 134.5 186.7 138.4 186.7 L 290.3 186.7 C 294.2 186.7 297.3 189.8 297.3 193.7 Z", "bb": [131, 187, 297, 312], "r1": "aud/photo4__activity0__shape4__record1_4.mp3", "r2": null, "ans": [], "link": null, "tx": 0, "ty": 0, "idle": null}, {"d": "M 296.3 402.7 L 296.3 458.3 C 296.3 462.2 293.2 465.3 289.3 465.3 L 137.4 465.3 C 133.5 465.3 130.4 462.2 130.4 458.3 L 130.4 347.1 C 130.4 343.2 133.5 340.1 137.4 340.1 L 289.3 340.1 C 293.2 340.1 296.3 343.2 296.3 347.1 Z", "bb": [130, 340, 296, 465], "r1": "aud/photo4__activity0__shape5__record1_5.mp3", "r2": null, "ans": [], "link": null, "tx": 0, "ty": 0, "idle": null}, {"d": "M 295.4 557.1 L 295.4 612.7 C 295.4 616.6 292.2 619.7 288.4 619.7 L 136.4 619.7 C 132.5 619.7 129.4 616.6 129.4 612.7 L 129.4 501.5 C 129.4 497.6 132.5 494.5 136.4 494.5 L 288.4 494.5 C 292.2 494.5 295.4 497.6 295.4 501.5 Z", "bb": [129, 494, 295, 620], "r1": "aud/photo4__activity0__shape6__record1_6.mp3", "r2": null, "ans": [], "link": null, "tx": 0, "ty": 0, "idle": null}]}]}, {"i": 4, "t": "Q", "img": "img/s4.jpg", "acts": [{"intro": "aud/photo5__question3__question0.mp3", "advance": false, "idle": null, "shapes": [{"d": "M 400.4 286.6 C 400.4 353.2 336.1 407.1 256.7 407.1 C 177.3 407.1 112.9 353.2 112.9 286.6 C 112.9 220.1 177.3 166.2 256.7 166.2 C 336.1 166.2 400.4 220.1 400.4 286.6 Z", "bb": [113, 166, 400, 407], "r1": null, "r2": "aud/photo5__question3__wrong0.mp3", "ans": [], "link": null, "tx": 0, "ty": 0, "idle": null}]}, {"intro": "aud/photo5__question2__question1.mp3", "advance": false, "idle": null, "shapes": [{"d": "M 663.3 401.9 C 663.3 463.1 597.0 512.6 515.2 512.6 C 433.4 512.6 367.1 463.1 367.1 401.9 C 367.1 340.8 433.4 291.2 515.2 291.2 C 597.0 291.2 663.3 340.8 663.3 401.9 Z", "bb": [367, 291, 663, 513], "r1": null, "r2": null, "ans": [], "link": null, "tx": 0, "ty": 0, "idle": null}]}, {"intro": "aud/photo5__question4__question2.mp3", "advance": false, "idle": null, "shapes": [{"d": "M 928.4 570.4 C 928.4 639.1 852.8 694.8 759.7 694.8 C 666.5 694.8 591.0 639.1 591.0 570.4 C 591.0 501.7 666.5 446.1 759.7 446.1 C 852.8 446.1 928.4 501.7 928.4 570.4 Z", "bb": [591, 446, 928, 695], "r1": null, "r2": null, "ans": [], "link": null, "tx": 0, "ty": 0, "idle": null}]}, {"intro": "aud/photo5__question0__question3.mp3", "advance": false, "idle": null, "shapes": [{"d": "M 432.2 575.6 C 432.2 638.6 365.9 689.6 284.1 689.6 C 202.4 689.6 136.1 638.6 136.1 575.6 C 136.1 512.7 202.4 461.7 284.1 461.7 C 365.9 461.7 432.2 512.7 432.2 575.6 Z", "bb": [136, 462, 432, 690], "r1": null, "r2": null, "ans": [], "link": null, "tx": 0, "ty": 0, "idle": null}]}, {"intro": "aud/photo5__question1__question4.mp3", "advance": false, "idle": null, "shapes": [{"d": "M 937.0 249.5 C 937.0 313.1 867.7 364.6 782.2 364.6 C 696.7 364.6 627.3 313.1 627.3 249.5 C 627.3 186.0 696.7 134.4 782.2 134.4 C 867.7 134.4 937.0 186.0 937.0 249.5 Z", "bb": [627, 134, 937, 365], "r1": "aud/photo5__question1__answer4.mp3", "r2": null, "ans": [], "link": null, "tx": 0, "ty": 0, "idle": null}]}], "layers": [{"t": "bg", "src": "lay/s4_0.jpg", "w": 2048, "h": 1536, "m": [1, 0, 0, 1, 0, 0], "show": 0, "tog": false}, {"t": "img", "src": "lay/s4_1.webp", "w": 1200, "h": 630, "m": [0.4253935275559905, 0, 0, 0.4253935275559905, 257.5365977308479, -116.43249169921906], "show": 0, "tog": false}, {"t": "img", "src": "lay/s4_2.webp", "w": 1920, "h": 1080, "m": [0.15289058887338539, 0, 0, 0.15289058887338539, 264.7885465833873, 182.3334733072918], "show": 0, "tog": false}, {"t": "img", "src": "lay/s4_3.webp", "w": 1000, "h": 1000, "m": [0.2618312232207419, 0, 0, 0.2618312232207419, -259.77649169921864, -102.6256113037103], "show": 0, "tog": false}, {"t": "img", "src": "lay/s4_4.webp", "w": 5315, "h": 4134, "m": [0.05442158152344229, 0, 0, 0.05442158152344229, -238.7378764750013, 201.28049584376274], "show": 0, "tog": false}, {"t": "img", "src": "lay/s4_5.webp", "w": 448, "h": 448, "m": [0.6428571428571428, 0, 0, 0.6428571428571428, -0.9955880301339377, 13.571139526367201], "show": 0, "tog": false}]}, {"i": 5, "t": "A", "img": "img/s5.jpg", "acts": [{"intro": null, "advance": false, "idle": null, "shapes": [{"d": "M 465.6 253.0 L 465.6 314.2 C 465.6 318.1 462.4 321.2 458.6 321.2 L 324.4 321.2 C 320.6 321.2 317.4 318.1 317.4 314.2 L 317.4 191.7 C 317.4 187.9 320.6 184.7 324.4 184.7 L 458.6 184.7 C 462.4 184.7 465.6 187.9 465.6 191.7 Z", "bb": [317, 185, 466, 321], "r1": "aud/photo6__activity0__shape1__record1_1.mp3", "r2": null, "ans": [], "link": null, "tx": 0, "ty": 0, "idle": null}, {"d": "M 460.1 403.9 L 460.1 465.2 C 460.1 469.0 457.0 472.2 453.1 472.2 L 319.0 472.2 C 315.1 472.2 312.0 469.0 312.0 465.2 L 312.0 342.7 C 312.0 338.8 315.1 335.7 319.0 335.7 L 453.1 335.7 C 457.0 335.7 460.1 338.8 460.1 342.7 Z", "bb": [312, 336, 460, 472], "r1": "aud/photo6__activity0__shape2__record1_2.mp3", "r2": null, "ans": [], "link": null, "tx": 0, "ty": 0, "idle": null}, {"d": "M 463.1 557.8 L 463.1 619.1 C 463.1 622.9 460.0 626.1 456.1 626.1 L 322.0 626.1 C 318.1 626.1 315.0 622.9 315.0 619.1 L 315.0 496.6 C 315.0 492.7 318.1 489.6 322.0 489.6 L 456.1 489.6 C 460.0 489.6 463.1 492.7 463.1 496.6 Z", "bb": [315, 490, 463, 626], "r1": "aud/photo6__activity0__shape3__record1_3.mp3", "r2": null, "ans": [], "link": null, "tx": 0, "ty": 0, "idle": null}, {"d": "M 289.9 252.0 L 289.9 313.2 C 289.9 317.1 286.8 320.2 282.9 320.2 L 148.8 320.2 C 144.9 320.2 141.8 317.1 141.8 313.2 L 141.8 190.8 C 141.8 186.9 144.9 183.8 148.8 183.8 L 282.9 183.8 C 286.8 183.8 289.9 186.9 289.9 190.8 Z", "bb": [142, 184, 290, 320], "r1": "aud/photo6__activity0__shape4__record1_4.mp3", "r2": null, "ans": [], "link": null, "tx": 0, "ty": 0, "idle": null}, {"d": "M 286.9 403.4 L 286.9 464.7 C 286.9 468.5 283.8 471.7 279.9 471.7 L 145.8 471.7 C 141.9 471.7 138.8 468.5 138.8 464.7 L 138.8 342.2 C 138.8 338.3 141.9 335.2 145.8 335.2 L 279.9 335.2 C 283.8 335.2 286.9 338.3 286.9 342.2 Z", "bb": [139, 335, 287, 472], "r1": "aud/photo6__activity0__shape5__record1_5.mp3", "r2": null, "ans": [], "link": null, "tx": 0, "ty": 0, "idle": null}, {"d": "M 285.4 556.3 L 285.4 617.6 C 285.4 621.4 282.3 624.6 278.4 624.6 L 144.3 624.6 C 140.4 624.6 137.3 621.4 137.3 617.6 L 137.3 495.1 C 137.3 491.2 140.4 488.1 144.3 488.1 L 278.4 488.1 C 282.3 488.1 285.4 491.2 285.4 495.1 Z", "bb": [137, 488, 285, 625], "r1": "aud/photo6__activity0__shape6__record1_6.mp3", "r2": null, "ans": [], "link": null, "tx": 0, "ty": 0, "idle": null}]}]}, {"i": 6, "t": "V", "video": "../../vid/b99959444e0c1c.mp4", "acts": [{"intro": null, "advance": false, "idle": null, "shapes": []}]}, {"i": 7, "t": "Q", "img": "img/s7.jpg", "acts": [{"intro": "aud/photo14__question4__question0.mp3", "advance": false, "idle": null, "shapes": [{"d": "M 903.3 232.0 C 903.3 311.8 842.4 376.6 767.3 376.6 C 692.2 376.6 631.4 311.8 631.4 232.0 C 631.4 152.1 692.2 87.3 767.3 87.3 C 842.4 87.3 903.3 152.1 903.3 232.0 Z", "bb": [631, 87, 903, 377], "r1": null, "r2": null, "ans": [], "link": null, "tx": 0, "ty": 0, "idle": null}]}, {"intro": "aud/photo14__question0__question1.mp3", "advance": false, "idle": null, "shapes": [{"d": "M 395.5 525.4 C 395.5 601.1 332.2 662.5 254.2 662.5 C 176.1 662.5 112.8 601.1 112.8 525.4 C 112.8 449.7 176.1 388.3 254.2 388.3 C 332.2 388.3 395.5 449.7 395.5 525.4 Z", "bb": [113, 388, 396, 663], "r1": "aud/photo14__question0__answer1.mp3", "r2": null, "ans": [], "link": null, "tx": 0, "ty": 0, "idle": null}]}, {"intro": "aud/photo14__question1__question2.mp3", "advance": false, "idle": null, "shapes": [{"d": "M 664.0 399.7 C 664.0 479.5 601.2 544.1 523.6 544.1 C 446.1 544.1 383.2 479.5 383.2 399.7 C 383.2 320.0 446.1 255.3 523.6 255.3 C 601.2 255.3 664.0 320.0 664.0 399.7 Z", "bb": [383, 255, 664, 544], "r1": "aud/photo14__question1__answer2.mp3", "r2": null, "ans": [], "link": null, "tx": 0, "ty": 0, "idle": null}]}, {"intro": "aud/photo14__question3__question3.mp3", "advance": false, "idle": null, "shapes": [{"d": "M 965.0 536.5 C 965.0 633.2 894.8 711.5 808.2 711.5 C 721.6 711.5 651.3 633.2 651.3 536.5 C 651.3 439.9 721.6 361.6 808.2 361.6 C 894.8 361.6 965.0 439.9 965.0 536.5 Z", "bb": [651, 362, 965, 712], "r1": null, "r2": null, "ans": [], "link": null, "tx": 0, "ty": 0, "idle": null}]}, {"intro": "aud/photo14__question2__question4.mp3", "advance": false, "idle": null, "shapes": [{"d": "M 352.7 236.9 C 352.7 304.9 298.7 359.9 232.2 359.9 C 165.6 359.9 111.6 304.9 111.6 236.9 C 111.6 169.0 165.6 113.9 232.2 113.9 C 298.7 113.9 352.7 169.0 352.7 236.9 Z", "bb": [112, 114, 353, 360], "r1": "aud/photo14__question2__answer4.mp3", "r2": null, "ans": [], "link": null, "tx": 0, "ty": 0, "idle": null}]}], "layers": [{"t": "bg", "src": "lay/s7_0.jpg", "w": 2048, "h": 1536, "m": [1, 0, 0, 1, 0, 0], "show": 0, "tog": false}, {"t": "img", "src": "lay/s7_1.webp", "w": 999, "h": 1185, "m": [0.18014107565589627, 0, 0, 0.18014107565589627, -2.3273832425792746, 19.078907706345035], "show": 0, "tog": false}, {"t": "img", "src": "lay/s7_2.webp", "w": 851, "h": 938, "m": [0.26075638481916646, 0, 0, 0.26075638481916646, 282.1766796803425, 133.36365496995361], "show": 0, "tog": false}, {"t": "img", "src": "lay/s7_3.webp", "w": 5961, "h": 4759, "m": [0.04006527084045806, 0, 0, 0.04006527084045806, 262.0044220220793, -147.99147812630304], "show": 0, "tog": false}, {"t": "img", "src": "lay/s7_4.webp", "w": 4500, "h": 4500, "m": [0.053442376042150956, 0, 0, 0.053442376042150956, -256.55998489718957, 143.97497496744788], "show": 0, "tog": false}, {"t": "img", "src": "lay/s7_5.webp", "w": 505, "h": 341, "m": [0.439038541097962, 0, 0, 0.439038541097962, -273.9965616861982, -152.25979766845688], "show": 0, "tog": false}]}, {"i": 8, "t": "Q", "img": "img/s8.jpg", "acts": [{"intro": "aud/photo7__question1__question0.mp3", "advance": false, "idle": null, "shapes": [{"d": "M 903.3 232.0 C 903.3 311.8 842.4 376.6 767.3 376.6 C 692.2 376.6 631.4 311.8 631.4 232.0 C 631.4 152.1 692.2 87.3 767.3 87.3 C 842.4 87.3 903.3 152.1 903.3 232.0 Z", "bb": [631, 87, 903, 377], "r1": "aud/photo7__question1__answer0.mp3", "r2": null, "ans": [], "link": null, "tx": 0, "ty": 0, "idle": null}]}, {"intro": "aud/photo7__question4__question1.mp3", "advance": false, "idle": null, "shapes": [{"d": "M 395.5 525.4 C 395.5 601.1 332.2 662.5 254.2 662.5 C 176.1 662.5 112.8 601.1 112.8 525.4 C 112.8 449.7 176.1 388.3 254.2 388.3 C 332.2 388.3 395.5 449.7 395.5 525.4 Z", "bb": [113, 388, 396, 663], "r1": "aud/photo7__question4__answer1.mp3", "r2": null, "ans": [], "link": null, "tx": 0, "ty": 0, "idle": null}]}, {"intro": "aud/photo7__question0__question2.mp3", "advance": false, "idle": null, "shapes": [{"d": "M 628.8 516.5 C 628.8 599.5 573.1 666.8 504.3 666.8 C 435.5 666.8 379.7 599.5 379.7 516.5 C 379.7 433.5 435.5 366.2 504.3 366.2 C 573.1 366.2 628.8 433.5 628.8 516.5 Z", "bb": [380, 366, 629, 667], "r1": "aud/photo7__question0__answer2.mp3", "r2": null, "ans": [], "link": null, "tx": 0, "ty": 0, "idle": null}]}, {"intro": "aud/photo7__question2__question3.mp3", "advance": false, "idle": null, "shapes": [{"d": "M 965.0 536.5 C 965.0 633.2 894.8 711.5 808.2 711.5 C 721.6 711.5 651.3 633.2 651.3 536.5 C 651.3 439.9 721.6 361.6 808.2 361.6 C 894.8 361.6 965.0 439.9 965.0 536.5 Z", "bb": [651, 362, 965, 712], "r1": "aud/photo7__question2__answer3.mp3", "r2": null, "ans": [], "link": null, "tx": 0, "ty": 0, "idle": null}]}, {"intro": "aud/photo7__question3__question4.mp3", "advance": false, "idle": null, "shapes": [{"d": "M 352.7 236.9 C 352.7 304.9 298.7 359.9 232.2 359.9 C 165.6 359.9 111.6 304.9 111.6 236.9 C 111.6 169.0 165.6 113.9 232.2 113.9 C 298.7 113.9 352.7 169.0 352.7 236.9 Z", "bb": [112, 114, 353, 360], "r1": "aud/photo7__question3__answer4.mp3", "r2": null, "ans": [], "link": null, "tx": 0, "ty": 0, "idle": null}]}, {"intro": "aud/photo7__question5__question5.mp3", "advance": false, "idle": null, "shapes": [{"d": "M 636.6 192.0 C 636.6 279.5 573.2 350.4 494.9 350.4 C 416.6 350.4 353.2 279.5 353.2 192.0 C 353.2 104.5 416.6 33.6 494.9 33.6 C 573.2 33.6 636.6 104.5 636.6 192.0 Z", "bb": [353, 34, 637, 350], "r1": "aud/photo7__question5__answer5.mp3", "r2": null, "ans": [], "link": null, "tx": 0, "ty": 0, "idle": null}]}], "layers": [{"t": "bg", "src": "lay/s8_0.jpg", "w": 2048, "h": 1536, "m": [1, 0, 0, 1, 0, 0], "show": 0, "tog": false}, {"t": "img", "src": "lay/s8_1.webp", "w": 999, "h": 1185, "m": [0.18014107565589627, 0, 0, 0.18014107565589627, -278.62006616940886, 172.2106150234183], "show": 0, "tog": false}, {"t": "img", "src": "lay/s8_2.webp", "w": 5961, "h": 4759, "m": [0.04006527084045806, 0, 0, 0.04006527084045806, 289.1653976318354, 161.08169260540433], "show": 0, "tog": false}, {"t": "img", "src": "lay/s8_3.webp", "w": 505, "h": 341, "m": [0.439038541097962, 0, 0, 0.439038541097962, -17.37217144229567, -198.15248059528594], "show": 0, "tog": false}, {"t": "img", "src": "lay/s8_4.webp", "w": 853, "h": 978, "m": [0.2793517118027002, 0, 0, 0.2793517118027002, -301.81463414634186, -147.27804878048795], "show": 0, "tog": false}, {"t": "img", "src": "lay/s8_5.webp", "w": 490, "h": 500, "m": [0.5848441575397803, 0, 0, 0.5848441575397803, 267.0011614401861, -144.38164260826295], "show": 0, "tog": false}, {"t": "img", "src": "lay/s8_6.webp", "w": 1300, "h": 1300, "m": [0.22070319914228834, 0, 0, 0.22070319914228834, -6.1570481550967, 123.238063789868], "show": 0, "tog": false}]}, {"i": 9, "t": "P", "img": "img/s9.jpg", "acts": [{"intro": "aud/photo8__activity0__activity0.mp3", "advance": false, "idle": null, "shapes": [{"d": "M 699.7 207.7 C 699.7 253.4 666.0 290.4 624.3 290.4 C 582.7 290.4 548.9 253.4 548.9 207.7 C 548.9 162.0 582.7 125.0 624.3 125.0 C 666.0 125.0 699.7 162.0 699.7 207.7 Z", "bb": [549, 125, 700, 290], "r1": "aud/photo8__activity0__shape1__record1_1.mp3", "r2": null, "ans": [], "link": null, "tx": 263.9, "ty": 398.2, "idle": null}, {"d": "M 535.8 463.3 C 540.2 446.0 547.6 425.2 557.5 405.4 C 568.9 386.6 577.8 368.3 585.7 351.0 C 592.7 335.1 600.6 324.2 608.5 310.9 C 612.9 299.5 624.3 307.9 635.7 323.3 C 644.1 335.1 653.0 348.5 661.9 362.4 C 670.8 376.7 678.8 390.6 685.2 404.4 C 690.6 418.3 695.1 430.1 700.0 439.5 C 707.0 453.4 710.4 463.8 705.9 469.1 C 695.9 468.7 685.9 468.4 675.9 468.1 C 666.0 467.7 656.0 467.4 646.0 467.0 C 636.0 466.7 626.0 466.4 616.0 466.0 C 606.0 465.7 596.0 465.3 586.0 465.0 C 576.0 464.7 566.0 464.3 556.0 464.0 Z", "bb": [536, 300, 710, 469], "r1": "aud/photo8__activity0__shape2__record1_2.mp3", "r2": null, "ans": [], "link": null, "tx": -479.1, "ty": 233.4, "idle": null}, {"d": "M 719.4 580.5 L 719.4 641.9 C 719.4 645.8 716.3 648.9 712.4 648.9 L 536.4 648.9 C 532.5 648.9 529.4 645.8 529.4 641.9 L 529.4 519.1 C 529.4 515.3 532.5 512.1 536.4 512.1 L 712.4 512.1 C 716.3 512.1 719.4 515.3 719.4 519.1 Z", "bb": [529, 512, 719, 649], "r1": "aud/photo8__activity0__shape3__record1_3.mp3", "r2": null, "ans": [], "link": null, "tx": -521.7, "ty": -413.2, "idle": null}, {"d": "M 388.8 580.6 C 391.3 569.7 395.2 559.3 403.6 553.4 C 412.0 566.2 417.0 578.1 423.4 586.0 C 438.3 584.5 454.1 584.0 465.5 580.1 C 457.6 587.5 445.7 598.9 433.8 605.3 C 426.4 612.2 431.8 624.6 439.8 640.5 C 436.8 649.9 421.9 643.4 411.5 637.0 C 403.6 629.1 394.2 629.6 381.9 636.5 C 368.0 643.4 364.0 638.5 372.0 628.1 C 379.9 618.2 383.3 608.8 368.0 598.4 C 359.1 592.5 349.7 585.0 366.5 582.6 Z", "bb": [350, 553, 465, 650], "r1": "aud/photo8__activity0__shape4__record1_4.mp3", "r2": null, "ans": [], "link": null, "tx": 467.3, "ty": -399.7, "idle": null}, {"d": "M 509.8 408.4 L 509.8 445.9 C 509.8 449.7 506.6 452.9 502.8 452.9 L 299.5 452.9 C 295.7 452.9 292.5 449.7 292.5 445.9 L 292.5 370.9 C 292.5 367.0 295.7 363.9 299.5 363.9 L 502.8 363.9 C 506.6 363.9 509.8 367.0 509.8 370.9 Z", "bb": [293, 364, 510, 453], "r1": "aud/photo8__activity0__shape5__record1_5.mp3", "r2": null, "ans": [], "link": null, "tx": 472.8, "ty": -23.1, "idle": null}, {"d": "M 473.1 218.4 L 473.1 286.3 C 473.1 290.2 469.9 293.3 466.1 293.3 L 335.0 293.3 C 331.2 293.3 328.0 290.2 328.0 286.3 L 328.0 150.4 C 328.0 146.5 331.2 143.4 335.0 143.4 L 466.1 143.4 C 469.9 143.4 473.1 146.5 473.1 150.4 Z", "bb": [328, 143, 473, 293], "r1": "aud/photo8__activity0__shape6__record1_6.mp3", "r2": null, "ans": [], "link": null, "tx": -281.0, "ty": 190.6, "idle": null}]}]}, {"i": 10, "t": "Q", "img": "img/s10.jpg", "acts": [{"intro": "aud/photo10__question0__question0.mp3", "advance": false, "idle": null, "shapes": [{"d": "M 926.8 430.1 L 926.8 681.4 C 926.8 685.3 923.7 688.4 919.8 688.4 L 561.2 688.4 C 557.4 688.4 554.2 685.3 554.2 681.4 L 554.2 178.8 C 554.2 174.9 557.4 171.8 561.2 171.8 L 919.8 171.8 C 923.7 171.8 926.8 174.9 926.8 178.8 Z", "bb": [554, 172, 927, 688], "r1": null, "r2": null, "ans": [], "link": null, "tx": 0, "ty": 0, "idle": null}]}], "layers": [{"t": "bg", "src": "lay/s10_0.jpg", "w": 2048, "h": 1536, "m": [1, 0, 0, 1, 0, 0], "show": 0, "tog": false}, {"t": "img", "src": "lay/s10_1.webp", "w": 2302, "h": 554, "m": [0.04460417839362624, 0.08581126351546592, -0.08581126351546592, 0.04460417839362624, 210.1546535176543, 61.33112617768693], "show": 0, "tog": false}, {"t": "img", "src": "lay/s10_2.webp", "w": 2302, "h": 554, "m": [0.0739255468302456, 0.17777297173673348, -0.17777297173673348, 0.0739255468302456, -220.31451967949297, 44.37876199700671], "show": 0, "tog": false}]}, {"i": 11, "t": "Q", "img": "img/s11.jpg", "acts": [{"intro": "aud/photo11__question0__question0.mp3", "advance": false, "idle": null, "shapes": [{"d": "M 791.1 400.2 L 791.1 722.7 C 791.1 726.6 788.0 729.7 784.1 729.7 L 553.6 729.7 C 549.8 729.7 546.6 726.6 546.6 722.7 L 546.6 77.6 C 546.6 73.7 549.8 70.6 553.6 70.6 L 784.1 70.6 C 788.0 70.6 791.1 73.7 791.1 77.6 Z", "bb": [547, 71, 791, 730], "r1": null, "r2": null, "ans": [], "link": null, "tx": 0, "ty": 0, "idle": null}]}], "layers": [{"t": "bg", "src": "lay/s11_0.jpg", "w": 2048, "h": 1536, "m": [1, 0, 0, 1, 0, 0], "show": 0, "tog": false}, {"t": "img", "src": "lay/s11_1.webp", "w": 626, "h": 649, "m": [0.9781082769763452, 0, 0, 0.9781082769763452, 0.4682926829260623, 12.175609756097515], "show": 0, "tog": false}]}, {"i": 12, "t": "Q", "img": "img/s12.jpg", "acts": [{"intro": "aud/photo12__question1__question1.mp3", "advance": false, "idle": null, "shapes": [{"d": "M 948.0 403.9 L 948.0 685.0 C 948.0 688.9 944.9 692.0 941.0 692.0 L 547.5 692.0 C 543.6 692.0 540.5 688.9 540.5 685.0 L 540.5 122.8 C 540.5 118.9 543.6 115.8 547.5 115.8 L 941.0 115.8 C 944.9 115.8 948.0 118.9 948.0 122.8 Z", "bb": [540, 116, 948, 692], "r1": null, "r2": null, "ans": [], "link": null, "tx": 0, "ty": 0, "idle": null}]}], "layers": [{"t": "bg", "src": "lay/s12_0.jpg", "w": 2048, "h": 1536, "m": [1, 0, 0, 1, 0, 0], "show": 0, "tog": false}, {"t": "img", "src": "lay/s12_1.webp", "w": 540, "h": 94, "m": [0.004158254430391897, 1.156406692748066, -1.1564066927480665, 0.004158254430391828, -235.08292682926822, -0.7024390243909313], "show": 0, "tog": false}, {"t": "img", "src": "lay/s12_2.webp", "w": 466, "h": 66, "m": [-0.01174370686990314, 1.2351621454225963, -1.2351621454225974, -0.011743706869902929, 244.91707317073013, 14.048780487803418], "show": 0, "tog": false}]}, {"i": 13, "t": "Q", "img": "img/s13.jpg", "acts": [{"intro": "aud/photo13__question0__question0.mp3", "advance": false, "idle": null, "shapes": [{"d": "M 148.1 170.0 L 163.6 170.5 L 183.3 177.0 L 208.5 185.9 L 235.2 196.7 L 263.3 209.8 L 292.4 224.8 L 320.9 241.2 L 350.4 260.4 L 380.9 281.9 L 409.9 304.9 L 439.9 328.7 L 468.9 352.6 L 495.6 376.0 L 519.0 397.6 L 537.8 420.5 L 553.2 444.4 L 569.1 468.3 L 583.6 492.6 L 594.9 516.1 L 604.3 538.1 L 610.3 560.1 L 613.6 579.7 L 614.1 597.1 L 614.1 612.1 L 609.9 624.7 L 604.3 636.4 L 595.4 647.2 L 586.0 656.5 L 575.2 665.0 L 564.4 671.5 L 553.7 676.2 L 542.0 678.6 L 528.4 680.0 L 513.4 680.9 L 497.0 681.4 L 479.2 681.4 L 462.4 680.4 L 446.9 675.7 L 432.4 670.1 L 416.5 663.6 L 398.7 656.5 L 382.3 648.1 L 368.7 641.1 L 355.1 632.7 L 341.1 623.3 L 328.9 613.9 L 316.3 604.6 L 303.1 595.2 L 290.5 585.4 L 276.9 575.1 L 264.7 564.8 L 254.0 554.9 L 243.7 545.6 L 231.5 536.2 L 219.3 525.4 L 207.6 515.1 L 196.8 504.4 L 186.1 494.5 L 174.8 483.7 L 164.1 472.5 L 155.2 461.3 L 146.7 450.0 L 136.9 437.4 L 126.6 424.7 L 116.8 413.0 L 107.4 400.4 L 99.4 388.7 L 91.5 376.5 L 84.4 364.8 L 77.9 352.6 L 71.8 341.4 L 67.1 330.1 L 63.8 318.9 L 60.1 307.7 L 57.8 296.4 L 55.9 286.6 L 54.9 275.8 L 54.9 265.5 L 54.9 255.7 L 54.9 245.4 L 56.8 234.6 L 60.1 225.2 L 64.3 215.9 L 69.9 207.5 L 75.1 200.4 L 80.2 193.9 L 85.4 188.3 L 91.0 183.6 L 97.1 179.8 L 102.2 177.0 L 107.4 174.7 L 113.0 173.3 L 117.7 171.9 L 121.9 170.9 L 124.7 170.5 L 127.1 170.5 L 128.5 170.5 L 129.9 170.5 L 131.3 170.0 L 133.2 170.0 L 135.5 169.5 L 136.9 169.5 L 138.3 169.5 L 140.2 169.5 L 142.0 169.5 Z", "bb": [55, 170, 614, 681], "r1": null, "r2": null, "ans": [], "link": null, "tx": 0, "ty": 0, "idle": null}]}], "layers": [{"t": "bg", "src": "lay/s13_0.jpg", "w": 2048, "h": 1536, "m": [1, 0, 0, 1, 0, 0], "show": 0, "tog": false}, {"t": "img", "src": "lay/s13_1.webp", "w": 2400, "h": 2137, "m": [0.20110473921182667, 0, 0, 0.20110473921182667, 113.77257452574358, 47.580617886178494], "show": 0, "tog": false}, {"t": "img", "src": "lay/s13_2.webp", "w": 4724, "h": 4961, "m": [0.08128704487722269, 0, 0, 0.08128704487722269, -171.1873002760511, 49.65171309968802], "show": 0, "tog": false}]}, {"i": 14, "t": "R", "img": "img/s14.jpg", "acts": [{"intro": "aud/photo9__activity0__activity0.mp3", "advance": true, "idle": null, "shapes": []}], "layers": [{"t": "bg", "src": "lay/s14_0.jpg", "w": 2048, "h": 1536, "m": [1, 0, 0, 1, 0, 0], "show": 0, "tog": false}, {"t": "img", "src": "lay/s14_1.webp", "w": 1500, "h": 1500, "m": [0.33351317464727315, 0, 0, 0.33351317464727315, -146.85076133219408, 18.245923559569743], "show": 0, "tog": false}, {"t": "img", "src": "lay/s14_2.webp", "w": 1600, "h": 1498, "m": [0.32222319571440505, 0, 0, 0.32222319571440505, 203.4835338753804, 13.233347346701946], "show": 0, "tog": false}]}], "title": "שיעור 9 - הגדרה והשוואה(1)", "hash": "g4dqe", "brand": "קוראים בקלות - חן קלימיאן", "writeBase": "../../letters/"};
+const SL = CFG.slides, LAST = SL.length - 1;
+const NS = 'http://www.w3.org/2000/svg';
+const $ = id => document.getElementById(id);
+const stage = $('stage'), main = $('main');
+const framed = window.self !== window.top;
+document.getElementById('brand').textContent = CFG.brand;
+document.getElementById('brand2').textContent = CFG.brand;
+document.getElementById('gtitle').textContent = CFG.title;
+let cur = -1, token = 0, muted = false, S = 1, sectionLetter = null;
+const done = new Set();
+
+/* ---------- התאמת הלוח למסך ---------- */
+function fit(){
+  $('app').classList.toggle('compact', $('app').clientHeight < 520);
+  S = Math.min((main.clientWidth - 8) / 1036, (main.clientHeight - 8) / 780);
+  stage.style.transform = 'translate(-50%,-50%) scale(' + S + ')';
+}
+addEventListener('resize', fit); fit();
+main.addEventListener('touchmove', e => { if (e.cancelable && !(e.target.closest && e.target.closest('video, button, input, iframe'))) e.preventDefault(); }, { passive: false });
+
+/* ---------- צליל ---------- */
+const voice = new Audio();
+let voiceCb = null;
+voice.addEventListener('ended', () => { const cb = voiceCb; voiceCb = null; if (cb) cb(); });
+function say(src, cb){
+  voice.pause(); voiceCb = null;
+  if (!src){ if (cb) setTimeout(cb, 300); return; }
+  voiceCb = cb || null;
+  voice.src = src; voice.volume = muted ? 0 : 1;
+  voice.play().catch(() => { if (voiceCb){ const c = voiceCb; voiceCb = null; setTimeout(c, 600); } });
+}
+function stopVoice(){ voice.pause(); voiceCb = null; }
+let ac;
+function tone(freqs, dur, vol){
+  if (muted) return;
+  try {
+    ac = ac || new (window.AudioContext || window.webkitAudioContext)();
+    if (ac.state === 'suspended') ac.resume();
+    freqs.forEach((f, i) => {
+      const o = ac.createOscillator(), g = ac.createGain(), t0 = ac.currentTime + i * 0.11;
+      o.type = 'sine'; o.frequency.value = f;
+      g.gain.setValueAtTime(.0001, t0); g.gain.exponentialRampToValueAtTime(vol || .12, t0 + .02); g.gain.exponentialRampToValueAtTime(.0001, t0 + dur);
+      o.connect(g).connect(ac.destination); o.start(t0); o.stop(t0 + dur + .05);
+    });
+  } catch (e) {}
+}
+const ding = () => tone([659, 880, 1175], .35);
+const boop = () => tone([220, 196], .3, .1);
+const popSnd = () => tone([520, 780], .18, .14);
+const cheer = () => tone([523, 659, 784, 1047, 1319], .4, .13);
+
+/* ---------- אפקטים ---------- */
+function confetti(n){
+  const cols = ['#FFFFFF', '#F7BFD1', '#C4E8D7', '#FFFFFF', '#F7BFD1', '#C4E8D7', '#FBD9E4'];
+  for (let i = 0; i < (n || 34); i++){
+    const size = 18 + Math.random() * 18, shape = i % 3, col = cols[i % cols.length];
+    const c = document.createElementNS(NS, 'svg');
+    c.setAttribute('viewBox', '0 0 20 20'); c.setAttribute('width', size); c.setAttribute('height', size); c.setAttribute('class', 'confetti');
+    const common = 'fill="' + col + '" stroke="#CFE0EC" stroke-width="1.6" stroke-linejoin="round"';
+    c.innerHTML = shape === 0 ? '<circle cx="10" cy="10" r="8.5" ' + common + '/>' : shape === 1 ? '<path d="M10 2 L18 17 L2 17 Z" ' + common + '/>' : '<rect x="2.5" y="2.5" width="15" height="15" rx="3" ' + common + '/>';
+    c.style.cssText = 'left:' + (Math.random() * 96) + '%;animation-duration:' + (1.4 + Math.random() * 1.0) + 's;animation-delay:' + (Math.random() * .25) + 's';
+    stage.appendChild(c); setTimeout(() => c.remove(), 3000);
+  }
+}
+function popAt(x, y){
+  const p = document.createElement('div'); p.className = 'pop';
+  p.style.cssText = 'left:' + (x - 40) + 'px;top:' + (y - 40) + 'px;width:80px;height:80px';
+  stage.appendChild(p); setTimeout(() => p.remove(), 700);
+}
+function toStage(e){
+  const r = stage.getBoundingClientRect();
+  if ($('app').classList.contains('rot')){
+    const k = r.height / 1024, dx = e.clientX - (r.left + r.width / 2), dy = e.clientY - (r.top + r.height / 2);
+    return { x: 512 + dy / k, y: 384 - dx / k };
+  }
+  const k = r.width / 1024;
+  return { x: (e.clientX - r.left) / k, y: (e.clientY - r.top) / k };
+}
+
+/* ---------- ניווט ---------- */
+const nextBtn = $('next'), prevBtn = $('prev');
+function pulseNext(on){ nextBtn.classList.toggle('pulse', on !== false); }
+function go(i){
+  if (i < 0) i = 0;
+  if (i > LAST){ return finish(); }
+  if (SL[i].skip) return go(i + (i >= cur ? 1 : -1));
+  token++; stopVoice(); clearTimeout(idleT);
+  stage.innerHTML = ''; document.querySelectorAll('.fover').forEach(x => x.remove()); pulseNext(false);
+  cur = i;
+  const s = SL[i];
+  $('barfill').style.width = Math.round(100 * (s.song ? s.next : i) / LAST) + '%';
+  prevBtn.disabled = i === 0;
+  ({ R: renderR, A: (x, y) => isLetterMenu(x) ? renderMenu(x, y) : renderA(x, y), S: renderS, T: renderT, V: renderV, P: renderP, Q: renderQ, F: renderF }[s.t] || renderR)(s, token);
+}
+const next = () => go(SL[cur] && SL[cur].next != null ? SL[cur].next : cur + 1), prev = () => go(cur - 1);   // next: שקף שיר המספרים נכנס בין סוף ספרה לתפריט
+nextBtn.onclick = next; prevBtn.onclick = prev;
+function img(s){ const e = document.createElement('img'); e.className = 'bg'; e.src = s.img; e.draggable = false; stage.appendChild(e); return e; }
+function overlay(){ const v = document.createElementNS(NS, 'svg'); v.setAttribute('viewBox', '0 0 1024 768'); v.setAttribute('class', 'ov'); stage.appendChild(v); return v; }
+function finishStep(t, auto){ if (t !== token) return; pulseNext(true); if (auto) setTimeout(() => { if (t === token) next(); }, auto); }
+
+/* ---------- שכבות: כמו במשחק המקורי (רקע, תמונות, אנימציות, מדבקות שנחשפות בלחיצה) ---------- */
+function layerEl(l, pointer){
+  const e = document.createElement('img'); e.src = l.src; e.draggable = false;
+  if (l.t === 'bg'){ e.className = 'bg'; return e; }
+  e.style.cssText = 'position:absolute;left:' + (512 - l.w / 2) + 'px;top:' + (384 - l.h / 2) + 'px;width:' + l.w + 'px;height:' + l.h + 'px;transform-origin:50% 50%;transform:translate(' + l.m[4] + 'px,' + l.m[5] + 'px) matrix(' + l.m.slice(0, 4).join(',') + ',0,0);pointer-events:' + (pointer ? 'auto' : 'none');
+  return e;
+}
+function popSticker(e, l){
+  e.style.transition = 'none'; e.style.opacity = 1;
+  e.animate([{ transform: e.style.transform + ' scale(.2)', opacity: 0 }, { transform: e.style.transform + ' scale(1.12)', opacity: 1, offset: .7 }, { transform: e.style.transform + ' scale(1)', opacity: 1 }], { duration: 480, easing: 'ease-out' });
+}
+const HUES = [0, 130, 215, 295];   // כל מדבקת ד בצבע אחר
+function renderLayers(s, t){
+  let ci = 0;
+  s.layers.forEach(l => {
+    const interactive = l.show === 2 || !!l.snd;
+    const e = layerEl(l, interactive);
+    if (interactive){
+      if (l.show === 2) e.style.opacity = 0;
+      if (s.i === 38 && l.show === 2) e.style.filter = 'hue-rotate(' + HUES[ci++ % 4] + 'deg)';
+      e.style.cursor = 'pointer';
+      e.addEventListener('pointerdown', ev => {
+        if (t !== token) return; ev.preventDefault();
+        const shown = e.style.opacity === '1';
+        if (l.show === 2 && shown && l.tog){ e.style.opacity = 0; return; }
+        if (l.show === 2 && !shown){ popSticker(e, l); cheer(); }
+        if (l.snd) say(l.snd);
+      });
+    }
+    stage.appendChild(e);
+  });
+}
+function renderR(s, t){
+  if (s.layers) renderLayers(s, t); else img(s);
+  const a = s.acts[0];
+  say(a.intro, () => finishStep(t, a.advance ? 700 : 0));
+}
+
+/* ---------- תפריט בחירת אות (עיצוב חדש) ---------- */
+const LETTER_OF = CFG.menuLetters || {};
+const COLORS = { 'א': '#4FB38C', 'ב': '#5F8DB5', 'ג': '#D9A441', 'ד': '#8E7CC3' };
+const isLetterMenu = s => CFG.menuLetters && s.acts[0] && s.acts[0].shapes.length && s.acts[0].shapes.every(sh => LETTER_OF[sh.link]);
+function renderMenu(s, t){
+  if (sectionLetter){ done.add(sectionLetter); sectionLetter = null; }
+  const m = document.createElement('div'); m.className = 'menu'; stage.appendChild(m);
+  const h = document.createElement('h2'); h.textContent = 'בחרו אות לתרגול'; m.appendChild(h);
+  const a = s.acts[0];
+  a.shapes.forEach(sh => {
+    const L = LETTER_OF[sh.link]; if (!L) return;
+    const c = document.createElement('div'); c.className = 'card' + (done.has(L) ? ' done' : '');
+    c.textContent = L; c.style.color = COLORS[L];
+    c.style.left = (sh.bb[0] + sh.bb[2]) / 2 - 150 + 'px'; c.style.top = (sh.bb[1] + sh.bb[3]) / 2 - 100 + 'px';
+    const tick = document.createElement('span'); tick.className = 'tick'; tick.textContent = '✓'; c.appendChild(tick);
+    c.onclick = () => { if (t !== token) return; c.style.borderColor = COLORS[L]; sectionLetter = L; say(sh.r1, () => go(sh.link)); setTimeout(() => { if (t === token && cur === s.i) go(sh.link); }, 3500); };
+    m.appendChild(c);
+  });
+  say(a.intro);
+  if (done.size === 4) setTimeout(() => finish(), 1200);
+}
+
+/* ---------- וידאו: מתחיל מיד ---------- */
+function renderV(s, t){
+  const w = document.createElement('div'); w.className = 'vwrap'; stage.appendChild(w);
+  if (s.yt){   // סרטון מיוטיוב (משחקים שהסרטון שלהם שם)
+    stopVoice();
+    const f = document.createElement('iframe');
+    f.src = 'https://www.youtube-nocookie.com/embed/' + s.yt + '?autoplay=1&rel=0&playsinline=1&modestbranding=1';
+    f.setAttribute('allow', 'autoplay; fullscreen; encrypted-media'); f.setAttribute('allowfullscreen', '');
+    f.style.cssText = 'width:86%;aspect-ratio:16/9;max-height:90%;border:0;border-radius:26px;box-shadow:0 10px 30px rgba(46,58,69,.25);background:#000';
+    w.appendChild(f);
+    const b2 = document.createElement('button'); b2.className = 'btn vnext'; b2.textContent = 'ממשיכים'; b2.onclick = next; w.appendChild(b2);
+    setTimeout(() => { b2.style.display = 'block'; pulseNext(true); }, 6000);
+    return;
+  }
+  const v = document.createElement('video'); v.src = s.video; v.controls = true; v.playsInline = true; v.autoplay = true; v.setAttribute('webkit-playsinline', ''); v.preload = 'auto';
+  w.appendChild(v);
+  const b = document.createElement('button'); b.className = 'btn vnext'; b.textContent = 'ממשיכים'; b.onclick = next; w.appendChild(b);
+  const um = document.createElement('button'); um.className = 'btn'; um.textContent = 'לחצו להפעלת קול'; um.style.cssText += ';position:absolute;top:22px;left:50%;transform:translateX(-50%);display:none;z-index:4';
+  um.onclick = () => { v.muted = false; um.style.display = 'none'; v.play().catch(() => {}); }; w.appendChild(um);
+  stopVoice();
+  const p = v.play();
+  if (p && p.catch) p.catch(() => { v.muted = true; v.play().then(() => { um.style.display = 'block'; }).catch(() => {}); });
+  v.onended = () => { b.style.display = 'block'; pulseNext(true); };
+  setTimeout(() => { b.style.display = 'block'; }, 15000);
+}
+
+/* ---------- פאזל: גוררים כל חלק למקומו ---------- */
+function renderP(s, t){
+  const a = s.acts[0];
+  const base = img(s);
+  const ov = overlay();
+  const defs = document.createElementNS(NS, 'defs'); ov.appendChild(defs);
+  let remaining = 0;
+  const pieces = [], scatter = [], ghosts = [];
+  a.shapes.forEach((sh, k) => {
+    const cp = document.createElementNS(NS, 'clipPath'); cp.setAttribute('id', 'cp' + k);
+    const pp = document.createElementNS(NS, 'path'); pp.setAttribute('d', sh.d); cp.appendChild(pp); defs.appendChild(cp);
+    const ghost = document.createElementNS(NS, 'path'); ghost.setAttribute('d', sh.d); ghost.setAttribute('class', 'ghost'); ghost.setAttribute('fill', 'rgba(255,255,255,.9)'); ghost.style.opacity = 0; ghost.style.transition = 'opacity .9s'; ghosts.push(ghost); ov.appendChild(ghost);
+  });
+  a.shapes.forEach((sh, k) => {
+    const g = document.createElementNS(NS, 'g'); g.setAttribute('class', 'piece');
+    const inner = document.createElementNS(NS, 'g'); inner.setAttribute('clip-path', 'url(#cp' + k + ')');
+    const im = document.createElementNS(NS, 'image'); im.setAttribute('href', s.img); im.setAttribute('x', 0); im.setAttribute('y', 0); im.setAttribute('width', 1024); im.setAttribute('height', 768); im.setAttribute('preserveAspectRatio', 'none');
+    inner.appendChild(im); g.appendChild(inner);
+    const rim = document.createElementNS(NS, 'path'); rim.setAttribute('d', sh.d); rim.setAttribute('fill', 'none'); rim.setAttribute('stroke', '#fff'); rim.setAttribute('stroke-width', 5); rim.setAttribute('stroke-linejoin', 'round'); g.appendChild(rim);
+    const hitp = document.createElementNS(NS, 'path'); hitp.setAttribute('d', sh.d); hitp.setAttribute('fill', 'transparent'); hitp.setAttribute('stroke', 'transparent'); hitp.setAttribute('stroke-width', 44); hitp.setAttribute('stroke-linejoin', 'round'); hitp.style.pointerEvents = 'all'; g.appendChild(hitp);
+    const st = { tx: sh.tx, ty: sh.ty, lock: false, sx: sh.tx, sy: sh.ty, busy: false };
+    const near0 = Math.hypot(st.tx, st.ty) < 8;
+    const place = () => g.setAttribute('transform', 'translate(' + st.tx + ',' + st.ty + ')');
+    if (near0){ st.lock = true; g.setAttribute('class', 'piece lock'); }
+    else { remaining++; st.tx = 0; st.ty = 0; st.busy = true; st.place = place; scatter.push(st); }   // מתחילים כשהתמונה שלמה
+    place();
+    ov.appendChild(g);
+    let drag = null;
+    g.addEventListener('pointerdown', e => {
+      if (st.lock || st.busy || t !== token) return; e.preventDefault();
+      g.setPointerCapture(e.pointerId);
+      const p = toStage(e); drag = { dx: p.x - st.tx, dy: p.y - st.ty };
+      ov.appendChild(g); // להעלות לחזית
+    });
+    g.addEventListener('pointermove', e => { if (!drag) return; const p = toStage(e); st.tx = p.x - drag.dx; st.ty = p.y - drag.dy; place(); });
+    const drop = () => {
+      if (!drag) return; drag = null;
+      if (Math.hypot(st.tx, st.ty) < 55){
+        st.tx = 0; st.ty = 0; place(); st.lock = true; g.setAttribute('class', 'piece lock'); remaining--;
+        ding(); const c = sh.bb; popAt((c[0] + c[2]) / 2, (c[1] + c[3]) / 2);
+        say(sh.r1, () => {});
+        if (remaining === 0){ setTimeout(() => { if (t !== token) return; base.style.filter = 'none'; confetti(); cheer(); finishStep(t, 2300); }, 700); }
+      } else { boop(); }
+    };
+    g.addEventListener('pointerup', drop); g.addEventListener('pointercancel', drop);
+  });
+  if (remaining === 0){ base.style.filter = 'none'; }
+  // התמונה שלמה, ואז החלקים מתרחקים כדי שהילד יבין לאן להחזיר אותם
+  setTimeout(() => {
+    if (t !== token) return;
+    ghosts.forEach(gh => { gh.style.opacity = 1; });
+    const t0 = performance.now();
+    (function step(now){
+      const u = Math.min((now - t0) / 1200, 1), e = u < .5 ? 2 * u * u : 1 - Math.pow(-2 * u + 2, 2) / 2;
+      scatter.forEach(sp => { if (!sp.lock) { sp.tx = sp.sx * e; sp.ty = sp.sy * e; sp.place(); } });
+      if (u < 1 && t === token) requestAnimationFrame(step); else scatter.forEach(sp => { sp.busy = false; });
+    })(t0);
+  }, 1800);
+  say(a.intro, () => { if (remaining === 0) finishStep(t, 800); });
+}
+
+/* ---------- חידון: לוחצים על התשובה הנכונה ---------- */
+let idleT = null;
+function renderQ(s, t){
+  let im;
+  if (s.layers){ renderLayers(s, t); im = stage; } else im = img(s);
+  const ov = overlay();
+  const stickers = s.i === 37 && SL[38] && SL[38].layers ? SL[38].layers.filter(l => l.show === 2) : [];
+  stickers.forEach(l => { l._used = false; });
+  let k = 0, paths = [];
+  function startAct(){
+    ov.innerHTML = ''; paths = [];
+    const a = s.acts[k];
+    a.shapes.forEach((sh, j) => {
+      const p = document.createElementNS(NS, 'path'); p.setAttribute('d', sh.d);
+      p.setAttribute('fill', 'rgba(0,0,0,0.001)'); p.setAttribute('stroke', 'rgba(0,0,0,0.001)'); p.setAttribute('stroke-width', 40); p.setAttribute('stroke-linejoin', 'round');
+      p.dataset.j = j; ov.appendChild(p); paths.push(p);
+    });
+    say(a.intro, armIdle);
+  }
+  function armIdle(){ clearTimeout(idleT); idleT = setTimeout(() => { if (t === token){ const a = s.acts[k]; say((a.shapes[0] && a.shapes[0].idle) || a.idle || a.intro, armIdle); } }, 16000); }
+  function hit(e){
+    const p = toStage(e), pt = new DOMPoint(p.x, p.y);
+    for (const el of paths){ try { if (el.isPointInFill(pt) || el.isPointInStroke(pt)) return { el, p }; } catch (err) {} }
+    return null;
+  }
+  ov.addEventListener('pointerdown', e => {
+    if (t !== token) return; e.preventDefault();
+    const a = s.acts[k], h = hit(e);
+    if (h){
+      clearTimeout(idleT);
+      const sh = a.shapes[+h.el.dataset.j], b = sh.bb, cx = (b[0] + b[2]) / 2, cy = (b[1] + b[3]) / 2;
+      cheer(); popAt(h.p.x, h.p.y); confetti(16);
+      // עיגול מסביב לתשובה הנכונה
+      const ring = document.createElementNS(NS, 'ellipse');
+      ring.setAttribute('cx', cx); ring.setAttribute('cy', cy); ring.setAttribute('rx', Math.max(48, (b[2] - b[0]) / 2 + 18)); ring.setAttribute('ry', Math.max(48, (b[3] - b[1]) / 2 + 18));
+      ring.setAttribute('fill', 'none'); ring.setAttribute('stroke', '#EF406E'); ring.setAttribute('stroke-width', 9); ring.setAttribute('pointer-events', 'none');
+      ring.animate([{ opacity: 0, transform: 'scale(1.5)' }, { opacity: 1, transform: 'scale(1)' }], { duration: 350, easing: 'ease-out' });
+      ring.style.transformOrigin = cx + 'px ' + cy + 'px';
+      paths.forEach(pp => pp.remove()); paths = [];
+      ov.appendChild(ring);
+      // מדבקה לכל תשובה נכונה (בחידון הדחליל)
+      let stickerSnd = null;
+      if (stickers.length){
+        let best = null, bd = 1e9;
+        stickers.forEach(l => { if (l._used) return; const d = Math.hypot(512 + l.m[4] - cx, 384 + l.m[5] - cy); if (d < bd){ bd = d; best = l; } });
+        if (best){
+          best._used = true; const e2 = layerEl(best, false); e2.style.filter = 'hue-rotate(' + HUES[k % 4] + 'deg)'; stage.appendChild(e2); popSticker(e2, best); stickerSnd = best.snd;
+        }
+      }
+      say(sh.r1 || stickerSnd, () => { if (t !== token) return; k++; if (k < s.acts.length) { ring.remove(); startAct(); } else { confetti(); finishStep(t, 2000); } });
+    } else {
+      boop(); const tgt = s.layers ? stage : im; tgt.classList.remove('shake'); void tgt.getBoundingClientRect(); tgt.classList.add('shake');
+      const sh = a.shapes[0]; if (sh && sh.r2) say(sh.r2, armIdle);
+    }
+  });
+  startAct();
+}
+
+/* ---------- כתיבה באצבע: המשחק שלי בתוך המשחק ---------- */
+const WRITE = CFG.write || {};
+function renderDraw(s, t){
+  img(s);
+  const ov = overlay();
+  const sh = s.acts[0].shapes;
+  const groups = [];
+  for (let g = 0; g + 2 < sh.length; g += 3){
+    const strokes = [];
+    for (let j = 0; j < 3; j++){
+      const b = sh[g + j].bb, m = 10;
+      // קו 1: אלכסון משמאל למעלה לימין למטה. קווים 2 ו-3: מימין למעלה לשמאל למטה
+      strokes.push(j === 0 ? [[b[0] + m, b[1] + m], [b[2] - m, b[3] - m]] : [[b[2] - m, b[1] + m], [b[0] + m, b[3] - m]]);
+    }
+    groups.push(strokes);
+  }
+  const N = 26, TOL = 36, START = 56;
+  let gi = 0, si = 0, drawing = false, idx = 0;
+  const cpsOf = st => { const out = []; for (let i = 0; i < N; i++){ const u = i / (N - 1); out.push([st[0][0] + (st[1][0] - st[0][0]) * u, st[0][1] + (st[1][1] - st[0][1]) * u]); } return out; };
+  let line = null, marker = null;
+  function setup(){
+    ov.innerHTML = '';
+    groups.forEach((gr, g) => gr.forEach((st, j) => {
+      if (g < gi || (g === gi && j < si)){
+        const l = document.createElementNS(NS, 'line'); l.setAttribute('x1', st[0][0]); l.setAttribute('y1', st[0][1]); l.setAttribute('x2', st[1][0]); l.setAttribute('y2', st[1][1]);
+        l.setAttribute('stroke', '#4FB38C'); l.setAttribute('stroke-width', 16); l.setAttribute('stroke-linecap', 'round'); l.setAttribute('opacity', .9); ov.appendChild(l);
+      }
+    }));
+    if (gi >= groups.length) return;
+    groups[gi].forEach((st, j) => {
+      if (j < si) return;
+      const c = document.createElementNS(NS, 'g');
+      const ci = document.createElementNS(NS, 'circle'); ci.setAttribute('cx', st[0][0]); ci.setAttribute('cy', st[0][1]); ci.setAttribute('r', 22); ci.setAttribute('fill', j === si ? '#EF406E' : '#B7CDE0'); ci.setAttribute('stroke', '#fff'); ci.setAttribute('stroke-width', 4);
+      const tx = document.createElementNS(NS, 'text'); tx.setAttribute('x', st[0][0]); tx.setAttribute('y', st[0][1] + 1); tx.setAttribute('text-anchor', 'middle'); tx.setAttribute('dominant-baseline', 'central'); tx.setAttribute('fill', '#fff'); tx.setAttribute('font-family', 'Rubik'); tx.setAttribute('font-weight', 700); tx.setAttribute('font-size', 22); tx.textContent = j + 1;
+      c.appendChild(ci); c.appendChild(tx); ov.appendChild(c); if (j === si) marker = c;
+    });
+    line = document.createElementNS(NS, 'line'); line.setAttribute('stroke', '#EF406E'); line.setAttribute('stroke-width', 16); line.setAttribute('stroke-linecap', 'round'); line.setAttribute('opacity', 0); ov.appendChild(line);
+  }
+  setup();
+  ov.addEventListener('pointerdown', e => {
+    if (t !== token || gi >= groups.length) return; e.preventDefault();
+    const st = groups[gi][si], p = toStage(e);
+    if (Math.hypot(p.x - st[0][0], p.y - st[0][1]) < START){
+      drawing = true; idx = 0; ov.setPointerCapture(e.pointerId);
+      line.setAttribute('x1', st[0][0]); line.setAttribute('y1', st[0][1]); line.setAttribute('x2', st[0][0]); line.setAttribute('y2', st[0][1]); line.setAttribute('opacity', 1);
+    } else if (marker){ boop(); marker.animate([{ transform: 'translateX(-8px)' }, { transform: 'translateX(8px)' }, { transform: 'translateX(0)' }], { duration: 300 }); }
+  });
+  ov.addEventListener('pointermove', e => {
+    if (!drawing) return;
+    const cps = cpsOf(groups[gi][si]), p = toStage(e);
+    let best = idx;
+    for (let k = idx + 1; k <= Math.min(idx + 4, N - 1); k++) if (Math.hypot(p.x - cps[k][0], p.y - cps[k][1]) < TOL) best = k;
+    if (best !== idx){ idx = best; line.setAttribute('x2', cps[idx][0]); line.setAttribute('y2', cps[idx][1]); if (idx >= N - 1) strokeDone(); }
+  });
+  const up = () => { if (!drawing) return; drawing = false; if (idx >= N - 3){ strokeDone(); return; } line.setAttribute('opacity', 0); idx = 0; };
+  ov.addEventListener('pointerup', up); ov.addEventListener('pointercancel', up);
+  function strokeDone(){
+    drawing = false; ding(); si++;
+    if (si >= 3){ si = 0; gi++; cheer(); }
+    setup();
+    if (gi >= groups.length){ confetti(); cheer(); finishStep(t, 2300); }
+  }
+  say(s.acts[0].intro);
+}
+function placeFover(){
+  const f = document.querySelector('.fover'); if (!f) return;
+  const r = stage.getBoundingClientRect();
+  f.style.left = r.left + 'px'; f.style.top = r.top + 'px'; f.style.width = r.width + 'px'; f.style.height = r.height + 'px';
+}
+addEventListener('resize', placeFover); addEventListener('orientationchange', () => setTimeout(placeFover, 250));
+document.addEventListener('fullscreenchange', () => setTimeout(placeFover, 150)); document.addEventListener('webkitfullscreenchange', () => setTimeout(placeFover, 150));
+/* ---------- כתיבה באצבע (trace) על אות/ספרה, בשקפי טייני טפ שהוחלפו (חן, 4.10.26) ----------
+   s.trace.glyphs = [{big, strokes:[[ [x,y],... ]]}] בקואורדינטות הבמה. סדר הקווים והכיוון נבדקים:
+   מתחילים ליד נקודת ההתחלה, ועוברים לאורך הקו. האות מושלמת כשכל הקווים הושלמו, והשקף כשכל האותיות בו הושלמו. */
+function renderTrace(s, t){
+  img(s);
+  const ov = overlay();
+  const mk = (tag, at) => { const e = document.createElementNS(NS, tag); for (const k in at) e.setAttribute(k, at[k]); return e; };
+  const dOf = (pts, upto) => 'M ' + pts.slice(0, upto + 1).map(p => p[0] + ' ' + p[1]).join(' L ');
+  const GL = s.trace.glyphs.map(g => {
+    const ys = g.strokes.flat().map(p => p[1]), h = Math.max(...ys) - Math.min(...ys);
+    const strokes = g.strokes.map(pts => ({ pts, i: 0, done: false }));
+    return { big: g.big, strokes, w: g.big ? 18 : 11, tol: Math.max(24, h * .17), start: Math.max(36, h * .26), cur: 0, done: false, h };
+  });
+  GL.forEach(g => {
+    g.strokes.forEach((st, k) => {
+      g.guide = g.guide || [];
+      st.band = mk('path', { d: dOf(st.pts, st.pts.length - 1), fill: 'none', stroke: '#CFE0EC', 'stroke-width': g.w * 1.7, 'stroke-linecap': 'round', 'stroke-linejoin': 'round', opacity: .75 });
+      st.dots = mk('path', { d: dOf(st.pts, st.pts.length - 1), fill: 'none', stroke: '#7FA3C2', 'stroke-width': 3, 'stroke-dasharray': '1 11', 'stroke-linecap': 'round' });
+      st.prog = mk('path', { d: dOf(st.pts, 0), fill: 'none', stroke: '#EF406E', 'stroke-width': g.w, 'stroke-linecap': 'round', 'stroke-linejoin': 'round', opacity: 0 });
+      ov.appendChild(st.band); ov.appendChild(st.dots); ov.appendChild(st.prog);
+    });
+  });
+  GL.forEach(g => g.strokes.forEach((st, k) => {
+    const r = g.big ? 22 : 15, c = mk('g', {});
+    c.appendChild(mk('circle', { cx: st.pts[0][0], cy: st.pts[0][1], r, fill: '#B7CDE0', stroke: '#fff', 'stroke-width': 3 }));
+    const tx = mk('text', { x: st.pts[0][0], y: st.pts[0][1] + 1, 'text-anchor': 'middle', 'dominant-baseline': 'central', fill: '#fff', 'font-family': 'Rubik', 'font-weight': 700, 'font-size': r });
+    tx.textContent = k + 1; c.appendChild(tx); ov.appendChild(c); st.mark = c; st.markCircle = c.firstChild;
+  }));
+  const refresh = () => GL.forEach(g => g.strokes.forEach((st, k) => {
+    const active = !g.done && k === g.cur;
+    st.mark.style.display = (st.done || g.done) ? 'none' : '';
+    st.markCircle.setAttribute('fill', active ? '#EF406E' : '#B7CDE0');
+    if (active && !st.pulse) st.pulse = st.mark.animate([{ opacity: 1 }, { opacity: .45 }, { opacity: 1 }], { duration: 1200, iterations: Infinity });
+    if (!active && st.pulse) { st.pulse.cancel(); st.pulse = null; }
+  }));
+  refresh();
+  let drag = null;
+  ov.addEventListener('pointerdown', e => {
+    if (t !== token || drag) return; e.preventDefault();
+    const p = toStage(e); let best = null, bd = 1e9;
+    GL.forEach(g => { if (g.done) return; const st = g.strokes[g.cur], d = Math.hypot(p.x - st.pts[0][0], p.y - st.pts[0][1]); if (d < g.start && d < bd){ best = { g, st }; bd = d; } });
+    if (!best){ boop(); return; }
+    drag = best; drag.pid = e.pointerId; ov.setPointerCapture(e.pointerId);
+    drag.st.i = 0; drag.st.prog.setAttribute('d', dOf(drag.st.pts, 0)); drag.st.prog.setAttribute('opacity', 1);
+  });
+  ov.addEventListener('pointermove', e => {
+    if (!drag || e.pointerId !== drag.pid) return;
+    const { g, st } = drag, p = toStage(e), n = st.pts.length; let nb = st.i;
+    for (let j = st.i + 1; j <= Math.min(st.i + 8, n - 1); j++) if (Math.hypot(p.x - st.pts[j][0], p.y - st.pts[j][1]) < g.tol) nb = j;
+    if (nb !== st.i){ st.i = nb; st.prog.setAttribute('d', dOf(st.pts, st.i)); if (st.i >= n - 2) finishStroke(); }
+  });
+  const up = e => { if (!drag || (e && e.pointerId !== drag.pid)) return; const { st } = drag; drag = null; if (st.done) return; st.i = 0; st.prog.setAttribute('opacity', 0); };
+  ov.addEventListener('pointerup', up); ov.addEventListener('pointercancel', up);
+  function finishStroke(){
+    const { g, st } = drag; drag = null;
+    st.done = true; st.i = st.pts.length - 1; st.prog.setAttribute('d', dOf(st.pts, st.i)); st.prog.setAttribute('stroke', '#4FB38C'); st.prog.setAttribute('opacity', .92); st.band.setAttribute('opacity', .25); st.dots.setAttribute('opacity', 0);
+    popSnd(); g.cur++;
+    if (g.cur >= g.strokes.length){
+      g.done = true; const c = g.strokes.flat ? null : null;
+      const xs = g.strokes.flatMap(q => q.pts.map(p => p[0])), ys = g.strokes.flatMap(q => q.pts.map(p => p[1]));
+      popAt((Math.min(...xs) + Math.max(...xs)) / 2, (Math.min(...ys) + Math.max(...ys)) / 2); ding();
+    }
+    refresh();
+    if (GL.every(q => q.done)) setTimeout(() => { if (t !== token) return; confetti(); cheer(); finishStep(t, 2300); }, 500);
+  }
+  say(s.acts[0].intro);
+}
+
+/* ---------- מעבר על קו מקווקו באיור (כתב, פרפר וכו'), עם זיהוי נכון/לא נכון (חן, 4.10.26) ----------
+   s.cover.pts = נקודות לאורך הקו המקווקו (קואורדינטות הבמה). מעבירים אצבע על הקו: נקודות שנפגעו נצבעות.
+   מעבר שרוב התנועה שלו מחוץ לקו נפסל (לא נספר), והשקף מסתיים כשרוב הקו כוסה. */
+function renderCover(s, t){
+  img(s);
+  const ov = overlay();
+  const P = s.cover.pts, R = s.cover.r || 30, FAR = R * 2.1;
+  const dots = P.map(p => { const c = document.createElementNS(NS, 'circle'); c.setAttribute('cx', p[0]); c.setAttribute('cy', p[1]); c.setAttribute('r', 8); c.setAttribute('fill', '#EF406E'); c.setAttribute('opacity', 0); ov.appendChild(c); return c; });
+  const got = new Array(P.length).fill(0);
+  const total = () => got.reduce((a, b) => a + (b ? 1 : 0), 0);
+  let drag = null, done = false;
+  const near = p => { let best = 1e9; for (let i = 0; i < P.length; i++){ const d = Math.hypot(p.x - P[i][0], p.y - P[i][1]); if (d < best) best = d; } return best; };
+  const mark = p => { drag.all++; if (near(p) < FAR) drag.on++; for (let i = 0; i < P.length; i++) if (!got[i] && Math.hypot(p.x - P[i][0], p.y - P[i][1]) < R){ got[i] = 1; drag.hit.push(i); dots[i].setAttribute('opacity', .9); } };
+  ov.addEventListener('pointerdown', e => {
+    if (t !== token || done || drag) return; e.preventDefault();
+    drag = { pid: e.pointerId, hit: [], on: 0, all: 0 }; ov.setPointerCapture(e.pointerId); mark(toStage(e));
+  });
+  ov.addEventListener('pointermove', e => { if (drag && e.pointerId === drag.pid) mark(toStage(e)); });
+  const up = e => {
+    if (!drag || (e && e.pointerId !== drag.pid)) return;
+    const d = drag; drag = null;
+    if (d.all > 4 && d.on / d.all < .72){ d.hit.forEach(i => { got[i] = 0; dots[i].setAttribute('opacity', 0); }); boop(); return; }   // ציור מחוץ לקו: לא נספר
+    if (total() >= P.length * .82 && !done){ done = true; dots.forEach(c => c.setAttribute('opacity', .9)); popSnd(); setTimeout(() => { if (t !== token) return; confetti(); cheer(); finishStep(t, 2300); }, 300); }
+  };
+  ov.addEventListener('pointerup', up); ov.addEventListener('pointercancel', up);
+  say(s.acts[0].intro);
+}
+
+function renderF(s, t){
+  if (s.trace) return renderTrace(s, t);
+  if (s.cover) return renderCover(s, t);
+  if (CFG.lion13 && s.i === 13) return renderDraw(s, t);
+  if (!WRITE[s.i]) return renderFollow(s, t);
+  if (!$('app').classList.contains('rot')){
+    // כתיבה באצבע: ה-iframe מחוץ לבמה המוקטנת (בלי שום transform מעליו), כי באייפון הלחיצות בתוכו זזו ממקומן
+    // והקו השלישי והכפתורים לא הגיבו. הדף של האות מתאים את עצמו לגודל שהוא מקבל.
+    const f = document.createElement('iframe'); f.className = 'fover'; f.src = CFG.writeBase + 'letter-' + WRITE[s.i] + '.html?embed=1&fit=1&v=5'; f.setAttribute('allow', 'autoplay');
+    f.style.cssText = 'position:fixed;border:0;z-index:4;background:linear-gradient(180deg,#F0FAF5,#F1F6FB)';
+    $('app').appendChild(f); placeFover(); say(s.acts[0].intro); return;
+  }
+  const w = document.createElement('div'); w.className = 'fwrap'; stage.appendChild(w);
+  const f = document.createElement('iframe'); f.src = CFG.writeBase + 'letter-' + WRITE[s.i] + '.html?embed=1&v=4'; f.setAttribute('allow', 'autoplay');
+  f.style.transform = 'scale(' + (740 / 700) + ')';
+  w.appendChild(f);
+  say(s.acts[0].intro);
+}
+addEventListener('message', e => { if (e.data && e.data.wgDone && SL[cur] && SL[cur].t === 'F'){ confetti(); ding(); finishStep(token, 2600); } });
+
+/* ---------- לוח צלילים (A): לוחצים על חלקים בתמונה ושומעים ---------- */
+function renderA(s, t){
+  if (s.layers) renderLayers(s, t); else img(s);
+  const a = s.acts[0] || { shapes: [] };
+  const ov = overlay();
+  const seen = new Set(), n = a.shapes.length;
+  a.shapes.forEach((sh, j) => {
+    const p = document.createElementNS(NS, 'path'); p.setAttribute('d', sh.d);
+    p.setAttribute('fill', 'rgba(0,0,0,0.001)'); p.setAttribute('stroke', 'rgba(0,0,0,0.001)'); p.setAttribute('stroke-width', 26); p.style.cursor = 'pointer';
+    p.addEventListener('pointerdown', e => {
+      if (t !== token) return; e.preventDefault();
+      p.setAttribute('stroke', 'rgba(239,64,110,.6)'); p.setAttribute('fill', 'rgba(239,64,110,.12)');
+      setTimeout(() => { p.setAttribute('stroke', 'rgba(0,0,0,0.001)'); p.setAttribute('fill', 'rgba(0,0,0,0.001)'); }, 800);
+      ding(); const pt = toStage(e); popAt(pt.x, pt.y);
+      seen.add(j);
+      say(sh.r1, () => { if (t !== token) return; if (sh.link != null) go(sh.link); });
+      if (seen.size >= n) setTimeout(() => finishStep(t, 0), 600);
+    });
+    ov.appendChild(p);
+  });
+  say(a.intro, () => { if (!n) finishStep(t, a.advance ? 700 : 0); });
+  if (!n) return;
+  setTimeout(() => { if (t === token) pulseNext(true); }, 12000);
+}
+
+/* ---------- שקף רגיל בלי פעילות (S) ---------- */
+function renderS(s, t){
+  if (s.layers) renderLayers(s, t); else img(s);
+  const a = s.acts[0] || {};
+  say(a.intro, () => finishStep(t, a.advance ? 700 : 0));
+  setTimeout(() => finishStep(t, 0), 900);
+}
+
+/* ---------- הקלדת תשובה (T) ---------- */
+function renderT(s, t){
+  img(s);
+  const a = s.acts[0] || { shapes: [] };
+  const total = a.shapes.length; let ok = 0;
+  say(a.intro);
+  a.shapes.forEach((sh, j) => {
+    const answers = (sh.ans || []).map(x => String(x).trim().toLowerCase()).filter(Boolean);
+    const inp = document.createElement('input'); inp.type = 'text'; inp.autocomplete = 'off'; inp.spellcheck = false; inp.setAttribute('autocapitalize', 'off');
+    inp.inputMode = answers.length && answers.every(x => /^[0-9.,]+$/.test(x)) ? 'numeric' : 'text';
+    const b = sh.bb, h = b[3] - b[1], w = b[2] - b[0];
+    inp.style.cssText = 'position:absolute;left:' + b[0] + 'px;top:' + b[1] + 'px;width:' + w + 'px;height:' + h + 'px;font:700 ' + Math.round(Math.min(h * .6, 96)) + 'px Rubik,sans-serif;text-align:center;border:5px dashed #5F8DB5;border-radius:24px;background:rgba(255,255,255,.6);color:#2E3A45;outline:none;direction:ltr;z-index:4;padding:0';
+    let locked = false;
+    const maxLen = Math.max(1, ...answers.map(x => x.length));
+    function check(force){
+      if (locked) return;
+      const v = inp.value.trim().toLowerCase();
+      if (!v) return;
+      if (answers.includes(v)){
+        locked = true; inp.disabled = true; inp.style.borderStyle = 'solid'; inp.style.borderColor = '#4FB38C'; inp.style.background = 'rgba(196,232,215,.75)';
+        ding(); ok++;
+        if (ok >= total){ setTimeout(() => { if (t !== token) return; confetti(); cheer(); finishStep(t, 2000); }, 500); }
+      } else if (force || v.length >= maxLen){
+        boop(); inp.animate([{ transform: 'translateX(-8px)' }, { transform: 'translateX(8px)' }, { transform: 'translateX(0)' }], { duration: 300 });
+        inp.style.borderColor = '#EF406E'; setTimeout(() => { inp.value = ''; inp.style.borderColor = '#5F8DB5'; }, 500);
+      }
+    }
+    inp.addEventListener('input', () => check(false));
+    inp.addEventListener('keydown', e => { if (e.key === 'Enter') check(true); });
+    stage.appendChild(inp);
+  });
+  if (!total) setTimeout(() => finishStep(t, 0), 900);
+}
+
+/* ---------- "עקבו אחרי" כללי (F): עוברים עם האצבע על כל צורה לפי הסדר ---------- */
+function renderFollow(s, t){
+  img(s);
+  const a = s.acts[0] || { shapes: [] };
+  const shapes = a.shapes;
+  if (!shapes.length){ say(a.intro, () => finishStep(t, 0)); return; }
+  const ov = overlay();
+  const geo = shapes.map(sh => { const p = document.createElementNS(NS, 'path'); p.setAttribute('d', sh.d); p.setAttribute('fill', 'rgba(0,0,0,0.001)'); p.setAttribute('stroke', 'none'); ov.appendChild(p); return p; });
+  const samples = shapes.map((sh, k) => {
+    const b = sh.bb; let pts = [];
+    for (let y = b[1]; y <= b[3]; y += 10) for (let x = b[0]; x <= b[2]; x += 10){ try { if (geo[k].isPointInFill(new DOMPoint(x, y))) pts.push([x, y]); } catch (e) {} }
+    if (pts.length > 80){ const st = Math.ceil(pts.length / 80); pts = pts.filter((_, i) => i % st === 0); }
+    if (pts.length < 3) pts = [[(b[0] + b[2]) / 2, (b[1] + b[3]) / 2]];
+    return pts;
+  });
+  let k = 0, drawing = false, seen = new Set(), trail = null;
+  const ghosts = shapes.map(sh => { const g = document.createElementNS(NS, 'path'); g.setAttribute('d', sh.d); g.setAttribute('fill', 'none'); g.setAttribute('stroke', '#EF406E'); g.setAttribute('stroke-width', 4); g.setAttribute('stroke-dasharray', '10 8'); g.setAttribute('opacity', 0); g.setAttribute('pointer-events', 'none'); ov.appendChild(g); return g; });
+  function showCurrent(){ ghosts.forEach((g, i) => g.setAttribute('opacity', i === k ? .8 : 0)); }
+  showCurrent();
+  ov.addEventListener('pointerdown', e => {
+    if (t !== token || k >= shapes.length) return; e.preventDefault();
+    drawing = true; ov.setPointerCapture(e.pointerId);
+    trail = document.createElementNS(NS, 'polyline'); trail.setAttribute('fill', 'none'); trail.setAttribute('stroke', '#EF406E'); trail.setAttribute('stroke-width', 14); trail.setAttribute('stroke-linecap', 'round'); trail.setAttribute('stroke-linejoin', 'round'); trail.setAttribute('opacity', .75); trail.setAttribute('pointer-events', 'none');
+    ov.appendChild(trail); const p = toStage(e); trail.setAttribute('points', p.x + ',' + p.y);
+  });
+  ov.addEventListener('pointermove', e => {
+    if (!drawing || k >= shapes.length) return;
+    const p = toStage(e); trail.setAttribute('points', trail.getAttribute('points') + ' ' + p.x + ',' + p.y);
+    samples[k].forEach((q, i) => { if (Math.hypot(p.x - q[0], p.y - q[1]) < 46) seen.add(i); });
+    if (seen.size >= samples[k].length * .8){
+      const g = geo[k]; g.setAttribute('fill', 'rgba(79,179,140,.55)'); g.setAttribute('pointer-events', 'none');
+      ding(); k++; seen = new Set(); showCurrent();
+      if (k >= shapes.length){ drawing = false; setTimeout(() => { if (t !== token) return; confetti(); cheer(); finishStep(t, 2000); }, 400); }
+    }
+  });
+  const up = () => { drawing = false; if (trail){ const tr = trail; setTimeout(() => tr.remove(), 500); trail = null; } };
+  ov.addEventListener('pointerup', up); ov.addEventListener('pointercancel', up);
+  say(a.intro);
+}
+
+/* ---------- סיום ---------- */
+function finish(){
+  token++; stopVoice();
+  const e = document.createElement('div'); e.className = 'end'; e.innerHTML = '<div><h1>כל הכבוד!</h1><button class="btn" id="again">עוד פעם מההתחלה</button></div>';
+  stage.appendChild(e); confetti(60); ding();
+  e.querySelector('#again').onclick = () => { done.clear(); go(0); };
+}
+
+/* ---------- כפתורים ---------- */
+$('mute').onclick = () => { muted = !muted; voice.volume = muted ? 0 : 1; $('waves').style.display = muted ? 'none' : ''; };
+const fsEl = document.documentElement;
+const canFs = !!(fsEl.requestFullscreen || fsEl.webkitRequestFullscreen);
+const standaloneUrl = () => location.href.split('#')[0].replace(/[?].*$/, '') + '?full=1';
+let rotOff = false;
+function rotCheck(){
+  const portraitSmall = !framed && innerHeight > innerWidth && Math.min(innerWidth, innerHeight) < 760;
+  $('app').classList.toggle('rot', portraitSmall && !rotOff);
+  $('rotbtn').style.display = portraitSmall ? 'flex' : 'none';
+  $('rotbtn').lastChild.textContent = rotOff ? 'סיבוב לרוחב' : 'בלי סיבוב';
+  fit();
+}
+$('rotbtn').onclick = () => { rotOff = !rotOff; rotCheck(); };
+if (!framed){ $('back').style.display = 'flex'; $('closebtn').style.display = 'flex'; }
+function leaveGame(preferClose){
+  const home = 'https://www.talkwithkids.co.il/';
+  const fallback = () => {
+    let r = document.referrer || '';
+    if (r && !/github\.io/.test(r) && r.replace(/https?:\/\/[^\/]+\/?/, '')) { location.href = r; return; }
+    location.href = home;
+  };
+  // נפתח בדף חדש באותו חלון: חוזרים אחורה אל השיעור
+  if (history.length > 1) {
+    history.back();
+    setTimeout(() => { if (!document.hidden) fallback(); }, 1200);   // אם לא זז, לא נשארים תקועים
+    return;
+  }
+  // נפתח בלשונית חדשה: סוגרים אותה, ואם הדפדפן לא נותן, חוזרים לאתר
+  try { window.close(); } catch (e) {}
+  setTimeout(fallback, 400);
+}
+$('back').onclick = () => leaveGame(false);   // חזרה לעמוד השיעור שממנו הגענו (באותו חלון)
+$('closebtn').onclick = () => leaveGame(true); // סגירת החלון (אם נפתח בלשונית נפרדת)
+addEventListener('resize', rotCheck); addEventListener('orientationchange', () => setTimeout(rotCheck, 200));
+async function goFull(){
+  const isFs = document.fullscreenElement || document.webkitFullscreenElement;
+  if (isFs){ (document.exitFullscreen || document.webkitExitFullscreen).call(document); return; }
+  if (canFs){
+    try {
+      await (fsEl.requestFullscreen ? fsEl.requestFullscreen() : fsEl.webkitRequestFullscreen());
+      try { await screen.orientation.lock('landscape'); } catch (e) {}
+      return;
+    } catch (e) {}
+  }
+  if (framed){   // מנסים לעבור לדף חדש באותו חלון (אז כפתור חזור בדפדפן מחזיר לשיעור); אם נחסם, נפתחת לשונית חדשה
+    try { window.top.location.href = standaloneUrl(); return; } catch (e) {}
+    window.open(standaloneUrl(), '_blank');
+  }
+}
+$('fs').onclick = goFull;
+document.addEventListener('fullscreenchange', rotCheck); document.addEventListener('webkitfullscreenchange', rotCheck);
+$('gofs').onclick = async () => { await goFull(); $('go').click(); };
+$('go').onclick = () => { tone([440], .02, .0001); $('start').style.display = 'none'; voice.src = 'data:audio/mpeg;base64,//uQxAAAAAAAAAAAAAAAAAAAAAAAWGluZwAAAA8AAAACAAACcQCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICA'; voice.play().catch(() => {}); rotCheck(); go(0); };
+rotCheck();
+if (/[?&]autostart/.test(location.search)) { $('go').click(); }
+window.__ab = { go: go, cur: () => cur, state: () => ({ cur, done: [...done] }) };
+</script>
+</body>
+</html>
