@@ -220,11 +220,11 @@ function go(i){
   stage.innerHTML = ''; document.querySelectorAll('.fover').forEach(x => x.remove()); pulseNext(false);
   cur = i;
   const s = SL[i];
-  $('barfill').style.width = Math.round(100 * i / LAST) + '%';
+  $('barfill').style.width = Math.round(100 * (s.song ? s.next : i) / LAST) + '%';
   prevBtn.disabled = i === 0;
   ({ R: renderR, A: (x, y) => isLetterMenu(x) ? renderMenu(x, y) : renderA(x, y), S: renderS, T: renderT, V: renderV, P: renderP, Q: renderQ, F: renderF }[s.t] || renderR)(s, token);
 }
-const next = () => go(cur + 1), prev = () => go(cur - 1);
+const next = () => go(SL[cur] && SL[cur].next != null ? SL[cur].next : cur + 1), prev = () => go(cur - 1);   // next: שקף שיר המספרים נכנס בין סוף ספרה לתפריט
 nextBtn.onclick = next; prevBtn.onclick = prev;
 function img(s){ const e = document.createElement('img'); e.className = 'bg'; e.src = s.img; e.draggable = false; stage.appendChild(e); return e; }
 function overlay(){ const v = document.createElementNS(NS, 'svg'); v.setAttribute('viewBox', '0 0 1024 768'); v.setAttribute('class', 'ov'); stage.appendChild(v); return v; }
@@ -506,7 +506,76 @@ function placeFover(){
 }
 addEventListener('resize', placeFover); addEventListener('orientationchange', () => setTimeout(placeFover, 250));
 document.addEventListener('fullscreenchange', () => setTimeout(placeFover, 150)); document.addEventListener('webkitfullscreenchange', () => setTimeout(placeFover, 150));
+/* ---------- כתיבה באצבע (trace) על אות/ספרה, בשקפי טייני טפ שהוחלפו (חן, 4.10.26) ----------
+   s.trace.glyphs = [{big, strokes:[[ [x,y],... ]]}] בקואורדינטות הבמה. סדר הקווים והכיוון נבדקים:
+   מתחילים ליד נקודת ההתחלה, ועוברים לאורך הקו. האות מושלמת כשכל הקווים הושלמו, והשקף כשכל האותיות בו הושלמו. */
+function renderTrace(s, t){
+  img(s);
+  const ov = overlay();
+  const mk = (tag, at) => { const e = document.createElementNS(NS, tag); for (const k in at) e.setAttribute(k, at[k]); return e; };
+  const dOf = (pts, upto) => 'M ' + pts.slice(0, upto + 1).map(p => p[0] + ' ' + p[1]).join(' L ');
+  const GL = s.trace.glyphs.map(g => {
+    const ys = g.strokes.flat().map(p => p[1]), h = Math.max(...ys) - Math.min(...ys);
+    const strokes = g.strokes.map(pts => ({ pts, i: 0, done: false }));
+    return { big: g.big, strokes, w: g.big ? 18 : 11, tol: Math.max(24, h * .17), start: Math.max(36, h * .26), cur: 0, done: false, h };
+  });
+  GL.forEach(g => {
+    g.strokes.forEach((st, k) => {
+      g.guide = g.guide || [];
+      st.band = mk('path', { d: dOf(st.pts, st.pts.length - 1), fill: 'none', stroke: '#CFE0EC', 'stroke-width': g.w * 1.7, 'stroke-linecap': 'round', 'stroke-linejoin': 'round', opacity: .75 });
+      st.dots = mk('path', { d: dOf(st.pts, st.pts.length - 1), fill: 'none', stroke: '#7FA3C2', 'stroke-width': 3, 'stroke-dasharray': '1 11', 'stroke-linecap': 'round' });
+      st.prog = mk('path', { d: dOf(st.pts, 0), fill: 'none', stroke: '#EF406E', 'stroke-width': g.w, 'stroke-linecap': 'round', 'stroke-linejoin': 'round', opacity: 0 });
+      ov.appendChild(st.band); ov.appendChild(st.dots); ov.appendChild(st.prog);
+    });
+  });
+  GL.forEach(g => g.strokes.forEach((st, k) => {
+    const r = g.big ? 22 : 15, c = mk('g', {});
+    c.appendChild(mk('circle', { cx: st.pts[0][0], cy: st.pts[0][1], r, fill: '#B7CDE0', stroke: '#fff', 'stroke-width': 3 }));
+    const tx = mk('text', { x: st.pts[0][0], y: st.pts[0][1] + 1, 'text-anchor': 'middle', 'dominant-baseline': 'central', fill: '#fff', 'font-family': 'Rubik', 'font-weight': 700, 'font-size': r });
+    tx.textContent = k + 1; c.appendChild(tx); ov.appendChild(c); st.mark = c; st.markCircle = c.firstChild;
+  }));
+  const refresh = () => GL.forEach(g => g.strokes.forEach((st, k) => {
+    const active = !g.done && k === g.cur;
+    st.mark.style.display = (st.done || g.done) ? 'none' : '';
+    st.markCircle.setAttribute('fill', active ? '#EF406E' : '#B7CDE0');
+    if (active && !st.pulse) st.pulse = st.mark.animate([{ opacity: 1 }, { opacity: .45 }, { opacity: 1 }], { duration: 1200, iterations: Infinity });
+    if (!active && st.pulse) { st.pulse.cancel(); st.pulse = null; }
+  }));
+  refresh();
+  let drag = null;
+  ov.addEventListener('pointerdown', e => {
+    if (t !== token || drag) return; e.preventDefault();
+    const p = toStage(e); let best = null, bd = 1e9;
+    GL.forEach(g => { if (g.done) return; const st = g.strokes[g.cur], d = Math.hypot(p.x - st.pts[0][0], p.y - st.pts[0][1]); if (d < g.start && d < bd){ best = { g, st }; bd = d; } });
+    if (!best){ boop(); return; }
+    drag = best; drag.pid = e.pointerId; ov.setPointerCapture(e.pointerId);
+    drag.st.i = 0; drag.st.prog.setAttribute('d', dOf(drag.st.pts, 0)); drag.st.prog.setAttribute('opacity', 1);
+  });
+  ov.addEventListener('pointermove', e => {
+    if (!drag || e.pointerId !== drag.pid) return;
+    const { g, st } = drag, p = toStage(e), n = st.pts.length; let nb = st.i;
+    for (let j = st.i + 1; j <= Math.min(st.i + 8, n - 1); j++) if (Math.hypot(p.x - st.pts[j][0], p.y - st.pts[j][1]) < g.tol) nb = j;
+    if (nb !== st.i){ st.i = nb; st.prog.setAttribute('d', dOf(st.pts, st.i)); if (st.i >= n - 2) finishStroke(); }
+  });
+  const up = e => { if (!drag || (e && e.pointerId !== drag.pid)) return; const { st } = drag; drag = null; if (st.done) return; st.i = 0; st.prog.setAttribute('opacity', 0); };
+  ov.addEventListener('pointerup', up); ov.addEventListener('pointercancel', up);
+  function finishStroke(){
+    const { g, st } = drag; drag = null;
+    st.done = true; st.i = st.pts.length - 1; st.prog.setAttribute('d', dOf(st.pts, st.i)); st.prog.setAttribute('stroke', '#4FB38C'); st.prog.setAttribute('opacity', .92); st.band.setAttribute('opacity', .25); st.dots.setAttribute('opacity', 0);
+    popSnd(); g.cur++;
+    if (g.cur >= g.strokes.length){
+      g.done = true; const c = g.strokes.flat ? null : null;
+      const xs = g.strokes.flatMap(q => q.pts.map(p => p[0])), ys = g.strokes.flatMap(q => q.pts.map(p => p[1]));
+      popAt((Math.min(...xs) + Math.max(...xs)) / 2, (Math.min(...ys) + Math.max(...ys)) / 2); ding();
+    }
+    refresh();
+    if (GL.every(q => q.done)) setTimeout(() => { if (t !== token) return; confetti(); cheer(); finishStep(t, 2300); }, 500);
+  }
+  say(s.acts[0].intro);
+}
+
 function renderF(s, t){
+  if (s.trace) return renderTrace(s, t);
   if (CFG.lion13 && s.i === 13) return renderDraw(s, t);
   if (!WRITE[s.i]) return renderFollow(s, t);
   if (!$('app').classList.contains('rot')){
