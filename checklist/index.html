@@ -15,189 +15,116 @@
   --ink:#4B5B69; --muted:#7A8995; --white:#fff; --bg:#FBFDFE;
 }
 *{box-sizing:border-box}
-html,body{margin:0}
-body{background:var(--bg);color:var(--ink);font-family:Rubik,'Open Sans',Arial,sans-serif;line-height:1.5;padding:20px 14px 48px;-webkit-text-size-adjust:100%}
-.wrap{max-width:760px;margin:0 auto}
-/* אפקט קו עיפרון: מסגרת עם פינות לא סימטריות */
+html,body{margin:0;height:100%}
+body{background:var(--bg);color:var(--ink);font-family:Rubik,'Open Sans',Arial,sans-serif;line-height:1.35;padding:10px;-webkit-text-size-adjust:100%;overflow:hidden}
+.wrap{max-width:640px;margin:0 auto;height:100%;display:flex;flex-direction:column;gap:8px}
 .sketch{border:2px solid var(--ink);border-radius:255px 18px 225px 18px/18px 225px 18px 255px}
 .sketch-soft{border:2px solid var(--ink);border-radius:18px 225px 18px 255px/225px 18px 255px 18px}
 
-header.hero{position:relative;background:linear-gradient(180deg,var(--mint-wash),var(--sky-wash));padding:22px 20px 20px;text-align:center;margin-bottom:18px}
-header.hero svg.doodle{width:74px;height:74px;display:block;margin:0 auto 4px}
-h1{font-size:25px;line-height:1.25;margin:0 0 6px;font-weight:700}
-.sub{margin:0;color:var(--muted);font-size:15px}
-.steps{margin-top:14px;display:inline-flex;align-items:center;gap:8px;background:var(--pink);padding:7px 16px;font-weight:600;font-size:15px}
-.steps b{font-size:20px}
-.acct{margin-top:12px;font-size:14px;color:var(--ink)}
-.loginbtn{background:var(--sky);color:var(--ink);font:inherit;font-weight:600;font-size:14px;padding:6px 14px;cursor:pointer;margin-inline-start:6px}
-.loginbtn:hover{background:#A9D8EE}
-.link{background:none;border:0;font:inherit;font-size:13px;color:var(--muted);text-decoration:underline;cursor:pointer;margin-inline-start:6px}
-#cheer{margin:8px 0 0;font-size:14.5px;color:var(--ink);min-height:22px}
+.top{display:flex;align-items:center;justify-content:space-between;gap:8px;flex:none}
+h1{white-space:nowrap;font-size:17px;line-height:1.2;margin:0;font-weight:700}
+.acct{font-size:12px;color:var(--muted);text-align:left}
+.acct span{display:none}
+.loginbtn{background:var(--sky);color:var(--ink);font:inherit;font-weight:600;font-size:11.5px;padding:3px 8px;white-space:nowrap;cursor:pointer}
+.link{background:none;border:0;font:inherit;font-size:12px;color:var(--muted);text-decoration:underline;cursor:pointer}
 
-.stepper{display:flex;justify-content:center;gap:8px;margin:0 0 14px;flex-wrap:wrap}
-.dot{width:40px;height:40px;display:grid;place-items:center;background:#fff;font:inherit;font-weight:700;font-size:16px;color:var(--ink);cursor:pointer;padding:0;position:relative}
+.stepper{display:flex;justify-content:center;gap:8px;flex:none}
+.dot{width:34px;height:34px;display:grid;place-items:center;background:#fff;font:inherit;font-weight:700;font-size:15px;color:var(--ink);cursor:pointer;padding:0}
 .dot.sketch{border-radius:50% 46% 52% 48%/48% 52% 46% 50%}
 .dot.done{background:var(--mint-deep);color:#fff}
-.dot.cur{background:var(--sky);box-shadow:0 0 0 3px var(--sky-wash),0 0 0 5px var(--sky-deep)}
+.dot.cur{background:var(--sky);box-shadow:0 0 0 2px var(--sky-wash),0 0 0 4px var(--sky-deep)}
 .dot.cur.done{background:var(--mint-deep)}
-.dot:focus-visible{outline:3px solid var(--sky-deep);outline-offset:3px}
-.slide{background:var(--white);padding:18px 16px 16px;animation:slidein .35s ease}
-@keyframes slidein{from{opacity:0;transform:translateX(-18px)}to{opacity:1;transform:none}}
-.slide.done{background:var(--mint-wash)}
-.slide-head{display:flex;align-items:center;gap:12px;margin-bottom:6px}
-.slide-kick{font-size:13.5px;color:var(--muted);font-weight:500;display:block}
-.slide-body{padding:6px 2px 4px}
-.slide-nav{display:flex;justify-content:space-between;gap:10px;margin-top:14px}
-.nav{background:var(--sky);color:var(--ink);font:inherit;font-weight:600;font-size:16px;padding:10px 22px;cursor:pointer;min-width:110px}
-.nav:hover{background:#A9D8EE}
-.nav[disabled]{opacity:.35;cursor:default}
-.nav:focus-visible{outline:3px solid var(--sky-deep);outline-offset:3px}
-.ms{background:var(--white);margin-bottom:14px;overflow:hidden}
-.ms-head{width:100%;display:flex;align-items:center;gap:12px;background:none;border:0;padding:14px 16px;font:inherit;color:inherit;cursor:pointer;text-align:right}
-.ms-head:focus-visible{outline:3px solid var(--sky-deep);outline-offset:-3px}
-.ms-num{flex:none;width:38px;height:38px;display:grid;place-items:center;font-weight:700;font-size:18px;background:var(--sky)}
-.ms-num.sketch{border-radius:50% 46% 52% 48%/48% 52% 46% 50%}
-.ms-title{flex:1;min-width:0}
-.ms-title strong{display:block;font-size:17px;line-height:1.3}
-.bar{height:11px;background:var(--sky-wash);border:2px solid var(--ink);border-radius:999px;margin-top:8px;overflow:hidden;position:relative}
-.bar>i{position:absolute;inset:0 auto 0 0;right:0;left:auto;width:0;background:linear-gradient(90deg,var(--mint-deep),var(--sky-deep));transition:width .5s ease;border-radius:999px}
-.pct{flex:none;min-width:46px;text-align:center;font-weight:700;font-size:15px}
-.chev{flex:none;width:22px;height:22px;transition:transform .25s;stroke:var(--ink)}
-.ms[data-open="true"] .chev{transform:rotate(180deg)}
-.ms.done{background:var(--mint-wash)}
-.ms.done .ms-num{background:var(--mint-deep);color:#fff}
-.ms-body{display:none;padding:2px 14px 14px}
-.ms[data-open="true"] .ms-body{display:block}
+.dot:focus-visible{outline:3px solid var(--sky-deep);outline-offset:2px}
 
-.topic{border-top:2px dashed var(--sky);padding:12px 4px 10px;transition:background .4s}
-.topic:first-child{border-top:0}
-.topic.done{background:linear-gradient(90deg,transparent,var(--mint-wash))}
-.topic h3{margin:0 0 6px;font-size:15.5px;font-weight:600;display:flex;align-items:center;gap:8px}
-.topic h3 .star{width:20px;height:20px;opacity:0;transform:scale(.3) rotate(-30deg);transition:all .4s cubic-bezier(.3,1.6,.5,1);stroke:var(--pink-deep);fill:var(--pink)}
-.topic.done h3 .star{opacity:1;transform:scale(1) rotate(0)}
-.chk{display:flex;align-items:flex-start;gap:11px;padding:9px 2px;cursor:pointer;font-size:16px;-webkit-tap-highlight-color:transparent}
-.chk+.chk{border-top:2px dashed var(--sky-wash)}
+.slide{background:var(--white);padding:10px 12px;flex:1;min-height:0;display:flex;flex-direction:column;gap:6px;animation:slidein .25s ease}
+@keyframes slidein{from{opacity:0}to{opacity:1}}
+.slide.done{background:var(--mint-wash)}
+.slide-head{display:flex;align-items:center;gap:10px;flex:none}
+.slide-head strong{flex:1;min-width:0;font-size:15px;line-height:1.25}
+.bar{height:9px;background:var(--sky-wash);border:2px solid var(--ink);border-radius:999px;overflow:hidden;position:relative;width:70px;flex:none}
+.bar>i{position:absolute;inset:0 auto 0 0;right:0;left:auto;width:0;background:linear-gradient(90deg,var(--mint-deep),var(--sky-deep));transition:width .4s ease;border-radius:999px}
+.pct{flex:none;min-width:38px;text-align:center;font-weight:700;font-size:13px}
+.slide-body{flex:1;min-height:0;display:flex;flex-direction:column;justify-content:space-evenly;overflow-y:auto}
+.row{border-top:2px dashed var(--sky);padding:4px 0}
+.row:first-child{border-top:0}
+.row h3{margin:0 0 2px;font-size:13.5px;font-weight:600;line-height:1.25}
+.chips{display:flex;flex-wrap:wrap;gap:4px 16px}
+.chk{display:flex;align-items:center;gap:7px;padding:3px 0;cursor:pointer;font-size:14px;-webkit-tap-highlight-color:transparent}
 .chk input{position:absolute;opacity:0;width:1px;height:1px}
-.box{flex:none;width:26px;height:26px;border:2px solid var(--ink);border-radius:7px 10px 6px 11px/10px 6px 11px 7px;background:#fff;display:grid;place-items:center;transition:background .2s,transform .15s}
-.box svg{width:18px;height:18px;stroke:var(--ink);stroke-width:3.2;fill:none;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:26;stroke-dashoffset:26;transition:stroke-dashoffset .3s ease}
+.box{flex:none;width:24px;height:24px;border:2px solid var(--ink);border-radius:7px 10px 6px 11px/10px 6px 11px 7px;background:#fff;display:grid;place-items:center;transition:background .2s,transform .15s}
+.box svg{width:16px;height:16px;stroke:var(--ink);stroke-width:3.2;fill:none;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:26;stroke-dashoffset:26;transition:stroke-dashoffset .3s ease}
 .chk input:checked + .box{background:var(--mint)}
 .chk input:checked + .box svg{stroke-dashoffset:0}
 .chk input:focus-visible + .box{outline:3px solid var(--sky-deep);outline-offset:2px}
 .chk:active .box{transform:scale(.9)}
-.chk span.t{padding-top:2px}
 .chk input:checked ~ span.t{color:var(--muted)}
-.single .chk{font-size:16px}
 
-.save{display:flex;flex-direction:column;align-items:center;gap:8px;margin-top:22px}
-.save button{display:inline-flex;align-items:center;gap:10px;background:var(--mint);color:var(--ink);font:inherit;font-weight:700;font-size:18px;padding:12px 30px;cursor:pointer;transition:transform .15s,background .2s}
+.bottom{display:flex;align-items:center;justify-content:space-between;gap:8px;flex:none}
+.nav,.save button{background:var(--sky);color:var(--ink);font:inherit;font-weight:600;font-size:15px;padding:8px 18px;cursor:pointer}
+.nav:hover{background:#A9D8EE}
+.nav[disabled]{opacity:.35;cursor:default}
+.save{display:flex;flex-direction:column;align-items:center;gap:2px}
+.save button{background:var(--mint);display:inline-flex;align-items:center;gap:6px;font-weight:700}
 .save button:hover{background:#BDE8D8}
-.save button:active{transform:scale(.96)}
-.save button:focus-visible{outline:3px solid var(--sky-deep);outline-offset:3px}
-.save button svg{width:30px;height:30px;stroke:var(--ink);stroke-width:3.4;fill:none;stroke-linecap:round;stroke-linejoin:round}
-#saved{min-height:22px;font-size:14px;color:var(--muted)}
-#warn{display:none;margin-top:12px;background:var(--pink);padding:8px 14px;font-size:14px;text-align:center}
+.save button svg{width:18px;height:18px;stroke:var(--ink);stroke-width:3.4;fill:none;stroke-linecap:round;stroke-linejoin:round}
+#saved{min-height:14px;font-size:11.5px;color:var(--muted);text-align:center}
+#warn{display:none;position:fixed;inset:auto 10px 60px;background:var(--pink);padding:8px 14px;font-size:13px;text-align:center;z-index:70}
 
 .confetti{position:fixed;top:-20px;pointer-events:none;opacity:0;z-index:50;animation:fall linear forwards}
 @keyframes fall{0%{opacity:1;transform:translateY(0) rotate(0)}85%{opacity:1}100%{opacity:0;transform:translateY(105vh) rotate(260deg)}}
-#banner{position:fixed;inset:auto 14px 20px;max-width:520px;margin:0 auto;background:#fff;padding:14px 18px;text-align:center;font-weight:600;font-size:17px;z-index:60;display:none;box-shadow:0 8px 24px rgba(75,91,105,.18)}
-@media(max-width:480px){h1{font-size:22px}.ms-title strong{font-size:16px}}
-@media(prefers-reduced-motion:reduce){.slide{animation:none}.confetti{display:none}.bar>i,.box svg,.topic h3 .star,.chev{transition:none}}
+#banner{position:fixed;inset:auto 14px 70px;max-width:520px;margin:0 auto;background:#fff;padding:10px 16px;text-align:center;font-weight:600;font-size:15px;z-index:60;display:none;box-shadow:0 8px 24px rgba(75,91,105,.18)}
+@media(prefers-reduced-motion:reduce){.slide{animation:none}.confetti{display:none}.bar>i,.box svg{transition:none}}
 </style>
 </head>
 <body>
 <div class="wrap">
-  <header class="hero sketch">
-    <!-- איור קו: עיפרון, כוכב וספר פתוח -->
-    <svg class="doodle" viewBox="0 0 80 80" fill="none" stroke="#4B5B69" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-      <path d="M12 58c8-4 18-4 28 2 10-6 20-6 28-2V24c-8-4-18-4-28 2-10-6-20-6-28-2z" fill="#EFF8FD"/>
-      <path d="M40 26v34"/>
-      <path d="M52 8l3 7 7 1-5 5 1 7-6-4-6 4 1-7-5-5 7-1z" fill="#F9D4DF"/>
-      <path d="M17 70l9-9 4 4-9 9z" fill="#CDEFE2"/>
-    </svg>
-    <h1>הצ'קליסט שלי בתוכנית ההכשרה</h1>
-    <p class="sub">אפשר להתחיל מכל נושא, בכל סדר ובקצב שלך. כל סימון הוא צעד קדימה.</p>
-    <div class="steps sketch-soft">צעדים שעשיתי עד עכשיו: <b id="total">0</b></div>
-    <p id="cheer"></p>
+  <div class="top">
+    <h1>צ'קליסט ההתקדמות שלי</h1>
     <div id="acct" class="acct"></div>
-  </header>
-
-  <main id="list"></main>
-
-  <div class="save">
-    <button id="saveBtn" class="sketch" type="button">
-      <svg viewBox="0 0 32 32" aria-hidden="true"><path d="M6 17l7 7L26 8"/></svg>
-      שמירת התקדמות
-    </button>
-    <div id="saved" role="status" aria-live="polite"></div>
-    <div id="warn" class="sketch-soft">נראה שהדפדפן הזה לא מאפשר לשמור. ההתקדמות תישאר רק כל עוד הדף פתוח. כדאי לפתוח את הקישור בדפדפן הרגיל.</div>
   </div>
+  <main id="list" style="display:contents"></main>
+  <div id="warn" class="sketch-soft">נראה שהדפדפן הזה לא מאפשר לשמור. ההתקדמות תישאר רק כל עוד הדף פתוח. כדאי לפתוח את הקישור בדפדפן הרגיל.</div>
 </div>
 <div id="banner" class="sketch" role="status"></div>
 
 <script>
 /* ===== התוכן: אבני דרך ונושאים (מתוך התוכניות "הכשרה מקצועית" ו"הכשרה עסקית") ===== */
 const MILESTONES = [
-  { id: 'm1', title: 'יסודות לימוד האותיות והכתיבה', items: [
-    'צפיתי בשיעור 1: האותיות, התפתחות, מיפוי והקניה ראשונית',
-    'ביצעתי את משימת המיפוי לילד או לילדה',
-    'צפיתי בשיעור 2: האותיות, מטרות ופעילויות להטמעה',
-    'בחרתי אות אחת ויישמתי פעילות להטמעה שלה',
-    'צפיתי בשיעור 3: התפתחות הכתיבה וגרפומוטוריקה',
-    'ניסיתי תרגיל גרפומוטורי עם ילד או ילדה',
-    'סיכמתי לעצמי את שיעורים 1 עד 3',
-    'שאלתי או עניתי בקבוצת הוואטסאפ' ] },
-  { id: 'm2', title: 'העמקת הידע: מודעות פונולוגית וקריאה', items: [
-    'צפיתי בשיעור 4: מודעות פונולוגית',
-    'שיחקתי משחק פונולוגי עם ילד (למשל חריזה או פירוק להברות)',
-    'צפיתי בשיעור 5: התפתחות הקריאה והכתיבה',
-    'זיהיתי באיזה שלב בהתפתחות הקריאה נמצא ילד שאני מכירה',
-    'צפיתי בשיעור 6: מעבר מהברות למילים ולקריאה שוטפת',
-    'התאמנתי בקריאת הברות ומילים עם ילד',
-    'סיכמתי לעצמי את שיעורים 4 עד 6',
-    'שיתפתי בקבוצת הוואטסאפ מה עבד לי' ] },
-  { id: 'm3', title: 'הרחבת תחומי ההתמחות: חשבון ומיפוי', items: [
-    'צפיתי בשיעור 7: מוכנות בחשבון, ספירה, מנייה והספרות',
-    'עשיתי פעילות ספירה ומנייה עם ילד',
-    'צפיתי בשיעור 8: מוכנות בחשבון, הרצף, חיבור וחיסור',
-    'ביצעתי פעילות חיבור וחיסור עם חפצים',
-    'צפיתי בשיעור 9: מיפוי בשיטת קוראים בקלות',
-    'ביצעתי מיפוי בשיטת קוראים בקלות לילד או לילדה',
-    'סיכמתי לעצמי את שיעורים 7 עד 9',
-    'שאלתי או עניתי בקבוצת הוואטסאפ' ] },
-  { id: 'm4', title: 'ניהול קבוצה: סיום ההכשרה המקצועית', items: [
-    'צפיתי בשיעור 10: מבנה השיעור וחוברת המערכים',
-    'הכנתי מערך לשיעור ראשון מתוך החוברת',
-    'צפיתי בשיעור 11: כלים להתמודדות עם אתגרים בקבוצה',
-    'כתבתי לעצמי איך אתמודד עם האתגר שהכי מדאיג אותי בקבוצה',
-    'צפיתי בשיעור 12: בינה מלאכותית ליצירת חומרי למידה ומשחק',
-    'יצרתי חומר למידה או משחק בעזרת בינה מלאכותית',
-    'צפיתי בשיעור הבונוס: פיצוח שגיאות כתיב',
-    'צפיתי בשיעור הבונוס: מוכנות חברתית רגשית בקבוצות',
-    'סיכמתי לעצמי את שיעורים 10 עד 12',
-    'שיתפתי בקבוצת הוואטסאפ איך אני מתכוננת לקבוצה הראשונה' ] },
-  { id: 'm5', title: 'בניית העסק', items: [
-    'צפיתי בהדרכה: איך מתחילים ואיך משווקים ברשתות החברתיות',
-    'פרסמתי את הפוסט הראשון שלי',
-    'צפיתי בהדרכה: פרסום ממומן',
-    'החלטתי אם ואיך אפרסם בתשלום',
-    'צפיתי בהדרכה: פתיחת עסק והנהלת חשבונות',
-    'קבעתי איך אפתח את העסק ומי ינהל לי את החשבונות',
-    'צפיתי בהדרכה: הקמת דף נחיתה ואתר משלך',
-    'הקמתי דף נחיתה ראשון',
-    'צפיתי בהדרכה: תמחור ומכירות',
-    'קבעתי מחיר לקבוצה שלי',
-    'צפיתי בהדרכה: עיצוב פוסטים, חומרי למידה ופלאיירים בקאנבה',
-    'עיצבתי פוסט או פלאייר בקאנבה',
-    'צפיתי בהדרכה: איך הופכים את ההורים למשווקים שלך',
-    'ביקשתי המלצה מהורה מרוצה' ] },
-  { id: 'm6', title: 'הגשת העבודה המסכמת ופתיחת קבוצה', items: [
-    'הגשתי את העבודה המסכמת',
-    'פתחתי את הקבוצה הראשונה שלי' ] }
+  { id: 'm1', title: 'יסודות לימוד האותיות והכתיבה', rows: [
+    { t: 'שיעור 1 · האותיות, התפתחות, מיפוי והקניה ראשונית', c: ['צפיתי בשיעור', 'משימת המיפוי בוצעה'] },
+    { t: 'שיעור 2 · האותיות, מטרות ופעילויות להטמעה', c: ['צפיתי בשיעור', 'המשימה בוצעה'] },
+    { t: 'שיעור 3 · התפתחות הכתיבה וגרפומוטוריקה', c: ['צפיתי בשיעור', 'המשימה בוצעה'] },
+    { t: 'סיכום', c: ['סיכמתי את שיעורים 1 עד 3', 'שיתפתי בקבוצת הוואטסאפ'] } ] },
+  { id: 'm2', title: 'העמקת הידע: מודעות פונולוגית וקריאה', rows: [
+    { t: 'שיעור 4 · מודעות פונולוגית', c: ['צפיתי בשיעור', 'המשימה בוצעה'] },
+    { t: 'שיעור 5 · התפתחות הקריאה והכתיבה', c: ['צפיתי בשיעור', 'המשימה בוצעה'] },
+    { t: 'שיעור 6 · מעבר מהברות למילים ולקריאה שוטפת', c: ['צפיתי בשיעור', 'המשימה בוצעה'] },
+    { t: 'סיכום', c: ['סיכמתי את שיעורים 4 עד 6', 'שיתפתי בקבוצת הוואטסאפ'] } ] },
+  { id: 'm3', title: 'הרחבת תחומי ההתמחות: חשבון ומיפוי', rows: [
+    { t: 'שיעור 7 · מוכנות בחשבון, ספירה, מנייה והספרות', c: ['צפיתי בשיעור', 'המשימה בוצעה'] },
+    { t: 'שיעור 8 · מוכנות בחשבון, הרצף, חיבור וחיסור', c: ['צפיתי בשיעור', 'המשימה בוצעה'] },
+    { t: 'שיעור 9 · מיפוי בשיטת קוראים בקלות', c: ['צפיתי בשיעור', 'המיפוי בוצע'] },
+    { t: 'סיכום', c: ['סיכמתי את שיעורים 7 עד 9', 'שיתפתי בקבוצת הוואטסאפ'] } ] },
+  { id: 'm4', title: 'ניהול קבוצה: סיום ההכשרה המקצועית', rows: [
+    { t: 'שיעור 10 · מבנה השיעור וחוברת המערכים', c: ['צפיתי בשיעור', 'המשימה בוצעה'] },
+    { t: 'שיעור 11 · כלים להתמודדות עם אתגרים בקבוצה', c: ['צפיתי בשיעור', 'המשימה בוצעה'] },
+    { t: 'שיעור 12 · בינה מלאכותית ליצירת חומרי למידה', c: ['צפיתי בשיעור', 'המשימה בוצעה'] },
+    { t: 'שיעורי בונוס', c: ['פיצוח שגיאות כתיב', 'מוכנות חברתית רגשית'] },
+    { t: 'סיכום', c: ['סיכמתי את שיעורים 10 עד 12', 'שיתפתי בקבוצת הוואטסאפ'] } ] },
+  { id: 'm5', title: 'בניית העסק', rows: [
+    { t: 'איך מתחילים ואיך משווקים ברשתות', c: ['צפיתי בהדרכה', 'המשימה בוצעה'] },
+    { t: 'פרסום ממומן', c: ['צפיתי בהדרכה', 'המשימה בוצעה'] },
+    { t: 'פתיחת עסק והנהלת חשבונות', c: ['צפיתי בהדרכה', 'המשימה בוצעה'] },
+    { t: 'הקמת דף נחיתה ואתר משלך', c: ['צפיתי בהדרכה', 'המשימה בוצעה'] },
+    { t: 'תמחור ומכירות', c: ['צפיתי בהדרכה', 'המשימה בוצעה'] },
+    { t: 'עיצוב בקאנבה', c: ['צפיתי בהדרכה', 'המשימה בוצעה'] },
+    { t: 'הורים כמשווקים', c: ['צפיתי בהדרכה', 'המשימה בוצעה'] } ] },
+  { id: 'm6', title: 'הגשת העבודה המסכמת ופתיחת קבוצה', rows: [
+    { t: 'עבודה מסכמת', c: ['הגשתי את העבודה המסכמת'] },
+    { t: 'קבוצה ראשונה', c: ['פתחתי את הקבוצה הראשונה שלי'] } ] }
 ];
-const KEY = 'hen-training-checklist-v2';
+const KEY = 'hen-training-checklist-v3';
 const CHECK = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l5 5L19 7"/></svg>';
-const STAR = '<svg class="star" viewBox="0 0 24 24" stroke-width="1.8" stroke-linejoin="round" aria-hidden="true"><path d="M12 2.5l2.8 6 6.5.8-4.8 4.5 1.3 6.5L12 17l-5.8 3.3 1.3-6.5L2.7 9.3l6.5-.8z"/></svg>';
-const CHEV = '<svg class="chev" viewBox="0 0 24 24" fill="none" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>';
 
 /* ===== שמירה בדפדפן (LocalStorage), עם גיבוי בזיכרון אם הדפדפן חוסם ===== */
 let store = { checks: {}, cur: 0 }, canSave = true;
@@ -221,8 +148,8 @@ async function sdk() {
 const keepTokens = () => { try { if (wix) localStorage.setItem(TOK, JSON.stringify(wix.auth.getTokens())); } catch (e) {} };
 function cloudStatus(msg, loggedIn) {
   $('acct').innerHTML = loggedIn
-    ? '<span>' + msg + '</span> <button type="button" id="logout" class="link">התנתקות</button>'
-    : '<span>' + msg + '</span> <button type="button" id="login" class="loginbtn sketch-soft">התחברות עם המשתמש שלי באתר</button>';
+    ? '<button type="button" id="logout" class="link">מחוברת · התנתקות</button>'
+    : '<button type="button" id="login" class="loginbtn sketch-soft">התחברות לשמירה בחשבון</button>';
 }
 async function cloudLoad() {
   try {
@@ -233,10 +160,10 @@ async function cloudLoad() {
     cloud = true;
     if (cloudItem) { const s = JSON.parse(cloudItem.data || '{}'); store.checks = s.checks || {}; render(); }
     else cloudSave(true);   // הפעם הראשונה בחשבון: מעבירים לשם את מה שכבר סומן
-    cloudStatus('מחוברת. ההתקדמות נשמרת בחשבון שלך ✓ ותופיע בכל מכשיר.', true);
+    cloudStatus('', true);
   } catch (e) {
     cloud = false; localStorage.removeItem(TOK); wix = null;
-    cloudStatus('כדי שההתקדמות תישמר בחשבון שלך ותופיע בכל מכשיר:', false);
+    cloudStatus('', false);
   }
 }
 async function cloudSaveNow() {
@@ -279,10 +206,10 @@ function persist() {
 
 /* ===== תצוגה ===== */
 const $ = id => document.getElementById(id);
-const items = m => m.items.map((t, i) => ({ id: m.id + '-i' + i }));
+const ids = m => { const r = []; m.rows.forEach((w, ri) => w.c.forEach((_, ci) => r.push(m.id + '-' + ri + '-' + ci))); return r; };
 function esc(s) { return String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c])); }
-const isDone = m => items(m).every(x => store.checks[x.id]);
-const pctOf = m => { const ids = items(m); return Math.round(100 * ids.filter(x => store.checks[x.id]).length / ids.length); };
+const isDone = m => ids(m).every(x => store.checks[x]);
+const pctOf = m => { const a = ids(m); return Math.round(100 * a.filter(x => store.checks[x]).length / a.length); };
 function render() {
   store.cur = Math.max(0, Math.min(MILESTONES.length - 1, store.cur | 0));
   const mi = store.cur, m = MILESTONES[mi], pct = pctOf(m), n = MILESTONES.length;
@@ -290,36 +217,31 @@ function render() {
     '<nav class="stepper" aria-label="שלבי ההכשרה">' + MILESTONES.map((x, i) =>
       '<button type="button" class="dot sketch' + (i === mi ? ' cur' : '') + (isDone(x) ? ' done' : '') + '" data-go="' + i + '" aria-label="שלב ' + (i + 1) + (isDone(x) ? ' (הושלם)' : '') + '"' + (i === mi ? ' aria-current="step"' : '') + '>' + (i + 1) + '</button>').join('') + '</nav>' +
     '<section class="slide sketch' + (isDone(m) ? ' done' : '') + '" id="' + m.id + '">' +
-      '<div class="slide-head"><span class="ms-num sketch">' + (mi + 1) + '</span>' +
-      '<span class="ms-title"><span class="slide-kick">שלב ' + (mi + 1) + ' מתוך ' + n + '</span><strong>' + esc(m.title) + '</strong>' +
-      '<div class="bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="' + pct + '"><i style="width:' + pct + '%"></i></div></span>' +
+      '<div class="slide-head"><strong>' + esc(m.title) + '</strong>' +
+      '<div class="bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="' + pct + '"><i style="width:' + pct + '%"></i></div>' +
       '<span class="pct">' + pct + '%</span></div>' +
-      '<div class="slide-body">' + m.items.map((t, i) => row(m.id + '-i' + i, t)).join('') + '</div>' +
-      '<div class="slide-nav">' +
-        '<button type="button" class="nav sketch-soft" data-step="-1"' + (mi === 0 ? ' disabled' : '') + '>הקודם</button>' +
-        '<button type="button" class="nav sketch-soft" data-step="1"' + (mi === n - 1 ? ' disabled' : '') + '>הבא</button>' +
-      '</div></section>';
+      '<div class="slide-body">' + m.rows.map((w, ri) => '<div class="row"><h3>' + esc(w.t) + '</h3><div class="chips">' + w.c.map((t, ci) => cell(m.id + '-' + ri + '-' + ci, t)).join('') + '</div></div>').join('') + '</div>' +
+    '</section>' +
+    '<div class="bottom">' +
+      '<button type="button" class="nav sketch-soft" data-step="-1"' + (mi === 0 ? ' disabled' : '') + '>הקודם</button>' +
+      '<div class="save"><button id="saveBtn" class="sketch" type="button"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M6 17l7 7L26 8"/></svg>שמירה</button><div id="saved" role="status" aria-live="polite"></div></div>' +
+      '<button type="button" class="nav sketch-soft" data-step="1"' + (mi === n - 1 ? ' disabled' : '') + '>הבא</button>' +
+    '</div>';
   update(true);
 }
-function go(i) { store.cur = i; persist(); render(); window.scrollTo({ top: 0, behavior: 'smooth' }); }
-function row(id, text) {
+function go(i) { store.cur = i; persist(); render(); }
+function cell(id, text) {
   return '<label class="chk"><input type="checkbox" data-id="' + id + '"' + (store.checks[id] ? ' checked' : '') + '><span class="box">' + CHECK + '</span><span class="t">' + esc(text) + '</span></label>';
 }
 
-/* ===== התקדמות, חגיגות ועידוד ===== */
-const CHEERS = ['כל התחלה היא הישג. תבחרי נושא שקורץ לך.', 'איזה יופי, את כבר בתנועה!', 'צעד אחרי צעד, וזה כבר נראה מרשים.', 'את מתקדמת נהדר, תמשיכי בקצב שלך.', 'הרבה כבר מאחוריך. כל הכבוד!'];
+/* ===== חגיגת סיום שלב ===== */
 let wasDone = {};
 function update(silent) {
-  let total = 0;
   MILESTONES.forEach(m => {
-    const done = items(m).filter(x => store.checks[x.id]).length, now = isDone(m);
-    total += done;
+    const now = isDone(m);
     if (!silent && now && !wasDone[m.id]) celebrate('סיימת שלב! ' + m.title, true);
     wasDone[m.id] = now;
   });
-  $('total').textContent = total;
-  const lvl = total === 0 ? 0 : Math.min(CHEERS.length - 1, 1 + Math.floor(total / 12));
-  $('cheer').textContent = CHEERS[lvl];
 }
 function confetti(n) {
   const cols = ['#CDEFE2', '#BFE3F4', '#F9D4DF', '#FFFFFF', '#7CC9B0', '#E98FAB'];
@@ -354,20 +276,21 @@ $('list').addEventListener('click', e => {
   const d = e.target.closest('[data-go]'); if (d) return go(+d.dataset.go);
   const s = e.target.closest('[data-step]'); if (s && !s.disabled) go(store.cur + +s.dataset.step);
 });
-$('saveBtn').addEventListener('click', () => {
+$('list').addEventListener('click', e => { if (e.target.closest('#saveBtn')) saveNow(); });
+function saveNow() {
   const ok = persist();
-  if (cloud) { $('saved').textContent = 'שומרת בחשבון שלך...'; cloudSaveNow().then(okc => { $('saved').textContent = okc ? 'ההתקדמות נשמרה בחשבון שלך ✓ היא תחכה לך מכל מכשיר.' : 'לא הצלחתי לשמור בחשבון. אפשר לנסות שוב.'; }); confetti(10); return; }
-  $('saved').textContent = ok ? 'ההתקדמות נשמרה ✓ כשתחזרי לאותו קישור, הכל יחכה לך.' : 'לא הצלחתי לשמור בדפדפן הזה.';
+  if (cloud) { $('saved').textContent = 'שומרת...'; cloudSaveNow().then(okc => { $('saved').textContent = okc ? 'נשמר בחשבון ✓' : 'לא הצלחתי לשמור בחשבון. אפשר לנסות שוב.'; }); confetti(10); return; }
+  $('saved').textContent = ok ? 'נשמר ✓' : 'לא הצלחתי לשמור בדפדפן הזה.';
   if (ok) confetti(10);
-});
+}
 load(); render();
 if (!canSave) $('warn').style.display = 'block';
 document.addEventListener('click', async e => {
   if (e.target.id === 'login') { e.target.disabled = true; e.target.textContent = 'עוברת להתחברות...'; try { await startLogin(); } catch (err) { e.target.disabled = false; e.target.textContent = 'לא הצלחתי, אפשר לנסות שוב'; } }
-  if (e.target.id === 'logout') { cloud = false; cloudItem = null; wix = null; localStorage.removeItem(TOK); store = { checks: {}, cur: 0 }; try { localStorage.removeItem(KEY); } catch (er) {} render(); cloudStatus('התנתקת. כדי שההתקדמות תישמר בחשבון שלך ותופיע בכל מכשיר:', false); }
+  if (e.target.id === 'logout') { cloud = false; cloudItem = null; wix = null; localStorage.removeItem(TOK); store = { checks: {}, cur: 0 }; try { localStorage.removeItem(KEY); } catch (er) {} render(); cloudStatus('', false); }
 });
 (async () => {
-  cloudStatus('כדי שההתקדמות תישמר בחשבון שלך ותופיע בכל מכשיר:', false);
+  cloudStatus('', false);
   const returned = await finishLoginIfReturned();
   if (returned || localStorage.getItem(TOK)) { $('acct').firstChild && ($('acct').firstChild.textContent = 'מתחברת...'); await cloudLoad(); }
 })();
