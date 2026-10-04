@@ -118,7 +118,8 @@ svg.ov{inset:0;width:100%;height:100%;touch-action:none}
     const hosts = [];
     try { hosts.push(new URL(document.referrer).hostname); } catch (e) {}
     try { for (const o of (location.ancestorOrigins || [])) hosts.push(new URL(o).hostname); } catch (e) {}
-    ok = hosts.some(okHost) || /^(localhost|127\.0\.0\.1)$/.test(location.hostname);
+    // הפניה מהמשחק עצמו (כפתור מסך מלא בתוך השיעור פותח את אותו משחק בחלון הראשי): אותו אתר, לכן מותר
+    ok = hosts.some(okHost) || /^(localhost|127\.0\.0\.1)$/.test(location.hostname) || (document.referrer && (() => { try { return new URL(document.referrer).hostname === location.hostname; } catch (e) { return false; } })());
     if (ok) { try { sessionStorage.setItem('wgok', '1'); } catch (e) {} }
   }
   if (ok) return;
