@@ -223,6 +223,7 @@ function render() {
   const saveBtnHtml = cloud
     ? '<button id="saveBtn" class="sketch" type="button"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M6 17l7 7L26 8"/></svg>שמירה</button>'
     : '<button id="saveBtn" class="sketch" type="button" data-login="1"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M14 7l11 9-11 9"/><path d="M5 16h19"/></svg>התחברות לשמירה</button>';
+  const savedDefaultHtml = cloud ? '' : 'ייפתח חלון ההתחברות הרשמי של האתר (לפעמים מוצג באנגלית, זה תקין)';
   $('list').innerHTML =
     '<nav class="stepper" aria-label="שלבי ההכשרה">' + MILESTONES.map((x, i) =>
       '<button type="button" class="dot sketch' + (i === mi ? ' cur' : '') + (isDone(x) ? ' done' : '') + '" data-go="' + i + '" aria-label="שלב ' + (i + 1) + (isDone(x) ? ' (הושלם)' : '') + '"' + (i === mi ? ' aria-current="step"' : '') + '>' + (i + 1) + '</button>').join('') + '</nav>' +
@@ -234,7 +235,7 @@ function render() {
     '</section>' +
     '<div class="bottom">' +
       '<button type="button" class="nav sketch-soft" data-step="-1"' + (mi === 0 ? ' disabled' : '') + '>הקודם</button>' +
-      '<div class="save">' + saveBtnHtml + '<div id="saved" role="status" aria-live="polite"></div></div>' +
+      '<div class="save">' + saveBtnHtml + '<div id="saved" role="status" aria-live="polite">' + savedDefaultHtml + '</div></div>' +
       '<button type="button" class="nav sketch-soft" data-step="1"' + (mi === n - 1 ? ' disabled' : '') + '>הבא</button>' +
     '</div>';
   update(true);
