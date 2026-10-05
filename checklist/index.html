@@ -222,7 +222,7 @@ function render() {
   const mi = store.cur, m = MILESTONES[mi], pct = pctOf(m), n = MILESTONES.length;
   const saveBtnHtml = cloud
     ? '<button id="saveBtn" class="sketch" type="button"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M6 17l7 7L26 8"/></svg>שמירה</button>'
-    : '<button id="saveBtn" class="sketch" type="button" data-login="1"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M14 7l11 9-11 9"/><path d="M5 16h19"/></svg>שמירה והתחברות לאתר לשמירת הצ'קליסט</button>';
+    : '<button id="saveBtn" class="sketch" type="button" data-login="1"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M14 7l11 9-11 9"/><path d="M5 16h19"/></svg>שמירה והתחברות לאתר לשמירת הצ׳קליסט</button>';
   const savedDefaultHtml = cloud ? '' : 'ייפתח חלון ההתחברות הרשמי של האתר (לפעמים מוצג באנגלית, זה תקין)';
   $('list').innerHTML =
     '<nav class="stepper" aria-label="שלבי ההכשרה">' + MILESTONES.map((x, i) =>
