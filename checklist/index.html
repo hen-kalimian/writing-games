@@ -158,8 +158,9 @@ async function cloudLoad() {
     keepTokens();
     cloudItem = r.items[0] || null;
     cloud = true;
-    if (cloudItem) { const s = JSON.parse(cloudItem.data || '{}'); store.checks = s.checks || {}; render(); }
+    if (cloudItem) { const s = JSON.parse(cloudItem.data || '{}'); store.checks = s.checks || {}; }
     else cloudSave(true);   // הפעם הראשונה בחשבון: מעבירים לשם את מה שכבר סומן
+    render();
     cloudStatus('', true);
   } catch (e) {
     cloud = false; localStorage.removeItem(TOK); wix = null;
@@ -187,6 +188,12 @@ async function startLogin() {
   const { authUrl } = await c.auth.getAuthUrl(od);
   location.href = authUrl + '&lang=he';
 }
+async function doLogin(btn) {
+  btn.disabled = true;
+  btn.textContent = 'עוברת להתחברות...';
+  try { await startLogin(); }
+  catch (err) { btn.disabled = false; btn.textContent = 'לא הצלחתי, אפשר לנסות שוב'; }
+}
 async function finishLoginIfReturned() {
   if (!/[#?&]code=/.test(location.hash + location.search)) return false;
   try {
@@ -213,6 +220,9 @@ const pctOf = m => { const a = ids(m); return Math.round(100 * a.filter(x => sto
 function render() {
   store.cur = Math.max(0, Math.min(MILESTONES.length - 1, store.cur | 0));
   const mi = store.cur, m = MILESTONES[mi], pct = pctOf(m), n = MILESTONES.length;
+  const saveBtnHtml = cloud
+    ? '<button id="saveBtn" class="sketch" type="button"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M6 17l7 7L26 8"/></svg>שמירה</button>'
+    : '<button id="saveBtn" class="sketch" type="button" data-login="1"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M14 7l11 9-11 9"/><path d="M5 16h19"/></svg>התחברות לשמירה</button>';
   $('list').innerHTML =
     '<nav class="stepper" aria-label="שלבי ההכשרה">' + MILESTONES.map((x, i) =>
       '<button type="button" class="dot sketch' + (i === mi ? ' cur' : '') + (isDone(x) ? ' done' : '') + '" data-go="' + i + '" aria-label="שלב ' + (i + 1) + (isDone(x) ? ' (הושלם)' : '') + '"' + (i === mi ? ' aria-current="step"' : '') + '>' + (i + 1) + '</button>').join('') + '</nav>' +
@@ -224,7 +234,7 @@ function render() {
     '</section>' +
     '<div class="bottom">' +
       '<button type="button" class="nav sketch-soft" data-step="-1"' + (mi === 0 ? ' disabled' : '') + '>הקודם</button>' +
-      '<div class="save"><button id="saveBtn" class="sketch" type="button"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M6 17l7 7L26 8"/></svg>שמירה</button><div id="saved" role="status" aria-live="polite"></div></div>' +
+      '<div class="save">' + saveBtnHtml + '<div id="saved" role="status" aria-live="polite"></div></div>' +
       '<button type="button" class="nav sketch-soft" data-step="1"' + (mi === n - 1 ? ' disabled' : '') + '>הבא</button>' +
     '</div>';
   update(true);
@@ -276,7 +286,10 @@ $('list').addEventListener('click', e => {
   const d = e.target.closest('[data-go]'); if (d) return go(+d.dataset.go);
   const s = e.target.closest('[data-step]'); if (s && !s.disabled) go(store.cur + +s.dataset.step);
 });
-$('list').addEventListener('click', e => { if (e.target.closest('#saveBtn')) saveNow(); });
+$('list').addEventListener('click', e => {
+  const btn = e.target.closest('#saveBtn'); if (!btn) return;
+  if (btn.dataset.login) doLogin(btn); else saveNow();
+});
 function saveNow() {
   const ok = persist();
   if (cloud) { $('saved').textContent = 'שומרת...'; cloudSaveNow().then(okc => { $('saved').textContent = okc ? 'נשמר בחשבון ✓' : 'לא הצלחתי לשמור בחשבון. אפשר לנסות שוב.'; }); confetti(10); return; }
@@ -286,7 +299,7 @@ function saveNow() {
 load(); render();
 if (!canSave) $('warn').style.display = 'block';
 document.addEventListener('click', async e => {
-  if (e.target.id === 'login') { e.target.disabled = true; e.target.textContent = 'עוברת להתחברות...'; try { await startLogin(); } catch (err) { e.target.disabled = false; e.target.textContent = 'לא הצלחתי, אפשר לנסות שוב'; } }
+  if (e.target.id === 'login') doLogin(e.target);
   if (e.target.id === 'logout') { cloud = false; cloudItem = null; wix = null; localStorage.removeItem(TOK); store = { checks: {}, cur: 0 }; try { localStorage.removeItem(KEY); } catch (er) {} render(); cloudStatus('', false); }
 });
 (async () => {
