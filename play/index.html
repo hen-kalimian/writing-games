@@ -39,7 +39,7 @@ body{background:linear-gradient(180deg,#fff 0%,#FEF6F5 40%,#FBDCD8 100%)}
 .spot{position:absolute;transform:translate(-50%,-50%);width:9%;aspect-ratio:1;border-radius:50%;border:2.5px dashed #EF406E;background:rgba(255,255,255,.55);display:flex;align-items:center;justify-content:center;font:800 clamp(14px,4.2vw,24px) Rubik;cursor:pointer;padding:0}
 .spot.ok{border:2.5px solid #4FB38C;background:#E5F6EE}
 .spot.no{animation:sh .35s}
-#fx{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:9}
+#cl{display:none;position:fixed;bottom:12px;left:50%;transform:translateX(-50%);z-index:12;background:#EF406E;color:#fff;border:0;border-radius:99px;padding:9px 20px;font:700 15px Rubik,sans-serif;box-shadow:0 4px 0 #D14175;cursor:pointer}body.full #cl{display:block}#fx{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:9}
 #end{position:fixed;inset:0;z-index:8;display:none;align-items:center;justify-content:center;flex-direction:column;gap:14px;background:rgba(254,246,245,.88)}
 #end h2{margin:0;font:800 34px Rubik;color:#EF406E}#end p{margin:0;font-size:18px;font-weight:700}
 .wheelbox{position:relative;width:min(78vw,330px);aspect-ratio:1}
@@ -59,7 +59,7 @@ body{background:linear-gradient(180deg,#fff 0%,#FEF6F5 40%,#FBDCD8 100%)}
   <div class="prog" id="prog"></div>
 </div>
 <div id="end"><h2>כל הכבוד!</h2><p id="endp"></p><button class="btn" id="again" type="button">משחקים שוב</button></div>
-<canvas id="fx"></canvas>
+<button id="cl" type="button">&#x2715; סגירה וחזרה לאתר</button><canvas id="fx"></canvas>
 <script>
 (function(){
 var $=function(i){return document.getElementById(i)},stage=$('stage'),ins=$('ins'),prog=$('prog');
@@ -199,9 +199,14 @@ addEventListener('resize',zoomFit);zoomFit();
 /* אתחול */
 function start(){$('end').style.display='none';fxStop=true;fx.clearRect(0,0,fxc.width,fxc.height);hits=0;stage.scrollTop=0;try{E[D.kind]()}catch(e){stage.textContent='שגיאה בטעינת המשחק'}}
 $('rs').onclick=start;$('again').onclick=start;
-var fb=$('fs'),inF=window.self!==window.top;function fsEl(){return document.fullscreenElement||document.webkitFullscreenElement}
+var fb=$('fs'),inF=window.self!==window.top,NT=Q.get('nt')==='1',REF=Q.get('ref')||document.referrer||'';function fsEl(){return document.fullscreenElement||document.webkitFullscreenElement}
+function openTab(){var u=new URL(location.href);u.searchParams.set('nt','1');u.searchParams.set('ref',document.referrer||'');window.open(u.toString(),'_blank')}
+function sync(){document.body.classList.toggle('full',!!fsEl()||NT)}
 fb.onclick=function(){var d=document.documentElement,rq=d.requestFullscreen||d.webkitRequestFullscreen;if(fsEl()){(document.exitFullscreen||document.webkitExitFullscreen).call(document);return}
-  if(rq){try{var r=rq.call(d);if(r&&r.catch)r.catch(function(){if(inF)window.open(location.href,'_blank')})}catch(_){if(inF)window.open(location.href,'_blank')}}else if(inF)window.open(location.href,'_blank')};
+  if(rq){try{var r=rq.call(d);if(r&&r.catch)r.catch(function(){if(inF)openTab()})}catch(_){if(inF)openTab()}}else if(inF)openTab()};
+$('cl').onclick=function(){if(fsEl()){(document.exitFullscreen||document.webkitExitFullscreen).call(document);return}
+  if(NT){try{window.close()}catch(e){}setTimeout(function(){if(REF)location.href=REF;else if(history.length>1)history.back()},250)}};
+document.addEventListener('fullscreenchange',sync);document.addEventListener('webkitfullscreenchange',sync);sync();
 document.addEventListener('contextmenu',function(e){e.preventDefault()});
 fetch(BASE+'data/'+G+'.json').then(function(r){return r.json()}).then(function(d){D=d;$('ttl').textContent=d.title;ins.textContent=d.ins||DEF[d.kind]||'';document.title=d.title;start()}).catch(function(){stage.textContent='המשחק לא נמצא'});
 })();
