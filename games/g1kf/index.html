@@ -180,6 +180,8 @@ const ding = () => tone([659, 880, 1175], .35);
 const boop = () => tone([220, 196], .3, .1);
 const popSnd = () => tone([520, 780], .18, .14);
 const cheer = () => tone([523, 659, 784, 1047, 1319], .4, .13);
+const pickSnd = () => tone([480, 640], .08, .1);
+const dropSnd = () => tone([200, 150], .12, .16);
 
 /* ---------- אפקטים ---------- */
 function confetti(n){
@@ -348,11 +350,11 @@ function renderP(s, t){
       if (st.lock || st.busy || t !== token) return; e.preventDefault();
       g.setPointerCapture(e.pointerId);
       const p = toStage(e); drag = { dx: p.x - st.tx, dy: p.y - st.ty };
-      ov.appendChild(g); // להעלות לחזית
+      ov.appendChild(g); pickSnd(); // להעלות לחזית
     });
     g.addEventListener('pointermove', e => { if (!drag) return; const p = toStage(e); st.tx = p.x - drag.dx; st.ty = p.y - drag.dy; place(); });
     const drop = () => {
-      if (!drag) return; drag = null;
+      if (!drag) return; drag = null; dropSnd();
       if (Math.hypot(st.tx, st.ty) < 55){
         st.tx = 0; st.ty = 0; place(); st.lock = true; g.setAttribute('class', 'piece lock'); remaining--;
         ding(); const c = sh.bb; popAt((c[0] + c[2]) / 2, (c[1] + c[3]) / 2);
