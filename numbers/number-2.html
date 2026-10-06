@@ -148,7 +148,7 @@ button.again{border-color:var(--mint-deep);background:var(--mint-bg);color:var(-
    strokes = הקווים לפי הסדר (d = נתיב SVG, num = המספר שמופיע בעיגול),
    audio = מספרים (1..5) ו-done כקבצי mp3 מוטמעים.
    ============================================================ */
-const CFG = {"series":"מספרים בקלות - חן קלימיאן","titleHtml":"כותבים את המספר <span class=\"hl\">2</span>","viewW":300,"guides":[40,260],"strokes":[{"d":"M 96 100 C 96 60 120 42 152 42 C 190 42 208 68 208 98 C 208 128 188 150 160 178 L 92 258 L 212 258","num":1}],"sparkD":"M 150 70 L 162 138 L 230 150 L 162 162 L 150 230 L 138 162 L 70 150 L 138 138 Z","audio":{"1":"data:audio/mpeg;base64,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HCWUKprQSI2NbF1VpNV7vvLIWdrpML5idMz1Eh2eua3R0o13ZI7KYuWpWt/bQpDCCmEFEhubQ+ZuCBItz7hUqzxnrZQVrFx2JC9OXhw43I15pQ3Un1urTYVlFkTKhF5enp6Ljs6Mbn/zYnHadeK31c6nnh89Grvaqu1SbOeLyudTq6KVNgAwVnk60hBksVJNRWxUddLQXR65ljdicd5+m6Eg4WH/83TEICEbBooIMM1VJEFDqQLdJQYiTVSYNXNSYwrQL/n/PuZLwkLqMMJoEgVXMz//jArT4iA7qi62lHZkqYkIkVfY+W+Pl9y5v3WYg1ezWpJLYvEt9JPA+59pFjQYF/vnfifxvcV3Hf/jf4FA2YLFx6pagF5CEuWJU8jbEwAw6tLr7h4QOInLY6BLmmHhU288wmCq3e881A1MLRUKZUYtxMhgKBdDs4j/83TENh4Sjn4wwYZcFpcPv/RP9I+lP5G+4nigInygo//4cVVC2/TfhEbMFEwMKNSVj34YEYoioq8RKqICh5ole3FnHTfFTur+3tiV3klaKlTDCATSopCUHgMBBFi5s88SeBR2zQvfSK9altVNCmgaVrFJxQCZDx15hmycMK9V0bjGgUgwrMGAlWs/59vVX/ZVVcgIMf5WM3///8aH4VjcSTGUUmDNqq//83TEWB6rMlzUYkZc0KAlavzXz4eGFNm3GYCh4U/AV4wpYwYVXav/WHDvyVRtHK0WIHyTNEk9MBnDNPyHJasJRIlG2a08rm2AiWpJteoSqS21F8fMo4JFJWNz1f2qj2ZSqjXmR3PRXZmZ20KZ2Y5y1X0lRJcqO1ylVGQ1MxrsspS0kzfYzHe/dv+6qXZ/vjXnRyiQiJDAsBBMUOGAwIKPJf+FQxqdrgv/83TEeB4LRkASeYrQKgcoYI5C0OgtULVqie5348RXWnsun7a57rl7ChwoUXToRCRJYNgJ4fnA1Jg+z/L3jrMmOgKHrrw/sM2Z556Hc4YCvLGBdUz1Y82JuWqXv8JNInDP1aJzq3JooUQqbJ8i6uGAhRSD0DGYUpQokEQURP////zIRHbtlJ8G9QdTQECosANGEwlgAjqmMSSWTJcZPWrshKPq7bbmWe//83TEmh88GigAeMUc2hk26VjYSYqjYYSqghWGPwxrGMjawy9BSp/fUuolF/ocBZW/2uFZ0FKViysZ+paoKWro/3sitlIzs5UVpvRQFvMKf2VjfyzGU1QFFv////6iUAn/DOzl0sZUghRMQU1FqqoMJJWoFMTVuUROFHxbO1wRrOWWkeZMFDBg6Ojo5fkatZKWRrLSMjJlBR0P86qeqKpH7lRF/qi5ioD/83TEuB48OhgKYMUo1I7P////6oqkdrOUyKR2djFKi9UVUf///sZVQ7OximRSOzsir+qIvsZVRdFRVZ+YqIdnZyhgtUxBTUUzLjEwMFVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVX/83TE1BvcObQ8MMS8VVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVVU="}};
+const CFG = {"series":"מספרים בקלות - חן קלימיאן","titleHtml":"כותבים את המספר <span class=\"hl\">2</span>","viewW":300,"guides":[40,260],"strokes":[{"d":"M 96 100 C 96 60 120 42 152 42 C 190 42 208 68 208 98 C 208 128 188 150 160 178 L 92 258 L 212 258","num":1}],"sparkD":"M 150 70 L 162 138 L 230 150 L 162 162 L 150 230 L 138 162 L 70 150 L 138 138 Z","audio":{}};
 
 const COLORS = ['#4FB38C', '#5F8DB5', '#D9A441', '#8E7CC3'];
 const UNI = '#4FB38C';   /* בסיום כל האות בצבע אחיד */
@@ -228,7 +228,7 @@ function build(){
     el('circle', { class: 'ring', r: 15, cx: cps[0].x, cy: cps[0].y }, mk);
     el('circle', { class: 'dot', r: 15, cx: cps[0].x, cy: cps[0].y }, mk);
     const t = el('text', { x: cps[0].x, y: cps[0].y + 1 }, mk);
-    t.textContent = st.num;
+    t.textContent = '';
     S.push({ L, cps, prog, mk, arrows, color, g, bed, num: st.num });
   });
   cur = 0; idx = 0; drawing = false;
@@ -273,17 +273,22 @@ document.addEventListener('touchmove', e => { if ((touchOnBoard || drawing) && e
 /* ---------- צליל: המספר נאמר בקול נשי רגיל כשנוגעים בעיגול ---------- */
 const AU = {};
 if (CFG.audio) for (const k in CFG.audio){ const a = new Audio(CFG.audio[k]); a.preload = 'auto'; AU[k] = a; }
-let curAudio = null;
-function startSound(num){
-  stopSound(true);
-  const a = AU[num]; if (!a) return;
-  curAudio = a; a.currentTime = 0; a.play().catch(() => {});
+let AC = null;
+function ac(){ try { AC = AC || new (window.AudioContext || window.webkitAudioContext)(); if (AC.state === 'suspended') AC.resume(); } catch (e) {} return AC; }
+function note(f, d, v, t0, ty){
+  const c = ac(); if (!c) return;
+  const o = c.createOscillator(), g = c.createGain(), t = c.currentTime + (t0 || 0);
+  o.type = ty || 'sine'; o.frequency.value = f;
+  g.gain.setValueAtTime(.0001, t); g.gain.exponentialRampToValueAtTime(v || .1, t + .03); g.gain.exponentialRampToValueAtTime(.0001, t + d);
+  o.connect(g); g.connect(c.destination); o.start(t); o.stop(t + d + .05);
 }
-function moved(){}
-function stopSound(reset){
-  if (curAudio && reset){ curAudio.pause(); curAudio.currentTime = 0; }
-  curAudio = null;
-}
+const PENTA = [523, 587, 659, 784, 880, 1047, 1175, 1319];
+let lastN = -1;
+function startSound(){ lastN = -1; note(392, .12, .07); note(523, .14, .05, .06, 'triangle'); }
+function moved(){ const k = Math.min(PENTA.length - 1, Math.floor(idx / N * PENTA.length)); if (k !== lastN){ lastN = k; note(PENTA[k], .24, .05, 0, 'triangle'); } }
+function stopSound(){}
+function strokeChime(){ note(784, .28, .11); note(1047, .34, .1, .11); note(1319, .4, .07, .22, 'triangle'); }
+function fanfare(){ [523, 659, 784, 1047, 1319, 1568].forEach((f, i) => note(f, .45, .1, i * .09, 'triangle')); [1047, 1319, 1568, 2093].forEach((f, i) => note(f, .5, .06, .6 + i * .07)); }
 
 /* ---------- ציור באצבע / בעכבר ---------- */
 svg.addEventListener('pointerdown', e => {
@@ -324,6 +329,7 @@ function release(){
   const s = S[cur];
   if (idx >= N - 3) { idx = N - 1; finishStroke(true); return; }
   s.mk.classList.remove('drag');
+  note(220, .16, .05);
   setProg(s, 0, true);
   setTimeout(() => { s.prog.style.strokeOpacity = 0; }, 450);
   idx = 0; armIdle();
@@ -338,11 +344,12 @@ function finishStroke(fromRelease){
   s.mk.classList.remove('drag');
   cur++; idx = 0;
   refresh();
-  if (cur >= S.length) celebrate(); else armIdle();
+  if (cur >= S.length) celebrate(); else { strokeChime(); armIdle(); }
 }
 
 /* ---------- סיום: נצנוץ וקונפטי עדין, בלי משפט מוקלט (חן: לא נשמע טוב) ---------- */
 function celebrate(){
+  fanfare();
   try { parent.postMessage({ wgDone: true }, '*'); } catch (e) {}
   S.forEach(s => { s.prog.style.transition = 'stroke .7s ease'; s.prog.setAttribute('stroke', UNI); });
   const sp = document.getElementById('spark');
