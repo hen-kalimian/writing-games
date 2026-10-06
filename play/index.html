@@ -148,11 +148,11 @@ E.memory=function(){var tiles=[];
   if(D.pairs)D.pairs.forEach(function(p,i){tiles.push({o:p.a,k:'p'+i});tiles.push({o:p.b,k:'p'+i})});
   else D.items.forEach(function(o,i){if(o.t&&o.i){tiles.push({o:{t:o.t,s:o.s},k:'x'+i});tiles.push({o:{i:o.i,s:o.s},k:'x'+i})}else tiles.push({o:o,k:'s'+(o.s||o.t||o.i)})});
   var cnt={};tiles.forEach(function(t){cnt[t.k]=(cnt[t.k]||0)+1});if(!D.pairs&&Object.keys(cnt).every(function(k){return cnt[k]==1}))tiles=tiles.concat(tiles.map(function(t){return {o:t.o,k:t.k}}));cnt={};tiles.forEach(function(t){cnt[t.k]=(cnt[t.k]||0)+1});total=0;for(var k in cnt)total+=Math.floor(cnt[k]/2);
-  tiles=sh(tiles);var open=[],found=0,lock=false,g=el('div','grid'),n=tiles.length,cols=n<=8?4:n<=12?4:n<=20?5:6;g.style.gridTemplateColumns='repeat('+cols+',minmax(0,1fr))';g.style.maxWidth='460px';stage.innerHTML='';dots(0,0);
-  tiles.forEach(function(t){var c=el('div','card');c.style.cssText+=';aspect-ratio:1;min-height:0;padding:4px';c.innerHTML='<div class="t" style="--fs:26px;color:#F8B9B6">&#9733;</div>';c.__t=t;
-    c.onclick=function(){if(lock||c.classList.contains('ok')||open.indexOf(c)>=0)return;c.innerHTML='';var f=mk(t.o,'',{fs:t.o.i?15:20});while(f.firstChild)c.appendChild(f.firstChild);c.style.background='#fff';open.push(c);say(t.o.s);
+  tiles=sh(tiles);var open=[],found=0,lock=false,g=el('div','grid'),n=tiles.length,cols=(function(){var w=stage.clientWidth||340,h=(stage.clientHeight||440),best=2,bs=1e9;for(var c=2;c<=6;c++){var r=Math.ceil(n/c),cw=w/c,chh=h/r,sc=Math.abs(Math.log(cw/chh/0.9))+(c*r-n)*.15;if(sc<bs){bs=sc;best=c}}return best})();g.style.gridTemplateColumns='repeat('+cols+',minmax(0,1fr))';g.style.cssText+=';width:100%;flex:1 1 auto;min-height:0;grid-auto-rows:minmax(0,1fr);align-content:stretch;margin:0';stage.innerHTML='';dots(0,0);
+  tiles.forEach(function(t){var c=el('div','card');c.style.cssText+=';min-height:0;padding:4px';c.innerHTML='<div class="t" style="--fs:44px;color:#F8B9B6">&#9733;</div>';c.__t=t;
+    c.onclick=function(){if(lock||c.classList.contains('ok')||open.indexOf(c)>=0)return;c.innerHTML='';var f=mk(t.o,'',{fs:t.o.i?18:30});while(f.firstChild)c.appendChild(f.firstChild);c.style.background='#fff';open.push(c);say(t.o.s);
       if(open.length==2){lock=true;var a=open[0],b=open[1];if(a.__t.k===b.__t.k){good();after(function(){a.classList.add('ok');b.classList.add('ok');open=[];lock=false;found++;if(found>=total)finish('')},450)}
-        else{bad();after(function(){[a,b].forEach(function(x){x.innerHTML='<div class="t" style="--fs:26px;color:#F8B9B6">&#9733;</div>'});open=[];lock=false},900)}}};g.appendChild(c)});
+        else{bad();after(function(){[a,b].forEach(function(x){x.innerHTML='<div class="t" style="--fs:44px;color:#F8B9B6">&#9733;</div>'});open=[];lock=false},900)}}};g.appendChild(c)});
   stage.appendChild(g)};
 /* סידור אותיות למילה */
 E.anagram=function(){var ps=D.pairs,i=0;total=ps.length;
