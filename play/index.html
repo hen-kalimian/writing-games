@@ -1,0 +1,207 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<title>משחק</title>
+<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@500;700;800&family=Noto+Sans+Hebrew:wght@500;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+html,body{margin:0;height:100%;overflow:hidden;overscroll-behavior:none;font-family:'Noto Sans Hebrew','Rubik',Arial,sans-serif;color:#5E5A73}
+body{background:linear-gradient(180deg,#fff 0%,#FEF6F5 40%,#FBDCD8 100%)}
+.bgd{position:fixed;inset:0;pointer-events:none;overflow:hidden}.bgd i{position:absolute;border-radius:50%}
+#app{position:relative;height:100%;max-width:560px;margin:0 auto;display:flex;flex-direction:column;padding:8px 12px 10px}
+.top{display:flex;align-items:center;gap:8px;min-height:30px}
+.ttl{flex:1;font-family:Rubik,sans-serif;font-weight:800;font-size:17px;line-height:1.15;color:#5E5A73;text-align:center}
+.ib{flex:none;width:34px;height:34px;border-radius:50%;border:2.5px solid #FBC5D6;background:#FDE1EA;color:#B8236B;font:700 15px Rubik;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0}
+.ins{text-align:center;font-weight:700;font-size:16px;color:#B8236B;min-height:22px;margin:2px 0 4px;line-height:1.25}
+#stage{flex:1;min-height:0;overflow-y:auto;overflow-x:hidden;scrollbar-width:none;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;gap:10px;touch-action:pan-y}
+#stage::-webkit-scrollbar{display:none}#stage>:first-child{margin-top:auto}#stage>:last-child{margin-bottom:auto}
+.prog{display:flex;gap:5px;justify-content:center;margin-top:6px;min-height:10px;flex-wrap:wrap}
+.prog i{width:9px;height:9px;border-radius:50%;background:#F1D5DA}.prog i.on{background:#EF406E}
+.card{position:relative;background:#fff;border:3px solid #FBD9D6;border-radius:20px;box-shadow:0 4px 12px rgba(184,35,107,.1);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;padding:8px;cursor:pointer;transition:transform .15s,border-color .15s,background .15s;text-align:center;font-weight:700;overflow:hidden}
+.card img{max-width:100%;max-height:100%;object-fit:contain;border-radius:10px;pointer-events:none;min-height:0;flex:1 1 auto}
+.card .t{font-size:var(--fs,22px);line-height:1.2;flex:none}
+.card.sel{border-color:#EF406E;background:#FFF1F5;transform:scale(1.04)}
+.card.ok{border-color:#4FB38C;background:#E5F6EE}.card.no{border-color:#EF8CA5;background:#FFF0F3;animation:sh .35s}
+.card.gone{visibility:hidden}.card.fixed{cursor:default}
+@keyframes sh{0%,100%{transform:translateX(0)}25%{transform:translateX(-7px)}75%{transform:translateX(7px)}}
+.grid{display:grid;gap:10px;width:100%;justify-content:center}
+.btn{font-family:Rubik,sans-serif;font-weight:700;font-size:17px;color:#fff;background:#EF406E;border:0;border-radius:99px;padding:10px 26px;cursor:pointer;box-shadow:0 4px 0 #D14175}
+.btn.soft{background:#FDE1EA;color:#B8236B;box-shadow:none;border:2.5px solid #FBC5D6}
+.row{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;width:100%}
+.big{font-size:30px}
+.slots{display:flex;gap:7px;justify-content:center;flex-wrap:wrap;direction:rtl;min-height:56px}
+.slot{min-width:48px;height:54px;border-bottom:4px solid #F8B9B6;border-radius:8px;background:#FFF7F8;display:flex;align-items:center;justify-content:center;font:800 28px Rubik;padding:0 6px}
+.tile{min-width:48px;height:54px;border-radius:14px;background:#fff;border:3px solid #D4EFE2;font:800 26px Rubik;display:flex;align-items:center;justify-content:center;cursor:pointer;padding:0 10px;box-shadow:0 3px 0 rgba(0,0,0,.06);font-family:'Noto Sans Hebrew',Rubik}
+.tile.used{visibility:hidden}
+.lblimg{position:relative;width:100%;max-width:520px;margin:auto}.lblimg img{width:100%;display:block;border-radius:14px}
+.spot{position:absolute;transform:translate(-50%,-50%);width:9%;aspect-ratio:1;border-radius:50%;border:2.5px dashed #EF406E;background:rgba(255,255,255,.55);display:flex;align-items:center;justify-content:center;font:800 clamp(14px,4.2vw,24px) Rubik;cursor:pointer;padding:0}
+.spot.ok{border:2.5px solid #4FB38C;background:#E5F6EE}
+.spot.no{animation:sh .35s}
+#fx{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:9}
+#end{position:fixed;inset:0;z-index:8;display:none;align-items:center;justify-content:center;flex-direction:column;gap:14px;background:rgba(254,246,245,.88)}
+#end h2{margin:0;font:800 34px Rubik;color:#EF406E}#end p{margin:0;font-size:18px;font-weight:700}
+.wheelbox{position:relative;width:min(78vw,330px);aspect-ratio:1}
+.wheelbox canvas{width:100%;height:100%;display:block}
+.pin{position:absolute;top:-6px;left:50%;transform:translateX(-50%);width:0;height:0;border-left:14px solid transparent;border-right:14px solid transparent;border-top:30px solid #EF406E;filter:drop-shadow(0 2px 2px rgba(0,0,0,.2));z-index:2}
+.res{min-height:70px;font:800 34px 'Noto Sans Hebrew',Rubik;color:#B8236B;text-align:center}
+.deck{width:min(72vw,300px);aspect-ratio:3/4;perspective:800px;cursor:pointer}
+.deck .card{width:100%;height:100%}
+</style>
+</head>
+<body>
+<div class="bgd"><i style="width:230px;height:230px;background:#FBD9D6;top:-80px;left:-70px;opacity:.75"></i><i style="width:170px;height:170px;background:#D4EFE2;bottom:-60px;right:-50px;opacity:.7"></i><i style="width:80px;height:80px;background:#D3E8F8;top:38%;left:-26px;opacity:.7"></i><i style="width:56px;height:56px;background:#FFF0B8;top:12%;right:-12px;opacity:.85"></i></div>
+<div id="app">
+  <div class="top"><button class="ib" id="fs" type="button" aria-label="מסך מלא">&#x26F6;</button><div class="ttl" id="ttl"></div><button class="ib" id="rs" type="button" aria-label="מההתחלה">&#x21BB;</button></div>
+  <div class="ins" id="ins"></div>
+  <div id="stage"></div>
+  <div class="prog" id="prog"></div>
+</div>
+<div id="end"><h2>כל הכבוד!</h2><p id="endp"></p><button class="btn" id="again" type="button">משחקים שוב</button></div>
+<canvas id="fx"></canvas>
+<script>
+(function(){
+var $=function(i){return document.getElementById(i)},stage=$('stage'),ins=$('ins'),prog=$('prog');
+var Q=new URLSearchParams(location.search),G=Q.get('g'),BASE=(function(){var s=document.currentScript.src||location.href;return s.replace(/[^\/]*$/,'')})();
+var reduce=matchMedia('(prefers-reduced-motion: reduce)').matches,D=null,hits=0,total=0;window.__ww={D:function(){return D}};
+/* עזרים */
+function sh(a){a=a.slice();for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1)),t=a[i];a[i]=a[j];a[j]=t}return a}
+function el(tag,cls,html){var e=document.createElement(tag);if(cls)e.className=cls;if(html!=null)e.innerHTML=html;return e}
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;')}
+var AC=null;function ctx(){if(!AC)try{AC=new(window.AudioContext||window.webkitAudioContext)()}catch(e){}return AC}
+function tone(f,d,ty,v,t0){var c=ctx();if(!c)return;var o=c.createOscillator(),g=c.createGain();o.type=ty||'sine';o.frequency.value=f;var t=c.currentTime+(t0||0);g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(v||.16,t+.02);g.gain.exponentialRampToValueAtTime(.001,t+d);o.connect(g);g.connect(c.destination);o.start(t);o.stop(t+d+.05)}
+function good(){tone(660,.18,'triangle');tone(880,.22,'triangle',.16,.1)}
+function bad(){tone(220,.22,'sine',.12)}
+function win(){[523,659,784,1046].forEach(function(f,i){tone(f,.3,'triangle',.15,i*.11)})}
+var cache={},cur=null;function say(s){if(!s)return;try{if(cur){cur.pause();cur.currentTime=0}var a=cache[s]||(cache[s]=new Audio(BASE+'assets/'+s));cur=a;a.currentTime=0;var p=a.play();if(p&&p.catch)p.catch(function(){})}catch(e){}}
+function fs(n){var l=n.length;return l>40?14:l>24?17:l>12?21:l>6?26:34}
+function mk(o,cls,opt){opt=opt||{};var c=el('div','card '+(cls||''));if(o.i){var im=el('img');im.src=BASE+'assets/'+o.i;im.alt='';im.draggable=false;c.appendChild(im)}
+  if(o.t){var t=el('div','t',esc(o.t));t.style.setProperty('--fs',(opt.fs||fs(o.t))+'px');c.appendChild(t)}return c}
+function dots(n,i){prog.innerHTML='';for(var k=0;k<n;k++){var d=el('i',k<i?'on':'');prog.appendChild(d)}}
+function pick(n){return n}
+function after(f,ms){setTimeout(f,ms)}
+var fxc=$('fx'),fx=fxc.getContext('2d'),fxStop=false;
+function confetti(){fxc.width=innerWidth;fxc.height=innerHeight;fxStop=false;var cols=['#F8B9B6','#FDE1EA','#EF406E','#FFFFFF','#8FD3B6','#B7CDE0','#F6DC8A','#FBD9D6'],n=reduce?40:170,P=[];
+  for(var i=0;i<n;i++)P.push({x:Math.random()*fxc.width,y:-20-Math.random()*fxc.height*.6,w:6+Math.random()*7,h:9+Math.random()*10,vy:2+Math.random()*3.2,vx:-1+Math.random()*2,r:Math.random()*6.28,vr:-.15+Math.random()*.3,c:cols[i%cols.length],st:Math.random()<.13});
+  var t0=performance.now();(function f(t){if(fxStop)return;fx.clearRect(0,0,fxc.width,fxc.height);var any=false;P.forEach(function(p){p.x+=p.vx;p.y+=p.vy;p.r+=p.vr;if(p.y<fxc.height+30)any=true;fx.save();fx.translate(p.x,p.y);fx.rotate(p.r);fx.fillStyle=p.c;
+    if(p.st){fx.beginPath();for(var k=0;k<8;k++){var rr=k%2?3:8,an=k*Math.PI/4;fx.lineTo(Math.cos(an)*rr,Math.sin(an)*rr)}fx.closePath();fx.fill()}else{fx.globalAlpha=.92;fx.fillRect(-p.w/2,-p.h/2,p.w,p.h)}fx.restore()});
+    if(any&&t-t0<5500)requestAnimationFrame(f);else fx.clearRect(0,0,fxc.width,fxc.height)})(t0)}
+function finish(msg){win();confetti();$('endp').textContent=msg||'';after(function(){$('end').style.display='flex'},650)}
+/* ===== מנועים ===== */
+var E={};
+/* חידון */
+E.quiz=function(){var qs=D.qs,qi=0;total=qs.length;hits=0;
+  function show(){stage.innerHTML='';dots(qs.length,qi);var q=qs[qi],need=q.n,got=0,miss=false,lock=false;
+    if(q.q.t||q.q.i){var qc=mk(q.q,'fixed');qc.style.cssText+=';width:100%;max-width:320px;min-height:'+(q.q.i?'150px':'80px')+';max-height:210px;flex:0 1 auto';stage.appendChild(qc);if(q.q.s){qc.style.cursor='pointer';qc.onclick=function(){say(q.q.s)}}say(q.q.s)}
+    var n=q.a.length,g=el('div','grid');g.style.gridTemplateColumns='repeat('+(n<=2?n:n==4?2:Math.min(3,n))+',minmax(0,1fr))';g.style.maxWidth='430px';
+    sh(q.a).forEach(function(a){var c=mk(a,'',{fs:a.i?18:30});c.style.minHeight=a.i?'110px':'74px';c.style.maxHeight='150px';
+      c.onclick=function(){if(lock||c.classList.contains('ok'))return;say(a.s);
+        if(a.ok){c.classList.add('ok');good();got++;if(got>=need){lock=true;if(!miss)hits++;after(next,800)}}else{miss=true;c.classList.add('no');bad();after(function(){c.classList.remove('no')},400)}};g.appendChild(c)});
+    stage.appendChild(g)}
+  function next(){qi++;if(qi>=qs.length){dots(qs.length,qs.length);finish('ענית נכון בניסיון הראשון על '+hits+' מתוך '+qs.length)}else show()}
+  show()};
+/* התאמה (הקשה על שני צדדים) */
+E.match=function(){var all=D.pairs.map(function(p,i){return {a:p.a,b:p.b,i:i}}),rounds=[],R=6,r=0;
+  for(var i=0;i<all.length;i+=R)rounds.push(all.slice(i,i+R));total=all.length;
+  function same(x,y){if(x.i==y.i)return true;return !!(x.b.t&&x.b.t===y.b.t&&(x.b.i||'')===(y.b.i||''))}
+  function show(){stage.innerHTML='';dots(rounds.length,r);var pr=rounds[r],left=el('div','grid'),right=el('div','grid'),sel=null,left_=0,wrap=el('div','row');wrap.style.cssText='flex-wrap:nowrap;align-items:flex-start;gap:12px;width:100%';
+    left.style.cssText=right.style.cssText='flex:1;grid-template-columns:1fr;gap:8px';var remain=pr.length;
+    function add(col,side,items){items.forEach(function(p){var c=mk(p[side],'',{fs:p[side].i?18:26});c.style.minHeight=(pr.length>4?'66px':'80px');c.style.maxHeight='96px';c.dataset.i=p.i;c.__p=p;c.__s=side;col.appendChild(c);
+      c.onclick=function(){if(c.classList.contains('ok'))return;say(p[side].s);
+        if(!sel){sel=c;c.classList.add('sel');return}
+        if(sel===c){c.classList.remove('sel');sel=null;return}
+        if(sel.__s===c.__s){sel.classList.remove('sel');sel=c;c.classList.add('sel');return}
+        if(same(sel.__p,c.__p)){good();sel.classList.remove('sel');sel.classList.add('ok');c.classList.add('ok');sel=null;remain--;hits++;if(!remain)after(function(){r++;if(r>=rounds.length){dots(rounds.length,rounds.length);finish('')}else show()},700)}
+        else{bad();var s=sel;s.classList.remove('sel');s.classList.add('no');c.classList.add('no');sel=null;after(function(){s.classList.remove('no');c.classList.remove('no')},420)}}})}
+    add(left,'a',pr);add(right,'b',sh(pr));wrap.appendChild(left);wrap.appendChild(right);stage.appendChild(wrap)}
+  show()};
+/* זיכרון */
+E.memory=function(){var tiles=[];
+  if(D.pairs)D.pairs.forEach(function(p,i){tiles.push({o:p.a,k:'p'+i});tiles.push({o:p.b,k:'p'+i})});
+  else D.items.forEach(function(o,i){if(o.t&&o.i){tiles.push({o:{t:o.t,s:o.s},k:'x'+i});tiles.push({o:{i:o.i,s:o.s},k:'x'+i})}else tiles.push({o:o,k:'s'+(o.s||o.t||o.i)})});
+  var cnt={};tiles.forEach(function(t){cnt[t.k]=(cnt[t.k]||0)+1});if(!D.pairs&&Object.keys(cnt).every(function(k){return cnt[k]==1}))tiles=tiles.concat(tiles.map(function(t){return {o:t.o,k:t.k}}));cnt={};tiles.forEach(function(t){cnt[t.k]=(cnt[t.k]||0)+1});total=0;for(var k in cnt)total+=Math.floor(cnt[k]/2);
+  tiles=sh(tiles);var open=[],found=0,lock=false,g=el('div','grid'),n=tiles.length,cols=n<=8?4:n<=12?4:n<=20?5:6;g.style.gridTemplateColumns='repeat('+cols+',minmax(0,1fr))';g.style.maxWidth='460px';stage.innerHTML='';dots(0,0);
+  tiles.forEach(function(t){var c=el('div','card');c.style.cssText+=';aspect-ratio:1;min-height:0;padding:4px';c.innerHTML='<div class="t" style="--fs:26px;color:#F8B9B6">&#9733;</div>';c.__t=t;
+    c.onclick=function(){if(lock||c.classList.contains('ok')||open.indexOf(c)>=0)return;c.innerHTML='';var f=mk(t.o,'',{fs:t.o.i?15:20});while(f.firstChild)c.appendChild(f.firstChild);c.style.background='#fff';open.push(c);say(t.o.s);
+      if(open.length==2){lock=true;var a=open[0],b=open[1];if(a.__t.k===b.__t.k){good();after(function(){a.classList.add('ok');b.classList.add('ok');open=[];lock=false;found++;if(found>=total)finish('')},450)}
+        else{bad();after(function(){[a,b].forEach(function(x){x.innerHTML='<div class="t" style="--fs:26px;color:#F8B9B6">&#9733;</div>'});open=[];lock=false},900)}}};g.appendChild(c)});
+  stage.appendChild(g)};
+/* סידור אותיות למילה */
+E.anagram=function(){var ps=D.pairs,i=0;total=ps.length;
+  function show(){window.__ww.i=i;stage.innerHTML='';dots(ps.length,i);var p=ps[i],w=Array.from(p.a.t.replace(/\s+/g,'')),pos=[];
+    if(p.b.i){var im=mk({i:p.b.i},'fixed');im.style.cssText+=';width:200px;height:160px;flex:none';stage.appendChild(im)}say(p.b.s);
+    var sl=el('div','slots');w.forEach(function(){sl.appendChild(el('div','slot',''))});stage.appendChild(sl);var tl=el('div','slots');
+    sh(w.map(function(ch,k){return {ch:ch,k:k}})).forEach(function(o){var t=el('div','tile',esc(o.ch));t.onclick=function(){if(t.classList.contains('used')||pos.length>=w.length)return;t.classList.add('used');pos.push(t);t.__ch=o.ch;sl.children[pos.length-1].textContent=o.ch;
+      if(pos.length==w.length){var s=pos.map(function(x){return x.__ch}).join('');if(s===w.join('')){good();say(p.b.s);after(function(){i++;if(i>=ps.length){dots(ps.length,ps.length);finish('')}else show()},900)}else{bad();sl.style.animation='sh .35s';after(function(){sl.style.animation='';pos.forEach(function(x){x.classList.remove('used')});pos=[];[].forEach.call(sl.children,function(c){c.textContent=''})},500)}}};tl.appendChild(t)});
+    sl.onclick=function(){if(!pos.length)return;var t=pos.pop();t.classList.remove('used');sl.children[pos.length].textContent=''};stage.appendChild(tl);
+    var h=el('div','');h.style.cssText='font-size:13px;opacity:.7';h.textContent='לחצו על משבצת כדי להחזיר אות';stage.appendChild(h)}
+  show()};
+/* סידור מילים למשפט */
+E.order=function(){var ps=D.pairs,i=0;total=ps.length;
+  function show(){window.__ww.i=i;stage.innerHTML='';dots(ps.length,i);var p=ps[i],w=p.a.t.split(/\s+/).filter(Boolean),pos=[];
+    var sl=el('div','slots');sl.style.cssText+=';min-height:90px;border:3px dashed #F8B9B6;border-radius:16px;padding:8px;width:100%;background:#fff;align-content:flex-start';stage.appendChild(sl);var tl=el('div','slots');
+    function render(){sl.innerHTML='';pos.forEach(function(t,k){var c=el('div','tile',esc(t.w));c.style.borderColor='#F8B9B6';c.onclick=function(){var x=pos.splice(k,1)[0];x.el.classList.remove('used');render()};sl.appendChild(c)})}
+    sh(w.map(function(x,k){return {w:x,k:k}})).forEach(function(o){var t=el('div','tile',esc(o.w));o.el=t;t.style.fontSize='22px';t.onclick=function(){if(t.classList.contains('used'))return;t.classList.add('used');pos.push(o);render();
+      if(pos.length==w.length){if(pos.map(function(x){return x.w}).join(' ')===w.join(' ')){good();after(function(){i++;if(i>=ps.length){dots(ps.length,ps.length);finish('')}else show()},1000)}else{bad();sl.style.animation='sh .35s';after(function(){sl.style.animation='';pos.forEach(function(x){x.el.classList.remove('used')});pos=[];render()},600)}}};tl.appendChild(t)});
+    stage.appendChild(tl)}
+  show()};
+/* מיון: פריט אחד בכל פעם אל הקבוצה הנכונה */
+E.sort=function(){var items=[];D.groups.forEach(function(g,gi){g.items.forEach(function(o){items.push({o:o,g:gi})})});items=sh(items);total=items.length;var i=0,ng=D.groups.length;
+  function show(){stage.innerHTML='';dots(Math.min(items.length,24),Math.round(i/items.length*Math.min(items.length,24)));var it=items[i],c=mk(it.o,'fixed',{fs:30});c.style.cssText+=';width:70%;max-width:260px;min-height:140px;max-height:210px;flex:0 1 auto';stage.appendChild(c);say(it.o.s);
+    if(it.o.s){c.style.cursor='pointer';c.onclick=function(){say(it.o.s)}}
+    var g=el('div','grid');g.style.gridTemplateColumns='repeat('+(ng<=2?ng:Math.min(3,ng))+',minmax(0,1fr))';g.style.maxWidth='460px';
+    D.groups.forEach(function(gr,gi){var b=mk(gr.h,'',{fs:gr.h.i?16:24});b.style.minHeight='74px';b.style.maxHeight='120px';b.style.borderColor=['#FBC5D6','#B9E3D0','#BCD9F0','#F3DE98'][gi%4];
+      b.onclick=function(){say(gr.h.s);if(gi===it.g){good();b.classList.add('ok');hits++;after(function(){i++;if(i>=items.length){dots(24,24);finish('')}else show()},500)}else{bad();b.classList.add('no');after(function(){b.classList.remove('no')},400)}};g.appendChild(b)});stage.appendChild(g)}
+  show()};
+/* לחיצה רק על הנכונים (חפרפרת) */
+E.pick=function(){var items=[];D.groups.forEach(function(g,gi){g.items.forEach(function(o){items.push({o:o,ok:gi===0})})});items=sh(items);var need=items.filter(function(x){return x.ok}).length,got=0;total=need;
+  stage.innerHTML='';dots(0,0);var g=el('div','grid'),n=items.length;g.style.gridTemplateColumns='repeat('+(n<=6?3:n<=12?3:4)+',minmax(0,1fr))';g.style.maxWidth='460px';
+  items.forEach(function(x){var c=mk(x.o,'',{fs:x.o.i?16:24});c.style.minHeight=x.o.i?'96px':'64px';c.style.maxHeight='130px';
+    c.onclick=function(){if(c.classList.contains('ok'))return;say(x.o.s);if(x.ok){good();c.classList.add('ok');got++;if(got>=need)finish('')}else{bad();c.classList.add('no');after(function(){c.classList.remove('no')},400)}};g.appendChild(c)});stage.appendChild(g)};
+/* גלגל */
+E.wheel=function(){var items=D.items,n=items.length,cols=['#FDE1EA','#D4EFE2','#D3E8F8','#FFF0B8','#EBDDF7','#FFE3CE'],ang=0,spinning=false,imgs=[];stage.innerHTML='';dots(0,0);
+  var box=el('div','wheelbox'),cv=el('canvas');cv.width=cv.height=660;box.appendChild(cv);box.appendChild(el('div','pin'));stage.appendChild(box);var res=el('div','res');stage.appendChild(res);var b=el('button','btn','סובבו את הגלגל');b.type='button';stage.appendChild(b);
+  items.forEach(function(o,i){if(o.i){var im=new Image();im.onload=function(){draw()};im.src=BASE+'assets/'+o.i;imgs[i]=im}});
+  function draw(){var c=cv.getContext('2d'),R=330;c.clearRect(0,0,660,660);c.save();c.translate(R,R);c.rotate(ang);var a=2*Math.PI/n;
+    for(var i=0;i<n;i++){c.beginPath();c.moveTo(0,0);c.arc(0,0,R-6,i*a,(i+1)*a);c.closePath();c.fillStyle=cols[i%cols.length];c.fill();c.lineWidth=4;c.strokeStyle='#fff';c.stroke();
+      c.save();c.rotate(i*a+a/2);var im=imgs[i];
+      if(im&&im.complete&&im.naturalWidth){var sz=Math.min(150,(R-80)*Math.sin(a/2)*1.7);c.save();c.translate(R-70-sz/2,0);c.rotate(Math.PI/2);var r=im.naturalWidth/im.naturalHeight,w=r>=1?sz:sz*r,h=r>=1?sz/r:sz;c.drawImage(im,-w/2,-h/2,w,h);c.restore()}
+      else{c.fillStyle='#5E5A73';c.textAlign='right';c.textBaseline='middle';var t=items[i].t||'';c.font='700 '+(n>8?40:46)+'px "Noto Sans Hebrew",Rubik,sans-serif';c.direction='rtl';c.fillText(t,R-40,0)}c.restore()}
+    c.restore();c.beginPath();c.arc(R,R,26,0,7);c.fillStyle='#fff';c.fill();c.lineWidth=6;c.strokeStyle='#EF406E';c.stroke()}
+  function spin(){if(spinning)return;spinning=true;res.innerHTML='';var target=ang+(6+Math.random()*4)*2*Math.PI,t0=performance.now(),a0=ang,dur=reduce?300:3600;
+    (function f(t){var k=Math.min(1,(t-t0)/dur),e=1-Math.pow(1-k,3);ang=a0+(target-a0)*e;draw();if(k<1)requestAnimationFrame(f);else{spinning=false;var a=2*Math.PI/n,pa=((-Math.PI/2-ang)%(2*Math.PI)+2*Math.PI)%(2*Math.PI),idx=Math.floor(pa/a)%n,it=items[idx];
+      res.innerHTML='';if(it.i){var im=el('img');im.src=BASE+'assets/'+it.i;im.style.cssText='height:120px;border-radius:12px;display:block;margin:0 auto';res.appendChild(im)}if(it.t)res.appendChild(el('div','',esc(it.t)));say(it.s);good()}})(t0)}
+  b.onclick=spin;cv.onclick=spin;draw()};
+/* חפיסת קלפים */
+E.deck=function(){var items=sh(D.items),i=-1;total=items.length;stage.innerHTML='';
+  var d=el('div','deck'),c=el('div','card');c.innerHTML='<div class="t" style="--fs:80px;color:#F8B9B6">&#9733;</div>';d.appendChild(c);stage.appendChild(d);var info=el('div','res','');info.style.fontSize='18px';stage.appendChild(info);
+  d.onclick=function(){i++;if(i>=items.length){finish('');return}var f=mk(items[i],'',{fs:44});c.innerHTML='';while(f.firstChild)c.appendChild(f.firstChild);c.style.background='#fff';say(items[i].s);dots(items.length,i+1);info.textContent=(i+1)+' / '+items.length+(i<items.length-1?'  (לחצו לקלף הבא)':'')};
+  dots(items.length,0);info.textContent='לחצו על הקלף כדי להפוך'};
+/* דיאגרמה עם תוויות */
+E.labels=function(){var ls=D.labels,left=ls.length,sel=null;total=ls.length;stage.innerHTML='';dots(0,0);
+  var box=el('div','lblimg'),im=el('img');im.src=BASE+'assets/'+D.img;box.appendChild(im);var chips=el('div','row');chips.style.maxWidth='500px';
+  ls.forEach(function(l,k){var s=el('button','spot','');s.type='button';s.style.left=(l.x*100)+'%';s.style.top=(l.y*100)+'%';s.__k=k;box.appendChild(s);
+    s.onclick=function(){if(s.classList.contains('ok')||!sel)return;if(sel.__k===k||ls[sel.__k].t===l.t){good();s.classList.add('ok');s.textContent=ls[sel.__k].t;sel.style.visibility='hidden';sel=null;left--;if(!left)finish('')}else{bad();s.classList.add('no');after(function(){s.classList.remove('no')},400)}}});
+  sh(ls.map(function(l,k){return {l:l,k:k}})).forEach(function(o){var c=el('div','tile',esc(o.l.t));c.__k=o.k;c.style.fontSize='24px';c.onclick=function(){say(o.l.s);if(sel)sel.style.borderColor='#D4EFE2';sel=c;c.style.borderColor='#EF406E'};chips.appendChild(c)});
+  stage.appendChild(box);stage.appendChild(chips)};
+/* השלמת משפט */
+E.cloze=function(){var ss=D.ss,i=0;total=ss.length;
+  function show(){stage.innerHTML='';dots(ss.length,i);var s=ss[i],parts=s.m.split(/(\[[^\]]*\])/),blanks=parts.filter(function(p){return /^\[/.test(p)}).map(function(p){return p.slice(1,-1).trim()}),bi=0,box=el('div','card fixed');if(!/[֐-׿]/.test(s.m))box.style.direction='ltr';box.style.cssText+=';width:100%;max-width:440px;min-height:90px;flex-direction:row;flex-wrap:wrap;gap:6px;font-size:30px';
+    function render(){box.innerHTML='';var k=0;parts.forEach(function(p){if(/^\[/.test(p)){var b=el('span','',k<bi?esc(blanks[k]):'___');b.style.cssText='min-width:52px;border-bottom:4px solid #F8B9B6;padding:0 6px;'+(k<bi?'color:#4FB38C':'');box.appendChild(b);k++}else if(p.trim()){box.appendChild(el('span','',esc(p)))}})}
+    render();stage.appendChild(box);say(s.s);var opts=sh(blanks.concat(s.w.map(String)).filter(function(v,x,a){return a.indexOf(v)===x})),g=el('div','row');
+    opts.forEach(function(o){var c=el('div','card',esc(o));c.style.cssText+=';min-width:70px;min-height:60px;font-size:28px;flex-direction:row;padding:6px 14px';c.onclick=function(){if(c.classList.contains('ok'))return;if(o===blanks[bi]){good();c.classList.add('ok');bi++;render();if(bi>=blanks.length)after(function(){i++;if(i>=ss.length){dots(ss.length,ss.length);finish('')}else show()},800)}else{bad();c.classList.add('no');after(function(){c.classList.remove('no')},400)}};g.appendChild(c)});stage.appendChild(g)}
+  show()};
+var DEF={quiz:'בחרו את התשובה הנכונה',match:'לחצו על פריט ואז על הפריט התואם לו',memory:'הפכו שני קלפים ומצאו זוגות תואמים',anagram:'סדרו את האותיות למילה',order:'לחצו על המילים לפי הסדר כדי לבנות משפט',sort:'לחצו על הקבוצה הנכונה לפריט',pick:'לחצו רק על הפריטים הנכונים',wheel:'סובבו את הגלגל',deck:'הפכו קלף אחרי קלף',labels:'בחרו אות ואז לחצו על המקום שלה בתמונה',cloze:'בחרו את התשובה שמשלימה'};
+/* אתחול */
+function start(){$('end').style.display='none';fxStop=true;fx.clearRect(0,0,fxc.width,fxc.height);hits=0;stage.scrollTop=0;try{E[D.kind]()}catch(e){stage.textContent='שגיאה בטעינת המשחק'}}
+$('rs').onclick=start;$('again').onclick=start;
+var fb=$('fs'),inF=window.self!==window.top;function fsEl(){return document.fullscreenElement||document.webkitFullscreenElement}
+fb.onclick=function(){var d=document.documentElement,rq=d.requestFullscreen||d.webkitRequestFullscreen;if(fsEl()){(document.exitFullscreen||document.webkitExitFullscreen).call(document);return}
+  if(rq){try{var r=rq.call(d);if(r&&r.catch)r.catch(function(){if(inF)window.open(location.href,'_blank')})}catch(_){if(inF)window.open(location.href,'_blank')}}else if(inF)window.open(location.href,'_blank')};
+document.addEventListener('contextmenu',function(e){e.preventDefault()});
+fetch(BASE+'data/'+G+'.json').then(function(r){return r.json()}).then(function(d){D=d;$('ttl').textContent=d.title;ins.textContent=d.ins||DEF[d.kind]||'';document.title=d.title;start()}).catch(function(){stage.textContent='המשחק לא נמצא'});
+})();
+</script>
+</body>
+</html>
