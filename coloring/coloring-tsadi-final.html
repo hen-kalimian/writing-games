@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<title>דפי צביעה: ץ</title>
+<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@500;600;700;900&family=Open+Sans:wght@500;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+html,body{margin:0;height:100%;overflow:hidden;overscroll-behavior:none;font-family:'Open Sans',Arial,sans-serif;color:#5E5A73}
+body{--h:205;background:linear-gradient(180deg,#FFFFFF 0%,hsl(var(--h) 85% 96.5%) 42%,hsl(var(--h) 70% 89%) 100%);display:flex;justify-content:center}
+.bg{position:fixed;inset:0;pointer-events:none;overflow:hidden}
+.bg i{position:absolute;border-radius:50%}
+.wrap{position:relative;width:100%;max-width:520px;height:100%;display:flex;flex-direction:column;align-items:center;padding:10px 14px 12px;gap:8px}
+.brand{align-self:flex-start;font-family:Rubik,sans-serif;font-weight:700;font-size:14px;color:#5F8DB5;border-bottom:3px solid #EF406E;padding-bottom:2px;border-radius:2px}
+h1{margin:0;font-family:Rubik,sans-serif;font-weight:800;font-size:24px;line-height:1.1;text-align:center}
+h1 b{color:#EF406E;font-weight:900}
+.pots{display:flex;gap:7px;justify-content:center;flex-wrap:nowrap;width:100%;padding:4px 0 2px}
+.pot{position:relative;flex:1 1 0;max-width:54px;aspect-ratio:1;border-radius:46% 54% 50% 50% / 52% 46% 54% 48%;border:0;padding:0;cursor:pointer;background:var(--c);
+  box-shadow:inset -4px -5px 8px rgba(0,0,0,.10),inset 3px 4px 7px rgba(255,255,255,.55),0 3px 0 rgba(0,0,0,.08);transition:transform .15s}
+.pot::after{content:"";position:absolute;top:16%;right:20%;width:26%;height:18%;border-radius:50%;background:rgba(255,255,255,.7);filter:blur(1px);transform:rotate(-25deg)}
+.pot.on{transform:translateY(-6px) scale(1.12);box-shadow:inset -4px -5px 8px rgba(0,0,0,.10),inset 3px 4px 7px rgba(255,255,255,.55),0 0 0 3px #fff,0 0 0 6px #EF406E,0 7px 10px rgba(239,64,110,.25)}
+#boardbox{position:relative;width:100%;flex:1 1 auto;min-height:0;display:flex;justify-content:center;align-items:center;touch-action:none}
+.board{position:relative;width:300px;height:300px;background:#fff;border:3px solid hsl(var(--h) 65% 86%);border-radius:28px;box-shadow:0 6px 18px hsl(var(--h) 50% 50% / .15);overflow:hidden;touch-action:none}
+.board canvas{position:absolute;inset:0;width:100%;height:100%;touch-action:none;display:block}
+.btns{display:flex;justify-content:center;gap:10px;width:100%}
+.btn{font-family:Rubik,sans-serif;font-weight:700;font-size:16px;color:#B8236B;background:#FDE1EA;border:2.5px solid #FBC5D6;border-radius:99px;padding:9px 24px;cursor:pointer}
+.btn.main{background:#EF406E;color:#fff;border-color:#EF406E;box-shadow:0 4px 0 #D14175}
+#fx{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:9}
+@media (max-height:620px){h1{font-size:19px}.btn{padding:7px 18px;font-size:14px}.wrap{gap:5px;padding-top:6px}}
+</style>
+</head>
+<body>
+<div class="bg"><i style="width:240px;height:240px;background:hsl(var(--h) 75% 90%);top:-90px;left:-70px;opacity:.8"></i><i style="width:180px;height:180px;background:hsl(calc(var(--h) + 150) 55% 90%);bottom:-60px;right:-50px;opacity:.7"></i><i style="width:90px;height:90px;background:hsl(calc(var(--h) + 210) 60% 91%);top:42%;left:-30px;opacity:.7"></i><i style="width:60px;height:60px;background:#FFF0B8;top:14%;right:-14px;opacity:.8"></i></div>
+<div class="wrap">
+  <div class="brand">אותיות בקלות - חן קלימיאן</div>
+  <h1>צובעים את האות הסופית <b>ץ</b></h1>
+  <div class="pots" id="pots" role="radiogroup" aria-label="צבעים"></div>
+  <div id="boardbox"><div class="board" id="board">
+    <canvas id="cBase"></canvas><canvas id="cPaint"></canvas><canvas id="cLine"></canvas>
+  </div></div>
+  <div class="btns"><button class="btn" id="again" type="button">מתחילים מחדש</button><button class="btn" id="fs" type="button">מסך מלא</button></div>
+</div>
+<canvas id="fx"></canvas>
+<script>
+(function(){
+var LETTER='ץ';
+var COLORS=[['#F4A3BC','ורוד'],['#F9BE9E','אפרסק'],['#F6DC8A','צהוב'],['#A9DDC4','מנטה'],['#C2E1A6','ירוק'],['#A8D2EE','תכלת'],['#C8B7EA','לבנדר'],['#DEC6A4','חול']];
+var reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+var potsEl=document.getElementById('pots'),board=document.getElementById('board');
+var cBase=document.getElementById('cBase'),cPaint=document.getElementById('cPaint'),cLine=document.getElementById('cLine');
+var bx=cBase.getContext('2d'),px=cPaint.getContext('2d'),lx=cLine.getContext('2d');
+var mask=document.createElement('canvas'),mx=mask.getContext('2d');
+var S=0,color=COLORS[0][0],done=false,drawing=false,last=null,brush=0,coverTimer=null,lastColorUsed=COLORS[0][0];
+COLORS.forEach(function(c,i){var b=document.createElement('button');b.type='button';b.className='pot'+(i===0?' on':'');b.style.setProperty('--c',c[0]);b.setAttribute('aria-label',c[1]);b.setAttribute('role','radio');
+  b.addEventListener('pointerdown',function(e){e.preventDefault();pick(i)});potsEl.appendChild(b)});
+function pick(i){color=COLORS[i][0];[].forEach.call(potsEl.children,function(p,k){p.classList.toggle('on',k===i)})}
+function fontStr(sz){return '900 '+sz+'px Rubik, "Arial Hebrew", Arial, sans-serif'}
+function layout(){
+  var r=board.getBoundingClientRect(),dpr=Math.min(2,window.devicePixelRatio||1);
+  var s=Math.max(200,Math.round(r.width*dpr)); if(s===S) return; S=s;
+  [cBase,cPaint,cLine,mask].forEach(function(c){c.width=S;c.height=S});
+  brush=S*0.0195;
+  drawMask(); drawBase(); px.clearRect(0,0,S,S); done=false; drawOutline();
+}
+function glyphBox(){
+  var sz=S*0.86; mx.font=fontStr(sz); mx.textAlign='center'; mx.textBaseline='alphabetic';
+  var m=mx.measureText(LETTER),w=(m.actualBoundingBoxLeft||0)+(m.actualBoundingBoxRight||m.width),h=(m.actualBoundingBoxAscent||sz*0.7)+(m.actualBoundingBoxDescent||0);
+  var k=Math.min(S*0.74/h,S*0.78/w); sz=Math.min(sz*k,S*2.6); mx.font=fontStr(sz);
+  m=mx.measureText(LETTER);var asc=m.actualBoundingBoxAscent||sz*0.7,desc=m.actualBoundingBoxDescent||0;h=asc+desc;
+  return {sz:sz,x:S/2,y:(S-h)/2+asc};
+}
+function drawMask(){mx.clearRect(0,0,S,S);var g=glyphBox();mx.font=fontStr(g.sz);mx.textAlign='center';mx.fillStyle='#000';mx.fillText(LETTER,g.x,g.y)}
+function drawBase(){bx.clearRect(0,0,S,S);bx.fillStyle='#FFF7F8';bx.fillRect(0,0,S,S);
+  var t=document.createElement('canvas');t.width=t.height=S;var tx=t.getContext('2d');tx.drawImage(mask,0,0);tx.globalCompositeOperation='source-in';tx.fillStyle='#FFFFFF';tx.fillRect(0,0,S,S);
+  bx.shadowColor='rgba(184,35,107,.18)';bx.shadowBlur=S*0.02;bx.drawImage(t,0,0);bx.shadowBlur=0}
+function drawOutline(){lx.clearRect(0,0,S,S);var g=glyphBox(),w=Math.max(3,S*0.011);lx.font=fontStr(g.sz);lx.textAlign='center';lx.lineJoin='round';
+  lx.globalCompositeOperation='source-over';lx.lineWidth=w*2;lx.strokeStyle='rgba(217,127,160,.95)';lx.strokeText(LETTER,g.x,g.y);
+  lx.globalCompositeOperation='destination-out';lx.fillStyle='#000';lx.fillText(LETTER,g.x,g.y);lx.globalCompositeOperation='source-over'}
+function pos(e){var r=cPaint.getBoundingClientRect();return {x:(e.clientX-r.left)*S/r.width,y:(e.clientY-r.top)*S/r.height}}
+function seg(a,b,col){
+  px.globalCompositeOperation='source-over';px.strokeStyle=col;px.fillStyle=col;px.lineCap='round';px.lineJoin='round';px.lineWidth=brush*2;
+  px.beginPath();px.moveTo(a.x,a.y);px.lineTo(b.x,b.y);px.stroke();
+  var pad=brush+4,x=Math.max(0,Math.min(a.x,b.x)-pad),y=Math.max(0,Math.min(a.y,b.y)-pad),w=Math.min(S,Math.max(a.x,b.x)+pad)-x,h=Math.min(S,Math.max(a.y,b.y)+pad)-y;
+  px.save();px.beginPath();px.rect(x,y,w,h);px.clip();px.globalCompositeOperation='destination-in';px.drawImage(mask,0,0);px.restore();
+}
+function down(e){if(done)return;e.preventDefault();drawing=true;try{board.setPointerCapture(e.pointerId)}catch(_){}
+  var p=pos(e);last=p;lastColorUsed=color;seg(p,{x:p.x+.01,y:p.y+.01},color);scheduleCheck()}
+function move(e){if(!drawing||done)return;e.preventDefault();var p=pos(e);seg(last,p,color);last=p;lastColorUsed=color;scheduleCheck()}
+function up(e){if(!drawing)return;drawing=false;last=null;scheduleCheck(true)}
+board.addEventListener('pointerdown',down);board.addEventListener('pointermove',move);board.addEventListener('pointerup',up);board.addEventListener('pointercancel',up);board.addEventListener('lostpointercapture',up);
+['touchstart','touchmove'].forEach(function(n){board.addEventListener(n,function(e){e.preventDefault()},{passive:false})});
+document.addEventListener('touchmove',function(e){if(drawing)e.preventDefault()},{passive:false});
+document.addEventListener('contextmenu',function(e){e.preventDefault()});
+function scheduleCheck(now){if(coverTimer&&!now)return;clearTimeout(coverTimer);coverTimer=setTimeout(function(){coverTimer=null;check()},now?10:220)}
+function coverage(){
+  var N=160,a=document.createElement('canvas'),b=document.createElement('canvas');a.width=a.height=b.width=b.height=N;
+  var ac=a.getContext('2d'),bc=b.getContext('2d');ac.drawImage(mask,0,0,N,N);bc.drawImage(cPaint,0,0,N,N);
+  var A=ac.getImageData(0,0,N,N).data,B=bc.getImageData(0,0,N,N).data,tot=0,got=0;
+  for(var i=3;i<A.length;i+=4){if(A[i]>200){tot++;if(B[i]>120)got++}}
+  return tot?got/tot:0;
+}
+function check(){if(done)return;if(coverage()>=0.93)finish()}
+function finish(){done=true;drawing=false;
+  px.globalCompositeOperation='destination-over';px.fillStyle=lastColorUsed;px.fillRect(0,0,S,S);
+  px.globalCompositeOperation='destination-in';px.drawImage(mask,0,0);px.globalCompositeOperation='source-over';
+  setTimeout(confetti,200)}
+document.getElementById('again').addEventListener('click',function(){px.clearRect(0,0,S,S);done=false;fxStop=true;fx.clearRect(0,0,fxc.width,fxc.height)});
+/* מסך מלא: אם הדפדפן לא מאפשר בתוך הטמעה (אייפון), נפתח הדף בלשונית נפרדת */
+var fsBtn=document.getElementById('fs'),inFrame=(window.self!==window.top);
+function fsEl(){return document.fullscreenElement||document.webkitFullscreenElement}
+function fsLabel(){fsBtn.textContent=fsEl()?'יציאה ממסך מלא':'מסך מלא'}
+fsBtn.addEventListener('click',function(){
+  var d=document.documentElement,rq=d.requestFullscreen||d.webkitRequestFullscreen;
+  if(fsEl()){(document.exitFullscreen||document.webkitExitFullscreen).call(document);return}
+  if(rq){try{var r=rq.call(d);if(r&&r.catch)r.catch(function(){if(inFrame)window.open(location.href.split('#')[0],'_blank')})}catch(_){if(inFrame)window.open(location.href.split('#')[0],'_blank')}}
+  else if(inFrame){window.open(location.href.split('#')[0],'_blank')}
+});
+document.addEventListener('fullscreenchange',fsLabel);document.addEventListener('webkitfullscreenchange',fsLabel);
+/* קונפטי בצבעי המותג */
+var fxc=document.getElementById('fx'),fx=fxc.getContext('2d'),fxStop=false;
+function confetti(){
+  fxc.width=innerWidth;fxc.height=innerHeight;fxStop=false;
+  var cols=['#F8B9B6','#FDE1EA','#EF406E','#FFFFFF','#8FD3B6','#B7CDE0','#F6DC8A','#FBD9D6'],n=reduce?40:170,P=[];
+  for(var i=0;i<n;i++)P.push({x:Math.random()*fxc.width,y:-20-Math.random()*fxc.height*0.6,w:6+Math.random()*7,h:9+Math.random()*10,vy:2+Math.random()*3.2,vx:-1+Math.random()*2,r:Math.random()*6.28,vr:-.15+Math.random()*.3,c:cols[i%cols.length],star:Math.random()<.13});
+  var t0=performance.now();
+  (function f(t){if(fxStop)return;fx.clearRect(0,0,fxc.width,fxc.height);var any=false;
+    P.forEach(function(p){p.x+=p.vx;p.y+=p.vy;p.r+=p.vr;if(p.y<fxc.height+30)any=true;fx.save();fx.translate(p.x,p.y);fx.rotate(p.r);fx.fillStyle=p.c;
+      if(p.star){fx.beginPath();for(var k=0;k<8;k++){var rr=k%2?3:8,an=k*Math.PI/4;fx.lineTo(Math.cos(an)*rr,Math.sin(an)*rr)}fx.closePath();fx.fill()}
+      else{fx.globalAlpha=.92;fx.fillRect(-p.w/2,-p.h/2,p.w,p.h)}fx.restore()});
+    if(any&&t-t0<6000)requestAnimationFrame(f);else fx.clearRect(0,0,fxc.width,fxc.height)})(t0);
+}
+var bbox=document.getElementById('boardbox');function fit(){var sz=Math.floor(Math.min(bbox.clientWidth,bbox.clientHeight));if(sz>100){board.style.width=board.style.height=sz+'px'}layout()}
+var ro=new ResizeObserver(fit);ro.observe(bbox);
+(document.fonts&&document.fonts.load?document.fonts.load('900 100px Rubik','אבגדהוזחטיכלמנסעפצקרשתךםןףץ0123456789'):Promise.resolve()).then(function(){S=0;fit()},function(){S=0;fit()});
+window.__coloring={coverage:coverage,state:function(){return {done:done,S:S}}};
+})();
+</script>
+</body>
+</html>
