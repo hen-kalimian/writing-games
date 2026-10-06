@@ -93,7 +93,7 @@ var E={};
 /* חידון */
 E.quiz=function(){var qs=D.qs,qi=0;total=qs.length;hits=0;
   function show(){stage.innerHTML='';dots(qs.length,qi);var q=qs[qi],need=q.n,got=0,miss=false,lock=false;
-    if(q.q.t||q.q.i){var qc=mk(q.q,'fixed');qc.style.cssText+=';width:100%;max-width:320px;min-height:'+(q.q.i?'150px':'80px')+';max-height:210px;flex:0 1 auto';stage.appendChild(qc);if(q.q.s){qc.style.cursor='pointer';qc.onclick=function(){say(q.q.s)}}say(q.q.s)}
+    if(q.q.t||q.q.i){var qc=mk(q.q,'fixed');qc.style.cssText+=';width:100%;max-width:460px;min-height:'+(q.q.i?'220px':'90px')+';max-height:320px;flex:0 1 auto';stage.appendChild(qc);if(q.q.s){qc.style.cursor='pointer';qc.onclick=function(){say(q.q.s)}}say(q.q.s)}
     var n=q.a.length,g=el('div','grid');g.style.gridTemplateColumns='repeat('+(n<=2?n:n==4?2:Math.min(3,n))+',minmax(0,1fr))';g.style.maxWidth='430px';
     sh(q.a).forEach(function(a){var c=mk(a,'',{fs:a.i?18:30});c.style.minHeight=a.i?'110px':'74px';c.style.maxHeight='150px';
       c.onclick=function(){if(lock||c.classList.contains('ok'))return;say(a.s);
@@ -148,7 +148,7 @@ E.order=function(){var ps=D.pairs,i=0;total=ps.length;
   show()};
 /* מיון: פריט אחד בכל פעם אל הקבוצה הנכונה */
 E.sort=function(){var items=[];D.groups.forEach(function(g,gi){g.items.forEach(function(o){items.push({o:o,g:gi})})});items=sh(items);total=items.length;var i=0,ng=D.groups.length;
-  function show(){stage.innerHTML='';dots(Math.min(items.length,24),Math.round(i/items.length*Math.min(items.length,24)));var it=items[i],c=mk(it.o,'fixed',{fs:30});c.style.cssText+=';width:70%;max-width:260px;min-height:140px;max-height:210px;flex:0 1 auto';stage.appendChild(c);say(it.o.s);
+  function show(){stage.innerHTML='';dots(Math.min(items.length,24),Math.round(i/items.length*Math.min(items.length,24)));var it=items[i],c=mk(it.o,'fixed',{fs:30});c.style.cssText+=';width:80%;max-width:400px;min-height:200px;max-height:320px;flex:0 1 auto';stage.appendChild(c);say(it.o.s);
     if(it.o.s){c.style.cursor='pointer';c.onclick=function(){say(it.o.s)}}
     var g=el('div','grid');g.style.gridTemplateColumns='repeat('+(ng<=2?ng:Math.min(3,ng))+',minmax(0,1fr))';g.style.maxWidth='460px';
     D.groups.forEach(function(gr,gi){var b=mk(gr.h,'',{fs:gr.h.i?16:24});b.style.minHeight='74px';b.style.maxHeight='120px';b.style.borderColor=['#FBC5D6','#B9E3D0','#BCD9F0','#F3DE98'][gi%4];
