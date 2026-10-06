@@ -44,7 +44,7 @@ h1 b{color:#EF406E;font-weight:900}
 <canvas id="fx"></canvas>
 <script>
 (function(){
-var LETTER='ף',STROKES=["M 68.3 25 L 231.7 25 L 231.7 25 L 231.7 275","M 68.3 25 L 68.3 108.3 L 68.3 108.3 L 156.7 108.3"],VIEWW=300,BW=54;var PATHS=STROKES.map(function(d){return new Path2D(d)});var GT=null;
+var LETTER='ף',STROKES=["M 68.3 25 L 231.7 25 L 231.7 25 L 231.7 275","M 68.3 25 L 68.3 108.3 L 68.3 108.3 L 156.7 108.3"],VIEWW=300,BW=46;var PATHS=STROKES.map(function(d){return new Path2D(d)});var GT=null;
 var COLORS=[['#F4A3BC','ורוד'],['#F9BE9E','אפרסק'],['#F6DC8A','צהוב'],['#A9DDC4','מנטה'],['#C2E1A6','ירוק'],['#A8D2EE','תכלת'],['#C8B7EA','לבנדר'],['#DEC6A4','חול']];
 var reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
 var potsEl=document.getElementById('pots'),board=document.getElementById('board');
@@ -70,8 +70,8 @@ function glyphBox(){
     var d=tc.getImageData(0,0,S,S).data,x0=S,y0=S,x1=0,y1=0;
     for(var y=0;y<S;y+=2)for(var x=0;x<S;x+=2){if(d[(y*S+x)*4+3]>60){if(x<x0)x0=x;if(x>x1)x1=x;if(y<y0)y0=y;if(y>y1)y1=y}}
     var w=x1-x0+2,h=y1-y0+2,f=Math.min(S*0.74/h,S*0.78/w,1.8),cx=(x0+x1)/2,cy=(y0+y1)/2;
-    if(LETTER==='י')f*=0.4;
-    var sc=s0*f;return {path:true,sc:sc,tx:S/2-cx*f,ty:(LETTER==='י'?S*0.3:S/2)-cy*f};
+    if(LETTER==='י')f*=0.5;
+    var sc=s0*f;return {path:true,sc:sc,tx:S/2-cx*f,ty:(LETTER==='י'?S*0.29:S/2)-cy*f};
   }
   var sz=S*0.86; mx.font=fontStr(sz); mx.textAlign='center'; mx.textBaseline='alphabetic';
   var m=mx.measureText(LETTER),w2=(m.actualBoundingBoxLeft||0)+(m.actualBoundingBoxRight||m.width),h2=(m.actualBoundingBoxAscent||sz*0.7)+(m.actualBoundingBoxDescent||0);

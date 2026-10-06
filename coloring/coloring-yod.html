@@ -8,7 +8,7 @@
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
 html,body{margin:0;height:100%;overflow:hidden;overscroll-behavior:none;font-family:'Open Sans',Arial,sans-serif;color:#5E5A73}
-body{--h:340;background:linear-gradient(180deg,#FFFFFF 0%,hsl(var(--h) 85% 96.5%) 42%,hsl(var(--h) 70% 89%) 100%);display:flex;justify-content:center}
+body{--h:150;background:linear-gradient(180deg,#FFFFFF 0%,hsl(var(--h) 85% 96.5%) 42%,hsl(var(--h) 70% 89%) 100%);display:flex;justify-content:center}
 .bg{position:fixed;inset:0;pointer-events:none;overflow:hidden}
 .bg i{position:absolute;border-radius:50%}
 .wrap{position:relative;width:100%;max-width:520px;height:100%;display:flex;flex-direction:column;align-items:center;padding:10px 14px 12px;gap:8px}
@@ -44,7 +44,7 @@ h1 b{color:#EF406E;font-weight:900}
 <canvas id="fx"></canvas>
 <script>
 (function(){
-var LETTER='י',STROKES=["M 120.2 57.6 L 179.8 57.6 L 179.8 62.2 L 179.8 158"],VIEWW=300,BW=74;var PATHS=STROKES.map(function(d){return new Path2D(d)});var GT=null;
+var LETTER='י',STROKES=["M 120.2 57.6 L 179.8 57.6 L 179.8 62.2 L 179.8 158"],VIEWW=300,BW=70;var PATHS=STROKES.map(function(d){return new Path2D(d)});var GT=null;
 var COLORS=[['#F4A3BC','ורוד'],['#F9BE9E','אפרסק'],['#F6DC8A','צהוב'],['#A9DDC4','מנטה'],['#C2E1A6','ירוק'],['#A8D2EE','תכלת'],['#C8B7EA','לבנדר'],['#DEC6A4','חול']];
 var reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
 var potsEl=document.getElementById('pots'),board=document.getElementById('board');
