@@ -44,7 +44,7 @@ h1 b{color:#EF406E;font-weight:900}
 <canvas id="fx"></canvas>
 <script>
 (function(){
-var LETTER='כ';
+var LETTER='כ',STROKES=["M 88.4 65.4 L 207.8 65.4 L 211.6 70.4 L 211.6 220 L 198.8 232.8 L 88.4 232.8"],VIEWW=300,BW=40;var PATHS=STROKES.map(function(d){return new Path2D(d)});var GT=null;
 var COLORS=[['#F4A3BC','ורוד'],['#F9BE9E','אפרסק'],['#F6DC8A','צהוב'],['#A9DDC4','מנטה'],['#C2E1A6','ירוק'],['#A8D2EE','תכלת'],['#C8B7EA','לבנדר'],['#DEC6A4','חול']];
 var reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
 var potsEl=document.getElementById('pots'),board=document.getElementById('board');
@@ -64,19 +64,29 @@ function layout(){
   drawMask(); drawBase(); px.clearRect(0,0,S,S); done=false; drawOutline();
 }
 function glyphBox(){
+  if(PATHS.length){
+    var s0=S/VIEWW,t=document.createElement('canvas');t.width=t.height=S;var tc=t.getContext('2d');
+    tc.setTransform(s0,0,0,s0,0,0);tc.lineWidth=BW;tc.lineCap='round';tc.lineJoin='round';tc.strokeStyle='#000';PATHS.forEach(function(p){tc.stroke(p)});
+    var d=tc.getImageData(0,0,S,S).data,x0=S,y0=S,x1=0,y1=0;
+    for(var y=0;y<S;y+=2)for(var x=0;x<S;x+=2){if(d[(y*S+x)*4+3]>60){if(x<x0)x0=x;if(x>x1)x1=x;if(y<y0)y0=y;if(y>y1)y1=y}}
+    var w=x1-x0+2,h=y1-y0+2,f=Math.min(S*0.74/h,S*0.78/w,1.8),cx=(x0+x1)/2,cy=(y0+y1)/2;
+    var sc=s0*f;return {path:true,sc:sc,tx:S/2-cx*f,ty:S/2-cy*f};
+  }
   var sz=S*0.86; mx.font=fontStr(sz); mx.textAlign='center'; mx.textBaseline='alphabetic';
-  var m=mx.measureText(LETTER),w=(m.actualBoundingBoxLeft||0)+(m.actualBoundingBoxRight||m.width),h=(m.actualBoundingBoxAscent||sz*0.7)+(m.actualBoundingBoxDescent||0);
-  var k=Math.min(S*0.74/h,S*0.78/w); sz=Math.min(sz*k,S*2.6); mx.font=fontStr(sz);
-  m=mx.measureText(LETTER);var asc=m.actualBoundingBoxAscent||sz*0.7,desc=m.actualBoundingBoxDescent||0;h=asc+desc;
-  return {sz:sz,x:S/2,y:(S-h)/2+asc};
+  var m=mx.measureText(LETTER),w2=(m.actualBoundingBoxLeft||0)+(m.actualBoundingBoxRight||m.width),h2=(m.actualBoundingBoxAscent||sz*0.7)+(m.actualBoundingBoxDescent||0);
+  var k=Math.min(S*0.74/h2,S*0.78/w2); sz=Math.min(sz*k,S*2.6); mx.font=fontStr(sz);
+  m=mx.measureText(LETTER);var asc=m.actualBoundingBoxAscent||sz*0.7,desc=m.actualBoundingBoxDescent||0,hh=asc+desc;
+  return {sz:sz,x:S/2,y:(S-hh)/2+asc};
 }
-function drawMask(){mx.clearRect(0,0,S,S);var g=glyphBox();mx.font=fontStr(g.sz);mx.textAlign='center';mx.fillStyle='#000';mx.fillText(LETTER,g.x,g.y)}
+function shapeFill(c,g){c.save();if(g.path){c.setTransform(g.sc,0,0,g.sc,g.tx,g.ty);c.lineWidth=BW;c.lineCap='round';c.lineJoin='round';c.strokeStyle='#000';PATHS.forEach(function(p){c.stroke(p)})}else{c.font=fontStr(g.sz);c.textAlign='center';c.fillStyle='#000';c.fillText(LETTER,g.x,g.y)}c.restore()}
+function shapeStroke(c,g,extra,col){c.save();if(g.path){c.setTransform(g.sc,0,0,g.sc,g.tx,g.ty);c.lineWidth=BW+extra/g.sc;c.lineCap='round';c.lineJoin='round';c.strokeStyle=col;PATHS.forEach(function(p){c.stroke(p)})}else{c.font=fontStr(g.sz);c.textAlign='center';c.lineJoin='round';c.lineWidth=extra;c.strokeStyle=col;c.strokeText(LETTER,g.x,g.y)}c.restore()}
+function drawMask(){mx.clearRect(0,0,S,S);GT=glyphBox();shapeFill(mx,GT)}
 function drawBase(){bx.clearRect(0,0,S,S);bx.fillStyle='#FFF7F8';bx.fillRect(0,0,S,S);
   var t=document.createElement('canvas');t.width=t.height=S;var tx=t.getContext('2d');tx.drawImage(mask,0,0);tx.globalCompositeOperation='source-in';tx.fillStyle='#FFFFFF';tx.fillRect(0,0,S,S);
   bx.shadowColor='rgba(184,35,107,.18)';bx.shadowBlur=S*0.02;bx.drawImage(t,0,0);bx.shadowBlur=0}
-function drawOutline(){lx.clearRect(0,0,S,S);var g=glyphBox(),w=Math.max(3,S*0.011);lx.font=fontStr(g.sz);lx.textAlign='center';lx.lineJoin='round';
-  lx.globalCompositeOperation='source-over';lx.lineWidth=w*2;lx.strokeStyle='rgba(217,127,160,.95)';lx.strokeText(LETTER,g.x,g.y);
-  lx.globalCompositeOperation='destination-out';lx.fillStyle='#000';lx.fillText(LETTER,g.x,g.y);lx.globalCompositeOperation='source-over'}
+function drawOutline(){lx.clearRect(0,0,S,S);var w=Math.max(3,S*0.011);
+  lx.globalCompositeOperation='source-over';shapeStroke(lx,GT,w*2,'rgba(217,127,160,.95)');
+  lx.globalCompositeOperation='destination-out';shapeFill(lx,GT);lx.globalCompositeOperation='source-over'}
 function pos(e){var r=cPaint.getBoundingClientRect();return {x:(e.clientX-r.left)*S/r.width,y:(e.clientY-r.top)*S/r.height}}
 function seg(a,b,col){
   px.globalCompositeOperation='source-over';px.strokeStyle=col;px.fillStyle=col;px.lineCap='round';px.lineJoin='round';px.lineWidth=brush*2;
