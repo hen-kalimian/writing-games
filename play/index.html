@@ -87,6 +87,8 @@ body{background:linear-gradient(180deg,#fff 0%,#FEF6F5 40%,#FBDCD8 100%)}
 @media (orientation:landscape) and (max-height:700px){.dragcols{grid-template-columns:1fr!important;grid-template-rows:1fr 1fr!important}.dragcols .dcol{grid-template-rows:1fr!important;grid-template-columns:repeat(var(--n),minmax(0,1fr))!important}}
 .card.vanish{animation:vanish .42s forwards}@keyframes vanish{to{transform:scale(.3);opacity:0}}
 .boxrow{display:grid;gap:12px;width:100%;flex:1 1 auto;min-height:0;max-height:300px}.gbox2{position:relative;border-radius:16px;background:#F6DC8A;border:3px solid #D9A441;overflow:hidden;min-height:120px}.gbox2 .inner2{position:absolute;inset:6px}.lid2{position:absolute;inset:0;background:linear-gradient(135deg,#F8B9B6,#EF8CA5);border-bottom:8px solid #D14175;transition:transform .55s;transform-origin:top;display:flex;align-items:center;justify-content:center}.lbl2{font:800 26px Rubik,sans-serif;color:#fff;text-shadow:0 2px 0 rgba(0,0,0,.18);text-align:center;padding:4px}.gbox2.open .lid2{transform:translateY(-104%)}.gbox2.shk{animation:sh .35s}
+.trainarena{position:relative;width:100%;flex:1 1 auto;min-height:0;background:linear-gradient(#9CD3F5,#E4F4FF 70%,#CFEFB5);border-radius:18px;overflow:hidden;touch-action:none}.tplane{position:absolute;left:0;top:0;width:90px;z-index:4;pointer-events:none}.tplane .rope{position:absolute;left:38px;top:40px;width:2px;height:20px;background:#8d8aa0}.cargo{box-shadow:0 5px 10px rgba(0,0,0,.2)}.wagons{position:absolute;left:0;right:0;bottom:16px;height:36%;display:grid;gap:6px;padding:0 6px}.wagon{position:relative;background:#F8B9B6;border:3px solid #D14175;border-radius:12px 12px 6px 6px;padding:5px 5px 14px;display:flex;flex-direction:column;gap:4px;min-height:0}.wagon .wlbl{font:800 16px Rubik,sans-serif;text-align:center;color:#fff;text-shadow:0 1px 0 rgba(0,0,0,.2)}.wheels{position:absolute;bottom:-14px;left:0;right:0;display:flex;justify-content:space-around;padding:0 18%}.wheels i{width:24px;height:24px;border-radius:50%;background:#444;border:4px solid #bbb}.mark{position:absolute;z-index:8;transform:translate(-50%,0);pointer-events:none}.mark.okm,.mark.nom{animation:popin .35s}
+.speedarena{position:relative;width:100%;flex:1 1 auto;min-height:0;background:rgba(255,255,255,.35);border-radius:18px;overflow:hidden}.sbtns{display:grid;gap:10px;width:100%;height:30%;min-height:90px;flex:none}.card.fall{z-index:3}
 </style>
 </head>
 <body>
@@ -239,7 +241,7 @@ E.cloze=function(){var ss=D.ss,i=0;total=ss.length;
     opts.forEach(function(o){var c=el('div','card',esc(o));c.style.cssText+=';min-width:70px;min-height:60px;font-size:28px;flex-direction:row;padding:6px 14px';c.onclick=function(){if(c.classList.contains('ok'))return;if(o===blanks[bi]){good();c.classList.add('ok');bi++;render();if(bi>=blanks.length)after(function(){i++;if(i>=ss.length){dots(ss.length,ss.length);finish('')}else show()},800)}else{bad();c.classList.add('no');after(function(){c.classList.remove('no')},400)}};g.appendChild(c)});stage.appendChild(g)}
   show()};
 /* ===== סוגי משחק לפי התבנית שנבחרה בהטמעה (t=templateId) ===== */
-var MODE={3:'drag',46:'find',71:'balloon',45:'mole',48:'plane',49:'maze',82:'fly',30:'box',35:'tf',5:'quiz',69:'tv',25:'memory',2:'sort',81:'sort',8:'wheel',70:'deck',22:'labels',38:'anagram',72:'order',36:'cloze',54:'order'};
+var MODE={3:'drag',46:'find',71:'balloon',45:'mole',48:'plane',49:'maze',82:'fly',30:'box',35:'tf',5:'quiz',69:'tv',25:'memory',2:'sort',81:'speed',8:'wheel',70:'deck',22:'labels',38:'anagram',72:'order',36:'cloze',54:'order'};
 var INS={drag:'גררו כל פריט אל הפריט התואם לו',find:'מצאו את ההתאמה: לחצו על הפריט התואם',balloon:'פוצצו את הבלון עם התשובה הנכונה',mole:'לחצו על החפרפרת עם התשובה הנכונה',plane:'הזיזו את המטוס כדי לפוצץ את הבלונים עם האות הנכונה',maze:'מצאו בלוח את התשובה הנכונה',fly:'לחצו על הפריט המעופף הנכון',box:'פתחו את התיבות ומצאו את התשובה הנכונה',tf:'האם ההתאמה נכונה?',tv:'חידון טלוויזיה: בחרו את התשובה הנכונה',quiz:'בחרו את התשובה הנכונה'};
 function key(o){return (o.i||'')+'|'+(o.t||'')+(o.x?'|x':'')}
 function distract(okset,pool,n){var ks={},out=[];okset.forEach(function(o){ks[key(o)]=1});sh(pool).forEach(function(o){if(!ks[key(o)]&&out.length<n&&!out.some(function(x){return key(x)===key(o)}))out.push(o)});return out}
@@ -346,10 +348,44 @@ E.boxsort=function(){ins.textContent='גררו את התמונה לתיבה עם
         else{bad();bx.classList.add('shk');after(function(){bx.classList.remove('shk')},400);pic.style.transition='transform .3s';pic.style.transform=''}}
       pic.addEventListener('pointermove',mv);pic.addEventListener('pointerup',up);pic.addEventListener('pointercancel',up)})}
   show()};
+/* רכבת: מטוס מטיס פריט לאט מעל הקרונות, לוחצים כדי להפיל אותו לקרון הנכון (וי או איקס) */
+E.trainsort=function(){ins.textContent='לחצו כדי להפיל את התמונה מהמטוס אל הקרון הנכון';var items=[];D.groups.forEach(function(g,gi){g.items.forEach(function(o){items.push({o:o,g:gi})})});items=sh(items).slice(0,8);total=items.length;var i=0,ng=D.groups.length;
+  function show(){stage.innerHTML='';dots(items.length,i);var it=items[i];var ar=el('div','trainarena');stage.appendChild(ar);
+    var wag=el('div','wagons');wag.style.gridTemplateColumns='repeat('+ng+',minmax(0,1fr))';
+    D.groups.forEach(function(g,gi){var w=el('div','wagon');var hc=mk(g.h.i?{i:g.h.i}:{t:g.h.t},'',{fs:30});hc.style.cssText+=';width:100%;flex:1 1 auto;min-height:0;pointer-events:none';w.appendChild(hc);w.appendChild(el('div','wlbl',esc(g.h.t||'')));w.appendChild(el('div','wheels','<i></i><i></i>'));w.__gi=gi;wag.appendChild(w)});
+    ar.appendChild(wag);
+    var plane=el('div','tplane');plane.innerHTML='<svg viewBox="0 0 64 40" width="84" height="52"><path d="M4 20 L22 16 L36 2 L42 2 L34 16 L54 14 L62 18 L54 22 L34 24 L42 38 L36 38 L22 24 Z" fill="#fff" stroke="#5F8DB5" stroke-width="2" stroke-linejoin="round"/></svg>';var cargo=mk(it.o,'cargo',{fs:20});cargo.style.cssText+=';width:92px;height:80px;min-height:0;position:absolute;left:-4px;top:50px';plane.appendChild(el('div','rope'));plane.appendChild(cargo);ar.appendChild(plane);
+    var mark=el('div','mark');ar.appendChild(mark);say(it.o.s);
+    var W=ar.clientWidth||340,H=ar.clientHeight||420,x=-100,state='fly',fy=0,t0=performance.now(),myStop=false;
+    function frame(t){if(myStop||!ar.isConnected){return}var dt=Math.min(.05,(t-t0)/1000);t0=t;
+      if(state==='fly'){x+=W/7*dt;if(x>W+20)x=-100;plane.style.transform='translate('+x+'px,'+(H*.12)+'px)'}
+      else if(state==='fall'){fy+=dt*520+fy*dt*2;plane.style.transform='translate('+x+'px,'+(H*.12)+'px)';cargo.style.transform='translate(0,'+fy+'px)';
+        var wr=wag.getBoundingClientRect(),ar2=ar.getBoundingClientRect(),z=ar2.height/ar.offsetHeight||1,wagTop=(wr.top-ar2.top)/z;
+        if(H*.12+50+fy+60>=wagTop+20){state='landed';var cx=x+42,gi=0,bd=1e9;[].forEach.call(wag.children,function(w,k){var c=w.offsetLeft+w.offsetWidth/2,d=Math.abs(c-cx);if(d<bd){bd=d;gi=k}});var ok=gi===it.g,wc=wag.children[gi];mark.className='mark '+(ok?'okm':'nom');mark.style.left=(wc.offsetLeft+wc.offsetWidth/2)+'px';mark.style.top=(wagTop+10)+'px';
+          mark.innerHTML=ok?'<svg viewBox="0 0 40 40" width="70" height="70"><circle cx="20" cy="20" r="19" fill="#4FB38C"/><path d="M10 21 L17 28 L30 12" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/></svg>':'<svg viewBox="0 0 40 40" width="70" height="70"><circle cx="20" cy="20" r="19" fill="#E5384F"/><path d="M12 12 L28 28 M28 12 L12 28" stroke="#fff" stroke-width="5" stroke-linecap="round"/></svg>';
+          cargo.style.opacity='0';
+          if(ok){good();hits++;say(D.groups[it.g].h.s);myStop=true;after(function(){i++;if(i>=items.length){dots(items.length,items.length);finish('')}else show()},1400)}
+          else{bad();after(function(){mark.innerHTML='';mark.className='mark';cargo.style.opacity='1';cargo.style.transform='';fy=0;x=-100;state='fly'},1200)}}}
+      requestAnimationFrame(frame)}
+    ar.addEventListener('pointerdown',function(e){e.preventDefault();if(state!=='fly')return;state='fall';fy=0;pickup()});
+    window.__ww.train={state:function(){return state},x:function(){return x},drop:function(){state='fall';fy=0},item:it,wagonRange:function(g){var w=wag.children[g];return [w.offsetLeft,w.offsetLeft+w.offsetWidth]}};
+    requestAnimationFrame(frame)}
+  show()};
+/* מיון מהיר: פריט יורד לאט, לוחצים על הקבוצה הנכונה לפני שהוא מגיע למטה */
+E.speed=function(){ins.textContent='לחצו על הקבוצה הנכונה לפני שהתמונה נוחתת';var items=[];D.groups.forEach(function(g,gi){g.items.forEach(function(o){items.push({o:o,g:gi})})});items=sh(items).slice(0,10);total=items.length;var i=0,ng=D.groups.length;
+  function show(){stage.innerHTML='';dots(items.length,i);var it=items[i],ar=el('div','speedarena'),over=false;stage.appendChild(ar);var card=mk(it.o,'fall',{fs:30});card.style.cssText+=';position:absolute;left:50%;top:0;width:44%;max-width:230px;height:30%;min-height:90px;margin-left:-22%';ar.appendChild(card);say(it.o.s);window.__ww.speedGroup=it.g;
+    var btns=el('div','sbtns');btns.style.gridTemplateColumns='repeat('+ng+',minmax(0,1fr))';
+    D.groups.forEach(function(g,gi){var b=mk(g.h.i?{i:g.h.i,t:g.h.t}:{t:g.h.t},'sb',{fs:24});b.style.cssText+=';height:100%;min-height:0';
+      b.onclick=function(){if(over)return;if(gi===it.g){over=true;good();hits++;b.classList.add('ok');card.style.transition='opacity .3s';card.style.opacity='0';after(function(){i++;if(i>=items.length){dots(items.length,items.length);finish('')}else show()},700)}else{bad();b.classList.add('no');after(function(){b.classList.remove('no')},400)}};btns.appendChild(b)});
+    stage.appendChild(btns);
+    var t0=performance.now(),dur=9000;(function f(t){if(over||!ar.isConnected)return;var k=Math.min(1,(t-t0)/dur),H=ar.clientHeight||360;card.style.transform='translateY('+(k*(H-card.offsetHeight))+'px)';if(k<1)requestAnimationFrame(f);else{bad();t0=performance.now();requestAnimationFrame(f)}})(t0)}
+  show()};
 /* סוגי משחק נוספים מאותו תוכן: זיכרון, מיון, גלגל וקלפים */
 function runMode(m){
   if(m==='drag')return E.drag();
-  if(m==='box'&&D.kind==='sort')return E.boxsort();
+  if(m==='box'&&D.kind==='sort')return E.trainsort();
+  if(m==='sort'&&D.kind==='sort'&&D.groups.length<=4)return E.boxsort();
+  if(m==='speed'&&D.kind==='sort')return E.speed();
   if({find:1,balloon:1,mole:1,plane:1,maze:1,fly:1,box:1,tf:1,tv:1,quiz:1}[m])return choose(m);
   if(m==='memory'){var R=rounds();if(!(D.pairs||D.items)&&R.length>1){D.pairs=R.map(function(r){return {a:r.p,b:r.ok[0]}})}return E.memory()}
   if(m==='sort'){if(D.kind!=='sort'){var R2=rounds(),g={},H=[];R2.forEach(function(r){var k=key(r.ok[0]);if(!g[k]){g[k]={h:r.ok[0],items:[]};H.push(g[k])}g[k].items.push(r.p)});if(H.length>=2&&H.length<=4&&H.length<R2.length){D.groups=H;D.kind='sort'}else return choose('find')}return E.sort()}
@@ -396,7 +432,7 @@ var DEF={quiz:'בחרו את התשובה הנכונה',match:'לחצו על פ�
 function zoomFit(){var app=$('app'),z=Math.max(1,Math.min(innerWidth/420,innerHeight/560,2.6));app.style.zoom=z;app.style.height=(innerHeight/z)+'px';app.style.width=Math.min(innerWidth/z,700)+'px';app.style.maxWidth='none'}
 addEventListener('resize',zoomFit);zoomFit();
 /* אתחול */
-function start(){$('end').style.display='none';fxStop=true;fx.clearRect(0,0,fxc.width,fxc.height);hits=0;stage.scrollTop=0;try{var M=MODE[Q.get('t')||D.tpl];if(M)runMode(M);else E[D.kind]()}catch(e){stage.textContent='שגיאה בטעינת המשחק'}}
+function start(){$('end').style.display='none';fxStop=true;fx.clearRect(0,0,fxc.width,fxc.height);hits=0;stage.scrollTop=0;try{var M=Q.get('m')||MODE[Q.get('t')||D.tpl];if(M)runMode(M);else E[D.kind]()}catch(e){stage.textContent='שגיאה בטעינת המשחק'}}
 $('rs').onclick=start;$('again').onclick=start;
 var fb=$('fs'),inF=window.self!==window.top,NT=Q.get('nt')==='1',REF=Q.get('ref')||document.referrer||'';function fsEl(){return document.fullscreenElement||document.webkitFullscreenElement}
 function openTab(){var u=new URL(location.href);u.searchParams.set('nt','1');u.searchParams.set('ref',document.referrer||'');window.open(u.toString(),'_blank')}
@@ -407,7 +443,7 @@ $('cl').onclick=function(){if(fsEl()){(document.exitFullscreen||document.webkitE
   if(NT){try{window.close()}catch(e){}setTimeout(function(){if(REF)location.href=REF;else if(history.length>1)history.back()},250)}};
 document.addEventListener('fullscreenchange',sync);document.addEventListener('webkitfullscreenchange',sync);sync();
 document.addEventListener('contextmenu',function(e){e.preventDefault()});
-fetch(BASE+'pool.json').then(function(r){return r.json()}).catch(function(){return {}}).then(function(pp){window.POOL=pp;return fetch(BASE+'data/'+G+'.json')}).then(function(r){return r.json()}).then(function(d){D=d;$('ttl').textContent=d.title;var mm=MODE[Q.get('t')||d.tpl];ins.textContent=(mm&&INS[mm])||d.ins||DEF[d.kind]||'';document.title=d.title;var th=TH[Q.get('th')];applyTheme(th);start();var tp=+(Q.get('t')||d.tpl);introFx(tp===48||th==='sky'?'plane':tp===71||th==='party'?'balloons':'curtain')}).catch(function(){stage.textContent='המשחק לא נמצא'});
+fetch(BASE+'pool.json').then(function(r){return r.json()}).catch(function(){return {}}).then(function(pp){window.POOL=pp;return fetch(BASE+'data/'+G+'.json')}).then(function(r){return r.json()}).then(function(d){D=d;$('ttl').textContent=d.title;var mm=Q.get('m')||MODE[Q.get('t')||d.tpl];ins.textContent=(mm&&INS[mm])||d.ins||DEF[d.kind]||'';document.title=d.title;var th=TH[Q.get('th')];applyTheme(th);start();var tp=+(Q.get('t')||d.tpl);introFx(tp===48||th==='sky'?'plane':tp===71||th==='party'?'balloons':'curtain')}).catch(function(){stage.textContent='המשחק לא נמצא'});
 })();
 </script>
 </body>

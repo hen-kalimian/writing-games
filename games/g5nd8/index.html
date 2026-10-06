@@ -80,6 +80,8 @@ svg.ov{inset:0;width:100%;height:100%;touch-action:none}
 .end h1{font-size:52px;margin:0 0 20px}
 @media (prefers-reduced-motion:reduce){.confetti,.nav.pulse,.pop{animation:none}}
 #app .top{z-index:30!important}
+@media (orientation:portrait){body.framed #app{inset:auto 0;top:50%;bottom:auto;height:calc(75vw + 124px);transform:translateY(-50%)}}
+@media (max-width:480px){#app .top .brand{display:none}#app .top{justify-content:center}#app .tools{gap:10px}}
 </style>
 </head>
 <body>
@@ -135,7 +137,7 @@ const SL = CFG.slides, LAST = SL.length - 1;
 const NS = 'http://www.w3.org/2000/svg';
 const $ = id => document.getElementById(id);
 const stage = $('stage'), main = $('main');
-const framed = window.self !== window.top;
+const framed = window.self !== window.top; if (framed) document.body.classList.add('framed');
 document.getElementById('brand').textContent = CFG.brand;
 document.getElementById('brand2').textContent = CFG.brand;
 document.getElementById('gtitle').textContent = CFG.title;
