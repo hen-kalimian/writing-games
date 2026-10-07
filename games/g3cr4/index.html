@@ -89,6 +89,7 @@ svg.ov{inset:0;width:100%;height:100%;touch-action:none}
 #app .top{z-index:30!important}
 @media (orientation:portrait){body.framed #app{inset:auto 0;top:50%;bottom:auto;height:max(480px,calc(75vw + 200px));transform:translateY(-50%)}}
 @media (max-width:480px){#app .top .brand{display:none}#app .top{justify-content:center}#app .tools{gap:10px}}
+#start{background:url(img/s0.jpg) center/contain no-repeat,linear-gradient(180deg,#FEF6F5 0%,#FBDCD8 100%)!important;cursor:pointer}#start .box>*:not(#go){display:none}#start .box{position:absolute;left:0;right:0;bottom:1.5%;padding:0;max-width:none;text-align:center}#start .play{width:84px;height:84px;background:#EF406E!important;box-shadow:0 8px 0 #D14175,0 0 0 8px rgba(255,255,255,.7)!important;animation:pulse 1.4s infinite}#start .play svg{width:44px;height:44px}
 </style>
 </head>
 <body>
@@ -809,5 +810,6 @@ rotCheck();
 if (/[?&]autostart/.test(location.search)) { $('go').click(); }
 window.__ab = { go: go, cur: () => cur, state: () => ({ cur, done: [...done] }) };
 </script>
+<script>(function(){var s=document.getElementById('start'),g=document.getElementById('go');if(s&&g)s.addEventListener('click',function(e){if(e.target!==g&&!g.contains(e.target))g.click()})})();</script>
 </body>
 </html>
