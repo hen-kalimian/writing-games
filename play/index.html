@@ -338,10 +338,10 @@ function choose(mode){var multiMode=({mole:1,plane:1,fly:1,maze:1,box:1,quiz:1,t
   show()}
 /* משחק המטוס: מזיזים את המטוס מעלה ומטה (באצבע או בחצים) בין הבלונים, והמטוס מפוצץ את הבלונים */
 E.shinplane=function(){var SIN=/ׂ/,SHI=/ׁ/,DS=['משאית','שפם','שחה','שק','שיער'],words=[];
-  D.qs.forEach(function(q){var w={t:q.q.t,i:q.q.i};if(!w.t&&!w.i)return;var okA=q.a.filter(function(a){return a.ok})[0],typ=null;if(okA&&okA.t){typ=SIN.test(okA.t)?'sin':SHI.test(okA.t)?'shin':null}if(!typ&&w.t)typ=DS.indexOf(w.t)>=0?'sin':'shin';if(typ&&w.t)words.push({o:{t:w.t,i:w.i},k:typ})});
+  D.qs.forEach(function(q){var w={t:q.q.t,i:q.q.i};if(!w.t&&!w.i)return;var okA=q.a.filter(function(a){return a.ok})[0],typ=null;if(okA&&okA.t){typ=SIN.test(okA.t)?'sin':SHI.test(okA.t)?'shin':null}if(!typ&&w.t)typ=DS.indexOf(w.t)>=0?'sin':'shin';if(typ&&w.t){var mk2=w.t.replace('ש','ש'+(typ==='sin'?'ׂ':'ׁ'));words.push({o:{t:mk2,i:w.i,big:1},k:typ})}});
   var ph=[{k:'sin',L:'שׂ',n:'שׂ (נקודה בצד שמאל)'},{k:'shin',L:'שׁ',n:'שׁ (נקודה בצד ימין)'}],pi=0;total=ph.length;window.__ww.shin=words;
   function run(){var P=ph[pi],okA=words.filter(function(w){return w.k===P.k}).map(function(w){return w.o}),badA=words.filter(function(w){return w.k!==P.k}).map(function(w){return w.o}),need=Math.min(5,okA.length);stage.innerHTML='';dots(ph.length,pi);var ar=el('div','arena a-plane play');ar.style.cssText+=';width:100%;max-width:none;flex:1 1 auto;height:auto;min-height:300px';stage.appendChild(ar);
-    planeGame(ar,okA,badA,need,function(){},function(){pi++;if(pi>=ph.length){dots(ph.length,ph.length);finish('')}else{ins.textContent='כל הכבוד! עכשיו האות השנייה';after(run,1300)}},function(o){say(o.s)},{label:P.L,instr:'הזיזו את המטוס אל חפצים עם האות '+P.n+'. מצאו '+need+' מילים'})}
+    planeGame(ar,okA,badA,need,function(){},function(){pi++;if(pi>=ph.length){dots(ph.length,ph.length);finish('')}else{ins.textContent='כל הכבוד! עכשיו האות השנייה';after(run,1300)}},function(o){say(o.s)},{label:P.L,instr:'פגעו רק במילים שיש בהן '+P.n+', כמו האות שעל המטוס. מצאו '+need+' מילים. פגיעה במילה אחרת מתחילה מחדש'})}
   run()};
 function planeInstr(need){var L=letterGuess(),T=(D.title||'')+' '+((D.qs&&D.qs[0]&&D.qs[0].q&&D.qs[0].q.t)||'')+' '+((D.groups&&D.groups[0]&&D.groups[0].h&&D.groups[0].h.t)||''),d;
   if(/מסתיימ|סוגר/.test(T)&&L)d='מילים שמסתיימות באות '+L;else if(/מתחיל|פותח/.test(T)&&L)d='מילים שמתחילות באות '+L;else if(L)d='פריטים עם האות '+L;else d='פריטים מתאימים: '+(D.title||'');return 'הזיזו את המטוס (במחשב עם המקלדת) כך שיפגע ב-'+need+' '+d}
@@ -357,7 +357,7 @@ function planeGame(ar,okA,badA,need,onOk,onDone,onSay,opt){var SEQ=opt&&opt.seq;
     if(SEQ){var nx=okA[got],onS=items.some(function(i){return !i.hit&&key(i.o)===key(nx)});if(!onS&&Math.random()<.7){o=nx;ok=true}else{var ot=okA.filter(function(q){return key(q)!==key(nx)});o=ot[Math.floor(Math.random()*ot.length)]}}
     else{var wantOk=Math.random()<.5&&got+items.filter(function(i){return i.ok}).length<need+2;if(wantOk){o=okQ[okI%okQ.length];okI++;ok=true}else o=sh(badA)[0]}
     var ln=Math.floor(Math.random()*lanes);if(ln===last)ln=(ln+1+Math.floor(Math.random()*(lanes-1)))%lanes;last=ln;
-    var w=el('div','pballoon'),bb=el('div','bbody');bb.style.background=pcol[Math.floor(Math.random()*4)];var c=mk(o,'opt',{fs:o.i?14:30});bb.appendChild(c);w.appendChild(bb);w.appendChild(el('div','bstr'));ar.appendChild(w);
+    var w=el('div','pballoon'),bb=el('div','bbody');bb.style.background=pcol[Math.floor(Math.random()*4)];var c=mk(o,'opt',{fs:o.i?(o.big?(o.t.length>5?17:22):14):30});bb.appendChild(c);w.appendChild(bb);w.appendChild(el('div','bstr'));ar.appendChild(w);
     items.push({o:o,ok:ok,x:W+60,y:Hh*(ln+.6)/lanes,el:w,hit:false})}
   window.__ww.pg={items:items,setY:function(y){ty=y},px:px};var t0=performance.now(),restartNow=false;
   function frame(t){if(stop||!ar.isConnected){document.removeEventListener('keydown',onKey);return}var dt=Math.min(.05,(t-t0)/1000);t0=t;
