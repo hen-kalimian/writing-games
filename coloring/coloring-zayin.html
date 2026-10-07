@@ -62,6 +62,7 @@ var S=0,color=COLORS[0][0],done=false,drawing=false,last=null,brush=0,coverTimer
 COLORS.forEach(function(c,i){var b=document.createElement('button');b.type='button';b.className='pot'+(i===0?' on':'');b.style.setProperty('--c',c[0]);b.setAttribute('aria-label',c[1]);b.setAttribute('role','radio');
   b.addEventListener('pointerdown',function(e){e.preventDefault();pick(i)});potsEl.appendChild(b)});
 function __csnd(f,d,v,t0){try{var c=new AudioContext(),o=c.createOscillator(),g=c.createGain(),t=c.currentTime+(t0||0);o.type='triangle';o.frequency.value=f;g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(v||.1,t+.02);g.gain.exponentialRampToValueAtTime(.001,t+d);o.connect(g);g.connect(c.destination);o.start(t);o.stop(t+d+.05)}catch(e){}}
+var __ct=0;function __crayon(){var t=performance.now();if(t-__ct<50)return;__ct=t;try{var c=new AudioContext(),n=Math.floor(c.sampleRate*.07),b=c.createBuffer(1,n,c.sampleRate),a=b.getChannelData(0);for(var i=0;i<n;i++)a[i]=(Math.random()*2-1)*(1-i/n);var s=c.createBufferSource(),f=c.createBiquadFilter(),g=c.createGain();s.buffer=b;f.type='bandpass';f.frequency.value=1800+Math.random()*900;f.Q.value=.8;g.gain.value=.12;s.connect(f);f.connect(g);g.connect(c.destination);s.start()}catch(e){}}
 function pick(i){__csnd(520+i*40,.12,.08);color=COLORS[i][0];[].forEach.call(potsEl.children,function(p,k){p.classList.toggle('on',k===i)})}
 function fontStr(sz){return '900 '+sz+'px Rubik, "Arial Hebrew", Arial, sans-serif'}
 function layout(){
@@ -104,8 +105,8 @@ function seg(a,b,col){
   px.save();px.beginPath();px.rect(x,y,w,h);px.clip();px.globalCompositeOperation='destination-in';px.drawImage(mask,0,0);px.restore();
 }
 function down(e){if(done)return;e.preventDefault();drawing=true;try{board.setPointerCapture(e.pointerId)}catch(_){}
-  var p=pos(e);last=p;lastColorUsed=color;seg(p,{x:p.x+.01,y:p.y+.01},color);scheduleCheck()}
-function move(e){if(!drawing||done)return;e.preventDefault();var p=pos(e);seg(last,p,color);last=p;lastColorUsed=color;scheduleCheck()}
+  var p=pos(e);last=p;lastColorUsed=color;seg(p,{x:p.x+.01,y:p.y+.01},color);__crayon();scheduleCheck()}
+function move(e){if(!drawing||done)return;e.preventDefault();var p=pos(e);seg(last,p,color);last=p;lastColorUsed=color;__crayon();scheduleCheck()}
 function up(e){if(!drawing)return;drawing=false;last=null;scheduleCheck(true)}
 board.addEventListener('pointerdown',down);board.addEventListener('pointermove',move);board.addEventListener('pointerup',up);board.addEventListener('pointercancel',up);board.addEventListener('lostpointercapture',up);
 ['touchstart','touchmove'].forEach(function(n){board.addEventListener(n,function(e){e.preventDefault()},{passive:false})});

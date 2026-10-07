@@ -291,6 +291,7 @@ function note(f, d, v, t0, ty){
 }
 const PENTA = [523, 587, 659, 784, 880, 1047, 1175, 1319];
 let lastN = -1;
+let _ft=0,_fx=0,_fy=0;function fingerSnd(e){const t=performance.now();if(t-_ft<60)return;const d=Math.hypot(e.clientX-_fx,e.clientY-_fy);_fx=e.clientX;_fy=e.clientY;_ft=t;if(d<2)return;note(330+Math.min(d,50)*7+Math.random()*20,.09,.035,0,'sine')}
 function startSound(){ lastN = -1; note(392, .12, .07); note(523, .14, .05, .06, 'triangle'); }
 function moved(){ const k = Math.min(PENTA.length - 1, Math.floor(idx / N * PENTA.length)); if (k !== lastN){ lastN = k; note(PENTA[k], .24, .05, 0, 'triangle'); } }
 function stopSound(){}
@@ -319,7 +320,7 @@ svg.addEventListener('pointerdown', e => {
 });
 
 svg.addEventListener('pointermove', e => {
-  if (!drawing) return;
+  if (!drawing) return; fingerSnd(e);
   const p = toBoard(e), s = S[cur];
   let best = idx;
   for (let k = idx + 1; k <= Math.min(idx + 4, N - 1); k++){
