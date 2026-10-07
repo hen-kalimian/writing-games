@@ -437,7 +437,7 @@ E.pinsort=function(){ins.textContent='גררו כל תמונה אל החצי ה�
   window.__ww.ps={cards:cards,zones:zones,check:function(){btn.click()},setZone:function(c,z){c.__zone=z;var zn=zones[z];c.__y=zn.offsetTop+zn.offsetHeight/2-c.offsetHeight/2;c.style.top=c.__y+'px'}};
   addEventListener('resize',function(){if(board.isConnected)place()})};
 /* חיבור בקו: מותחים קו בין שני פריטים תואמים (למשל מילים מתחרזות) */
-E.connect=function(){ins.textContent=D.ins||'מתחו קו בין המילים המתחרזות';var P=D.pairs.map(function(p,i){return {a:p.a,b:p.b,i:i}}),L=P.slice(),R=sh(P.slice());total=P.length;stage.innerHTML='';dots(P.length,0);var found=0;
+E.connect=function(){ins.textContent=D.tpl===99?'מתחו קו בין המילים המתחרזות':'מתחו קו מהפריט אל הפריט התואם לו';var P=D.pairs.map(function(p,i){return {a:p.a,b:p.b,i:i}}),L=P.slice(),R=sh(P.slice());total=P.length;stage.innerHTML='';dots(P.length,0);var found=0;
   var box=el('div','cbox');var svg=document.createElementNS('http://www.w3.org/2000/svg','svg');svg.setAttribute('class','csvg');var colL=el('div','ccol'),colR=el('div','ccol');colL.style.gridTemplateRows=colR.style.gridTemplateRows='repeat('+P.length+',minmax(0,1fr))';
   function mkc(o,side,p){var c=mk(o,'cc',{fs:o.i?16:28});c.style.cssText+=';min-height:0;height:100%;width:100%';c.__p=p;c.__s=side;var dot=el('i','cdot');c.appendChild(dot);c.__dot=dot;return c}
   var cl=L.map(function(p){var c=mkc(p.a,'a',p);colL.appendChild(c);return c}),cr=R.map(function(p){var c=mkc(p.b,'b',p);colR.appendChild(c);return c});
