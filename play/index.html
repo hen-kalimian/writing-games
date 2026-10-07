@@ -119,7 +119,7 @@ body{background:linear-gradient(180deg,#fff 0%,#FEF6F5 40%,#FBDCD8 100%)}
 <body>
 <div class="bgd"><i style="width:230px;height:230px;background:#FBD9D6;top:-80px;left:-70px;opacity:.75"></i><i style="width:170px;height:170px;background:#D4EFE2;bottom:-60px;right:-50px;opacity:.7"></i><i style="width:80px;height:80px;background:#D3E8F8;top:38%;left:-26px;opacity:.7"></i><i style="width:56px;height:56px;background:#FFF0B8;top:12%;right:-12px;opacity:.85"></i></div>
 <div id="app">
-  <div class="top"><button class="ib" id="fs" type="button" aria-label="מסך מלא">&#x26F6;</button><div class="ttl" id="ttl"></div><button class="ib" id="rs" type="button" aria-label="מההתחלה">&#x21BB;</button></div>
+  <div class="top"><button class="ib" id="fs" type="button" aria-label="מסך מלא">&#x26F6; מסך מלא</button><div class="ttl" id="ttl"></div><button class="ib" id="rs" type="button" aria-label="מההתחלה">&#x21BB;</button></div>
   <div class="ins" id="ins"></div>
   <div id="stage"></div>
   <div class="prog" id="prog"></div>
@@ -143,7 +143,8 @@ function win(){[523,659,784,1046].forEach(function(f,i){tone(f,.3,'triangle',.15
 var cache={},cur=null;function say(s){if(!s)return;try{if(cur){cur.pause();cur.currentTime=0}var a=cache[s]||(cache[s]=new Audio(BASE+'assets/'+s));cur=a;a.currentTime=0;var p=a.play();if(p&&p.catch)p.catch(function(){})}catch(e){}}
 function fs(n){var l=n.length;return l>40?14:l>24?17:l>12?21:l>6?26:34}
 function mk(o,cls,opt){opt=opt||{};var c=el('div','card '+(cls||''));if(o.i){var im=el('img');im.src=BASE+'assets/'+o.i;im.alt='';im.draggable=false;c.appendChild(im)}
-  if(o.t){var t=el('div','t',esc(o.t));t.style.setProperty('--fs',(opt.fs||fs(o.t))+'px');c.appendChild(t)}return c}
+  var ot=o.t;if(ot&&ot.length<=6){var cl0=ot.replace(/^[\s.,*+\/\-–:;·•]+|[\s.,*+\/\-–:;·•]+$/g,'');if(!cl0&&o.i)ot=''; else if(cl0)ot=cl0}
+  if(ot){var t=el('div','t',esc(ot));t.style.setProperty('--fs',(opt.fs||fs(o.t))+'px');c.appendChild(t)}return c}
 function dots(n,i){prog.innerHTML='';for(var k=0;k<n;k++){var d=el('i',k<i?'on':'');prog.appendChild(d)}}
 function pick(n){return n}
 function after(f,ms){setTimeout(f,ms)}
@@ -604,7 +605,7 @@ fb.onclick=function(){var d=document.documentElement,rq=d.requestFullscreen||d.w
 $('cl').onclick=function(){if(fsEl()){(document.exitFullscreen||document.webkitExitFullscreen).call(document);return}
   if(NT){try{window.close()}catch(e){}setTimeout(function(){if(REF)location.href=REF;else if(history.length>1)history.back()},250)}};
 document.addEventListener('fullscreenchange',sync);document.addEventListener('webkitfullscreenchange',sync);sync();
-document.addEventListener('contextmenu',function(e){e.preventDefault()});
+var st0=document.createElement('style');st0.textContent='#fs{width:auto;border-radius:20px;padding:0 12px;gap:6px;font-size:13px;white-space:nowrap}';document.head.appendChild(st0);document.addEventListener('contextmenu',function(e){e.preventDefault()});
 fetch(BASE+'pool.json').then(function(r){return r.json()}).catch(function(){return {}}).then(function(pp){window.POOL=pp;return fetch(BASE+'data/'+G+'.json')}).then(function(r){return r.json()}).then(function(d){D=d;NOFB=JSON.stringify(d).indexOf('"s":"')>=0;var mm=Q.get('m')||MODE[Q.get('t')||d.tpl]||(d.tpl===99?'connect':d.tpl===86?'pinsort':null);$('ttl').textContent=titleFix(d.title,mm);ins.textContent=(mm&&INS[mm])||d.ins||DEF[d.kind]||'';document.title=d.title;var th=TH[Q.get('th')];applyTheme(th);start();var tp=+(Q.get('t')||d.tpl);var hs=0;for(var q=0;q<G.length;q++)hs=(hs*31+G.charCodeAt(q))>>>0;introFx(Q.get('th')==='theater'?'curtain':tp===48||th==='sky'?'plane':hs%5===0?['zoom','blur','clouds','butterflies'][(hs>>3)%4]:null)}).catch(function(){stage.textContent='המשחק לא נמצא'});
 })();
 </script>
