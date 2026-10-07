@@ -276,7 +276,7 @@ function distract(okset,pool,n){var ks={},out=[];okset.forEach(function(o){ks[ke
 function letterOf(h){var t=(h&&h.t)||'';return t.replace(/^האות\s+/,'').replace(/[׳'"]/g,'').trim()}
 function rounds(multi){var R=[],k=D.kind,pool=[];
   if(D.pairs&&(k==='match'||k==='memory')){pool=D.pairs.map(function(p){return p.b});D.pairs.forEach(function(p){R.push({p:p.a,ok:[p.b],bad:distract([p.b],pool,3)})})}
-  else if(k==='quiz'&&multi&&D.qs.every(function(q){return key(q.q)===key(D.qs[0].q)})&&D.qs.some(function(q){return q.a.filter(function(a){return a.ok}).length>1})){var uo=[],ub=[];D.qs.forEach(function(q){q.a.forEach(function(a){var t=a.ok?uo:ub;if(!t.some(function(x){return key(x)===key(a)}))t.push(a)})});R.push({p:D.qs[0].q,ok:uo,bad:ub.filter(function(b){return !uo.some(function(o){return key(o)===key(b)})}),multi:true})}
+  else if(k==='quiz'&&multi&&D.qs.every(function(q){return key(q.q)===key(D.qs[0].q)})&&(D.qs.length>=4&&/^איפה/.test((D.qs[0].q&&D.qs[0].q.t)||'')||D.qs.some(function(q){return q.a.filter(function(a){return a.ok}).length>1}))){var uo=[],ub=[];D.qs.forEach(function(q){q.a.forEach(function(a){var t=a.ok?uo:ub;if(!t.some(function(x){return key(x)===key(a)}))t.push(a)})});R.push({p:D.qs[0].q,ok:uo,bad:ub.filter(function(b){return !uo.some(function(o){return key(o)===key(b)})}),multi:true})}
   else if(k==='quiz'){D.qs.forEach(function(q){var ok=q.a.filter(function(a){return a.ok}),bad=q.a.filter(function(a){return !a.ok});
     if(multi&&ok.length>1)R.push({p:q.q,ok:ok,bad:bad,multi:true});else if(ok.length>1&&!multi){ok.forEach(function(o){R.push({p:q.q,ok:[o],bad:bad})})}else R.push({p:q.q,ok:ok,bad:bad})})}
   else if(k==='pick'){var g0=D.groups[0],others=[];D.groups.slice(1).forEach(function(g){others=others.concat(g.items)});
