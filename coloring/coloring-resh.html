@@ -1,6 +1,13 @@
 <!doctype html>
 <html lang="he" dir="rtl">
 <head>
+<script>/*__ACS*/(function(){var O=window.AudioContext||window.webkitAudioContext,S=null,gest=false;if(!O)return;function F(){if(!S){S=new O();window.__AC=S}return S}F.prototype=O.prototype;window.AudioContext=F;window.webkitAudioContext=F;
+var sil='data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQAAAAA=',loopOn=false;
+function u(){gest=true;try{if(navigator.audioSession)navigator.audioSession.type='playback'}catch(e){}try{var c=new F();if(c.state!=='running')c.resume();var b=c.createBuffer(1,1,22050),s=c.createBufferSource();s.buffer=b;s.connect(c.destination);s.start(0)}catch(e){}
+if(!loopOn){loopOn=true;try{var a=new Audio(sil);a.loop=true;a.volume=.01;var p=a.play();if(p&&p.catch)p.catch(function(){loopOn=false})}catch(e){loopOn=false}}}
+['pointerdown','pointerup','mousedown','mouseup','touchstart','touchend','click','keydown'].forEach(function(ev){document.addEventListener(ev,u,{capture:true,passive:true})});
+setInterval(function(){if(gest&&S&&S.state==='suspended')try{S.resume()}catch(e){}},400)})();</script>
+
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
 <title>דפי צביעה: ר</title>
@@ -54,7 +61,8 @@ var mask=document.createElement('canvas'),mx=mask.getContext('2d');
 var S=0,color=COLORS[0][0],done=false,drawing=false,last=null,brush=0,coverTimer=null,lastColorUsed=COLORS[0][0];
 COLORS.forEach(function(c,i){var b=document.createElement('button');b.type='button';b.className='pot'+(i===0?' on':'');b.style.setProperty('--c',c[0]);b.setAttribute('aria-label',c[1]);b.setAttribute('role','radio');
   b.addEventListener('pointerdown',function(e){e.preventDefault();pick(i)});potsEl.appendChild(b)});
-function pick(i){color=COLORS[i][0];[].forEach.call(potsEl.children,function(p,k){p.classList.toggle('on',k===i)})}
+function __csnd(f,d,v,t0){try{var c=new AudioContext(),o=c.createOscillator(),g=c.createGain(),t=c.currentTime+(t0||0);o.type='triangle';o.frequency.value=f;g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(v||.1,t+.02);g.gain.exponentialRampToValueAtTime(.001,t+d);o.connect(g);g.connect(c.destination);o.start(t);o.stop(t+d+.05)}catch(e){}}
+function pick(i){__csnd(520+i*40,.12,.08);color=COLORS[i][0];[].forEach.call(potsEl.children,function(p,k){p.classList.toggle('on',k===i)})}
 function fontStr(sz){return '900 '+sz+'px Rubik, "Arial Hebrew", Arial, sans-serif'}
 function layout(){
   var r=board.getBoundingClientRect(),dpr=Math.min(2,window.devicePixelRatio||1);
@@ -112,7 +120,7 @@ function coverage(){
   return tot?got/tot:0;
 }
 function check(){if(done)return;if(coverage()>=0.93)finish()}
-function finish(){done=true;drawing=false;
+function finish(){done=true;drawing=false;[523,659,784,1047,1319,1568].forEach(function(f,i){__csnd(f,.45,.1,i*.09)});
   px.globalCompositeOperation='destination-over';px.fillStyle=lastColorUsed;px.fillRect(0,0,S,S);
   px.globalCompositeOperation='destination-in';px.drawImage(mask,0,0);px.globalCompositeOperation='source-over';
   setTimeout(confetti,200)}
