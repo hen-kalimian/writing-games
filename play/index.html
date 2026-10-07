@@ -111,6 +111,7 @@ body{background:linear-gradient(180deg,#fff 0%,#FEF6F5 40%,#FBDCD8 100%)}
 .dragcols .slot2.ok{flex-direction:row}.dragcols .slot2.ok .card{height:100%}
 .coll.seq{flex-wrap:wrap;gap:5px}.coll.seq i{width:30px;height:30px;border-width:2px;border-radius:9px}
 .pslbl.big{font:800 74px Rubik,sans-serif;left:auto;right:0;top:0;bottom:0;width:96px;display:flex;align-items:center;justify-content:center;opacity:.8;line-height:1.1}
+.suckarena{flex:1 1 auto;min-height:0;width:100%;display:grid;grid-template-columns:1fr 1.25fr 1fr;gap:10px;align-items:stretch;padding:4px 0}.starget{border-radius:22px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;border:4px dashed rgba(94,90,115,.35);padding:6px;min-height:0;transition:transform .2s}.starget img{max-width:70%;max-height:50%;object-fit:contain}.tlab{font:800 40px Rubik,sans-serif;color:#5E5A73;text-align:center;line-height:1.1}.tlab.nk{font-size:96px}.starget.gulp{animation:gulp .5s}.starget.shk{animation:sh .35s}@keyframes gulp{40%{transform:scale(1.14)}100%{transform:scale(1)}}.smid{grid-column:2;grid-row:1;display:flex;align-items:center;justify-content:center;min-height:0;position:relative}.scard{width:100%;aspect-ratio:1;max-height:100%;touch-action:none;cursor:grab;z-index:5}.scard.popin{animation:popin2 .6s cubic-bezier(.2,1.6,.4,1)}@keyframes popin2{0%{transform:scale(0) rotate(-25deg);opacity:0}100%{transform:scale(1) rotate(0);opacity:1}}
 </style>
 </head>
 <body>
@@ -497,10 +498,31 @@ E.fish=function(){var P=(D.pairs?D.pairs.map(function(p,i){return {a:p.a,b:p.b,i
     requestAnimationFrame(frame)}
   window.__ww.fish={cur:function(){return cur},friend:function(i){return friends.filter(function(f){return f.__p.i===i})[0]},fe:function(){return fe},state:function(){return state},x:function(){return x}};
   spawn();requestAnimationFrame(frame)};
+/* מיון בשתי קבוצות: תמונה אחת בכל פעם, גוררים ימינה או שמאלה והיא נשאבת, ואז מגיעה חדשה */
+E.suck=function(){var G=D.groups,items=[];G.forEach(function(g,gi){g.items.forEach(function(o){items.push({o:o,g:gi})})});items=sh(items).slice(0,12);total=items.length;stage.innerHTML='';var i=0;dots(items.length,0);ins.textContent='גררו את התמונה אל הצד הנכון';
+  var NIK=/[\u05b0-\u05c7]/g,bases=G.map(function(g){return (g.h.t||'').replace(NIK,'')}),sameBase=bases.every(function(b){return b.length===1&&b===bases[0]})&&G.every(function(g){return NIK.test(g.h.t||'')&&((NIK.lastIndex=0)||true)});
+  function lab(g){NIK.lastIndex=0;var t=(g.h.t||'').trim();if(sameBase){return '<div class="tlab nk">'+esc(t)+'</div>'}var h='';if(g.h.i)h+='<img src="'+BASE+'assets/'+g.h.i+'" alt="">';if(t){NIK.lastIndex=0;h+='<div class="tlab'+(t.replace(NIK,'').length<=3?' nk':'')+'">'+esc(t)+'</div>'}return h}
+  var ar=el('div','suckarena'),TC=['#FDE1EA','#D3E8F8','#D4EFE2','#FFF0B8'],tg=[];
+  G.slice(0,2).forEach(function(g,gi){var t=el('div','starget');t.style.background=TC[gi];t.innerHTML=lab(g);t.__gi=gi;t.style.gridColumn=gi===0?'3':'1';t.style.gridRow='1';ar.appendChild(t);tg.push(t)});
+  var mid=el('div','smid');ar.appendChild(mid);stage.appendChild(ar);
+  var card=null,busy=false;
+  function spawn(){var it=items[i];card=mk(it.o,'scard',{fs:it.o.i?18:44});card.style.touchAction='none';card.classList.add('popin');mid.innerHTML='';mid.appendChild(card);busy=false;say(it.o.s);after(function(){if(card)card.classList.remove('popin')},650);
+    card.addEventListener('pointerdown',function(e){if(busy)return;e.preventDefault();pickup();var z=parseFloat($('app').style.zoom)||1,sx=e.clientX,sy=e.clientY;try{card.setPointerCapture(e.pointerId)}catch(_){}card.style.transition='none';
+      function mv(ev){fing(ev);card.style.transform='translate('+((ev.clientX-sx)/z)+'px,'+((ev.clientY-sy)/z)+'px) scale(1.06)'}
+      function up(ev){card.removeEventListener('pointermove',mv);card.removeEventListener('pointerup',up);card.removeEventListener('pointercancel',up);drop();var cr=card.getBoundingClientRect(),cx=cr.left+cr.width/2,cy=cr.top+cr.height/2,best=-1,bd=1e9;
+        tg.forEach(function(t,k){var r=t.getBoundingClientRect(),dx=Math.max(r.left-cx,0,cx-r.right),dy=Math.max(r.top-cy,0,cy-r.bottom),d=Math.hypot(dx,dy);if(d<bd){bd=d;best=k}});
+        if(best<0||bd>60){card.style.transition='transform .25s';card.style.transform='';return}
+        if(best===it.g){busy=true;good();hits++;var tr=tg[best].getBoundingClientRect(),dx=tr.left+tr.width/2-cx,dy=tr.top+tr.height/2-cy,cur=card.style.transform,m=/translate\((-?[\d.]+)px,\s*(-?[\d.]+)px\)/.exec(cur)||[0,0,0];card.style.transition='transform .6s cubic-bezier(.5,0,.8,.4),opacity .6s';card.style.transform='translate('+((+m[1])+dx/z)+'px,'+((+m[2])+dy/z)+'px) scale(0) rotate(540deg)';card.style.opacity='0';tg[best].classList.add('gulp');after(function(){tg[best].classList.remove('gulp')},500);
+          after(function(){i++;dots(items.length,i);if(i>=items.length){finish('')}else{spawn();sparkle()}},750)}
+        else{bad();tg[best].classList.add('shk');after(function(){tg[best].classList.remove('shk')},400);card.style.transition='transform .3s';card.style.transform=''}}
+      card.addEventListener('pointermove',mv);card.addEventListener('pointerup',up);card.addEventListener('pointercancel',up)})}
+  window.__ww.suck={item:function(){return items[i]},card:function(){return card},targets:tg,busy:function(){return busy}};
+  spawn()};
 /* סוגי משחק נוספים מאותו תוכן: זיכרון, מיון, גלגל וקלפים */
 function runMode(m){
   if(m==='drag')return E.drag();
   if(D.kind==='labels')return E.lotto();
+  if(D.kind==='sort'&&D.groups.length===2&&!D.groups.some(function(g){return /^(לא|Incorrect)$/i.test((g.h.t||'').trim())})&&(!m||['sort','pinsort','speed','box','tf'].indexOf(m)>=0))return E.suck();
   if(m==='fish'&&(D.pairs||D.items))return E.fish();
   if(m==='train'&&D.kind!=='sort'){var Lt0=letterGuess(),pl0=window.POOL&&POOL[Lt0];if(pl0&&Lt0){D.groups=[{h:{t:Lt0},items:sh(pl0.ok.slice()).slice(0,5)},{h:{t:'לא '+Lt0},items:sh(pl0.bad.slice()).slice(0,5)}];D.kind='sort';return E.trainsort()}}
   if(m==='tf'&&D.kind==='sort'&&D.groups.length<=4)return E.trainsort();
