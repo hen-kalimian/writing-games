@@ -400,9 +400,9 @@ function renderQ(s, t){
   const ov = overlay();
   const stickers = s.i === 37 && SL[38] && SL[38].layers ? SL[38].layers.filter(l => l.show === 2) : [];
   stickers.forEach(l => { l._used = false; });
-  let k = 0, paths = [];
+  let k = 0, paths = [], locked = false;
   function startAct(){
-    ov.innerHTML = ''; paths = [];
+    ov.innerHTML = ''; paths = []; locked = false;
     const a = s.acts[k];
     a.shapes.forEach((sh, j) => {
       const p = document.createElementNS(NS, 'path'); p.setAttribute('d', sh.d);
@@ -418,10 +418,10 @@ function renderQ(s, t){
     return null;
   }
   ov.addEventListener('pointerdown', e => {
-    if (t !== token) return; e.preventDefault();
+    e.preventDefault(); if (t !== token || locked) return;   // אחרי תשובה נכונה לא מגיבים עד המעבר לשאלה הבאה (נגיעה נוספת נחשבה טעות והשמיעה רמז במקום להמשיך)
     const a = s.acts[k], h = hit(e);
     if (h){
-      clearTimeout(idleT);
+      clearTimeout(idleT); locked = true;
       const sh = a.shapes[+h.el.dataset.j], b = sh.bb, cx = (b[0] + b[2]) / 2, cy = (b[1] + b[3]) / 2;
       cheer(); popAt(h.p.x, h.p.y); confetti(16);
       // עיגול מסביב לתשובה הנכונה
@@ -441,7 +441,9 @@ function renderQ(s, t){
           best._used = true; const e2 = layerEl(best, false); e2.style.filter = 'hue-rotate(' + HUES[k % 4] + 'deg)'; stage.appendChild(e2); popSticker(e2, best); stickerSnd = best.snd;
         }
       }
-      say(sh.r1 || stickerSnd, () => { if (t !== token) return; k++; if (k < s.acts.length) { ring.remove(); startAct(); } else { confetti(); finishStep(t, 2000); } });
+      let moved = false;
+      const advance = () => { if (moved || t !== token) return; moved = true; k++; if (k < s.acts.length) { ring.remove(); startAct(); } else { confetti(); finishStep(t, 2000); } };
+      say(sh.r1 || stickerSnd, advance); setTimeout(advance, 25000);   // רשת ביטחון: ממשיכים גם אם ההקלטה נקטעה
     } else {
       boop(); const tgt = s.layers ? stage : im; tgt.classList.remove('shake'); void tgt.getBoundingClientRect(); tgt.classList.add('shake');
       const sh = a.shapes[0]; if (sh && sh.r2) say(sh.r2, armIdle);
