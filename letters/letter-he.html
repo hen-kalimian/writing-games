@@ -30,7 +30,7 @@ var lw=innerWidth,lh=innerHeight;setInterval(function(){if(gest&&S&&S.state==='s
   --line:#CFE0EC;
 }
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-html,body{margin:0;overscroll-behavior:none}
+html,body{margin:0}
 body{
   font-family:'Open Sans',system-ui,sans-serif;
   color:var(--ink);
@@ -102,7 +102,7 @@ svg.board{
 @keyframes spark{0%{opacity:0;transform:scale(.2) rotate(0)}30%{opacity:.9;transform:scale(1.1) rotate(40deg)}100%{opacity:0;transform:scale(1.4) rotate(90deg)}}
 
 .btns{display:flex;justify-content:center;gap:8px;flex-wrap:nowrap;margin-top:14px}.btns button{padding:10px 14px;font-size:14.5px;white-space:nowrap}
-button{
+button{touch-action:none;
   font-family:'Rubik',sans-serif;font-weight:500;font-size:15px;
   padding:10px 20px;border-radius:999px;cursor:pointer;
   border:2px solid var(--blue);background:var(--blue-bg);color:var(--blue-deep);
