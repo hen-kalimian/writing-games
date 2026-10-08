@@ -101,7 +101,7 @@ svg.board{
 .spark.go{animation:spark 1.1s ease-out forwards}
 @keyframes spark{0%{opacity:0;transform:scale(.2) rotate(0)}30%{opacity:.9;transform:scale(1.1) rotate(40deg)}100%{opacity:0;transform:scale(1.4) rotate(90deg)}}
 
-.btns{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin-top:14px}
+.btns{display:flex;justify-content:center;gap:8px;flex-wrap:nowrap;margin-top:14px}.btns button{padding:10px 14px;font-size:14.5px;white-space:nowrap}
 button{
   font-family:'Rubik',sans-serif;font-weight:500;font-size:15px;
   padding:10px 20px;border-radius:999px;cursor:pointer;
@@ -460,5 +460,5 @@ setTimeout(() => demo(false), 900);
 /* גישה לבדיקות */
 window.__game = { S: () => S, state: () => ({ cur, idx }) };
 </script>
-</body>
+<script src="../fs-icon.js?v=1"></script></body>
 </html>
