@@ -170,7 +170,16 @@ function say(src, cb){
   if (!src){ if (cb) setTimeout(cb, 300); return; }
   voiceCb = cb || null;
   voice.src = src; voice.volume = muted ? 0 : 1;
-  voice.play().catch(() => { if (voiceCb){ const c = voiceCb; voiceCb = null; setTimeout(c, 600); } });
+  const mine = voiceCb, url = voice.src;
+  voice.play().catch(err => {
+    if (voiceCb !== mine) return;   // הושמעה כבר הקלטה חדשה יותר: השגיאה שייכת להקלטה הקודמת ואסור שתפעיל את ההמשך של החדשה
+    // הדפדפן חסם את ההשמעה (למשל באייפון): מנסים שוב בנגיעה הבאה, כדי שהשאלה לא תידלג בשקט
+    if (err && err.name === 'NotAllowedError'){
+      const retry = () => { document.removeEventListener('pointerdown', retry, true); if (voice.src === url && voice.paused) voice.play().catch(() => {}); };
+      document.addEventListener('pointerdown', retry, true);
+    }
+    if (voiceCb){ const c = voiceCb; voiceCb = null; setTimeout(c, 600); }
+  });
 }
 function stopVoice(){ voice.pause(); voiceCb = null; }
 let ac;
