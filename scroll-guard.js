@@ -30,17 +30,21 @@
       f.parentNode.insertBefore(ov, f.nextSibling); f.parentNode.insertBefore(lock, ov.nextSibling);
       var it = { f: f, ov: ov, lock: lock, on: false }; items.push(it);
       var moved = false, sx = 0, sy = 0;
-      ov.addEventListener('touchstart', function (e) { moved = false; var t = e.touches[0]; sx = t.clientX; sy = t.clientY; }, { passive: true });
-      ov.addEventListener('touchmove', function (e) { var t = e.touches[0]; if (Math.abs(t.clientX - sx) > 8 || Math.abs(t.clientY - sy) > 8) moved = true; }, { passive: true });
+      var t0 = 0; ov.addEventListener('touchstart', function (e) { moved = false; t0 = Date.now(); var t = e.touches[0]; sx = t.clientX; sy = t.clientY; }, { passive: true });
+      ov.addEventListener('touchend', function (e) { if (!moved && Date.now() - t0 < 700) { setOn(it, true); } }, { passive: true });
+      ov.addEventListener('touchmove', function (e) { var t = e.touches[0]; if (Math.abs(t.clientX - sx) > 14 || Math.abs(t.clientY - sy) > 14) moved = true; }, { passive: true });
       ov.addEventListener('click', function () { if (moved) { moved = false; return; } setOn(it, true); });
       lock.addEventListener('click', function (e) { e.stopPropagation(); setOn(it, false); });
       setOn(it, false); place(it);
-      if ('IntersectionObserver' in window) new IntersectionObserver(function (en) { en.forEach(function (x) { if (!x.isIntersecting && it.on) setOn(it, false); }); }, { threshold: 0 }).observe(f);
     });
     items.forEach(place);
   }
   function go() { init(); setTimeout(init, 800); setTimeout(function () { items.forEach(place); }, 2500); }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', go); else go();
   window.addEventListener('resize', function () { items.forEach(place); });
+  window.addEventListener('scroll', function () { items.forEach(place); }, { passive: true });
+  document.addEventListener('touchstart', function () { items.forEach(place); }, { passive: true, capture: true });
+  setInterval(function () { init(); items.forEach(place); }, 500);
+  if ('ResizeObserver' in window) { try { new ResizeObserver(function () { items.forEach(place); }).observe(document.documentElement); } catch (e) { } }
   window.addEventListener('load', function () { items.forEach(place); });
 })();
