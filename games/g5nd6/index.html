@@ -90,6 +90,12 @@ svg.ov{inset:0;width:100%;height:100%;touch-action:none}
 @media (orientation:portrait){body.framed #app{inset:auto 0;top:50%;bottom:auto;height:max(480px,calc(75vw + 200px));transform:translateY(-50%)}}
 @media (max-width:480px){#app .top .brand{display:none}#app .top{justify-content:center}#app .tools{gap:10px}}
 #start{background:url(img/s0.jpg) center/contain no-repeat,linear-gradient(180deg,#FEF6F5 0%,#FBDCD8 100%)!important;cursor:pointer}#start .box>*:not(#go){display:none}#start .box{position:absolute;left:0;right:0;bottom:1.5%;padding:0;max-width:none;text-align:center}#start .play{width:84px;height:84px;background:#EF406E!important;box-shadow:0 8px 0 #D14175,0 0 0 8px rgba(255,255,255,.7)!important;animation:pulse 1.4s infinite}#start .play svg{width:44px;height:44px}
+#start .box{position:absolute!important;left:50%!important;top:50%!important;right:auto!important;bottom:auto!important;width:var(--iw,100%);height:var(--ih,100%);transform:translate(-50%,-50%)}
+#start .play{--bs:clamp(42px,calc(var(--ih,600px)*.115),76px);position:absolute;left:50%;bottom:3.5%;width:var(--bs)!important;height:var(--bs)!important;margin:0!important;transform:translateX(-50%);border:4px solid #fff!important;box-shadow:0 8px 20px rgba(209,65,117,.38)!important;animation:gopulse 1.8s ease-in-out infinite}
+#start .play svg{width:46%!important;height:46%!important}
+@keyframes gopulse{0%,100%{transform:translateX(-50%) scale(1)}50%{transform:translateX(-50%) scale(1.07)}}
+@media (prefers-reduced-motion:reduce){#start .play{animation:none}}
+#app:has(#start:not([style*="none"])) .top .brand{visibility:hidden}
 </style>
 </head>
 <body>
@@ -111,7 +117,7 @@ svg.ov{inset:0;width:100%;height:100%;touch-action:none}
     <button class="nav" id="next" aria-label="הבא"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></button>
   </div>
   <div id="start"><div class="box">
-    <div class="brand" style="display:inline-block" id="brand2"></div>
+    <div class="brand" style="display:none" id="brand2"></div>
     <h1 id="gtitle"></h1><p>לחצו כדי להתחיל. אפשר גם למסך מלא.</p>
     <button class="play" id="go" aria-label="התחלה"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></button>
     <div style="margin-top:16px"><button class="btn" id="gofs">התחילו במסך מלא לרוחב</button></div>
@@ -157,6 +163,7 @@ function fit(){
   $('app').classList.toggle('compact', $('app').clientHeight < 520);
   S = Math.min((main.clientWidth - 8) / 1036, (main.clientHeight - 8) / 780);
   stage.style.transform = 'translate(-50%,-50%) scale(' + S + ')';
+  const st = $('start'); if (st){ const k = Math.min(st.clientWidth / 4, st.clientHeight / 3); st.style.setProperty('--iw', (4 * k) + 'px'); st.style.setProperty('--ih', (3 * k) + 'px'); }   // מסך הפתיחה: הכפתור ממורכז על התמונה עצמה
 }
 addEventListener('resize', fit); fit();
 main.addEventListener('touchmove', e => { if (e.cancelable && !(e.target.closest && e.target.closest('video, button, input, iframe'))) e.preventDefault(); }, { passive: false });
