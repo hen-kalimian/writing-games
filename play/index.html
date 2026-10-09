@@ -1,7 +1,8 @@
 <!doctype html>
 <html lang="he" dir="rtl">
 <head>
-<script>/*__ACS*/(function(){var O=window.AudioContext||window.webkitAudioContext,S=null,gest=false;if(!O)return;function F(){if(!S){S=new O();window.__AC=S}return S}F.prototype=O.prototype;window.AudioContext=F;window.webkitAudioContext=F;
+<script>document.addEventListener('touchmove',function(e){var t=e.target;if(t&&t.closest&&t.closest('.arena,.trainarena,.psboard,.tray,.pcard,.chip,.tank,.suckarena,.cbox,[style*="touch-action:none"]'))e.preventDefault()},{passive:false});
+/*__ACS*/(function(){var O=window.AudioContext||window.webkitAudioContext,S=null,gest=false;if(!O)return;function F(){if(!S){S=new O();window.__AC=S}return S}F.prototype=O.prototype;window.AudioContext=F;window.webkitAudioContext=F;
 var sil='data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQAAAAA=',loopOn=false;
 function u(){gest=true;try{if(navigator.audioSession)navigator.audioSession.type='playback'}catch(e){}try{var c=new F();if(c.state!=='running')c.resume();var b=c.createBuffer(1,1,22050),s=c.createBufferSource();s.buffer=b;s.connect(c.destination);s.start(0)}catch(e){}
 if(!loopOn){loopOn=true;try{var a=new Audio(sil);a.loop=true;a.volume=.01;var p=a.play();if(p&&p.catch)p.catch(function(){loopOn=false})}catch(e){loopOn=false}}}
