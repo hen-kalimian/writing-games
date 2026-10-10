@@ -33,6 +33,12 @@ html,body{margin:0;height:100%;overflow:hidden;font-family:Rubik,Arial,sans-seri
 <div id="end"><div class="box"><h2>כל הכבוד!</h2><button class="btn" id="again">לשחק שוב</button></div></div>
 <canvas id="fx"></canvas>
 <script>
+/*__ACS*/(function(){var O=window.AudioContext||window.webkitAudioContext,S=null,gest=false;if(!O)return;function F(){if(!S){S=new O();window.__AC=S}return S}F.prototype=O.prototype;window.AudioContext=F;window.webkitAudioContext=F;
+var sil='data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQAAAAA=',loopOn=false;
+function u(){gest=true;try{if(navigator.audioSession)navigator.audioSession.type='playback'}catch(e){}try{var c=new F();if(c.state!=='running')c.resume();var b=c.createBuffer(1,1,22050),s=c.createBufferSource();s.buffer=b;s.connect(c.destination);s.start(0)}catch(e){}
+if(!loopOn){loopOn=true;try{var a=new Audio(sil);a.loop=true;a.volume=.01;var p=a.play();if(p&&p.catch)p.catch(function(){loopOn=false})}catch(e){loopOn=false}}}
+['pointerdown','pointerup','mousedown','mouseup','touchstart','touchend','click','keydown'].forEach(function(ev){document.addEventListener(ev,u,{capture:true,passive:true})});
+setInterval(function(){if(gest&&S&&S.state==='suspended')try{S.resume()}catch(e){}},800)})();
 document.addEventListener('touchmove',function(e){var t=e.target;if(t&&t.closest&&t.closest('#play'))e.preventDefault()},{passive:false});
 var Q=new URLSearchParams(location.search),PID=(Q.get('p')||'').replace(/[^a-z0-9_\-]/gi,''),$=function(i){return document.getElementById(i)};
 var play=$('play'),board=$('board'),tray=$('tray'),hint=$('hint'),fx=$('fx'),CFG=null,IMG=new Image(),P=[],COLS=4,ROWS=3,placed=0,W=0,H=0,cell=0,chh=0,tab=0,BX=0,BY=0,TX=0,TY=0,TW=0,TH=0,E=null;
@@ -40,8 +46,8 @@ var play=$('play'),board=$('board'),tray=$('tray'),hint=$('hint'),fx=$('fx'),CFG
 var MUTE=false;try{MUTE=localStorage.getItem('wg_mute')==='1'}catch(e){}
 var AC=null;function ctx(){if(MUTE)return null;try{AC=AC||new (window.AudioContext||window.webkitAudioContext)();if(AC.state==='suspended')AC.resume();return AC}catch(e){return null}}
 function tone(f,d,type,v,at){var c=ctx();if(!c)return;var o=c.createOscillator(),g=c.createGain(),t=c.currentTime+(at||0);o.type=type||'sine';o.frequency.value=f;g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(v||.12,t+.015);g.gain.exponentialRampToValueAtTime(.0001,t+d);o.connect(g);g.connect(c.destination);o.start(t);o.stop(t+d+.02)}
-function sPick(){tone(520,.07,'triangle',.07)}function sSnap(){tone(660,.1,'triangle',.13);tone(990,.14,'sine',.1,.07)}function sBack(){tone(240,.1,'sine',.06)}
-function sWin(){[523,659,784,1047,1319].forEach(function(f,i){tone(f,.22,'triangle',.13,i*.11)})}
+function sPick(){tone(520,.06,'sine',.03)}function sSnap(){tone(784,.28,'sine',.05);tone(1175,.36,'sine',.035,.09)}function sBack(){}
+function sWin(){[523,659,784,1047].forEach(function(f,i){tone(f,.5,'sine',.055,i*.14)});tone(1319,.9,'sine',.045,.56)}
 function muIcon(){$('mu').innerHTML=MUTE?'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M4 9v6h4l5 4V5L8 9H4z" fill="currentColor"/><path d="M17 9l5 6M22 9l-5 6"/></svg>':'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M4 9v6h4l5 4V5L8 9H4z" fill="currentColor"/><path d="M16.5 8.5a5 5 0 010 7M19 6a8.5 8.5 0 010 12"/></svg>'}
 $('mu').onclick=function(){MUTE=!MUTE;try{localStorage.setItem('wg_mute',MUTE?'1':'0')}catch(e){}muIcon();if(!MUTE)tone(660,.1,'triangle',.1)};muIcon();
 $('fs').onclick=function(){var d=document,el=d.documentElement;try{if(d.fullscreenElement||d.webkitFullscreenElement){(d.exitFullscreen||d.webkitExitFullscreen).call(d)}else{(el.requestFullscreen||el.webkitRequestFullscreen).call(el)}}catch(e){}};
