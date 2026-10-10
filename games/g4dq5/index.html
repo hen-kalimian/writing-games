@@ -99,6 +99,10 @@ svg.ov{inset:0;width:100%;height:100%;touch-action:none}
 body.framed #app #fs.fsbtn{width:34px;height:34px;padding:0;justify-content:center;font-size:0;gap:0}
 body.framed #app.compact #fs.fsbtn{width:28px;height:28px}
 body.framed #app .top .brand{display:none}
+/*bigfit*/#app.compact #main{inset:30px 0 0 0!important}#app.compact .top{top:2px!important;height:26px!important}#app.compact .ico,body.framed #app.compact #fs.fsbtn{width:24px!important;height:24px!important}#app.compact .ico svg,#app.compact .fsbtn svg{width:13px;height:13px}
+#app.side .top{position:absolute;top:8px;right:8px;left:auto;height:auto;width:auto;flex-direction:column;align-items:flex-end;justify-content:flex-start;gap:8px;padding:0;z-index:30!important;pointer-events:none}#app.side .top>*{pointer-events:auto}#app.side .top .brand{display:none}#app.side .tools{flex-direction:column;align-items:flex-end;gap:8px}
+#app.side #main{position:absolute;inset:0;flex:none}#app.side .bottom{position:absolute;left:0;right:0;bottom:8px;height:48px;z-index:6;pointer-events:none;justify-content:space-between}#app.side .bottom .bar{display:none}#app.side .bottom .nav{pointer-events:auto}
+.vwrap video{max-width:100%!important;max-height:100%!important;width:100%;height:100%;object-fit:contain;border-radius:0!important;box-shadow:none!important;background:#000}
 </style>
 </head>
 <body>
@@ -163,8 +167,10 @@ const done = new Set();
 
 /* ---------- התאמת הלוח למסך ---------- */
 function fit(){
-  $('app').classList.toggle('compact', $('app').clientHeight < 520);
-  S = Math.min((main.clientWidth - 8) / 1036, (main.clientHeight - 8) / 780);
+  const _a = $('app'), _side = _a.clientWidth / _a.clientHeight > 1.62;
+  _a.classList.toggle('side', _side); _a.classList.toggle('compact', !_side && _a.clientHeight < 520);
+  const _tw = _side ? (_a.querySelector('.top').offsetWidth + 14) : 0;
+  S = Math.min((main.clientWidth - 8 - 2 * _tw) / 1036, (main.clientHeight - 8) / 780);
   stage.style.transform = 'translate(-50%,-50%) scale(' + S + ')';
   const st = $('start'); if (st){ const k = Math.min(st.clientWidth / 4, st.clientHeight / 3); st.style.setProperty('--iw', (4 * k) + 'px'); st.style.setProperty('--ih', (3 * k) + 'px'); }   // מסך הפתיחה: הכפתור ממורכז על התמונה עצמה
 }
@@ -332,7 +338,7 @@ function renderV(s, t){
     const f = document.createElement('iframe');
     f.src = 'https://www.youtube-nocookie.com/embed/' + s.yt + '?autoplay=1&rel=0&playsinline=1&modestbranding=1';
     f.setAttribute('allow', 'autoplay; fullscreen; encrypted-media'); f.setAttribute('allowfullscreen', '');
-    f.style.cssText = 'width:86%;aspect-ratio:16/9;max-height:90%;border:0;border-radius:26px;box-shadow:0 10px 30px rgba(46,58,69,.25);background:#000';
+    f.style.cssText = 'width:100%;height:100%;border:0;border-radius:0;box-shadow:0 10px 30px rgba(46,58,69,.25);background:#000';
     w.appendChild(f);
     const b2 = document.createElement('button'); b2.className = 'btn vnext'; b2.textContent = 'ממשיכים'; b2.onclick = next; w.appendChild(b2);
     setTimeout(() => { b2.style.display = 'block'; pulseNext(true); }, 6000);
