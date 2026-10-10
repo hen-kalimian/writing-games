@@ -16,7 +16,7 @@ var lw=innerWidth,lh=innerHeight;setInterval(function(){if(gest&&S&&S.state==='s
 <style>
 :root{--mint-bg:#F0FAF5;--blue-bg:#F1F6FB;--mint:#8FD3B6;--mint-deep:#4FB38C;--blue:#B7CDE0;--blue-deep:#5F8DB5;--pink:#EF406E;--gold:#D9A441;--ink:#2E3A45;--muted:#7A8793}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-html,body{margin:0;height:100%;overflow:hidden;overscroll-behavior:none;background:#fff}
+html,body{margin:0;height:100%;overflow:hidden;background:#fff}
 body{font-family:'Open Sans',system-ui,sans-serif;color:var(--ink);-webkit-user-select:none;user-select:none}
 #app{position:fixed;inset:0;display:flex;flex-direction:column;background:radial-gradient(circle at 8% 10%,var(--mint-bg) 0 160px,transparent 161px),radial-gradient(circle at 94% 92%,var(--blue-bg) 0 190px,transparent 191px),#fff}
 .top{height:44px;display:flex;align-items:center;justify-content:space-between;padding:0 12px;flex:none}
@@ -37,7 +37,7 @@ body{font-family:'Open Sans',system-ui,sans-serif;color:var(--ink);-webkit-user-
 #app.compact .fsbtn{height:28px;font-size:12px;padding:0 10px}
 #app.compact .ico{width:28px;height:28px}
 #app.compact .brand{font-size:12px}
-#main{position:relative;flex:1;overflow:hidden;touch-action:none}
+#main{position:relative;flex:1;overflow:hidden;touch-action:pan-y}#main.gest,#main.gest svg.ov{touch-action:none}
 #stage{position:absolute;left:50%;top:50%;width:1024px;height:768px;transform-origin:center center;background:#fff;border-radius:34px 40px 36px 42px / 40px 34px 42px 36px;overflow:hidden;border:6px solid var(--blue);box-shadow:0 14px 40px rgba(95,141,181,.18)}
 #stage>*{position:absolute}
 .bg{inset:0;width:100%;height:100%;object-fit:fill;pointer-events:none}
@@ -70,7 +70,7 @@ body{font-family:'Open Sans',system-ui,sans-serif;color:var(--ink);-webkit-user-
 .vwrap video{max-width:94%;max-height:92%;border-radius:26px;background:#000;box-shadow:0 10px 30px rgba(46,58,69,.25)}
 .vnext{position:absolute;bottom:26px;left:50%;transform:translateX(-50%);z-index:3;display:none}
 /* חידונים ופאזל */
-svg.ov{inset:0;width:100%;height:100%;touch-action:none}
+svg.ov{inset:0;width:100%;height:100%;touch-action:pan-y}
 .hit{fill:transparent;cursor:pointer;pointer-events:all}
 .shake{animation:shake .4s}
 @keyframes shake{20%{translate:-8px 0}40%{translate:8px 0}60%{translate:-5px 0}80%{translate:5px 0}}
@@ -175,7 +175,7 @@ function fit(){
   const st = $('start'); if (st){ const k = Math.min(st.clientWidth / 4, st.clientHeight / 3); st.style.setProperty('--iw', (4 * k) + 'px'); st.style.setProperty('--ih', (3 * k) + 'px'); }   // מסך הפתיחה: הכפתור ממורכז על התמונה עצמה
 }
 addEventListener('resize', fit); fit();
-main.addEventListener('touchmove', e => { if (e.cancelable && !(e.target.closest && e.target.closest('video, button, input, iframe'))) e.preventDefault(); }, { passive: false });
+main.addEventListener('touchmove', e => { if (main.classList.contains('gest') && e.cancelable && !(e.target.closest && e.target.closest('video, button, input, iframe'))) e.preventDefault(); }, { passive: false });   /*scrollfree*/
 
 /* ---------- צליל ---------- */
 const voice = new Audio();
@@ -257,7 +257,7 @@ function go(i){
   if (i > LAST){ return finish(); }
   if (SL[i].skip) return go(i + (i >= cur ? 1 : -1));
   token++; stopVoice(); clearTimeout(idleT);
-  stage.innerHTML = ''; document.querySelectorAll('.fover').forEach(x => x.remove()); pulseNext(false);
+  stage.innerHTML = ''; document.querySelectorAll('.fover').forEach(x => x.remove()); pulseNext(false); main.classList.remove('gest');
   cur = i; __seen.add(i);
   const s = SL[i];
   $('barfill').style.width = Math.round(100 * (s.song ? s.next : i) / LAST) + '%';
@@ -359,7 +359,7 @@ function renderV(s, t){
 }
 
 /* ---------- פאזל: גוררים כל חלק למקומו ---------- */
-function renderP(s, t){
+function renderP(s, t){ main.classList.add('gest');
   const a = s.acts[0];
   const base = img(s);
   const ov = overlay();
@@ -481,7 +481,7 @@ function renderQ(s, t){
 
 /* ---------- כתיבה באצבע: המשחק שלי בתוך המשחק ---------- */
 const WRITE = CFG.write || {};
-function renderDraw(s, t){
+function renderDraw(s, t){ main.classList.add('gest');
   img(s);
   const ov = overlay();
   const sh = s.acts[0].shapes;
@@ -553,7 +553,7 @@ document.addEventListener('fullscreenchange', () => setTimeout(placeFover, 150))
 /* ---------- כתיבה באצבע (trace) על אות/ספרה, בשקפי טייני טפ שהוחלפו (חן, 4.10.26) ----------
    s.trace.glyphs = [{big, strokes:[[ [x,y],... ]]}] בקואורדינטות הבמה. סדר הקווים והכיוון נבדקים:
    מתחילים ליד נקודת ההתחלה, ועוברים לאורך הקו. האות מושלמת כשכל הקווים הושלמו, והשקף כשכל האותיות בו הושלמו. */
-function renderTrace(s, t){
+function renderTrace(s, t){ main.classList.add('gest');
   img(s);
   const ov = overlay();
   const mk = (tag, at) => { const e = document.createElementNS(NS, tag); for (const k in at) e.setAttribute(k, at[k]); return e; };
@@ -621,7 +621,7 @@ function renderTrace(s, t){
 /* ---------- מעבר על קו מקווקו באיור (כתב, פרפר וכו'), עם זיהוי נכון/לא נכון (חן, 4.10.26) ----------
    s.cover.pts = נקודות לאורך הקו המקווקו (קואורדינטות הבמה). מעבירים אצבע על הקו: נקודות שנפגעו נצבעות.
    מעבר שרוב התנועה שלו מחוץ לקו נפסל (לא נספר), והשקף מסתיים כשרוב הקו כוסה. */
-function renderCover(s, t){
+function renderCover(s, t){ main.classList.add('gest');
   img(s);
   const ov = overlay();
   const P = s.cover.pts, R = s.cover.r || 30, FAR = R * 2.1;
@@ -646,7 +646,7 @@ function renderCover(s, t){
   say(s.acts[0].intro);
 }
 
-function renderF(s, t){
+function renderF(s, t){ main.classList.add('gest');
   if (s.trace) return renderTrace(s, t);
   if (s.cover) return renderCover(s, t);
   if (CFG.lion13 && s.i === 13) return renderDraw(s, t);
@@ -734,7 +734,7 @@ function renderT(s, t){
 }
 
 /* ---------- "עקבו אחרי" כללי (F): עוברים עם האצבע על כל צורה לפי הסדר ---------- */
-function renderFollow(s, t){
+function renderFollow(s, t){ main.classList.add('gest');
   img(s);
   const a = s.acts[0] || { shapes: [] };
   const shapes = a.shapes;
