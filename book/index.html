@@ -23,7 +23,7 @@ html,body{margin:0;height:100%;overflow:hidden;font-family:Rubik,Arial,sans-seri
 .leaf.turning .shade{opacity:1}
 .endp{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;text-align:center;padding:10%;background:linear-gradient(160deg,#FDE1EA,#EAF6F0 55%,#DDEBF8)}
 .endp b{font-size:clamp(15px,4.2vmin,26px);color:#B8236B}.endp span{font-size:clamp(12px,3vmin,18px)}
-.bar{display:flex;align-items:center;justify-content:center;gap:8px;flex:none;width:100%}
+.bar{display:flex;align-items:center;justify-content:center;gap:10px;flex:none;width:100%;max-width:100%;flex-wrap:nowrap}
 .btn{background:#EF406E;color:#fff;border:0;font-family:inherit;font-weight:700;font-size:15px;border-radius:99px;padding:8px 20px;box-shadow:0 3px 0 #D14175;cursor:pointer}
 .btn[disabled]{opacity:.35;cursor:default}
 .ib{width:32px;height:32px;border-radius:50%;border:2px solid #F8B9B6;background:#FDE1EA;color:#B8236B;font-size:15px;display:flex;align-items:center;justify-content:center;cursor:pointer;padding:0;font-family:inherit;flex:none}
@@ -32,13 +32,13 @@ html,body{margin:0;height:100%;overflow:hidden;font-family:Rubik,Arial,sans-seri
 </style></head><body>
 <div id="app">
   <div id="stage"><div id="book"></div></div>
-  <div class="bar"><button class="ib" id="fs" aria-label="מסך מלא" title="מסך מלא">&#x26F6;</button><button class="btn" id="prev">לעמוד הקודם</button><span id="cnt"></span><button class="btn" id="next">לעמוד הבא</button><button class="ib" id="mu" aria-label="צליל" title="צליל"></button></div>
+  <div class="bar"><button class="ib" id="fs" aria-label="מסך מלא" title="מסך מלא">&#x26F6;</button><button class="btn" id="prev">לעמוד הקודם</button><span id="cnt" style="display:none"></span><button class="btn" id="next">לעמוד הבא</button><button class="ib" id="mu" style="display:none"></button></div>
 </div>
 <script>
-var PAGES=9,RATIO=945/756,VER='1',stage=document.getElementById('stage'),book=document.getElementById('book'),$=function(i){return document.getElementById(i)};
+var PAGES=9,RATIO=945/756,VER='2',stage=document.getElementById('stage'),book=document.getElementById('book'),$=function(i){return document.getElementById(i)};
 var MODE='',pos=0,leaves=[],busy=false,W=0,H=0;
 /* צליל דפדוף עדין */
-var MUTE=false;try{MUTE=localStorage.getItem('wg_mute')==='1'}catch(e){}var AC=null;
+var MUTE=false,AC=null;
 function flipSound(){if(MUTE)return;try{AC=AC||new (window.AudioContext||window.webkitAudioContext)();if(AC.state==='suspended')AC.resume();var d=.42,n=Math.floor(AC.sampleRate*d),b=AC.createBuffer(1,n,AC.sampleRate),a=b.getChannelData(0);for(var i=0;i<n;i++){var t=i/n;a[i]=(Math.random()*2-1)*Math.pow(Math.sin(Math.PI*t),2)*(.6+.4*Math.sin(t*38))}var s=AC.createBufferSource(),f=AC.createBiquadFilter(),g=AC.createGain();s.buffer=b;f.type='bandpass';f.frequency.value=2600;f.Q.value=.7;g.gain.value=.05;s.connect(f);f.connect(g);g.connect(AC.destination);s.start()}catch(e){}}
 function muIcon(){$('mu').innerHTML=MUTE?'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M4 9v6h4l5 4V5L8 9H4z" fill="currentColor"/><path d="M17 9l5 6M22 9l-5 6"/></svg>':'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M4 9v6h4l5 4V5L8 9H4z" fill="currentColor"/><path d="M16.5 8.5a5 5 0 010 7M19 6a8.5 8.5 0 010 12"/></svg>'}
 $('mu').onclick=function(){MUTE=!MUTE;try{localStorage.setItem('wg_mute',MUTE?'1':'0')}catch(e){}muIcon();if(!MUTE)flipSound()};muIcon();
