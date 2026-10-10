@@ -23,30 +23,35 @@ html,body{margin:0;height:100%;overflow:hidden;font-family:Rubik,Arial,sans-seri
 .leaf.turning .shade{opacity:1}
 .endp{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;text-align:center;padding:10%;background:linear-gradient(160deg,#FDE1EA,#EAF6F0 55%,#DDEBF8)}
 .endp b{font-size:clamp(15px,4.2vmin,26px);color:#B8236B}.endp span{font-size:clamp(12px,3vmin,18px)}
-.bar{display:flex;align-items:center;justify-content:center;gap:10px;flex:none;width:100%;max-width:100%;flex-wrap:nowrap}
+.bar{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px;flex:none;width:100%;max-width:100%}.row{display:flex;align-items:center;justify-content:center;gap:10px}.row .btn{width:142px;padding-left:0;padding-right:0;text-align:center}.lnk{background:#fff;color:#B8236B;border:2px solid #F8B9B6;font-family:inherit;font-weight:700;font-size:13px;border-radius:99px;padding:5px 16px;cursor:pointer}
 .btn{background:#EF406E;color:#fff;border:0;font-family:inherit;font-weight:700;font-size:15px;border-radius:99px;padding:8px 20px;box-shadow:0 3px 0 #D14175;cursor:pointer}
 .btn[disabled]{opacity:.35;cursor:default}
 .ib{width:32px;height:32px;border-radius:50%;border:2px solid #F8B9B6;background:#FDE1EA;color:#B8236B;font-size:15px;display:flex;align-items:center;justify-content:center;cursor:pointer;padding:0;font-family:inherit;flex:none}
 #cnt{font-size:13px;font-weight:700;min-width:64px;text-align:center}
-@media(max-width:430px){.btn{font-size:12px;padding:7px 11px;white-space:nowrap}.ib{width:28px;height:28px}#cnt{font-size:12px;min-width:52px}}
+@media(max-width:430px){.btn{font-size:13px;padding:7px 12px;white-space:nowrap}.row .btn{width:116px;padding-left:0;padding-right:0}.ib{width:28px;height:28px}#cnt{font-size:12px;min-width:52px}}
 </style></head><body>
 <div id="app">
   <div id="stage"><div id="book"></div></div>
-  <div class="bar"><button class="ib" id="fs" aria-label="מסך מלא" title="מסך מלא">&#x26F6;</button><button class="btn" id="prev">לעמוד הקודם</button><span id="cnt" style="display:none"></span><button class="btn" id="next">לעמוד הבא</button><button class="ib" id="mu" style="display:none"></button></div>
+  <div class="bar"><div class="row"><button class="btn" id="prev">לעמוד הקודם</button><button class="btn" id="next">לעמוד הבא</button></div><button class="lnk" id="fs">למסך מלא</button><span id="cnt" style="display:none"></span></div>
 </div>
 <script>
-var PAGES=9,RATIO=945/756,VER='2',stage=document.getElementById('stage'),book=document.getElementById('book'),$=function(i){return document.getElementById(i)};
+var PAGES=9,RATIO=945/756,VER='3',stage=document.getElementById('stage'),book=document.getElementById('book'),$=function(i){return document.getElementById(i)};
 var MODE='',pos=0,leaves=[],busy=false,W=0,H=0;
 /* צליל דפדוף עדין */
 var MUTE=false,AC=null;
 function flipSound(){if(MUTE)return;try{AC=AC||new (window.AudioContext||window.webkitAudioContext)();if(AC.state==='suspended')AC.resume();var d=.42,n=Math.floor(AC.sampleRate*d),b=AC.createBuffer(1,n,AC.sampleRate),a=b.getChannelData(0);for(var i=0;i<n;i++){var t=i/n;a[i]=(Math.random()*2-1)*Math.pow(Math.sin(Math.PI*t),2)*(.6+.4*Math.sin(t*38))}var s=AC.createBufferSource(),f=AC.createBiquadFilter(),g=AC.createGain();s.buffer=b;f.type='bandpass';f.frequency.value=2600;f.Q.value=.7;g.gain.value=.05;s.connect(f);f.connect(g);g.connect(AC.destination);s.start()}catch(e){}}
-function muIcon(){$('mu').innerHTML=MUTE?'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M4 9v6h4l5 4V5L8 9H4z" fill="currentColor"/><path d="M17 9l5 6M22 9l-5 6"/></svg>':'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M4 9v6h4l5 4V5L8 9H4z" fill="currentColor"/><path d="M16.5 8.5a5 5 0 010 7M19 6a8.5 8.5 0 010 12"/></svg>'}
-$('mu').onclick=function(){MUTE=!MUTE;try{localStorage.setItem('wg_mute',MUTE?'1':'0')}catch(e){}muIcon();if(!MUTE)flipSound()};muIcon();
-$('fs').onclick=function(){var d=document,el=d.documentElement;try{if(d.fullscreenElement||d.webkitFullscreenElement){(d.exitFullscreen||d.webkitExitFullscreen).call(d)}else{(el.requestFullscreen||el.webkitRequestFullscreen).call(el)}}catch(e){}};
-if(!(document.documentElement.requestFullscreen||document.documentElement.webkitRequestFullscreen))$('fs').style.visibility='hidden';
+var NT=/[?&]nt=1/.test(location.search),BACK='https://www.talkwithkids.co.il/book',FS=$('fs'),d=document,el=d.documentElement,CAN=!!(el.requestFullscreen||el.webkitRequestFullscreen)&&(d.fullscreenEnabled||d.webkitFullscreenEnabled);
+function isFs(){return !!(d.fullscreenElement||d.webkitFullscreenElement)}
+function fsLabel(){FS.textContent=(NT||isFs())?'יציאה ממסך מלא':'למסך מלא'}
+FS.onclick=function(){if(NT){try{window.close()}catch(e){}setTimeout(function(){if(history.length>1)history.back();else location.href=BACK},250);return}
+  if(isFs()){try{(d.exitFullscreen||d.webkitExitFullscreen).call(d)}catch(e){}return}
+  if(CAN){try{var pr=(el.requestFullscreen||el.webkitRequestFullscreen).call(el);if(pr&&pr.catch)pr.catch(openTab);return}catch(e){}}
+  openTab()};
+function openTab(){var u=location.href.split('#')[0];u+=(u.indexOf('?')<0?'?':'&')+'nt=1';var w=null;try{w=window.open(u,'_blank')}catch(e){}if(!w){try{window.top.location.href=u}catch(e){location.href=u}}}
+d.addEventListener('fullscreenchange',function(){fsLabel();setTimeout(build,120)});d.addEventListener('webkitfullscreenchange',function(){fsLabel();setTimeout(build,120)});fsLabel();
 function face(cls,n){var f=document.createElement('div');f.className='face '+cls;if(n>=1&&n<=PAGES)f.style.backgroundImage='url(img/p'+n+'.jpg?v='+VER+')';else{f.className+=' endp';f.innerHTML='<b>רוצים לקרוא את ההמשך?</b><span>הספר המלא מחכה לכם</span>'}var s=document.createElement('div');s.className='shade';f.appendChild(s);return f}
 /* כפולה: עלה = שני עמודים (קדמי ואחורי). עמוד בודד (נייד): עלה = עמוד אחד */
-function build(){var aw=document.getElementById('app').clientWidth-16,ah=document.getElementById('app').clientHeight-16-$('next').offsetHeight-8,mode=aw>=620?'spread':'single';
+function build(){var aw=document.getElementById('app').clientWidth-16,ah=document.getElementById('app').clientHeight-16-document.querySelector('.bar').offsetHeight-8,mode=aw>=620?'spread':'single';
   var pw=mode==='spread'?Math.min(aw/2,ah/RATIO):Math.min(aw,ah/RATIO);pw=Math.floor(pw);H=Math.round(pw*RATIO);W=mode==='spread'?pw*2:pw;stage.style.width=W+'px';stage.style.height=H+'px';
   var oldPage=curPage();if(mode!==MODE){MODE=mode;stage.className=mode;book.innerHTML='';leaves=[];
     if(mode==='spread'){var u=document.createElement('div');u.className='under';u.id='uR';book.appendChild(u);var n=Math.ceil((PAGES+1)/2);for(var i=0;i<n;i++){var l=document.createElement('div');l.className='leaf';l.appendChild(face('front',2*i+1));l.appendChild(face('back',2*i+2));book.appendChild(l);leaves.push(l)}}
