@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="he" dir="rtl"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<title>הצצה לספר: האותיות הסודיות של גיא</title>
+<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@500;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;height:100%;overflow:hidden;font-family:Rubik,Arial,sans-serif;color:#5E5A73;background:linear-gradient(180deg,#fff 0%,#FEF6F5 55%,#FCE4E1 100%)}
+#app{height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;padding:8px}
+#stage{position:relative;flex:none;perspective:2400px;-webkit-user-select:none;user-select:none;touch-action:pan-y}
+#book{position:absolute;inset:0;transform-style:preserve-3d}
+.under{position:absolute;top:0;height:100%;border-radius:6px;background:#fff;box-shadow:0 10px 26px rgba(94,90,115,.22)}
+.leaf{position:absolute;top:0;height:100%;transform-style:preserve-3d;transition:transform .95s cubic-bezier(.3,.05,.25,1);cursor:pointer;will-change:transform}
+.face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;background:#fff center/cover no-repeat;overflow:hidden;border-radius:4px}
+.face.back{transform:rotateY(180deg)}
+.face:after{content:'';position:absolute;inset:0;pointer-events:none}
+.spread .face.front:after{background:linear-gradient(to left,rgba(60,50,70,.20),rgba(60,50,70,0) 9%)}
+.spread .face.back:after{background:linear-gradient(to right,rgba(60,50,70,.20),rgba(60,50,70,0) 9%)}
+.single .face.front:after{background:linear-gradient(to left,rgba(60,50,70,.14),rgba(60,50,70,0) 6%)}
+.shade{position:absolute;inset:0;pointer-events:none;opacity:0;transition:opacity .95s;border-radius:4px}
+.face.front .shade{background:linear-gradient(to left,rgba(40,30,50,.45),rgba(40,30,50,.05) 60%,rgba(255,255,255,.18))}
+.face.back .shade{background:linear-gradient(to right,rgba(40,30,50,.45),rgba(40,30,50,.05) 60%,rgba(255,255,255,.18))}
+.leaf.turning .shade{opacity:1}
+.endp{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;text-align:center;padding:10%;background:linear-gradient(160deg,#FDE1EA,#EAF6F0 55%,#DDEBF8)}
+.endp b{font-size:clamp(15px,4.2vmin,26px);color:#B8236B}.endp span{font-size:clamp(12px,3vmin,18px)}
+.bar{display:flex;align-items:center;justify-content:center;gap:8px;flex:none;width:100%}
+.btn{background:#EF406E;color:#fff;border:0;font-family:inherit;font-weight:700;font-size:15px;border-radius:99px;padding:8px 20px;box-shadow:0 3px 0 #D14175;cursor:pointer}
+.btn[disabled]{opacity:.35;cursor:default}
+.ib{width:32px;height:32px;border-radius:50%;border:2px solid #F8B9B6;background:#FDE1EA;color:#B8236B;font-size:15px;display:flex;align-items:center;justify-content:center;cursor:pointer;padding:0;font-family:inherit;flex:none}
+#cnt{font-size:13px;font-weight:700;min-width:64px;text-align:center}
+@media(max-width:430px){.btn{font-size:13px;padding:7px 15px}.ib{width:28px;height:28px}#cnt{font-size:12px;min-width:52px}}
+</style></head><body>
+<div id="app">
+  <div id="stage"><div id="book"></div></div>
+  <div class="bar"><button class="ib" id="fs" aria-label="מסך מלא" title="מסך מלא">&#x26F6;</button><button class="btn" id="prev">לעמוד הקודם</button><span id="cnt"></span><button class="btn" id="next">לעמוד הבא</button><button class="ib" id="mu" aria-label="צליל" title="צליל"></button></div>
+</div>
+<script>
+var PAGES=9,RATIO=945/756,VER='1',stage=document.getElementById('stage'),book=document.getElementById('book'),$=function(i){return document.getElementById(i)};
+var MODE='',pos=0,leaves=[],busy=false,W=0,H=0;
+/* צליל דפדוף עדין */
+var MUTE=false;try{MUTE=localStorage.getItem('wg_mute')==='1'}catch(e){}var AC=null;
+function flipSound(){if(MUTE)return;try{AC=AC||new (window.AudioContext||window.webkitAudioContext)();if(AC.state==='suspended')AC.resume();var d=.42,n=Math.floor(AC.sampleRate*d),b=AC.createBuffer(1,n,AC.sampleRate),a=b.getChannelData(0);for(var i=0;i<n;i++){var t=i/n;a[i]=(Math.random()*2-1)*Math.pow(Math.sin(Math.PI*t),2)*(.6+.4*Math.sin(t*38))}var s=AC.createBufferSource(),f=AC.createBiquadFilter(),g=AC.createGain();s.buffer=b;f.type='bandpass';f.frequency.value=2600;f.Q.value=.7;g.gain.value=.05;s.connect(f);f.connect(g);g.connect(AC.destination);s.start()}catch(e){}}
+function muIcon(){$('mu').innerHTML=MUTE?'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M4 9v6h4l5 4V5L8 9H4z" fill="currentColor"/><path d="M17 9l5 6M22 9l-5 6"/></svg>':'<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M4 9v6h4l5 4V5L8 9H4z" fill="currentColor"/><path d="M16.5 8.5a5 5 0 010 7M19 6a8.5 8.5 0 010 12"/></svg>'}
+$('mu').onclick=function(){MUTE=!MUTE;try{localStorage.setItem('wg_mute',MUTE?'1':'0')}catch(e){}muIcon();if(!MUTE)flipSound()};muIcon();
+$('fs').onclick=function(){var d=document,el=d.documentElement;try{if(d.fullscreenElement||d.webkitFullscreenElement){(d.exitFullscreen||d.webkitExitFullscreen).call(d)}else{(el.requestFullscreen||el.webkitRequestFullscreen).call(el)}}catch(e){}};
+if(!(document.documentElement.requestFullscreen||document.documentElement.webkitRequestFullscreen))$('fs').style.visibility='hidden';
+function face(cls,n){var f=document.createElement('div');f.className='face '+cls;if(n>=1&&n<=PAGES)f.style.backgroundImage='url(img/p'+n+'.jpg?v='+VER+')';else{f.className+=' endp';f.innerHTML='<b>רוצים לקרוא את ההמשך?</b><span>הספר המלא מחכה לכם</span>'}var s=document.createElement('div');s.className='shade';f.appendChild(s);return f}
+/* כפולה: עלה = שני עמודים (קדמי ואחורי). עמוד בודד (נייד): עלה = עמוד אחד */
+function build(){var aw=document.getElementById('app').clientWidth-16,ah=document.getElementById('app').clientHeight-16-$('next').offsetHeight-8,mode=aw>=620?'spread':'single';
+  var pw=mode==='spread'?Math.min(aw/2,ah/RATIO):Math.min(aw,ah/RATIO);pw=Math.floor(pw);H=Math.round(pw*RATIO);W=mode==='spread'?pw*2:pw;stage.style.width=W+'px';stage.style.height=H+'px';
+  var oldPage=curPage();if(mode!==MODE){MODE=mode;stage.className=mode;book.innerHTML='';leaves=[];
+    if(mode==='spread'){var u=document.createElement('div');u.className='under';u.id='uR';book.appendChild(u);var n=Math.ceil((PAGES+1)/2);for(var i=0;i<n;i++){var l=document.createElement('div');l.className='leaf';l.appendChild(face('front',2*i+1));l.appendChild(face('back',2*i+2));book.appendChild(l);leaves.push(l)}}
+    else{for(var j=0;j<PAGES+1;j++){var m=document.createElement('div');m.className='leaf';m.appendChild(face('front',j+1));book.appendChild(m);leaves.push(m)}}
+    pos=mode==='spread'?Math.floor(oldPage/2):Math.max(0,oldPage-1)}
+  leaves.forEach(function(l){l.style.width=(MODE==='spread'?W/2:W)+'px';l.style.left='0px';l.style.transformOrigin='right center'});
+  var uR=document.getElementById('uR');if(uR){uR.style.left=(W/2)+'px';uR.style.width=(W/2)+'px'}
+  place(true)}
+function curPage(){if(!MODE)return 1;return MODE==='spread'?Math.max(1,pos*2):pos+1}
+function last(){return MODE==='spread'?leaves.length:leaves.length-1}
+function place(instant){leaves.forEach(function(l,i){var flipped=i<pos;if(instant){l.style.transition='none'}l.style.transform=flipped?(MODE==='spread'?'rotateY(180deg)':'rotateY(179deg)'):'rotateY(0deg)';l.style.zIndex=flipped?(10+i):(10+leaves.length-i);if(MODE==='single')l.style.visibility=(flipped&&instant)?'hidden':'visible';if(instant){l.offsetWidth;l.style.transition=''}});
+  var uR=document.getElementById('uR');if(uR)uR.style.visibility=pos>0?'visible':'hidden';
+  var tot=PAGES+1,a=MODE==='spread'?(pos===0?'כריכה':pos>=leaves.length?'סוף':('עמודים '+(pos*2)+'-'+Math.min(pos*2+1,tot))):(pos===0?'כריכה':pos>=PAGES?'סוף':('עמוד '+(pos+1)));$('cnt').textContent=a;$('prev').disabled=pos<=0;$('next').disabled=pos>=last();
+  book.style.transition=instant?'none':'transform .95s cubic-bezier(.3,.05,.25,1)';book.style.transform=MODE==='spread'?('translateX('+(pos===0?W/4:pos>=leaves.length?-W/4:0)+'px)'):'none'}
+function go(d){if(busy)return;var np=pos+d;if(np<0||np>last())return;busy=true;var l=leaves[d>0?pos:pos-1];l.classList.add('turning');l.style.visibility='visible';l.style.zIndex=200;flipSound();
+  if(d<0&&MODE==='single'){l.style.transition='none';l.style.transform='rotateY(179deg)';l.offsetWidth;l.style.transition=''}
+  pos=np;var uR=document.getElementById('uR');if(uR&&pos>0)uR.style.visibility='visible';
+  l.style.transform=d>0?(MODE==='spread'?'rotateY(180deg)':'rotateY(179deg)'):'rotateY(0deg)';
+  var tot=PAGES+1;$('prev').disabled=pos<=0;$('next').disabled=pos>=last();book.style.transition='transform .95s cubic-bezier(.3,.05,.25,1)';book.style.transform=MODE==='spread'?('translateX('+(pos===0?W/4:pos>=leaves.length?-W/4:0)+'px)'):'none';
+  setTimeout(function(){l.classList.remove('turning');busy=false;place(true)},980)}
+$('next').onclick=function(){go(1)};$('prev').onclick=function(){go(-1)};
+/* לחיצה על הצד השמאלי = הבא (הדף מתהפך ימינה), על הימני = הקודם. החלקה ימינה = הבא */
+var sx=null,sy=0,moved=false;
+stage.addEventListener('pointerdown',function(e){sx=e.clientX;sy=e.clientY;moved=false});
+stage.addEventListener('pointermove',function(e){if(sx===null)return;if(Math.abs(e.clientX-sx)>12)moved=true});
+stage.addEventListener('pointerup',function(e){if(sx===null)return;var dx=e.clientX-sx,dy=e.clientY-sy;sx=null;if(Math.abs(dx)>34&&Math.abs(dx)>Math.abs(dy)){go(dx>0?1:-1);return}if(Math.abs(dx)<10&&Math.abs(dy)<10){var r=stage.getBoundingClientRect();if(MODE==='single'){go(e.clientX<r.left+r.width*.62?1:-1)}else{go(e.clientX<r.left+r.width/2?1:-1)}}});
+stage.addEventListener('pointercancel',function(){sx=null});
+document.addEventListener('keydown',function(e){if(e.key==='ArrowLeft')go(1);if(e.key==='ArrowRight')go(-1)});
+var rz=0;addEventListener('resize',function(){clearTimeout(rz);rz=setTimeout(build,150)});
+for(var k=1;k<=PAGES;k++){var im=new Image();im.src='img/p'+k+'.jpg?v='+VER}
+build();window.__bk={pos:function(){return pos},mode:function(){return MODE},last:last,busy:function(){return busy}};
+</script></body></html>
