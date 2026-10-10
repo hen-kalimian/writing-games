@@ -258,13 +258,15 @@ function go(i){
   if (SL[i].skip) return go(i + (i >= cur ? 1 : -1));
   token++; stopVoice(); clearTimeout(idleT);
   stage.innerHTML = ''; document.querySelectorAll('.fover').forEach(x => x.remove()); pulseNext(false);
-  cur = i;
+  cur = i; __seen.add(i);
   const s = SL[i];
   $('barfill').style.width = Math.round(100 * (s.song ? s.next : i) / LAST) + '%';
   prevBtn.disabled = i === 0;
   ({ R: renderR, A: (x, y) => isLetterMenu(x) ? renderMenu(x, y) : renderA(x, y), S: renderS, T: renderT, V: renderV, P: renderP, Q: renderQ, F: renderF }[s.t] || renderR)(s, token);
 }
-const next = () => go(SL[cur] && SL[cur].next != null ? SL[cur].next : cur + 1), prev = () => go(cur - 1);   // next: שקף שיר המספרים נכנס בין סוף ספרה לתפריט
+const __seen = new Set();
+const __links = s => (s && s.t === 'A' && s.acts && s.acts[0] && !s.acts[0].advance) ? (s.acts[0].shapes || []).map(h => h.link).filter(v => typeof v === 'number') : [];
+const next = () => { const s = SL[cur]; if (s && s.next != null) return go(s.next); const L = __links(s); if (L.length){ const t = L.find(v => !__seen.has(v)); return t != null ? go(t) : finish(); } go(cur + 1); }, prev = () => go(cur - 1);   // next: שקף שיר המספרים נכנס בין סוף ספרה לתפריט
 nextBtn.onclick = next; prevBtn.onclick = prev;
 function img(s){ const e = document.createElement('img'); e.className = 'bg'; e.src = s.img; e.draggable = false; stage.appendChild(e); return e; }
 function overlay(){ const v = document.createElementNS(NS, 'svg'); v.setAttribute('viewBox', '0 0 1024 768'); v.setAttribute('class', 'ov'); stage.appendChild(v); return v; }
@@ -776,7 +778,7 @@ function finish(){
   token++; stopVoice();
   const e = document.createElement('div'); e.className = 'end'; e.innerHTML = '<div><h1>כל הכבוד!</h1><button class="btn" id="again">עוד פעם מההתחלה</button></div>';
   stage.appendChild(e); confetti(60); ding();
-  e.querySelector('#again').onclick = () => { done.clear(); go(0); };
+  e.querySelector('#again').onclick = () => { done.clear(); __seen.clear(); go(0); };
 }
 
 /* ---------- כפתורים ---------- */
