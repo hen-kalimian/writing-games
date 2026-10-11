@@ -126,7 +126,7 @@ body{background:linear-gradient(180deg,#fff 0%,#FEF6F5 40%,#FBDCD8 100%)}
 .pslbl.big{font:800 74px Rubik,sans-serif;left:auto;right:0;top:0;bottom:0;width:96px;display:flex;align-items:center;justify-content:center;opacity:.8;line-height:1.1}
 .suckarena{flex:1 1 auto;min-height:0;width:100%;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.25fr) minmax(0,1fr);gap:10px;align-items:stretch;padding:4px 0}.starget{min-width:0;overflow:hidden;border-radius:22px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;border:4px dashed rgba(94,90,115,.35);padding:6px;min-height:0;transition:transform .2s}.starget img{max-width:70%;max-height:50%;object-fit:contain}.tlab{font:800 40px Rubik,sans-serif;color:#5E5A73;text-align:center;line-height:1.1}.tlab.nk{font-size:clamp(48px,20vw,96px)}.starget.gulp{animation:gulp .5s}.starget.shk{animation:sh .35s}@keyframes gulp{40%{transform:scale(1.14)}100%{transform:scale(1)}}.smid{grid-column:2;grid-row:1;display:flex;align-items:center;justify-content:center;min-height:0;position:relative}.scard{width:100%;aspect-ratio:1;max-height:100%;touch-action:none;cursor:grab;z-index:5}.scard.popin{animation:popin2 .6s cubic-bezier(.2,1.6,.4,1)}@keyframes popin2{0%{transform:scale(0) rotate(-25deg);opacity:0}100%{transform:scale(1) rotate(0);opacity:1}}
 @media(max-width:430px){.card.fixed.mh{zoom:.78}#app{padding-top:6px}.top{gap:5px;min-height:26px}.ttl{font-size:13px}.ins{font-size:12px;min-height:16px;margin:1px 0 2px}.ib{width:28px;height:28px;font-size:13px}#fs{font-size:11px;padding:0 9px;gap:4px}.btn{font-size:14px;padding:8px 20px}.prog{margin-top:2px}}</style>
-</head>
+<style>/*__MAZECSS*/.arena.a-mzc{display:flex;flex-direction:column;align-items:center;gap:8px;max-width:620px}.mzhud{display:flex;justify-content:center;align-items:center;gap:18px;font:700 18px Rubik,sans-serif;color:#5E5A73}.mzhearts span{color:#E5D5DA;font-size:24px;margin:0 2px}.mzhearts span.on{color:#EF406E}.mzcv{display:block;touch-action:none;border-radius:14px;box-shadow:0 4px 14px rgba(239,64,110,.12);background:#FEF6F5}.mzpad{display:grid;grid-template-columns:64px 64px 64px;grid-template-rows:52px 52px;gap:6px;justify-content:center;touch-action:none}.mzb{border:0;border-radius:16px;background:#FDE1EA;color:#B8236B;font-size:24px;box-shadow:0 3px 0 #FBC5D6;cursor:pointer;touch-action:none;-webkit-tap-highlight-color:transparent}.mzb:active{transform:translateY(2px);box-shadow:none}.mzu{grid-column:2;grid-row:1}.mzl{grid-column:3;grid-row:2}.mzd{grid-column:2;grid-row:2}.mzr{grid-column:1;grid-row:2}.mzover{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;background:rgba(254,246,245,.92);border-radius:14px;font:700 22px Rubik,sans-serif;color:#B8236B;text-align:center}@media (pointer:fine){.mzpad{display:none}}</style></head>
 <body>
 <div class="bgd"><i style="width:230px;height:230px;background:#FBD9D6;top:-80px;left:-70px;opacity:.75"></i><i style="width:170px;height:170px;background:#D4EFE2;bottom:-60px;right:-50px;opacity:.7"></i><i style="width:80px;height:80px;background:#D3E8F8;top:38%;left:-26px;opacity:.7"></i><i style="width:56px;height:56px;background:#FFF0B8;top:12%;right:-12px;opacity:.85"></i></div>
 <div id="app">
@@ -338,6 +338,7 @@ function choose(mode){var multiMode=({mole:1,plane:1,fly:1,maze:1,box:1,quiz:1,t
     if(mode==='tf'){var cand=Math.random()<.5?okc:opts.filter(function(x){return x!==okc})[0]||okc,cc=opt(cand,26);window.__ww.tf=(cand===okc);cc.style.cssText+=';width:100%;max-width:300px;min-height:110px;flex:none;cursor:default';ar.appendChild(cc);
       var row=el('div','row');[['נכון',true],['לא נכון',false]].forEach(function(b){var bt=el('button','btn'+(b[1]?'':' soft'),b[0]);bt.type='button';bt.onclick=function(){if(done)return;if((cand===okc)===b[1]){done=true;good();cc.classList.add('ok');hits++;after(next,700)}else{bad();cc.classList.add('no');after(function(){cc.classList.remove('no')},450)}};row.appendChild(bt)});ar.appendChild(row);return}
     if(mode==='box'){opts.forEach(function(o){var b=el('div','gbox'),lid=el('div','lid'),inner=el('div','inner');var c=opt(o);c.style.pointerEvents='none';inner.appendChild(c);b.appendChild(inner);b.appendChild(lid);b.onclick=function(){if(b.classList.contains('open')||done)return;b.classList.add('open');say(o.s);if(isOk(o)){good();b.classList.add('okb');hits++;got++;if(r.multi)collect(o,got);if(got>=need){done=true;after(next,1100)}}else{bad()}};ar.appendChild(b)});return}
+    if(mode==='maze'){mazeGame(ar,opts,isOk,need,function(o,n){hits++;got=n;if(r.multi)collect(o,n)},function(){done=true;after(next,1200)},function(o){say(o.s)},ri);return}
     if(mode==='plane'&&r.multi){planeGame(ar,okA,badA,need,function(o,n){collect(o,n)},function(){done=true;after(next,1100)},function(o){say(o.s)},{seq:r.seq});return}
     opts.forEach(function(o,k){var c=opt(o),w=el('div','it it'+k);
       if(mode==='balloon'||mode==='fly'){w.className='it bf bf'+(k%2);var WC=['#F8B9B6','#8FD3B6','#B7CDE0','#F6DC8A'][k%4],wg=el('div','bfwings');wg.innerHTML='<i style="background:'+WC+'"></i><i style="background:'+WC+'"></i>';w.appendChild(wg);w.appendChild(c);w.style.left=(3+(k%3)*32)+'%';w.style.top=(4+Math.floor(k/3)*34+(k%2)*6)+'%';w.style.animation='none';wg.style.animationDelay=(-k*.2)+'s';bfRoam(w,ar,k);w.onclick=function(){hit(o,c,false,w);if(isOk(o)){w.__stop=1;w.style.animation='';w.classList.add('away')}}}
@@ -361,6 +362,81 @@ function bfRoam(w,ar,k){var x=0,y=0,vx=0,vy=0,t0=0,tn=0,ang=Math.random()*6.28,s
     if(x<0){x=0;ang=Math.PI-ang}if(x>W-ww){x=W-ww;ang=Math.PI-ang}if(y<0){y=0;ang=-ang}if(y>H-wh){y=H-wh;ang=-ang}
     w.style.left=x+'px';w.style.top=y+'px';requestAnimationFrame(step)}
   requestAnimationFrame(step)}
+/*__MAZECHASE*/
+/* מבוך החייזרים (במקום Maze chase של וורדוול): מזיזים את הדמות במבוך (החלקה באצבע, חיצים על המסך או במקלדת),
+   אוכלים את התשובות הנכונות ובורחים מהחייזרים. שלושה לבבות בכל סבב; חייזר שתפס או תשובה לא נכונה מורידים לב.
+   כל סבב חייזרים מהירים יותר, ומהסבב השלישי יש חייזר נוסף. */
+function mazeGame(ar,opts,isOk,need,onOk,onDone,onSay,level){level=level||0;
+  ins.textContent='הזיזו את הדמות במבוך אל '+(need>1?'כל התשובות הנכונות':'התשובה הנכונה')+' ותיזהרו מהחייזרים';
+  ar.className='arena a-mzc';ar.innerHTML='';ar.style.touchAction='none';
+  var hud=el('div','mzhud'),hearts=el('div','mzhearts'),cnt=el('div','mzcnt');hud.appendChild(hearts);hud.appendChild(cnt);ar.appendChild(hud);
+  var cv=el('canvas','mzcv');ar.appendChild(cv);var g=cv.getContext('2d');
+  var pad=el('div','mzpad');[['u','▲'],['l','◀'],['d','▼'],['r','▶']].forEach(function(b){var bt=el('button','mzb mz'+b[0],b[1]);bt.type='button';bt.setAttribute('aria-label',{u:'למעלה',d:'למטה',l:'שמאלה',r:'ימינה'}[b[0]]);
+    bt.addEventListener('pointerdown',function(e){e.preventDefault();want=b[0];ctx()});pad.appendChild(bt)});ar.appendChild(pad);
+  var portrait=(ar.clientWidth||340)<520,C=portrait?9:13,Rr=portrait?11:9;
+  var DIR={u:[0,-1],d:[0,1],l:[-1,0],r:[1,0]},OPP={u:'d',d:'u',l:'r',r:'l'};
+  /* מבוך: walls[y][x] = {u,d,l,r} פתוח/סגור; נבנה בחיפוש לעומק ואחר כך נפתחים קירות נוספים כדי שיהיו מעגלים לבריחה */
+  var W=[];for(var y=0;y<Rr;y++){W.push([]);for(var x=0;x<C;x++)W[y].push({u:1,d:1,l:1,r:1})}
+  var seen={},st=[[Math.floor(C/2),Math.floor(Rr/2)]];seen[st[0]]=1;
+  while(st.length){var c=st[st.length-1],nb=sh(['u','d','l','r']).filter(function(k){var nx=c[0]+DIR[k][0],ny=c[1]+DIR[k][1];return nx>=0&&ny>=0&&nx<C&&ny<Rr&&!seen[[nx,ny]]});
+    if(!nb.length){st.pop();continue}var k=nb[0],nx=c[0]+DIR[k][0],ny=c[1]+DIR[k][1];W[c[1]][c[0]][k]=0;W[ny][nx][OPP[k]]=0;seen[[nx,ny]]=1;st.push([nx,ny])}
+  for(var e2=0;e2<C*Rr*.22;e2++){var x2=Math.floor(Math.random()*C),y2=Math.floor(Math.random()*Rr),k2=['r','d'][e2%2],nx2=x2+DIR[k2][0],ny2=y2+DIR[k2][1];if(nx2<C&&ny2<Rr){W[y2][x2][k2]=0;W[ny2][nx2][OPP[k2]]=0}}
+  function open(x,y,k){return x>=0&&y>=0&&x<C&&y<Rr&&!W[y][x][k]}
+  function bfs(sx,sy){var d={},q=[[sx,sy]];d[sx+','+sy]=0;while(q.length){var p=q.shift();['u','d','l','r'].forEach(function(k){if(!open(p[0],p[1],k))return;var nx=p[0]+DIR[k][0],ny=p[1]+DIR[k][1],key2=nx+','+ny;if(d[key2]===undefined){d[key2]=d[p[0]+','+p[1]]+1;q.push([nx,ny])}})}return d}
+  var start=[Math.floor(C/2),Math.floor(Rr/2)],dist=bfs(start[0],start[1]);
+  /* תשובות: בתאים רחוקים זה מזה ומההתחלה */
+  var cells=[];for(var yy=0;yy<Rr;yy++)for(var xx=0;xx<C;xx++)if(dist[xx+','+yy]>=3)cells.push([xx,yy]);cells=sh(cells);
+  var items=[];opts.forEach(function(o){for(var i=0;i<cells.length;i++){var cc=cells[i];if(items.every(function(it){return Math.abs(it.x-cc[0])+Math.abs(it.y-cc[1])>=3})){items.push({o:o,x:cc[0],y:cc[1],img:null,alive:true,shake:0});cells.splice(i,1);return}}});
+  items.forEach(function(it){if(it.o.i){var im=new Image();im.src=BASE+'assets/'+it.o.i;it.img=im}});
+  var nAl=Math.min(4,2+(level>=2?1:0)+(level>=4?1:0)),corners=sh([[0,0],[C-1,0],[0,Rr-1],[C-1,Rr-1]]);
+  var pl={x:start[0],y:start[1],fx:start[0],fy:start[1],dir:null,t:0},want=null,lives=3,got=0,over=false,inv=0,last=0,stopped=false;
+  var al=[];for(var a=0;a<nAl;a++)al.push({x:corners[a][0],y:corners[a][1],fx:corners[a][0],fy:corners[a][1],dir:null,t:0,hx:corners[a][0],hy:corners[a][1],col:['#9BD97A','#B79BE6','#7FCFD9','#F2A65A'][a]});
+  var PS=4.6,AS=Math.min(4.2,2.0+level*.32);
+  function drawHUD(){hearts.innerHTML='';for(var i=0;i<3;i++){var h=el('span',i<lives?'on':'');h.textContent='♥';hearts.appendChild(h)}cnt.textContent=need>1?('נמצאו '+got+' מתוך '+need):''}
+  drawHUD();
+  var cs=30,ox=0,oy=0;function fit(){var aw=ar.clientWidth||340,maxH=Math.max(260,Math.min(innerHeight*.62,560));cs=Math.floor(Math.min(aw/C,maxH/Rr));cv.width=cs*C*2;cv.height=cs*Rr*2;cv.style.width=cs*C+'px';cv.style.height=cs*Rr+'px'}fit();addEventListener('resize',fit);
+  /* שליטה: החלקה על המבוך, חיצים במקלדת */
+  var sx0=null,sy0=null;cv.addEventListener('pointerdown',function(e){e.preventDefault();sx0=e.clientX;sy0=e.clientY;ctx()});
+  cv.addEventListener('pointermove',function(e){if(sx0===null)return;var dx=e.clientX-sx0,dy=e.clientY-sy0;if(Math.abs(dx)+Math.abs(dy)>18){want=Math.abs(dx)>Math.abs(dy)?(dx>0?'r':'l'):(dy>0?'d':'u');sx0=e.clientX;sy0=e.clientY}});
+  addEventListener('pointerup',function(){sx0=null});
+  function key(e){var m={ArrowUp:'u',ArrowDown:'d',ArrowLeft:'l',ArrowRight:'r'}[e.key];if(m){want=m;e.preventDefault()}}addEventListener('keydown',key);
+  function stepActor(o,spd,dt,choose){o.t+=dt*spd;while(o.t>=1||!o.dir){if(o.dir&&o.t>=1){o.x+=DIR[o.dir][0];o.y+=DIR[o.dir][1];o.t-=1}var nd=choose(o);if(!nd){o.dir=null;o.t=0;break}o.dir=nd;if(o.t<1)break}
+    o.fx=o.x+(o.dir?DIR[o.dir][0]*o.t:0);o.fy=o.y+(o.dir?DIR[o.dir][1]*o.t:0)}
+  function plChoose(o){if(want&&open(o.x,o.y,want)){var w=want;return w}if(o.dir&&open(o.x,o.y,o.dir))return o.dir;return null}
+  function alChoose(o){var opts2=['u','d','l','r'].filter(function(k){return open(o.x,o.y,k)});if(!opts2.length)return null;var back=o.dir?OPP[o.dir]:null;var f=opts2.filter(function(k){return k!==back});if(!f.length)f=opts2;
+    if(Math.random()<.72){var d=bfs(pl.x,pl.y),best=null,bv=1e9;f.forEach(function(k){var v=d[(o.x+DIR[k][0])+','+(o.y+DIR[k][1])];if(v!==undefined&&v<bv){bv=v;best=k}});if(best)return best}
+    return f[Math.floor(Math.random()*f.length)]}
+  function caught(){if(inv>0||over)return;lives--;bad();tone(180,.35,'sawtooth',.06);drawHUD();inv=1.6;pl.x=start[0];pl.y=start[1];pl.t=0;pl.dir=null;want=null;al.forEach(function(a){a.x=a.hx;a.y=a.hy;a.t=0;a.dir=null});if(lives<=0)lose()}
+  function lose(){over=true;var m=el('div','mzover');m.innerHTML='<div>החייזרים תפסו אותך!</div>';var b=el('button','btn','לנסות שוב');b.type='button';b.onclick=function(){stopped=true;removeEventListener('keydown',key);mazeGame(ar,opts,isOk,need,onOk,onDone,onSay,level)};m.appendChild(b);ar.appendChild(m)}
+  function eat(){items.forEach(function(it){if(!it.alive||it.x!==pl.x||it.y!==pl.y||pl.t>.35)return;if(isOk(it.o)){it.alive=false;got++;good();onSay(it.o);onOk(it.o,got);drawHUD();if(got>=need){over=true;stopped=true;removeEventListener('keydown',key);onDone()}}
+    else if(!it.shake){it.shake=1;bad();onSay(it.o);if(inv<=0){lives--;drawHUD();inv=1.2;if(lives<=0)lose()}}})}
+  function rr(x,y,w,h,r){g.beginPath();g.moveTo(x+r,y);g.arcTo(x+w,y,x+w,y+h,r);g.arcTo(x+w,y+h,x,y+h,r);g.arcTo(x,y+h,x,y,r);g.arcTo(x,y,x+w,y,r);g.closePath()}
+  function draw(t){var s=cs*2;g.setTransform(1,0,0,1,0,0);g.clearRect(0,0,cv.width,cv.height);g.fillStyle='#FEF6F5';rr(0,0,cv.width,cv.height,s*.4);g.fill();
+    g.strokeStyle='#F2A7B8';g.lineWidth=Math.max(4,s*.16);g.lineCap='round';g.beginPath();
+    for(var y=0;y<Rr;y++)for(var x=0;x<C;x++){var w=W[y][x];if(w.u){g.moveTo(x*s,y*s);g.lineTo((x+1)*s,y*s)}if(w.l){g.moveTo(x*s,y*s);g.lineTo(x*s,(y+1)*s)}if(y===Rr-1&&w.d){g.moveTo(x*s,(y+1)*s);g.lineTo((x+1)*s,(y+1)*s)}if(x===C-1&&w.r){g.moveTo((x+1)*s,y*s);g.lineTo((x+1)*s,(y+1)*s)}}
+    g.stroke();
+    items.forEach(function(it){if(!it.alive)return;var sx=it.x*s+s*.1,sy=it.y*s+s*.1,sz=s*.8;if(it.shake){it.shake+=.08;sx+=Math.sin(it.shake*18)*s*.05;if(it.shake>1.6)it.shake=0}
+      g.fillStyle='#fff';g.strokeStyle='#B7CDE0';g.lineWidth=s*.05;rr(sx,sy,sz,sz,s*.14);g.fill();g.stroke();
+      if(it.img&&it.img.complete&&it.img.naturalWidth){var iw=it.img.naturalWidth,ih=it.img.naturalHeight,k=Math.min(sz*.86/iw,sz*.86/ih);g.drawImage(it.img,sx+(sz-iw*k)/2,sy+(sz-ih*k)/2,iw*k,ih*k)}
+      else if(it.o.t){g.fillStyle='#5E5A73';g.font='700 '+Math.round(sz*.5)+'px Rubik,Arial';g.textAlign='center';g.textBaseline='middle';g.fillText(it.o.t,sx+sz/2,sy+sz/2+2)}});
+    /* חייזרים חמודים: גוף עגול, עין גדולה, אנטנות */
+    al.forEach(function(a,i){var cx=(a.fx+.5)*s,cy=(a.fy+.5)*s+Math.sin(t/180+i)*s*.04,r=s*.34;g.fillStyle=a.col;g.beginPath();g.arc(cx,cy,r,Math.PI,0);g.lineTo(cx+r,cy+r*.8);for(var q=0;q<4;q++){g.lineTo(cx+r-(q+.5)*r/2,cy+r*(q%2?.8:.5))}g.lineTo(cx-r,cy+r*.8);g.closePath();g.fill();
+      g.strokeStyle=a.col;g.lineWidth=s*.05;g.beginPath();g.moveTo(cx-r*.4,cy-r*.8);g.lineTo(cx-r*.6,cy-r*1.25);g.moveTo(cx+r*.4,cy-r*.8);g.lineTo(cx+r*.6,cy-r*1.25);g.stroke();
+      g.fillStyle=a.col;g.beginPath();g.arc(cx-r*.6,cy-r*1.28,r*.13,0,7);g.arc(cx+r*.6,cy-r*1.28,r*.13,0,7);g.fill();
+      g.fillStyle='#fff';g.beginPath();g.arc(cx,cy-r*.1,r*.36,0,7);g.fill();g.fillStyle='#2E3A45';g.beginPath();g.arc(cx+(pl.fx-a.fx>0?1:-1)*r*.1,cy-r*.08,r*.17,0,7);g.fill()});
+    /* הדמות: ארנבון ורוד */
+    var px=(pl.fx+.5)*s,py=(pl.fy+.5)*s,pr=s*.32;if(!(inv>0&&Math.floor(t/120)%2)){g.fillStyle='#FDE1EA';g.strokeStyle='#EF406E';g.lineWidth=s*.05;
+      g.beginPath();g.ellipse(px-pr*.42,py-pr*1.05,pr*.22,pr*.55,-.2,0,7);g.ellipse(px+pr*.42,py-pr*1.05,pr*.22,pr*.55,.2,0,7);g.fill();g.stroke();
+      g.beginPath();g.arc(px,py,pr,0,7);g.fill();g.stroke();g.fillStyle='#2E3A45';g.beginPath();g.arc(px-pr*.35,py-pr*.12,pr*.12,0,7);g.arc(px+pr*.35,py-pr*.12,pr*.12,0,7);g.fill();
+      g.fillStyle='#EF406E';g.beginPath();g.arc(px,py+pr*.18,pr*.1,0,7);g.fill()}}
+  function frame(t){if(stopped||!cv.isConnected){removeEventListener('keydown',key);removeEventListener('resize',fit);return}
+    if(window.__vis===false){last=0;setTimeout(function(){requestAnimationFrame(frame)},300);return}
+    var dt=last?Math.min(.05,(t-last)/1000):0;last=t;
+    if(!over){if(inv>0)inv-=dt;stepActor(pl,PS,dt,plChoose);eat();al.forEach(function(a){stepActor(a,AS,dt,alChoose);if(Math.abs(a.fx-pl.fx)+Math.abs(a.fy-pl.fy)<.6)caught()})}
+    draw(t);requestAnimationFrame(frame)}
+  window.__mz={pl:pl,items:items,al:al,C:C,R:Rr,open:open,go:function(d){want=d},state:function(){return {over:over,got:got,lives:lives,need:need}}};
+  requestAnimationFrame(frame)}
+
 /* משחק המטוס: מזיזים את המטוס מעלה ומטה (באצבע או בחצים) בין הבלונים, והמטוס מפוצץ את הבלונים */
 E.shinplane=function(){var SIN=/ׂ/,SHI=/ׁ/,DS=['משאית','שפם','שחה','שק','שיער','שמלה','שמלות','שמיכה'],words=[];
   D.qs.forEach(function(q){var w={t:q.q.t,i:q.q.i};if(!w.t&&!w.i)return;var okA=q.a.filter(function(a){return a.ok})[0],typ=null;if(okA&&okA.t){typ=SIN.test(okA.t)?'sin':SHI.test(okA.t)?'shin':null}if(!typ&&w.t)typ=DS.indexOf(w.t)>=0?'sin':'shin';if(typ&&w.t){var mk2=w.t.replace('ש','ש'+(typ==='sin'?'ׂ':'ׁ'));words.push({o:{t:mk2,i:w.i,big:1},k:typ})}});
