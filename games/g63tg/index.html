@@ -262,7 +262,10 @@ const next = () => go(SL[cur] && SL[cur].next != null ? SL[cur].next : cur + 1),
 nextBtn.onclick = next; prevBtn.onclick = prev;
 function img(s){ const e = document.createElement('img'); e.className = 'bg'; e.src = s.img; e.draggable = false; stage.appendChild(e); return e; }
 function overlay(){ const v = document.createElementNS(NS, 'svg'); v.setAttribute('viewBox', '0 0 1024 768'); v.setAttribute('class', 'ov'); stage.appendChild(v); return v; }
-function finishStep(t, auto){ if (t !== token) return; pulseNext(true); if (auto) setTimeout(() => { if (t === token) next(); }, auto); }
+function finishStep(t, auto){ if (t !== token) return;
+  // לא עוברים לבד אל שיר המספרים (חן, 11.10.26: משתתפת הגיעה אליו בלי לרצות). עוצרים עם החץ הפועם והיא לוחצת בעצמה
+  if (auto && SL[cur] && SL[cur].next != null && SL[SL[cur].next] && SL[SL[cur].next].song) auto = 0;
+  pulseNext(true); if (auto) setTimeout(() => { if (t === token) next(); }, auto); }
 
 /* ---------- שכבות: כמו במשחק המקורי (רקע, תמונות, אנימציות, מדבקות שנחשפות בלחיצה) ---------- */
 function layerEl(l, pointer){
@@ -299,7 +302,7 @@ function renderLayers(s, t){
 function renderR(s, t){
   if (s.layers) renderLayers(s, t); else img(s);
   const a = s.acts[0];
-  say(a.intro, () => finishStep(t, a.advance ? 700 : 0));
+  say(a.intro, () => finishStep(t, a.intro ? 700 : 3000));   // שקף בלי פעילות: בסוף ההקלטה עוברים לבד (חן, 11.10.26)
 }
 
 /* ---------- תפריט בחירת אות (עיצוב חדש) ---------- */
@@ -678,7 +681,7 @@ function renderA(s, t){
     });
     ov.appendChild(p);
   });
-  say(a.intro, () => { if (!n) finishStep(t, a.advance ? 700 : 0); });
+  say(a.intro, () => { if (!n) finishStep(t, a.intro ? 700 : 3000); });
   if (!n) return;
   setTimeout(() => { if (t === token) pulseNext(true); }, 12000);
 }
