@@ -391,7 +391,7 @@ function mazeGame(ar,opts,isOk,need,onOk,onDone,onSay,level){level=level||0;
   var nAl=Math.min(4,2+(level>=2?1:0)+(level>=4?1:0)),corners=sh([[0,0],[C-1,0],[0,Rr-1],[C-1,Rr-1]]);
   var pl={x:start[0],y:start[1],fx:start[0],fy:start[1],dir:null,t:0},want=null,lives=3,got=0,over=false,inv=0,last=0,stopped=false;
   var al=[];for(var a=0;a<nAl;a++)al.push({x:corners[a][0],y:corners[a][1],fx:corners[a][0],fy:corners[a][1],dir:null,t:0,hx:corners[a][0],hy:corners[a][1],col:['#9BD97A','#B79BE6','#7FCFD9','#F2A65A'][a]});
-  var PS=4.6,AS=Math.min(4.2,2.0+level*.32);
+  var PS=4.6,AS=Math.min(4.2,2.0+level*.32),started=0;/* החייזרים זזים רק אחרי שהילד מתחיל לזוז */
   function drawHUD(){hearts.innerHTML='';for(var i=0;i<3;i++){var h=el('span',i<lives?'on':'');h.textContent='♥';hearts.appendChild(h)}cnt.textContent=need>1?('נמצאו '+got+' מתוך '+need):''}
   drawHUD();
   var cs=30,ox=0,oy=0;function fit(){var aw=ar.clientWidth||340,top=Math.max(0,ar.getBoundingClientRect().top+(document.getElementById('stage').scrollTop||0)),padH=getComputedStyle(pad).display==='none'?0:(pad.offsetHeight||110)+10,maxH=Math.max(200,Math.min(innerHeight-top-padH-hud.offsetHeight-22,620));cs=Math.max(16,Math.floor(Math.min(aw/C,maxH/Rr)));cv.width=cs*C*2;cv.height=cs*Rr*2;cv.style.width=cs*C+'px';cv.style.height=cs*Rr+'px'}fit();addEventListener('resize',fit);
@@ -432,7 +432,7 @@ function mazeGame(ar,opts,isOk,need,onOk,onDone,onSay,level){level=level||0;
   function frame(t){if(stopped||!cv.isConnected){removeEventListener('keydown',key);removeEventListener('resize',fit);return}
     if(window.__vis===false){last=0;setTimeout(function(){requestAnimationFrame(frame)},300);return}
     var dt=last?Math.min(.05,(t-last)/1000):0;last=t;
-    if(!over){if(inv>0)inv-=dt;stepActor(pl,PS,dt,plChoose);eat();al.forEach(function(a){stepActor(a,AS,dt,alChoose);if(Math.abs(a.fx-pl.fx)+Math.abs(a.fy-pl.fy)<.6)caught()})}
+    if(want||pl.dir)window.__mzgo=1;if(!over){if(inv>0)inv-=dt;stepActor(pl,PS,dt,plChoose);eat();if(want||pl.dir||started){started=1;al.forEach(function(a){stepActor(a,AS,dt,alChoose);if(Math.abs(a.fx-pl.fx)+Math.abs(a.fy-pl.fy)<.6)caught()})}}
     draw(t);requestAnimationFrame(frame)}
   window.__mz={pl:pl,items:items,al:al,C:C,R:Rr,open:open,go:function(d){want=d},state:function(){return {over:over,got:got,lives:lives,need:need}}};
   requestAnimationFrame(frame)}
