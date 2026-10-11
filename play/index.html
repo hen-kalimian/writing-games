@@ -394,7 +394,7 @@ function mazeGame(ar,opts,isOk,need,onOk,onDone,onSay,level){level=level||0;
   var PS=4.6,AS=Math.min(4.2,2.0+level*.32);
   function drawHUD(){hearts.innerHTML='';for(var i=0;i<3;i++){var h=el('span',i<lives?'on':'');h.textContent='♥';hearts.appendChild(h)}cnt.textContent=need>1?('נמצאו '+got+' מתוך '+need):''}
   drawHUD();
-  var cs=30,ox=0,oy=0;function fit(){var aw=ar.clientWidth||340,maxH=Math.max(260,Math.min(innerHeight*.62,560));cs=Math.floor(Math.min(aw/C,maxH/Rr));cv.width=cs*C*2;cv.height=cs*Rr*2;cv.style.width=cs*C+'px';cv.style.height=cs*Rr+'px'}fit();addEventListener('resize',fit);
+  var cs=30,ox=0,oy=0;function fit(){var aw=ar.clientWidth||340,top=Math.max(0,ar.getBoundingClientRect().top+(document.getElementById('stage').scrollTop||0)),padH=getComputedStyle(pad).display==='none'?0:122,maxH=Math.max(200,Math.min(innerHeight-top-padH-44,620));cs=Math.max(16,Math.floor(Math.min(aw/C,maxH/Rr)));cv.width=cs*C*2;cv.height=cs*Rr*2;cv.style.width=cs*C+'px';cv.style.height=cs*Rr+'px'}fit();addEventListener('resize',fit);
   /* שליטה: החלקה על המבוך, חיצים במקלדת */
   var sx0=null,sy0=null;cv.addEventListener('pointerdown',function(e){e.preventDefault();sx0=e.clientX;sy0=e.clientY;ctx()});
   cv.addEventListener('pointermove',function(e){if(sx0===null)return;var dx=e.clientX-sx0,dy=e.clientY-sy0;if(Math.abs(dx)+Math.abs(dy)>18){want=Math.abs(dx)>Math.abs(dy)?(dx>0?'r':'l'):(dy>0?'d':'u');sx0=e.clientX;sy0=e.clientY}});
