@@ -373,7 +373,7 @@ function mazeGame(ar,opts,isOk,need,onOk,onDone,onSay,level){level=level||0;
   var cv=el('canvas','mzcv');ar.appendChild(cv);var g=cv.getContext('2d');
   var pad=el('div','mzpad');[['u','▲'],['l','◀'],['d','▼'],['r','▶']].forEach(function(b){var bt=el('button','mzb mz'+b[0],b[1]);bt.type='button';bt.setAttribute('aria-label',{u:'למעלה',d:'למטה',l:'שמאלה',r:'ימינה'}[b[0]]);
     bt.addEventListener('pointerdown',function(e){e.preventDefault();want=b[0];ctx()});pad.appendChild(bt)});ar.appendChild(pad);
-  var portrait=(ar.clientWidth||340)<520,C=portrait?9:13,Rr=portrait?11:9;
+  var portrait=(ar.clientWidth||340)<520,C=portrait?9:13,Rr=portrait?11:9;(function(){var aw0=ar.clientWidth||340,top0=Math.max(0,ar.getBoundingClientRect().top+(document.getElementById('stage').scrollTop||0)),padH0=getComputedStyle(pad).display==='none'?0:120,av=innerHeight-top0-padH0-hud.offsetHeight-22,cw0=aw0/C;if(av>0)Rr=Math.max(portrait?7:6,Math.min(portrait?11:9,Math.floor(av/Math.min(cw0,portrait?46:60))))})();
   var DIR={u:[0,-1],d:[0,1],l:[-1,0],r:[1,0]},OPP={u:'d',d:'u',l:'r',r:'l'};
   /* מבוך: walls[y][x] = {u,d,l,r} פתוח/סגור; נבנה בחיפוש לעומק ואחר כך נפתחים קירות נוספים כדי שיהיו מעגלים לבריחה */
   var W=[];for(var y=0;y<Rr;y++){W.push([]);for(var x=0;x<C;x++)W[y].push({u:1,d:1,l:1,r:1})}
