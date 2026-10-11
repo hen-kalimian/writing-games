@@ -654,7 +654,7 @@ function renderF(s, t){ main.classList.add('gest');
   if (!$('app').classList.contains('rot')){
     // כתיבה באצבע: ה-iframe מחוץ לבמה המוקטנת (בלי שום transform מעליו), כי באייפון הלחיצות בתוכו זזו ממקומן
     // והקו השלישי והכפתורים לא הגיבו. הדף של האות מתאים את עצמו לגודל שהוא מקבל.
-    const f = document.createElement('iframe'); f.className = 'fover'; f.src = CFG.writeBase + 'letter-' + WRITE[s.i] + '.html?embed=1&fit=1&v=5'; f.setAttribute('allow', 'autoplay');
+    const f = document.createElement('iframe'); f.className = 'fover'; f.src = CFG.writeBase + 'letter-' + WRITE[s.i] + '.html?embed=1&fit=1&v=6'; f.setAttribute('allow', 'autoplay');
     f.style.cssText = 'position:fixed;border:0;z-index:4;background:linear-gradient(180deg,#F0FAF5,#F1F6FB)';
     $('app').appendChild(f); placeFover(); say(s.acts[0].intro); return;
   }

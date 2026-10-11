@@ -160,7 +160,9 @@ const CFG = {"series":"מספרים בקלות - חן קלימיאן","titleHtml
 
 const COLORS = ['#4FB38C', '#5F8DB5', '#D9A441', '#8E7CC3'];
 const UNI = '#4FB38C';   /* בסיום כל האות בצבע אחיד */
-const TOL = 30, START_TOL = 44, N = 40, H = 300;
+let TOL = 30, START_TOL = 44; const N = 40, H = 300;
+/*__TOL*/ /* לוח קטן (טלפון, בתוך משחק אחר): האצבע לא מדויקת, אז המרחק המותר מהקו נקבע לפי גודל הלוח על המסך: לפחות 24 פיקסלים מהקו ו-32 מנקודת ההתחלה */
+function __tol(){ try { const u = svg.getBoundingClientRect().height / H; if (u > 0){ TOL = Math.min(80, Math.max(30, 24 / u)); START_TOL = Math.min(100, Math.max(44, 32 / u)); } } catch (e) {} }
 const NS = 'http://www.w3.org/2000/svg';
 const svg = document.getElementById('board');
 const layers = document.getElementById('layers');
@@ -302,7 +304,7 @@ function fanfare(){ [523, 659, 784, 1047, 1319, 1568].forEach((f, i) => note(f, 
 
 /* ---------- ציור באצבע / בעכבר ---------- */
 svg.addEventListener('pointerdown', e => {
-  if (cur >= S.length) return;
+  if (cur >= S.length) return; __tol();
   if (busy) stopDemo();                      /* נוגעים באמצע ההדגמה: ההדגמה נעצרת והכתיבה מתחילה */
   e.preventDefault();
   clearIdle();
