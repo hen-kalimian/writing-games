@@ -140,8 +140,8 @@ body.framed #app .top .brand{display:none}
    זו הרתעה ולא הגנה מוחלטת: אין שרת, ולכן בודקים מאיפה הגיעו. מי שנכנס פעם אחת בלשונית נשאר מורשה בה (sessionStorage). */
 (function(){
   const okHost = h => /(^|\.)talkwithkids\.co\.il$/.test(h) || /(^|\.)(wixusercontent\.com|filesusr\.com|usrfiles\.com|wix\.com|wixsite\.com|editorx\.io)$/.test(h) || /^(localhost|127\.0\.0\.1)$/.test(h);
-  let ok = false;
-  try { ok = sessionStorage.getItem('wgok') === '1'; } catch (e) {}
+  let ok = /[?&]k=7c41e9d2b6(&|$)/.test(location.search);   // קישור שיתוף לצפייה בלבד (חן, 12.10.26)
+  try { if (!ok) ok = sessionStorage.getItem('wgok') === '1'; } catch (e) {}
   if (!ok) {
     const hosts = [];
     try { hosts.push(new URL(document.referrer).hostname); } catch (e) {}
