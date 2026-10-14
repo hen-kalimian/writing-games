@@ -29,6 +29,11 @@ h1 b{color:#EF406E;font-weight:900}
 .card p{margin:0 0 14px;font-size:18px;line-height:1.5;font-weight:700}
 .card .pic{width:120px;height:120px;margin:0 auto}
 .card .pic svg{width:100%;height:100%}
+.spk{flex:0 0 auto;width:42px;height:42px;border-radius:50%;border:0;background:#fff;box-shadow:0 3px 0 rgba(0,0,0,.08),0 0 0 3px #B7CDE0;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;padding:0;vertical-align:middle}
+.spk svg{width:22px;height:22px}
+.spk:active{transform:translateY(2px)}
+.spk.on{box-shadow:0 0 0 3px #EF406E}
+.say-row{display:flex;align-items:center;justify-content:center;gap:10px}
 .hidden{display:none!important}
 .conf{position:fixed;inset:0;pointer-events:none;z-index:60}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
@@ -59,10 +64,10 @@ h1 b{color:#EF406E;font-weight:900}
  <div class="hud"><span class="goal" id="goal"></span><span class="hearts" id="hearts"></span></div>
  <div class="prog" id="prog"></div>
  <div id="stage" class="noscroll"><canvas id="cv" width="800" height="500"></canvas><div class="pop" id="pop"><span id="popPic"></span><b id="popWord"></b></div></div>
- <div class="overlay" id="intro"><div class="card"><div class="pic" id="introPic"></div><h2>רָצִים בֵּין הָעָלִים</h2><p>הַקִּפּוֹד רָץ בַּיַּעַר. לוֹחֲצִים כְּדֵי לִקְפֹּץ מֵעַל הַשְּׁלוּלִיּוֹת וְאוֹסְפִים רַק אֶת מַה שֶּׁמְּבַקְשִׁים</p><button class="btn" id="go">מַתְחִילִים</button></div></div>
- <div class="overlay hidden" id="lvl"><div class="card"><div class="pic" id="lvlPic"></div><h2 id="lvlTitle"></h2><p id="lvlText"></p><button class="btn" id="lvlBtn"></button></div></div>
+ <div class="overlay" id="intro"><div class="card"><div class="pic" id="introPic"></div><h2>רָצִים בֵּין הָעָלִים</h2><p>הַקִּפּוֹד רָץ בַּיַּעַר. לוֹחֲצִים כְּדֵי לִקְפֹּץ מֵעַל הַשְּׁלוּלִיּוֹת וְאוֹסְפִים רַק אֶת מַה שֶּׁמְּבַקְשִׁים <button class="spk" type="button" data-say="הַקִּפּוֹד רָץ בַּיַּעַר. לוֹחֲצִים כְּדֵי לִקְפֹּץ מֵעַל הַשְּׁלוּלִיּוֹת וְאוֹסְפִים רַק אֶת מַה שֶּׁמְּבַקְשִׁים" aria-label="להשמיע"><svg viewBox="0 0 24 24" fill="none" stroke="#5F8DB5" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9v6h4l5 4V5L8 9H4z" fill="#B7CDE0"/><path d="M16.5 8.5a5 5 0 010 7M19 6a8.5 8.5 0 010 12"/></svg></button></p><button class="btn" id="go">מַתְחִילִים</button></div></div>
+ <div class="overlay hidden" id="lvl"><div class="card"><div class="pic" id="lvlPic"></div><h2 id="lvlTitle"></h2><p><span id="lvlText"></span> <button class="spk hidden" id="lvlSpk" type="button" data-say="" aria-label="להשמיע"><svg viewBox="0 0 24 24" fill="none" stroke="#5F8DB5" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9v6h4l5 4V5L8 9H4z" fill="#B7CDE0"/><path d="M16.5 8.5a5 5 0 010 7M19 6a8.5 8.5 0 010 12"/></svg></button></p><button class="btn" id="lvlBtn"></button></div></div>
 </div>
-<script>window.__ON="<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"#5F8DB5\" stroke-width=\"2.4\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M4 9v6h4l5 4V5L8 9H4z\" fill=\"#B7CDE0\"/><path d=\"M16.5 8.5a5 5 0 010 7M19 6a8.5 8.5 0 010 12\"/></svg>";window.__OFF="<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"#B8236B\" stroke-width=\"2.4\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M4 9v6h4l5 4V5L8 9H4z\" fill=\"#FDE1EA\"/><path d=\"M17 9l5 6M22 9l-5 6\"/></svg>";window.AUDIO={"אֵיפֹה הֶעָלֶה?":"audio/13c68984b6.mp3","אֵיפֹה הָעָלִים?":"audio/023d3d2f84.mp3","אֵיפֹה הַקִּפּוֹד?":"audio/5fb5650bc3.mp3","אֵיפֹה הַתַּפּוּחִים?":"audio/0d78bca574.mp3","אֵיפֹה הַבַּלּוּט?":"audio/a0d257a68c.mp3","אֵיפֹה הַפִּטְרִיּוֹת?":"audio/2e08faedc5.mp3","אֵיפֹה הַדְּלַעַת?":"audio/774282feb5.mp3","אֵיפֹה הַמִּטְרִיּוֹת?":"audio/fcdee7cdb7.mp3","אֵיפֹה הַקִּפּוֹדִים?":"audio/c48db88bee.mp3","אֵיפֹה הַבַּלּוּטִים?":"audio/565503e801.mp3","אֵיפֹה הַקִּפּוֹד הַגָּדוֹל?":"audio/2965e61b31.mp3","אֵיפֹה הֶעָלֶה הַקָּטָן?":"audio/b21ff54447.mp3","אֵיפֹה הֶעָלֶה הָאָדֹם?":"audio/3edd005352.mp3","אֵיפֹה הַתַּפּוּחַ הַיָּרֹק?":"audio/7710c3607f.mp3","כָּל הַכָּבוֹד!":"audio/1c15e15229.mp3","יָפֶה מְאֹד!":"audio/7c0f54e2b9.mp3","מְצֻיָּן!":"audio/4e4b045411.mp3","אַתֶּם גְּדוֹלִים!":"audio/f69a6d59ff.mp3","נַסּוּ שׁוּב":"audio/da482d1b9c.mp3","כָּל הַכָּבוֹד! מָצָאתֶם הַכֹּל":"audio/4e1fc1b67b.mp3","עִזְרוּ לַקִּפּוֹד לֶאֱסֹף אֶת כָּל הַבַּלּוּטִים. הִזָּהֲרוּ מֵהֶעָנָנִים!":"audio/a7b9cfc67e.mp3","מַחְלִיקִים אֶת הָאֶצְבַּע עַל הַמָּבוֹךְ, אוֹ לוֹחֲצִים עַל הַחִצִּים":"audio/20aebb8dc3.mp3","מַתְחִילִים":"audio/7a0df9680d.mp3","לַשָּׁלָב הַבָּא":"audio/65f3082ec2.mp3","לְשַׂחֵק שׁוּב":"audio/6885c665ee.mp3","כָּל הַכָּבוֹד! הַקִּפּוֹד בָּנָה קֵן חַם וְיָבֵשׁ":"audio/f678bf4bff.mp3","בַּסְּתָו הָעָלִים מִצְטַבְּעִים בְּאָדֹם וּבְצָהֹב":"audio/ef7ab15eda.mp3","הַקִּפּוֹד אוֹסֵף עָלִים וּבוֹנֶה לוֹ קֵן חַם לַחֹרֶף":"audio/88037edc7f.mp3","בַּסְּתָו מַתְחִילִים הַגְּשָׁמִים, וְלוֹקְחִים מִטְרִיָּה":"audio/c525ae195f.mp3","הַקִּפּוֹד רָץ בַּיַּעַר. לוֹחֲצִים כְּדֵי לִקְפֹּץ מֵעַל הַשְּׁלוּלִיּוֹת וְאוֹסְפִים רַק אֶת מַה שֶּׁמְּבַקְשִׁים":"audio/be9071fc65.mp3","עוֹד פַּעַם":"audio/81b88a90a6.mp3","כָּל הַכָּבוֹד! סִיַּמְתֶּם אֶת כָּל הַשְּׁלָבִים":"audio/19522d7b89.mp3","עָלִים אֲדֻמִּים":"audio/3e272e0708.mp3","עָלֶה אָדֹם":"audio/e8a9d38fd8.mp3","בַּלּוּטִים":"audio/f47974a58c.mp3","בַּלּוּט":"audio/fdd31d225d.mp3","תַּפּוּחִים אֲדֻמִּים":"audio/ddc55a7fcd.mp3","תַּפּוּחַ אָדֹם":"audio/fbee37d7c1.mp3","דְּלַעוֹת":"audio/25d06414bd.mp3","דְּלַעַת":"audio/bb3604552f.mp3","פֵּרוֹת":"audio/3e41dc491e.mp3","תַּפּוּחַ":"audio/bf3c1e1856.mp3","אַגָּס":"audio/89a6697361.mp3","עֲנָבִים":"audio/fa402768d1.mp3"};</script>
+<script>window.__ON="<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"#5F8DB5\" stroke-width=\"2.4\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M4 9v6h4l5 4V5L8 9H4z\" fill=\"#B7CDE0\"/><path d=\"M16.5 8.5a5 5 0 010 7M19 6a8.5 8.5 0 010 12\"/></svg>";window.__OFF="<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"#B8236B\" stroke-width=\"2.4\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M4 9v6h4l5 4V5L8 9H4z\" fill=\"#FDE1EA\"/><path d=\"M17 9l5 6M22 9l-5 6\"/></svg>";window.AUDIO={"אֵיפֹה הֶעָלֶה?":"audio/13c68984b6.mp3","אֵיפֹה הָעָלִים?":"audio/023d3d2f84.mp3","אֵיפֹה הַקִּפּוֹד?":"audio/5fb5650bc3.mp3","אֵיפֹה הַתַּפּוּחִים?":"audio/0d78bca574.mp3","אֵיפֹה הַבַּלּוּט?":"audio/a0d257a68c.mp3","אֵיפֹה הַפִּטְרִיּוֹת?":"audio/2e08faedc5.mp3","אֵיפֹה הַדְּלַעַת?":"audio/774282feb5.mp3","אֵיפֹה הַמִּטְרִיּוֹת?":"audio/fcdee7cdb7.mp3","אֵיפֹה הַקִּפּוֹדִים?":"audio/c48db88bee.mp3","אֵיפֹה הַבַּלּוּטִים?":"audio/565503e801.mp3","אֵיפֹה הַקִּפּוֹד הַגָּדוֹל?":"audio/2965e61b31.mp3","אֵיפֹה הֶעָלֶה הַקָּטָן?":"audio/b21ff54447.mp3","אֵיפֹה הֶעָלֶה הָאָדֹם?":"audio/3edd005352.mp3","אֵיפֹה הַתַּפּוּחַ הַיָּרֹק?":"audio/7710c3607f.mp3","כָּל הַכָּבוֹד! מָצָאתֶם הַכֹּל":"audio/4e1fc1b67b.mp3","עִזְרוּ לַקִּפּוֹד לֶאֱסֹף אֶת כָּל הַבַּלּוּטִים. הִזָּהֲרוּ מֵהֶעָנָנִים!":"audio/a7b9cfc67e.mp3","מַחְלִיקִים אֶת הָאֶצְבַּע עַל הַמָּבוֹךְ, אוֹ לוֹחֲצִים עַל הַחִצִּים":"audio/20aebb8dc3.mp3","מַתְחִילִים":"audio/7a0df9680d.mp3","לַשָּׁלָב הַבָּא":"audio/65f3082ec2.mp3","לְשַׂחֵק שׁוּב":"audio/6885c665ee.mp3","כָּל הַכָּבוֹד! הַקִּפּוֹד בָּנָה קֵן חַם וְיָבֵשׁ":"audio/f678bf4bff.mp3","בַּסְּתָו הָעָלִים מִצְטַבְּעִים בְּאָדֹם וּבְצָהֹב":"audio/ef7ab15eda.mp3","הַקִּפּוֹד אוֹסֵף עָלִים וּבוֹנֶה לוֹ קֵן חַם לַחֹרֶף":"audio/88037edc7f.mp3","בַּסְּתָו מַתְחִילִים הַגְּשָׁמִים, וְלוֹקְחִים מִטְרִיָּה":"audio/c525ae195f.mp3","הַקִּפּוֹד רָץ בַּיַּעַר. לוֹחֲצִים כְּדֵי לִקְפֹּץ מֵעַל הַשְּׁלוּלִיּוֹת וְאוֹסְפִים רַק אֶת מַה שֶּׁמְּבַקְשִׁים":"audio/be9071fc65.mp3","עוֹד פַּעַם":"audio/81b88a90a6.mp3","כָּל הַכָּבוֹד! סִיַּמְתֶּם אֶת כָּל הַשְּׁלָבִים":"audio/19522d7b89.mp3","עָלִים אֲדֻמִּים":"audio/3e272e0708.mp3","עָלֶה אָדֹם":"audio/e8a9d38fd8.mp3","בַּלּוּטִים":"audio/f47974a58c.mp3","בַּלּוּט":"audio/fdd31d225d.mp3","תַּפּוּחִים אֲדֻמִּים":"audio/ddc55a7fcd.mp3","תַּפּוּחַ אָדֹם":"audio/fbee37d7c1.mp3","דְּלַעוֹת":"audio/25d06414bd.mp3","דְּלַעַת":"audio/bb3604552f.mp3","פֵּרוֹת":"audio/3e41dc491e.mp3","תַּפּוּחַ":"audio/bf3c1e1856.mp3","אַגָּס":"audio/89a6697361.mp3","עֲנָבִים":"audio/fa402768d1.mp3"};</script>
 <script>
 (function(){
 var muted=false;
@@ -89,6 +94,7 @@ window.say=function(text){
  try{if(cur){cur.pause()}}catch(e){}
  try{cur=new Audio(src);var p=cur.play();if(p&&p.catch)p.catch(function(){})}catch(e){}
 };
+window.sayForce=function(text){var src=(window.AUDIO||{})[text];if(!src)return;try{if(cur){cur.pause()}}catch(e){}try{cur=new Audio(src);var p=cur.play();if(p&&p.catch)p.catch(function(){})}catch(e){}};
 window.stopSay=function(){try{if(cur)cur.pause()}catch(e){}};
 window.isMuted=function(){return muted};
 window.setMuted=function(m){muted=m;try{localStorage.setItem('sp_muted',m?'1':'0')}catch(e){}if(m)window.stopSay()};
@@ -109,6 +115,7 @@ window.wireTop=function(){
    else if(e.requestFullscreen||e.webkitRequestFullscreen){(e.requestFullscreen||e.webkitRequestFullscreen).call(e)}
    else{window.open(location.href,'_blank')}}catch(x){window.open(location.href,'_blank')}})}
 };
+document.addEventListener('click',function(e){var b=e.target.closest&&e.target.closest('.spk');if(!b)return;e.preventDefault();var t=b.getAttribute('data-say');if(t){window.sayForce(t);b.classList.add('on');setTimeout(function(){b.classList.remove('on')},900)}});
 // stop page scroll while touching a board (iOS inside iframes)
 document.addEventListener('touchmove',function(e){if(e.target.closest&&e.target.closest('.noscroll'))e.preventDefault()},{passive:false});
 })();
@@ -181,7 +188,6 @@ function hurt(){
 function showPop(o){
   $('popPic').innerHTML=D.arts[o.art];$('popWord').textContent=o.t;
   var p=$('pop');p.classList.remove('show');void p.offsetWidth;p.classList.add('show');
-  window.say(o.t);
 }
 function levelDone(){
   if(state!=='play')return;state='won';window.SFX.win();window.confetti(90);
@@ -191,8 +197,9 @@ function showLevel(failed,last){
   var tg=lvl.targets[0];
   $('lvlPic').innerHTML=D.arts[tg.art];
   if(failed){$('lvlTitle').textContent=D.retry;$('lvlText').textContent=lvl.goal;$('lvlBtn').textContent=D.retry}
-  else if(last){$('lvlTitle').textContent=D.done;$('lvlText').textContent='';$('lvlBtn').textContent=D.again;setTimeout(function(){window.say(D.done)},400)}
+  else if(last){$('lvlTitle').textContent=D.done;$('lvlText').textContent='';$('lvlBtn').textContent=D.again;}
   else{$('lvlTitle').textContent=D.levelWord+' '+(L+1);$('lvlText').textContent=lvl.goal;$('lvlBtn').textContent=D.next}
+  var sp=$('lvlSpk');var tx=$('lvlText').textContent;if(tx){sp.classList.remove('hidden');sp.setAttribute('data-say',tx)}else sp.classList.add('hidden');
   $('lvl').classList.remove('hidden');
   $('lvlBtn').onclick=function(){
     $('lvl').classList.add('hidden');
@@ -225,7 +232,7 @@ function draw(){
 }
 function loop(){if(ready){if(state==='play')step();if(hero)draw()}requestAnimationFrame(loop)}
 function begin(){reset();state='play'}
-$('go').addEventListener('click',function(){$('intro').classList.add('hidden');window.say(D.intro);begin()});
+$('go').addEventListener('click',function(){$('intro').classList.add('hidden');begin()});
 ['mousedown','touchstart'].forEach(function(ev){$('stage').addEventListener(ev,function(e){jump();if(e.cancelable)e.preventDefault()},{passive:false})});
 document.addEventListener('keydown',function(e){if(e.code==='Space'||e.key==='ArrowUp'){e.preventDefault();jump()}});
 reset();loop();

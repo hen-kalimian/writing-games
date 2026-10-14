@@ -29,6 +29,11 @@ h1 b{color:#EF406E;font-weight:900}
 .card p{margin:0 0 14px;font-size:18px;line-height:1.5;font-weight:700}
 .card .pic{width:120px;height:120px;margin:0 auto}
 .card .pic svg{width:100%;height:100%}
+.spk{flex:0 0 auto;width:42px;height:42px;border-radius:50%;border:0;background:#fff;box-shadow:0 3px 0 rgba(0,0,0,.08),0 0 0 3px #B7CDE0;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;padding:0;vertical-align:middle}
+.spk svg{width:22px;height:22px}
+.spk:active{transform:translateY(2px)}
+.spk.on{box-shadow:0 0 0 3px #EF406E}
+.say-row{display:flex;align-items:center;justify-content:center;gap:10px}
 .hidden{display:none!important}
 .conf{position:fixed;inset:0;pointer-events:none;z-index:60}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
@@ -38,8 +43,7 @@ h1 b{color:#EF406E;font-weight:900}
 .pot.on{transform:translateY(-5px) scale(1.15);box-shadow:inset -3px -4px 6px rgba(0,0,0,.12),0 0 0 3px #fff,0 0 0 6px #EF406E}
 .pot.w{border:2px solid #D9D0D0}
 #boardbox{position:relative;flex:1;min-height:0;width:100%;display:flex;align-items:center;justify-content:center;touch-action:none}
-#art{max-width:100%;max-height:100%;aspect-ratio:4/5;background:#fff;border-radius:22px;box-shadow:0 0 0 4px #FDE1EA,0 8px 22px rgba(239,64,110,.12);touch-action:none}
-#art .r{cursor:pointer}
+#cv{max-width:100%;max-height:100%;background:#fff;border-radius:22px;box-shadow:0 0 0 4px #FDE1EA,0 8px 22px rgba(239,64,110,.12);touch-action:none;cursor:pointer}
 .row{display:flex;gap:10px;justify-content:center}
 .btn.small{font-size:16px;padding:9px 18px}
 </style>
@@ -51,24 +55,10 @@ h1 b{color:#EF406E;font-weight:900}
  <div class="top"><span class="brand">חן קלימיאן - לדבר עם ילדים</span><span class="icos"><button class="ico" id="mute" aria-label="השתקה"></button><button class="ico" id="full" aria-label="מסך מלא"><svg viewBox="0 0 24 24" fill="none" stroke="#5F8DB5" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg></button></span></div>
  <h1>צוֹבְעִים אֶת הַיַּעַר</h1>
  <div class="pots" id="pots"></div>
- <div id="boardbox" class="noscroll"><svg id="art" viewBox="0 0 400 500" xmlns="http://www.w3.org/2000/svg"><path d="M0 360 C 80 340 160 380 250 355 C 320 335 360 350 400 345 L400 500 L0 500 Z" fill="#FFFFFF" class="r" stroke="#6B4A3A" stroke-width="3"/>
-<path d="M0 0 L400 0 L400 350 C 320 330 250 370 170 350 C 100 335 40 350 0 358 Z" fill="#FFFFFF" class="r" stroke="#6B4A3A" stroke-width="3" opacity="1"/>
-<g transform="translate(285 12) scale(0.9)"><path d="M84.0 50.0 L96.0 50.0" stroke="#F2B63C" stroke-width="5" stroke-linejoin="round" stroke-linecap="round"/><path d="M77.5 70.0 L87.2 77.0" stroke="#F2B63C" stroke-width="5" stroke-linejoin="round" stroke-linecap="round"/><path d="M60.5 82.3 L64.2 93.7" stroke="#F2B63C" stroke-width="5" stroke-linejoin="round" stroke-linecap="round"/><path d="M39.5 82.3 L35.8 93.7" stroke="#F2B63C" stroke-width="5" stroke-linejoin="round" stroke-linecap="round"/><path d="M22.5 70.0 L12.8 77.0" stroke="#F2B63C" stroke-width="5" stroke-linejoin="round" stroke-linecap="round"/><path d="M16.0 50.0 L4.0 50.0" stroke="#F2B63C" stroke-width="5" stroke-linejoin="round" stroke-linecap="round"/><path d="M22.5 30.0 L12.8 23.0" stroke="#F2B63C" stroke-width="5" stroke-linejoin="round" stroke-linecap="round"/><path d="M39.5 17.7 L35.8 6.3" stroke="#F2B63C" stroke-width="5" stroke-linejoin="round" stroke-linecap="round"/><path d="M60.5 17.7 L64.2 6.3" stroke="#F2B63C" stroke-width="5" stroke-linejoin="round" stroke-linecap="round"/><path d="M77.5 30.0 L87.2 23.0" stroke="#F2B63C" stroke-width="5" stroke-linejoin="round" stroke-linecap="round"/><circle cx="50" cy="50" r="24" fill="#FFFFFF" class="r" stroke="#6B4A3A" stroke-width="3"/></g>
-<g transform="translate(10 24) scale(1.05)"><path d="M26 74 C 8 74 6 48 26 48 C 26 28 52 22 62 40 C 78 30 96 46 88 62 C 96 72 88 76 80 74 Z" fill="#FFFFFF" class="r" stroke="#6B4A3A" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/><circle cx="40" cy="58" r="3.6" fill="#FFFFFF" class="r"/><circle cx="62" cy="58" r="3.6" fill="#FFFFFF" class="r"/><path d="M45 66 C 50 70 56 70 60 66" stroke="#3A2A20" stroke-width="2.4" fill="none" stroke-linejoin="round" stroke-linecap="round"/><path d="M30 82 L27 92 M50 80 L47 92 M70 82 L67 92" stroke="#6FA8D6" stroke-width="3.5" stroke-linejoin="round" stroke-linecap="round"/></g>
-<g transform="translate(16 150) scale(1.7)"><path d="M44 94 L46 58 L54 58 L56 94 Z" fill="#FFFFFF" class="r" stroke="#6B4A3A" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/><circle cx="50" cy="34" r="26" fill="#FFFFFF" class="r" stroke="#6B4A3A" stroke-width="3"/><circle cx="28" cy="48" r="18" fill="#FFFFFF" class="r" stroke="#6B4A3A" stroke-width="3"/><circle cx="72" cy="48" r="18" fill="#FFFFFF" class="r" stroke="#6B4A3A" stroke-width="3"/><circle cx="50" cy="52" r="18" fill="#FFFFFF" class="r"/></g>
-<g transform="translate(220 160) scale(1.5)"><path d="M44 94 L46 58 L54 58 L56 94 Z" fill="#FFFFFF" class="r" stroke="#6B4A3A" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/><circle cx="50" cy="34" r="26" fill="#FFFFFF" class="r" stroke="#6B4A3A" stroke-width="3"/><circle cx="28" cy="48" r="18" fill="#FFFFFF" class="r" stroke="#6B4A3A" stroke-width="3"/><circle cx="72" cy="48" r="18" fill="#FFFFFF" class="r" stroke="#6B4A3A" stroke-width="3"/><circle cx="50" cy="52" r="18" fill="#FFFFFF" class="r"/></g>
-<g transform="translate(120 350) scale(1.3)"><path d="M8 66 L 1.0 66.0 L 12.4 61.1 L 3.0 53.0 L 15.4 51.8 L 8.8 41.1 L 21.3 43.6 L 17.9 31.2 L 29.5 37.2 L 29.6 24.2 L 39.3 33.2 L 43.0 20.5 L 50.0 31.8 L 57.0 20.5 L 60.7 33.2 L 70.4 24.2 L 70.5 37.2 L 82.1 31.2 L 78.7 43.6 L 91.2 41.1 L 84.6 51.8 L 97.0 53.0 L 87.6 61.1 L 99.0 66.0 L 87.6 70.9 L 94 66 Z" fill="#FFFFFF" class="r" stroke="#6B4A3A" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/><path d="M14 66 C 14 90 40 92 62 90 C 80 88 96 80 96 70 C 96 62 90 58 80 58 L 30 58 C 20 58 14 60 14 66 Z" fill="#FFFFFF" class="r" stroke="#6B4A3A" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/><ellipse cx="88" cy="68" rx="5.5" ry="5" fill="#FFFFFF" class="r"/><circle cx="68" cy="68" r="4.5" fill="#FFFFFF" class="r"/><circle cx="69.5" cy="66.5" r="1.4" fill="#FFFFFF" class="r"/><path d="M56 78 C 62 82 70 82 74 78" stroke="#6B4A3A" stroke-width="2.4" fill="none" stroke-linejoin="round" stroke-linecap="round"/><ellipse cx="42" cy="90" rx="6" ry="3.5" fill="#FFFFFF" class="r" stroke="#6B4A3A" stroke-width="2.5"/><ellipse cx="70" cy="91" rx="6" ry="3.5" fill="#FFFFFF" class="r" stroke="#6B4A3A" stroke-width="2.5"/></g>
-<g transform="translate(290 370) scale(0.8)"><path d="M36 56 C 34 74 36 88 40 90 L60 90 C 64 88 66 74 64 56 Z" fill="#FFFFFF" class="r" stroke="#6B4A3A" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/><path d="M8 58 C 8 28 28 12 50 12 C 72 12 92 28 92 58 C 70 64 30 64 8 58 Z" fill="#FFFFFF" class="r" stroke="#6B4A3A" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/><circle cx="32" cy="38" r="7" fill="#FFFFFF" class="r"/><circle cx="56" cy="28" r="6" fill="#FFFFFF" class="r"/><circle cx="72" cy="44" r="6.5" fill="#FFFFFF" class="r"/><circle cx="48" cy="48" r="4.5" fill="#FFFFFF" class="r"/></g>
-<g transform="translate(20 400) scale(0.6)"><path d="M36 56 C 34 74 36 88 40 90 L60 90 C 64 88 66 74 64 56 Z" fill="#FFFFFF" class="r" stroke="#6B4A3A" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/><path d="M8 58 C 8 28 28 12 50 12 C 72 12 92 28 92 58 C 70 64 30 64 8 58 Z" fill="#FFFFFF" class="r" stroke="#6B4A3A" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/><circle cx="32" cy="38" r="7" fill="#FFFFFF" class="r"/><circle cx="56" cy="28" r="6" fill="#FFFFFF" class="r"/><circle cx="72" cy="44" r="6.5" fill="#FFFFFF" class="r"/><circle cx="48" cy="48" r="4.5" fill="#FFFFFF" class="r"/></g>
-<g transform="translate(260 430) scale(0.7)"><ellipse cx="50" cy="60" rx="40" ry="31" fill="#FFFFFF" class="r" stroke="#6B4A3A" stroke-width="3"/><path d="M50 30 C 36 40 36 80 50 91 C 64 80 64 40 50 30 Z" fill="#FFFFFF" class="r" stroke="#6B4A3A" stroke-width="2.5"/><path d="M22 38 C 10 50 12 74 28 86 M78 38 C 90 50 88 74 72 86" stroke="#6B4A3A" stroke-opacity=".5" stroke-width="2.5" fill="none" stroke-linejoin="round" stroke-linecap="round"/><path d="M50 30 C 50 22 48 16 52 10" stroke="#5E8C4F" stroke-width="7" fill="none" stroke-linejoin="round" stroke-linecap="round"/><path d="M54 18 C 62 10 72 14 74 20" stroke="#5E8C4F" stroke-width="3" fill="none" stroke-linejoin="round" stroke-linecap="round"/></g>
-<g transform="translate(85 440) scale(0.52)"><path d="M50 6 L58 24 L72 15 L68 36 L91 31 L78 50 L93 61 L66 62 L70 82 L54 73 L52 95 L48 95 L46 73 L30 82 L34 62 L7 61 L22 50 L9 31 L32 36 L28 15 L42 24 Z" fill="#FFFFFF" class="r" stroke="#6B4A3A" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/><path d="M50 30 L50 92 M50 62 L32 48 M50 62 L68 48" stroke="#6B4A3A" stroke-opacity=".45" stroke-width="2.4" fill="none" stroke-linejoin="round" stroke-linecap="round"/></g>
-<g transform="translate(205 450) scale(0.44)"><path d="M50 94 C 30 80 24 62 24 50 L76 50 C 76 62 70 80 50 94 Z" fill="#FFFFFF" class="r" stroke="#6B4A3A" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/><path d="M18 52 C 16 28 34 16 50 16 C 66 16 84 28 82 52 Z" fill="#FFFFFF" class="r" stroke="#6B4A3A" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/><path d="M50 16 L50 8" stroke="#6B4A3A" stroke-width="5" stroke-linejoin="round" stroke-linecap="round"/><path d="M30 28 L38 44 M46 22 L52 44 M64 26 L68 44" stroke="#C99A6E" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/></g>
-<g transform="translate(345 440) scale(0.5)"><path d="M50 30 C 40 18 12 24 12 55 C 12 80 32 94 44 90 C 48 89 52 89 56 90 C 68 94 88 80 88 55 C 88 24 60 18 50 30 Z" fill="#FFFFFF" class="r" stroke="#6B4A3A" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/><path d="M50 30 C 50 22 52 14 58 8" stroke="#6B4A3A" stroke-width="4" fill="none" stroke-linejoin="round" stroke-linecap="round"/><path d="M56 16 C 66 6 80 10 82 14 C 74 22 62 22 56 16 Z" fill="#FFFFFF" class="r" stroke="#6B4A3A" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/></g>
-<g transform="translate(330 255) scale(0.4)"><path d="M50 6 L58 24 L72 15 L68 36 L91 31 L78 50 L93 61 L66 62 L70 82 L54 73 L52 95 L48 95 L46 73 L30 82 L34 62 L7 61 L22 50 L9 31 L32 36 L28 15 L42 24 Z" fill="#FFFFFF" class="r" stroke="#6B4A3A" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/><path d="M50 30 L50 92 M50 62 L32 48 M50 62 L68 48" stroke="#6B4A3A" stroke-opacity=".45" stroke-width="2.4" fill="none" stroke-linejoin="round" stroke-linecap="round"/></g>
-<g transform="translate(150 255) scale(0.6)"><path d="M8 52 C 8 24 28 10 50 10 C 72 10 92 24 92 52 C 84 44 76 44 69 52 C 62 44 56 44 50 52 C 44 44 38 44 31 52 C 24 44 16 44 8 52 Z" fill="#FFFFFF" class="r" stroke="#6B4A3A" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/><path d="M50 10 L50 6 M50 52 L50 82 C 50 92 40 92 38 84" stroke="#6B4A3A" stroke-width="4" fill="none" stroke-linejoin="round" stroke-linecap="round"/><path d="M50 10 C 40 24 38 40 31 52 M50 10 C 60 24 62 40 69 52" stroke="#6B4A3A" stroke-opacity=".35" stroke-width="2.4" fill="none"/></g></svg></div>
+ <div id="boardbox" class="noscroll"><canvas id="cv"></canvas></div>
  <div class="row"><button class="btn small" id="clear">מַתְחִילִים מֵחָדָשׁ</button></div>
 </div>
-<script>window.__ON="<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"#5F8DB5\" stroke-width=\"2.4\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M4 9v6h4l5 4V5L8 9H4z\" fill=\"#B7CDE0\"/><path d=\"M16.5 8.5a5 5 0 010 7M19 6a8.5 8.5 0 010 12\"/></svg>";window.__OFF="<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"#B8236B\" stroke-width=\"2.4\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M4 9v6h4l5 4V5L8 9H4z\" fill=\"#FDE1EA\"/><path d=\"M17 9l5 6M22 9l-5 6\"/></svg>";window.AUDIO={"אֵיפֹה הֶעָלֶה?":"audio/13c68984b6.mp3","אֵיפֹה הָעָלִים?":"audio/023d3d2f84.mp3","אֵיפֹה הַקִּפּוֹד?":"audio/5fb5650bc3.mp3","אֵיפֹה הַתַּפּוּחִים?":"audio/0d78bca574.mp3","אֵיפֹה הַבַּלּוּט?":"audio/a0d257a68c.mp3","אֵיפֹה הַפִּטְרִיּוֹת?":"audio/2e08faedc5.mp3","אֵיפֹה הַדְּלַעַת?":"audio/774282feb5.mp3","אֵיפֹה הַמִּטְרִיּוֹת?":"audio/fcdee7cdb7.mp3","אֵיפֹה הַקִּפּוֹדִים?":"audio/c48db88bee.mp3","אֵיפֹה הַבַּלּוּטִים?":"audio/565503e801.mp3","אֵיפֹה הַקִּפּוֹד הַגָּדוֹל?":"audio/2965e61b31.mp3","אֵיפֹה הֶעָלֶה הַקָּטָן?":"audio/b21ff54447.mp3","אֵיפֹה הֶעָלֶה הָאָדֹם?":"audio/3edd005352.mp3","אֵיפֹה הַתַּפּוּחַ הַיָּרֹק?":"audio/7710c3607f.mp3","כָּל הַכָּבוֹד!":"audio/1c15e15229.mp3","יָפֶה מְאֹד!":"audio/7c0f54e2b9.mp3","מְצֻיָּן!":"audio/4e4b045411.mp3","אַתֶּם גְּדוֹלִים!":"audio/f69a6d59ff.mp3","נַסּוּ שׁוּב":"audio/da482d1b9c.mp3","כָּל הַכָּבוֹד! מָצָאתֶם הַכֹּל":"audio/4e1fc1b67b.mp3","עִזְרוּ לַקִּפּוֹד לֶאֱסֹף אֶת כָּל הַבַּלּוּטִים. הִזָּהֲרוּ מֵהֶעָנָנִים!":"audio/a7b9cfc67e.mp3","מַחְלִיקִים אֶת הָאֶצְבַּע עַל הַמָּבוֹךְ, אוֹ לוֹחֲצִים עַל הַחִצִּים":"audio/20aebb8dc3.mp3","מַתְחִילִים":"audio/7a0df9680d.mp3","לַשָּׁלָב הַבָּא":"audio/65f3082ec2.mp3","לְשַׂחֵק שׁוּב":"audio/6885c665ee.mp3","כָּל הַכָּבוֹד! הַקִּפּוֹד בָּנָה קֵן חַם וְיָבֵשׁ":"audio/f678bf4bff.mp3","בַּסְּתָו הָעָלִים מִצְטַבְּעִים בְּאָדֹם וּבְצָהֹב":"audio/ef7ab15eda.mp3","הַקִּפּוֹד אוֹסֵף עָלִים וּבוֹנֶה לוֹ קֵן חַם לַחֹרֶף":"audio/88037edc7f.mp3","בַּסְּתָו מַתְחִילִים הַגְּשָׁמִים, וְלוֹקְחִים מִטְרִיָּה":"audio/c525ae195f.mp3","הַקִּפּוֹד רָץ בַּיַּעַר. לוֹחֲצִים כְּדֵי לִקְפֹּץ מֵעַל הַשְּׁלוּלִיּוֹת וְאוֹסְפִים רַק אֶת מַה שֶּׁמְּבַקְשִׁים":"audio/be9071fc65.mp3","עוֹד פַּעַם":"audio/81b88a90a6.mp3","כָּל הַכָּבוֹד! סִיַּמְתֶּם אֶת כָּל הַשְּׁלָבִים":"audio/19522d7b89.mp3","עָלִים אֲדֻמִּים":"audio/3e272e0708.mp3","עָלֶה אָדֹם":"audio/e8a9d38fd8.mp3","בַּלּוּטִים":"audio/f47974a58c.mp3","בַּלּוּט":"audio/fdd31d225d.mp3","תַּפּוּחִים אֲדֻמִּים":"audio/ddc55a7fcd.mp3","תַּפּוּחַ אָדֹם":"audio/fbee37d7c1.mp3","דְּלַעוֹת":"audio/25d06414bd.mp3","דְּלַעַת":"audio/bb3604552f.mp3","פֵּרוֹת":"audio/3e41dc491e.mp3","תַּפּוּחַ":"audio/bf3c1e1856.mp3","אַגָּס":"audio/89a6697361.mp3","עֲנָבִים":"audio/fa402768d1.mp3"};</script>
+<script>window.__ON="<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"#5F8DB5\" stroke-width=\"2.4\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M4 9v6h4l5 4V5L8 9H4z\" fill=\"#B7CDE0\"/><path d=\"M16.5 8.5a5 5 0 010 7M19 6a8.5 8.5 0 010 12\"/></svg>";window.__OFF="<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"#B8236B\" stroke-width=\"2.4\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M4 9v6h4l5 4V5L8 9H4z\" fill=\"#FDE1EA\"/><path d=\"M17 9l5 6M22 9l-5 6\"/></svg>";window.AUDIO={"אֵיפֹה הֶעָלֶה?":"audio/13c68984b6.mp3","אֵיפֹה הָעָלִים?":"audio/023d3d2f84.mp3","אֵיפֹה הַקִּפּוֹד?":"audio/5fb5650bc3.mp3","אֵיפֹה הַתַּפּוּחִים?":"audio/0d78bca574.mp3","אֵיפֹה הַבַּלּוּט?":"audio/a0d257a68c.mp3","אֵיפֹה הַפִּטְרִיּוֹת?":"audio/2e08faedc5.mp3","אֵיפֹה הַדְּלַעַת?":"audio/774282feb5.mp3","אֵיפֹה הַמִּטְרִיּוֹת?":"audio/fcdee7cdb7.mp3","אֵיפֹה הַקִּפּוֹדִים?":"audio/c48db88bee.mp3","אֵיפֹה הַבַּלּוּטִים?":"audio/565503e801.mp3","אֵיפֹה הַקִּפּוֹד הַגָּדוֹל?":"audio/2965e61b31.mp3","אֵיפֹה הֶעָלֶה הַקָּטָן?":"audio/b21ff54447.mp3","אֵיפֹה הֶעָלֶה הָאָדֹם?":"audio/3edd005352.mp3","אֵיפֹה הַתַּפּוּחַ הַיָּרֹק?":"audio/7710c3607f.mp3","כָּל הַכָּבוֹד! מָצָאתֶם הַכֹּל":"audio/4e1fc1b67b.mp3","עִזְרוּ לַקִּפּוֹד לֶאֱסֹף אֶת כָּל הַבַּלּוּטִים. הִזָּהֲרוּ מֵהֶעָנָנִים!":"audio/a7b9cfc67e.mp3","מַחְלִיקִים אֶת הָאֶצְבַּע עַל הַמָּבוֹךְ, אוֹ לוֹחֲצִים עַל הַחִצִּים":"audio/20aebb8dc3.mp3","מַתְחִילִים":"audio/7a0df9680d.mp3","לַשָּׁלָב הַבָּא":"audio/65f3082ec2.mp3","לְשַׂחֵק שׁוּב":"audio/6885c665ee.mp3","כָּל הַכָּבוֹד! הַקִּפּוֹד בָּנָה קֵן חַם וְיָבֵשׁ":"audio/f678bf4bff.mp3","בַּסְּתָו הָעָלִים מִצְטַבְּעִים בְּאָדֹם וּבְצָהֹב":"audio/ef7ab15eda.mp3","הַקִּפּוֹד אוֹסֵף עָלִים וּבוֹנֶה לוֹ קֵן חַם לַחֹרֶף":"audio/88037edc7f.mp3","בַּסְּתָו מַתְחִילִים הַגְּשָׁמִים, וְלוֹקְחִים מִטְרִיָּה":"audio/c525ae195f.mp3","הַקִּפּוֹד רָץ בַּיַּעַר. לוֹחֲצִים כְּדֵי לִקְפֹּץ מֵעַל הַשְּׁלוּלִיּוֹת וְאוֹסְפִים רַק אֶת מַה שֶּׁמְּבַקְשִׁים":"audio/be9071fc65.mp3","עוֹד פַּעַם":"audio/81b88a90a6.mp3","כָּל הַכָּבוֹד! סִיַּמְתֶּם אֶת כָּל הַשְּׁלָבִים":"audio/19522d7b89.mp3","עָלִים אֲדֻמִּים":"audio/3e272e0708.mp3","עָלֶה אָדֹם":"audio/e8a9d38fd8.mp3","בַּלּוּטִים":"audio/f47974a58c.mp3","בַּלּוּט":"audio/fdd31d225d.mp3","תַּפּוּחִים אֲדֻמִּים":"audio/ddc55a7fcd.mp3","תַּפּוּחַ אָדֹם":"audio/fbee37d7c1.mp3","דְּלַעוֹת":"audio/25d06414bd.mp3","דְּלַעַת":"audio/bb3604552f.mp3","פֵּרוֹת":"audio/3e41dc491e.mp3","תַּפּוּחַ":"audio/bf3c1e1856.mp3","אַגָּס":"audio/89a6697361.mp3","עֲנָבִים":"audio/fa402768d1.mp3"};</script>
 <script>
 (function(){
 var muted=false;
@@ -95,6 +85,7 @@ window.say=function(text){
  try{if(cur){cur.pause()}}catch(e){}
  try{cur=new Audio(src);var p=cur.play();if(p&&p.catch)p.catch(function(){})}catch(e){}
 };
+window.sayForce=function(text){var src=(window.AUDIO||{})[text];if(!src)return;try{if(cur){cur.pause()}}catch(e){}try{cur=new Audio(src);var p=cur.play();if(p&&p.catch)p.catch(function(){})}catch(e){}};
 window.stopSay=function(){try{if(cur)cur.pause()}catch(e){}};
 window.isMuted=function(){return muted};
 window.setMuted=function(m){muted=m;try{localStorage.setItem('sp_muted',m?'1':'0')}catch(e){}if(m)window.stopSay()};
@@ -115,21 +106,71 @@ window.wireTop=function(){
    else if(e.requestFullscreen||e.webkitRequestFullscreen){(e.requestFullscreen||e.webkitRequestFullscreen).call(e)}
    else{window.open(location.href,'_blank')}}catch(x){window.open(location.href,'_blank')}})}
 };
+document.addEventListener('click',function(e){var b=e.target.closest&&e.target.closest('.spk');if(!b)return;e.preventDefault();var t=b.getAttribute('data-say');if(t){window.sayForce(t);b.classList.add('on');setTimeout(function(){b.classList.remove('on')},900)}});
 // stop page scroll while touching a board (iOS inside iframes)
 document.addEventListener('touchmove',function(e){if(e.target.closest&&e.target.closest('.noscroll'))e.preventDefault()},{passive:false});
 })();
 </script>
 <script>
-var PAL=["#E0584F","#F29B38","#F2C94C","#9CCB5E","#4FB38C","#6FA8D6","#8E6BBF","#F59BB5","#A9744A","#3A2A20","#FFFFFF"];var cur=PAL[0];
+var PAL=["#E0584F","#F29B38","#F2C94C","#9CCB5E","#4FB38C","#6FA8D6","#8E6BBF","#F59BB5","#A9744A","#3A2A20"];var cur=PAL[0];
 window.wireTop();
 var pots=document.getElementById('pots'),h='';
-PAL.forEach(function(c,i){h+='<button class="pot'+(i===0?' on':'')+(c==='#FFFFFF'?' w':'')+'" style="--c:'+c+'" data-c="'+c+'"></button>'});
+PAL.forEach(function(c,i){h+='<button class="pot'+(i===0?' on':'')+'" style="--c:'+c+'" data-c="'+c+'"></button>'});
 pots.innerHTML=h;
-pots.addEventListener('click',function(e){var b=e.target.closest('.pot');if(!b)return;cur=b.getAttribute('data-c');[].forEach.call(pots.children,function(x){x.classList.remove('on')});b.classList.add('on')});
-var art=document.getElementById('art');
-function paint(e){var t=e.target;if(t&&t.classList&&t.classList.contains('r')){t.setAttribute('fill',cur);window.SFX.pop()}}
-art.addEventListener('click',paint);
-document.getElementById('clear').addEventListener('click',function(){[].forEach.call(art.querySelectorAll('.r'),function(r){r.setAttribute('fill','#FFFFFF')})});
+function pickColor(e){var b=e.target.closest('.pot');if(!b)return;cur=b.getAttribute('data-c');[].forEach.call(pots.children,function(x){x.classList.remove('on')});b.classList.add('on')}
+var lastP=0;function once(fn){return function(e){var n=Date.now();if(n-lastP<450)return;lastP=n;fn(e)}}
+pots.addEventListener('pointerup',pickColor);pots.addEventListener('click',pickColor);
+var cv=document.getElementById('cv'),cx=cv.getContext('2d',{willReadFrequently:true});
+var W,H,L,orig,imgd,ready=false;
+var T_LINE=150;
+function hex(c){return [parseInt(c.substr(1,2),16),parseInt(c.substr(3,2),16),parseInt(c.substr(5,2),16)]}
+var img=new Image();
+img.onload=function(){
+  var maxW=900;var sc=Math.min(1,maxW/img.naturalWidth);
+  W=Math.round(img.naturalWidth*sc);H=Math.round(img.naturalHeight*sc);
+  cv.width=W;cv.height=H;
+  cx.fillStyle='#fff';cx.fillRect(0,0,W,H);cx.drawImage(img,0,0,W,H);
+  imgd=cx.getImageData(0,0,W,H);orig=new Uint8ClampedArray(imgd.data);
+  L=new Uint8Array(W*H);
+  for(var i=0;i<W*H;i++){var o=i*4;L[i]=(orig[o]*.299+orig[o+1]*.587+orig[o+2]*.114)|0}
+  ready=true;
+};
+img.src="coloring-a45.jpg";
+function fill(sx,sy,col){
+  if(!ready)return;
+  var start=sy*W+sx;
+  if(L[start]<T_LINE){ // landed on a line: look for the nearest open pixel
+    var found=-1;
+    for(var r=1;r<=10&&found<0;r++){for(var dy=-r;dy<=r&&found<0;dy++)for(var dx=-r;dx<=r;dx++){var x=sx+dx,y=sy+dy;if(x<0||y<0||x>=W||y>=H)continue;if(L[y*W+x]>=T_LINE){found=y*W+x;break}}}
+    if(found<0)return;start=found;
+  }
+  var seen=new Uint8Array(W*H);var stack=[start];seen[start]=1;
+  var d=imgd.data;var n=0;
+  while(stack.length){
+    var p=stack.pop();var px=p%W,py=(p/W)|0;
+    var o=p*4,k=L[p]/255;
+    d[o]=col[0]*k+(1-k)*0;d[o+1]=col[1]*k;d[o+2]=col[2]*k;d[o+3]=255;
+    n++;
+    if(px>0&&!seen[p-1]&&L[p-1]>=T_LINE){seen[p-1]=1;stack.push(p-1)}
+    if(px<W-1&&!seen[p+1]&&L[p+1]>=T_LINE){seen[p+1]=1;stack.push(p+1)}
+    if(py>0&&!seen[p-W]&&L[p-W]>=T_LINE){seen[p-W]=1;stack.push(p-W)}
+    if(py<H-1&&!seen[p+W]&&L[p+W]>=T_LINE){seen[p+W]=1;stack.push(p+W)}
+  }
+  cx.putImageData(imgd,0,0);
+  return n;
+}
+function at(e){
+  var r=cv.getBoundingClientRect();
+  var x=Math.floor((e.clientX-r.left)/r.width*W),y=Math.floor((e.clientY-r.top)/r.height*H);
+  if(x<0||y<0||x>=W||y>=H)return;
+  var n=fill(x,y,hex(cur));
+  if(n)window.SFX.pop();
+}
+var lastC=0;function tap(e){var n=Date.now();if(n-lastC<450)return;lastC=n;if(e.cancelable)e.preventDefault();at(e)}
+cv.addEventListener('pointerup',tap);cv.addEventListener('click',tap);
+cv.addEventListener('touchstart',function(e){e.preventDefault()},{passive:false});
+function clearAll(){if(!ready)return;imgd.data.set(orig);cx.putImageData(imgd,0,0)}
+document.getElementById('clear').addEventListener('pointerup',clearAll);document.getElementById('clear').addEventListener('click',clearAll);
 </script>
 </body>
 </html>
