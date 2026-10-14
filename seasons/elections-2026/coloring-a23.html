@@ -39,7 +39,7 @@ h1 b{color:#EF406E;font-weight:900}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 
 .pots{display:flex;gap:6px;justify-content:center;flex-wrap:wrap;width:100%;padding:2px 0}
-.pot{width:34px;height:34px;border-radius:50%;border:0;padding:0;cursor:pointer;background:var(--c);box-shadow:inset -3px -4px 6px rgba(0,0,0,.12),0 2px 0 rgba(0,0,0,.1);transition:transform .15s}
+.pot{width:36px;height:36px;border-radius:50%;border:0;padding:0;cursor:pointer;background:var(--c);box-shadow:inset -3px -4px 6px rgba(0,0,0,.12),0 2px 0 rgba(0,0,0,.1);transition:transform .15s;font-family:Rubik,sans-serif;font-weight:900;font-size:18px;color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.45)}
 .pot.on{transform:translateY(-5px) scale(1.15);box-shadow:inset -3px -4px 6px rgba(0,0,0,.12),0 0 0 3px #fff,0 0 0 6px #EF406E}
 .pot.w{border:2px solid #D9D0D0}
 #boardbox{position:relative;flex:1;min-height:0;width:100%;display:flex;align-items:center;justify-content:center;touch-action:none}
@@ -58,7 +58,7 @@ h1 b{color:#EF406E;font-weight:900}
  <div id="boardbox" class="noscroll"><canvas id="cv"></canvas></div>
  <div class="row"><button class="btn small" id="clear">מַתְחִילִים מֵחָדָשׁ</button></div>
 </div>
-<script>window.__ON="<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"#5F8DB5\" stroke-width=\"2.4\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M4 9v6h4l5 4V5L8 9H4z\" fill=\"#B7CDE0\"/><path d=\"M16.5 8.5a5 5 0 010 7M19 6a8.5 8.5 0 010 12\"/></svg>";window.__OFF="<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"#B8236B\" stroke-width=\"2.4\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M4 9v6h4l5 4V5L8 9H4z\" fill=\"#FDE1EA\"/><path d=\"M17 9l5 6M22 9l-5 6\"/></svg>";window.AUDIO={"אֵיפֹה הַדֶּגֶל?":"audio/d0cf816973.mp3","אֵיפֹה הַדְּגָלִים?":"audio/bcb369e685.mp3","אֵיפֹה הַקַּלְפִּי?":"audio/c281e09b9e.mp3","אֵיפֹה הַכּוֹכָב?":"audio/5632169953.mp3","אֵיפֹה הַכּוֹכָבִים?":"audio/bcf8fad6de.mp3","אֵיפֹה הַדֶּגֶל הַגָּדוֹל?":"audio/8a95dcd4b2.mp3","אֵיפֹה הַדֶּגֶל הַקָּטָן?":"audio/16dc9dd4f5.mp3","אֵיפֹה הַפֶּתֶק?":"audio/4732873f85.mp3","אֵיפֹה הַפְּתָקִים?":"audio/d6f37f3824.mp3","אֵיפֹה הַקַּלְפִּיּוֹת?":"audio/cbbcb12714.mp3","עִזְרוּ לַקִּפּוֹד לֶאֱסֹף אֶת כָּל הַפְּתָקִים":"audio/bd31b2a89d.mp3","מַחְלִיקִים אֶת הָאֶצְבַּע עַל הַמָּבוֹךְ, אוֹ לוֹחֲצִים עַל הַחִצִּים":"audio/20aebb8dc3.mp3","מַתְחִילִים":"audio/7a0df9680d.mp3","לַשָּׁלָב הַבָּא":"audio/65f3082ec2.mp3","לְשַׂחֵק שׁוּב":"audio/6885c665ee.mp3","כָּל הַכָּבוֹד! הַפְּתָקִים הִגִּיעוּ לַקַּלְפִּי":"audio/d78faf07fe.mp3","הַדֶּגֶל שֶׁל מְדִינַת יִשְׂרָאֵל כָּחֹל וְלָבָן, וּבָאֶמְצַע מָגֵן דָּוִד":"audio/b3ff2ac6c8.mp3","בַּבְּחִירוֹת כָּל אֶחָד מַצְבִּיעַ וְשׁוֹלֵחַ פֶּתֶק לַקַּלְפִּי":"audio/941141865b.mp3","הַכְּנֶסֶת נִמְצֵאת בִּירוּשָׁלַיִם":"audio/5147781c86.mp3","מִי הָיָה רֹאשׁ הַמֶּמְשָׁלָה הָרִאשׁוֹן שֶׁל מְדִינַת יִשְׂרָאֵל?":"audio/680d39ef2d.mp3","מִי הָיְתָה הָאִשָּׁה הַיְּחִידָה שֶׁכִּהֲנָה כְּרֹאשׁ הַמֶּמְשָׁלָה?":"audio/2af06bec0c.mp3","מִי הָיָה רֹאשׁ הַמֶּמְשָׁלָה הַשֵּׁנִי שֶׁל מְדִינַת יִשְׂרָאֵל?":"audio/b395a7fa7b.mp3","מִי הָיָה רֹאשׁ הַמֶּמְשָׁלָה שֶׁחָתַם עַל הֶסְכֵּם הַשָּׁלוֹם עִם מִצְרַיִם?":"audio/6c27878337.mp3","בְּאֵיזוֹ עִיר נִמְצֵאת הַכְּנֶסֶת?":"audio/3254056f32.mp3","כַּמָּה חַבְרֵי כְּנֶסֶת יֵשׁ בַּכְּנֶסֶת?":"audio/19c1830217.mp3","מָה צִבְעֵי הַדֶּגֶל שֶׁל מְדִינַת יִשְׂרָאֵל?":"audio/6e81fedcc6.mp3","מָה מֻצָּג בְּאֶמְצַע הַדֶּגֶל?":"audio/fdec182ec6.mp3","בְּאֵיזוֹ שָׁנָה קָמָה מְדִינַת יִשְׂרָאֵל?":"audio/e58f475bb3.mp3","אֵיפֹה שָׂמִים אֶת הַפֶּתֶק בַּבְּחִירוֹת?":"audio/3552442766.mp3","מִי יָכוֹל לְהַצְבִּיעַ בַּבְּחִירוֹת?":"audio/070c92a285.mp3","מָה שֵׁם הַשִּׁיר הַלְּאֻמִּי שֶׁל מְדִינַת יִשְׂרָאֵל?":"audio/594528a982.mp3"};</script>
+<script>window.__ON="<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"#5F8DB5\" stroke-width=\"2.4\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M4 9v6h4l5 4V5L8 9H4z\" fill=\"#B7CDE0\"/><path d=\"M16.5 8.5a5 5 0 010 7M19 6a8.5 8.5 0 010 12\"/></svg>";window.__OFF="<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"#B8236B\" stroke-width=\"2.4\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M4 9v6h4l5 4V5L8 9H4z\" fill=\"#FDE1EA\"/><path d=\"M17 9l5 6M22 9l-5 6\"/></svg>";window.AUDIO={"אֵיפֹה הַדֶּגֶל?":"audio/d0cf816973.mp3","אֵיפֹה הַדֶּגֶל הַגָּדוֹל?":"audio/8a95dcd4b2.mp3","אֵיפֹה הַדֶּגֶל הַקָּטָן?":"audio/16dc9dd4f5.mp3","מִי הֲכִי גָּדוֹל?":"audio/55f31e749c.mp3","אֵיפֹה הַדְּגָלִים?":"audio/bcb369e685.mp3","אֵיפֹה יֵשׁ הַרְבֵּה?":"audio/e274dd49ff.mp3","מִי לֹא מַתְאִים?":"audio/3b9604ab63.mp3","אֵיפֹה הַקַּלְפִּי?":"audio/c281e09b9e.mp3","אֵיפֹה הַכּוֹכָב?":"audio/5632169953.mp3","מִי הֲכִי קָטָן?":"audio/9631855adf.mp3","אֵיפֹה דֶּגֶל יִשְׂרָאֵל?":"audio/e5ab24fb06.mp3","מָהִי עִיר הַבִּירָה שֶׁל יִשְׂרָאֵל?":"audio/c931762b9d.mp3","מָה מֻצָּג בְּאֶמְצַע הַדֶּגֶל?":"audio/fdec182ec6.mp3","אֵיפֹה הַפֶּתֶק?":"audio/4732873f85.mp3","אֵיפֹה הַכְּנֶסֶת?":"audio/1dea366109.mp3","אֵיזֶה דֶּגֶל זֶהֶה לְדֶגֶל יִשְׂרָאֵל?":"audio/5e3efd9686.mp3","מִי הָיָה רֹאשׁ הַמֶּמְשָׁלָה הָרִאשׁוֹן שֶׁל מְדִינַת יִשְׂרָאֵל?":"audio/680d39ef2d.mp3","מִי הָיְתָה הָאִשָּׁה הַיְּחִידָה שֶׁכִּהֲנָה כְּרֹאשׁ הַמֶּמְשָׁלָה?":"audio/2af06bec0c.mp3","מִי הָיָה רֹאשׁ הַמֶּמְשָׁלָה הַשֵּׁנִי שֶׁל מְדִינַת יִשְׂרָאֵל?":"audio/b395a7fa7b.mp3","מִי הָיָה רֹאשׁ הַמֶּמְשָׁלָה שֶׁחָתַם עַל הֶסְכֵּם הַשָּׁלוֹם עִם מִצְרַיִם?":"audio/6c27878337.mp3","אֵיזֶה דֶּגֶל שַׁיָּךְ לְיִשְׂרָאֵל?":"audio/f8d5584ab5.mp3","בְּאֵיזוֹ עִיר נִמְצֵאת הַכְּנֶסֶת?":"audio/3254056f32.mp3","כַּמָּה חַבְרֵי כְּנֶסֶת יֵשׁ בַּכְּנֶסֶת?":"audio/19c1830217.mp3","מָה צִבְעֵי הַדֶּגֶל שֶׁל מְדִינַת יִשְׂרָאֵל?":"audio/6e81fedcc6.mp3","בְּאֵיזוֹ שָׁנָה קָמָה מְדִינַת יִשְׂרָאֵל?":"audio/e58f475bb3.mp3","אֵיפֹה שָׂמִים אֶת הַפֶּתֶק בַּבְּחִירוֹת?":"audio/3552442766.mp3","מִי יָכוֹל לְהַצְבִּיעַ בַּבְּחִירוֹת?":"audio/070c92a285.mp3","מָה שֵׁם הַשִּׁיר הַלְּאֻמִּי שֶׁל מְדִינַת יִשְׂרָאֵל?":"audio/594528a982.mp3","חֵיפָה":"audio/2d79ad8f5d.mp3","תֵּל אָבִיב":"audio/7ba38252ea.mp3","יְרוּשָׁלַיִם":"audio/269b5fe18e.mp3","בְּאֵר שֶׁבַע":"audio/0279de9a59.mp3","אֵילַת":"audio/cf5fdebfa9.mp3","טְבֶרְיָה":"audio/d13238c52f.mp3"};</script>
 <script>
 (function(){
 var muted=false;
@@ -118,17 +118,86 @@ document.addEventListener('touchmove',function(e){if(e.target.closest&&e.target.
 })();
 </script>
 <script>
-var PAL=["#E0584F","#F29B38","#F2C94C","#9CCB5E","#4FB38C","#6FA8D6","#8E6BBF","#F59BB5","#A9744A","#3A2A20","#FFFFFF"];var cur=PAL[0];
-var BRUSH=0.034;
+var CFG={"mode":"free","k":0,"minArea":0,"brush":0.034,"colors":[{"name":"כחול","hex":"#4C86C6"},{"name":"אדום","hex":"#E0584F"},{"name":"צהוב","hex":"#F2C94C"},{"name":"ירוק","hex":"#6DBF73"},{"name":"כתום","hex":"#F29B38"}]};
+var PALFREE=["#E0584F","#F29B38","#F2C94C","#9CCB5E","#4FB38C","#6FA8D6","#8E6BBF","#F59BB5","#A9744A","#3A2A20","#FFFFFF"];
+var BRUSH=CFG.brush;
 window.wireTop();
+var PAL=CFG.mode==='free'?PALFREE:CFG.colors.slice(0,CFG.k).map(function(c){return c.hex}).concat(['#FFFFFF']);
+var cur=PAL[0];
 var pots=document.getElementById('pots'),h='';
-PAL.forEach(function(c,i){h+='<button class="pot'+(i===0?' on':'')+(c==='#FFFFFF'?' w':'')+'" style="--c:'+c+'" data-c="'+c+'"></button>'});
+PAL.forEach(function(c,i){var lab=(CFG.mode==='numbers'&&c!=='#FFFFFF')?(i+1):'';h+='<button class="pot'+(i===0?' on':'')+(c==='#FFFFFF'?' w':'')+'" style="--c:'+c+'" data-c="'+c+'">'+lab+'</button>'});
 pots.innerHTML=h;
 var lastP=0;
 function pickColor(e){var n=Date.now();if(n-lastP<300)return;var b=e.target.closest('.pot');if(!b)return;lastP=n;cur=b.getAttribute('data-c');[].forEach.call(pots.children,function(x){x.classList.remove('on')});b.classList.add('on')}
 pots.addEventListener('pointerup',pickColor);pots.addEventListener('click',pickColor);
+
+function analyze(d,W,H,T){
+  var label=new Int32Array(W*H),next=0,stack=[];
+  function lum(o){return d[o]*.299+d[o+1]*.587+d[o+2]*.114}
+  for(var i=0;i<W*H;i++){
+    if(label[i])continue;if(lum(i*4)<T)continue;
+    next++;label[i]=next;stack.length=0;stack.push(i);
+    while(stack.length){
+      var p=stack.pop(),x=p%W;
+      var nb=[x>0?p-1:-1,x<W-1?p+1:-1,p>=W?p-W:-1,p<W*(H-1)?p+W:-1];
+      for(var k=0;k<4;k++){var q=nb[k];if(q<0||label[q])continue;if(lum(q*4)<T)continue;label[q]=next;stack.push(q)}
+    }
+  }
+  var n=next+1,area=new Int32Array(n),border=new Uint8Array(n);
+  for(var i2=0;i2<W*H;i2++)area[label[i2]]++;
+  for(var bx=0;bx<W;bx++){border[label[bx]]=1;border[label[(H-1)*W+bx]]=1}
+  for(var by=0;by<H;by++){border[label[by*W]]=1;border[label[by*W+W-1]]=1}
+  var dist=new Uint16Array(W*H),INF=65535;
+  for(var y=0;y<H;y++)for(var x2=0;x2<W;x2++){
+    var id=y*W+x2,l=label[id];if(!l){dist[id]=0;continue}
+    var edge=(x2===0||y===0||x2===W-1||y===H-1)||label[id-1]!==l||label[id+1]!==l||label[id-W]!==l||label[id+W]!==l;
+    dist[id]=edge?1:INF;
+  }
+  for(var y2=1;y2<H;y2++)for(var x3=1;x3<W-1;x3++){var j=y2*W+x3;if(!label[j]||dist[j]===1)continue;var m=Math.min(dist[j-1]+1,dist[j-W]+1,dist[j-W-1]+1,dist[j-W+1]+1);if(m<dist[j])dist[j]=m}
+  for(var y3=H-2;y3>=0;y3--)for(var x4=W-2;x4>0;x4--){var j2=y3*W+x4;if(!label[j2]||dist[j2]===1)continue;var m2=Math.min(dist[j2+1]+1,dist[j2+W]+1,dist[j2+W-1]+1,dist[j2+W+1]+1);if(m2<dist[j2])dist[j2]=m2}
+  var best=new Int32Array(n),bestD=new Uint16Array(n);
+  for(var q2=0;q2<W*H;q2++){var l2=label[q2];if(l2&&dist[q2]!==INF&&dist[q2]>bestD[l2]){bestD[l2]=dist[q2];best[l2]=q2}}
+  var adj=[];for(var a=0;a<n;a++)adj.push({});
+  for(var y4=1;y4<H-1;y4+=1)for(var x5=1;x5<W-1;x5+=1){
+    var p0=y4*W+x5;if(label[p0])continue;
+    for(var r=2;r<=5;r+=3){
+      if(y4-r<0||y4+r>=H||x5-r<0||x5+r>=W)continue;
+      var a1=label[p0-r],a2=label[p0+r],b1=label[p0-r*W],b2=label[p0+r*W];
+      if(a1&&a2&&a1!==a2){adj[a1][a2]=1;adj[a2][a1]=1}
+      if(b1&&b2&&b1!==b2){adj[b1][b2]=1;adj[b2][b1]=1}
+    }
+  }
+  return {label:label,n:n,area:area,border:border,best:best,bestD:bestD,adj:adj};
+}
+function assignColors(A,k,minArea){
+  var order=[];for(var i=1;i<A.n;i++)if(A.area[i]>=minArea&&!A.border[i])order.push(i);
+  order.sort(function(a,b){return A.area[b]-A.area[a]});
+  var bg=-1;
+  var col={},cnt=[];for(var c=0;c<k;c++)cnt.push(0);
+  order.forEach(function(r){
+    if(r===bg)return;
+    var used={};Object.keys(A.adj[r]).forEach(function(nb){if(col[nb]!==undefined)used[col[nb]]=1});
+    var pick=-1,bestC=1e9;
+    for(var c2=0;c2<k;c2++){if(used[c2])continue;if(cnt[c2]<bestC){bestC=cnt[c2];pick=c2}}
+    if(pick<0)pick=Math.floor(Math.random()*k);
+    col[r]=pick;cnt[pick]++;
+  });
+  return col;
+}
+function makeLabels(A,asg,CFG,W){
+  var out=[],scale=W/645;
+  Object.keys(asg).forEach(function(r){
+    var ci=asg[r],b=A.best[r],bx=b%W,by=(b/W)|0,rad=A.bestD[r];
+    var text=CFG.mode==='numbers'?String(ci+1):CFG.colors[ci].name;
+    var fs=CFG.mode==='numbers'?Math.min(30*scale,rad*1.15):Math.min(22*scale,(rad*1.7)/(text.length*.55));
+    if(fs<(CFG.mode==='numbers'?10:6.5)*scale)return;
+    out.push({x:bx,y:by,t:text,fs:fs});
+  });
+  return out;
+}
+
 var cv=document.getElementById('cv'),cx=cv.getContext('2d');
-var W,H,label,paintCv,paintCx,paint,img=new Image(),ready=false,R=10,dirty=false;
+var W,H,label,A,labels=[],paintCv,paintCx,paint,img=new Image(),ready=false,R=10,dirty=false;
 function hex(c){return [parseInt(c.substr(1,2),16),parseInt(c.substr(3,2),16),parseInt(c.substr(5,2),16)]}
 img.onload=function(){
   var sc=Math.min(1,900/img.naturalWidth);
@@ -136,17 +205,10 @@ img.onload=function(){
   cv.width=W;cv.height=H;
   var tmp=document.createElement('canvas');tmp.width=W;tmp.height=H;var tc=tmp.getContext('2d');
   tc.fillStyle='#fff';tc.fillRect(0,0,W,H);tc.drawImage(img,0,0,W,H);
-  var d=tc.getImageData(0,0,W,H).data;
-  // regions: connected areas of light pixels, separated by the dark outline
-  label=new Int32Array(W*H);var T=170,next=0,stack=[];
-  for(var i=0;i<W*H;i++){
-    if(label[i])continue;var o=i*4;var l=d[o]*.299+d[o+1]*.587+d[o+2]*.114;if(l<T)continue;
-    next++;label[i]=next;stack.length=0;stack.push(i);
-    while(stack.length){
-      var p=stack.pop(),x=p%W;
-      var nb=[x>0?p-1:-1,x<W-1?p+1:-1,p>=W?p-W:-1,p<W*(H-1)?p+W:-1];
-      for(var k=0;k<4;k++){var q=nb[k];if(q<0||label[q])continue;var oq=q*4;if(d[oq]*.299+d[oq+1]*.587+d[oq+2]*.114<T)continue;label[q]=next;stack.push(q)}
-    }
+  A=analyze(tc.getImageData(0,0,W,H).data,W,H,170);label=A.label;
+  if(CFG.mode!=='free'){
+    var scale=W/645,asg=assignColors(A,CFG.k,CFG.minArea*scale*scale);
+    labels=makeLabels(A,asg,CFG,W);
   }
   paintCv=document.createElement('canvas');paintCv.width=W;paintCv.height=H;paintCx=paintCv.getContext('2d');
   paint=paintCx.createImageData(W,H);
@@ -161,6 +223,8 @@ function render(){
   cx.drawImage(paintCv,0,0);
   cx.globalCompositeOperation='multiply';cx.drawImage(img,0,0,W,H);
   cx.globalCompositeOperation='source-over';
+  cx.textAlign='center';cx.textBaseline='middle';cx.fillStyle='rgba(40,36,60,.82)';
+  for(var i=0;i<labels.length;i++){var l=labels[i];cx.font='800 '+Math.round(l.fs)+'px Rubik,Arial,sans-serif';cx.fillText(l.t,l.x,l.y)}
 }
 function schedule(){if(dirty)return;dirty=true;requestAnimationFrame(function(){dirty=false;render()})}
 function pos(e){var r=cv.getBoundingClientRect();return [(e.clientX-r.left)/r.width*W,(e.clientY-r.top)/r.height*H]}
