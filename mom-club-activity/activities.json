@@ -1,0 +1,33 @@
+{
+ "updated": "2026-10-15T05:00:44.081Z",
+ "topics": [
+  {
+   "slug": "elections-2026",
+   "title": "בחירות",
+   "icon": "ballot-box",
+   "links": {
+    "main": "/premium-moms/elections",
+    "a23": "/premium-moms/elections-2-3",
+    "a45": "/premium-moms/elections-4-5",
+    "a68": "/premium-moms/elections-6-8"
+   },
+   "visible": false,
+   "due": "2026-10-22",
+   "keywords": "בחירות ומדינת ישראל"
+  },
+  {
+   "slug": "autumn-2026",
+   "title": "סתיו",
+   "icon": "leaf-orange",
+   "links": {
+    "main": "/premium-moms/autumn",
+    "a23": "/premium-moms/autumn-2-3",
+    "a45": "/premium-moms/autumn-4-5",
+    "a68": "/premium-moms/autumn-6-8"
+   },
+   "visible": false,
+   "due": "2026-10-15",
+   "keywords": "סתיו - 2026"
+  }
+ ]
+}

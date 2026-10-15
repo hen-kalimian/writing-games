@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>פעילויות לפי נושא | מועדון האימהות</title>
+<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --text:#1e2a31; --muted:#6c808c; --border:#d6e6ee;
+    --blue:#467c9c; --blue-dark:#386380; --blue-tint:#f0f7fb;
+    --mint:#3a8e69; --mint-dark:#317255; --mint-tint:#f0faf5;
+    --rose:#d14175; --rose-dark:#ae2f5f; --rose-tint:#fef1f5;
+    --gold-tint:#fbf6e8;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;min-height:100vh;font-family:'Open Sans','Rubik',sans-serif;color:var(--text);
+    background:linear-gradient(160deg,#fff 0%,#fdeef3 45%,#eaf7f1 75%,#eaf4fb 100%);padding:24px 14px 56px;}
+  h1,h2{font-family:'Rubik',sans-serif;letter-spacing:-0.01em;}
+  #wrap{max-width:760px;margin:0 auto;}
+  .title{font-size:clamp(22px,5.4vw,30px);margin:0 0 4px;color:var(--rose);text-align:center;}
+  .sub{color:var(--blue-dark);font-size:15px;text-align:center;margin-bottom:20px;font-family:'Rubik',sans-serif;font-weight:500;}
+  .filters{background:#fff;border:1.5px solid #fbd9e4;border-radius:18px;padding:14px;margin-bottom:18px;
+    box-shadow:0 1px 3px rgba(30,42,49,.06);}
+  .filters .lbl{font-family:'Rubik',sans-serif;font-weight:700;color:var(--blue-dark);font-size:14px;margin-bottom:8px;text-align:center;}
+  .chips{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;}
+  .chip{font:inherit;font-family:'Rubik',sans-serif;font-weight:600;font-size:14px;border:1.5px solid #cfeadd;background:var(--mint-tint);
+    color:var(--mint-dark);padding:8px 16px;border-radius:999px;cursor:pointer;}
+  .chip.on{background:var(--rose);border-color:var(--rose);color:#fff;}
+  .search{width:100%;margin-top:12px;font:inherit;font-size:15px;padding:11px 14px;border:1.5px solid var(--border);border-radius:14px;text-align:center;background:#fffafc;}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(112px,1fr));gap:10px;}
+  .topic{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;padding:12px 6px;border-radius:16px;border:1.5px solid transparent;
+    cursor:pointer;text-align:center;font:inherit;color:var(--text);box-shadow:0 1px 3px rgba(30,42,49,.06);transition:transform .15s,box-shadow .15s;}
+  .topic:hover{transform:translateY(-2px);box-shadow:0 6px 18px rgba(30,42,49,.1);}
+  .topic img{width:58px;height:58px;object-fit:contain;}
+  .topic .nm{font-family:'Rubik',sans-serif;font-weight:600;font-size:14px;line-height:1.3;}
+  .c0{background:var(--rose-tint);border-color:#fbd9e4;} .c0 .nm{color:var(--rose-dark);}
+  .c1{background:var(--mint-tint);border-color:#dcf0e6;} .c1 .nm{color:var(--mint-dark);}
+  .c2{background:var(--blue-tint);border-color:#dceaf2;} .c2 .nm{color:var(--blue-dark);}
+  .c3{background:var(--gold-tint);border-color:#f3e6bf;} .c3 .nm{color:#85601f;}
+  .topic.open{outline:3px solid var(--rose);}
+  .ages{grid-column:1/-1;background:#fff;border:2px solid #cfeadd;border-radius:18px;padding:14px;display:none;box-shadow:0 4px 16px rgba(58,142,105,.1);}
+  .ages.show{display:block;}
+  .ages h2{margin:0 0 10px;font-size:16px;color:var(--blue-dark);text-align:center;}
+  .agebtns{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;}
+  .agebtn{display:inline-block;text-decoration:none;background:var(--rose);color:#fff;font-family:'Rubik',sans-serif;font-weight:700;font-size:16px;
+    padding:12px 22px;border-radius:14px;box-shadow:0 6px 16px rgba(209,65,117,.25);}
+  .agebtn:hover{background:var(--rose-dark);}
+  .agebtn.main{background:var(--mint-dark);box-shadow:0 6px 16px rgba(58,142,105,.25);}
+  .empty{text-align:center;color:var(--muted);padding:26px 10px;background:#fff;border:1.5px dashed var(--border);border-radius:18px;}
+  .foot{margin-top:26px;font-size:12px;color:var(--muted);text-align:center;}
+  .count{text-align:center;font-size:13px;color:var(--muted);margin:0 0 10px;}
+</style>
+</head>
+<body>
+<div id="wrap">
+  <h1 class="title">פעילויות לפי נושא</h1>
+  <div class="sub">בוחרות גיל, בוחרות נושא, ומתחילות לשחק</div>
+  <div class="filters">
+    <div class="lbl">לפי גיל</div>
+    <div class="chips" id="chips"></div>
+    <input class="search" id="q" type="search" placeholder="חיפוש נושא, למשל: סתיו" autocomplete="off">
+  </div>
+  <div class="count" id="count"></div>
+  <div class="grid" id="grid"></div>
+  <div class="foot">talkwithkids.co.il · מתווספות פעילויות חדשות כל שבועיים</div>
+</div>
+<script>
+(function(){
+  var AGES=[['all','כל הגילים'],['a23','גיל 2-3'],['a45','גיל 4-5'],['a68','גיל 6-8']];
+  var AGENAME={a23:'גיל 2-3',a45:'גיל 4-5',a68:'גיל 6-8'};
+  var DOMAIN='https://www.talkwithkids.co.il';
+  var age='all', q='', openSlug=null, topics=[];
+  var preview=/[?&]preview=1/.test(location.search);
+  var chips=document.getElementById('chips'), grid=document.getElementById('grid'), count=document.getElementById('count');
+  function esc(s){return String(s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
+  function renderChips(){
+    chips.innerHTML=AGES.map(function(a){return '<button class="chip'+(age===a[0]?' on':'')+'" data-a="'+a[0]+'">'+a[1]+'</button>';}).join('');
+  }
+  function go(url){ try{ window.top.location.href=url; }catch(e){ window.open(url,'_top'); } }
+  function render(){
+    var list=topics.filter(function(t){ return !q || (t.title+' '+(t.keywords||'')).indexOf(q)>=0; });
+    count.textContent=list.length? (list.length+' נושאים') : '';
+    if(!list.length){ grid.innerHTML='<div class="empty" style="grid-column:1/-1">'+(topics.length?'לא נמצא נושא כזה, אפשר לנסות מילה אחרת.':'הפעילויות הראשונות מתווספות כאן בקרוב.')+'</div>'; return; }
+    var html='';
+    list.forEach(function(t,i){
+      html+='<button class="topic c'+(i%4)+(openSlug===t.slug?' open':'')+'" data-s="'+esc(t.slug)+'"><img src="art/'+esc(t.icon)+'.png" alt=""><span class="nm">'+esc(t.title)+'</span></button>';
+    });
+    grid.innerHTML=html;
+  }
+  function openTopic(slug){
+    var t=topics.filter(function(x){return x.slug===slug;})[0]; if(!t) return;
+    if(age!=='all' && t.links[age]){ go(DOMAIN+t.links[age]); return; }
+    openSlug=(openSlug===slug?null:slug); render();
+    if(!openSlug) return;
+    var btn=grid.querySelector('[data-s="'+slug+'"]');
+    var box=document.createElement('div'); box.className='ages show';
+    var h='<h2>'+esc(t.title)+': בוחרות גיל</h2><div class="agebtns">';
+    ['a23','a45','a68'].forEach(function(k){ if(t.links[k]) h+='<a class="agebtn" href="'+DOMAIN+t.links[k]+'" target="_top">'+AGENAME[k]+'</a>'; });
+    if(t.links.main) h+='<a class="agebtn main" href="'+DOMAIN+t.links.main+'" target="_top">כל הגילים</a>';
+    h+='</div>';
+    box.innerHTML=h;
+    // place the three age buttons right after the row that holds the chosen topic
+    var all=[].slice.call(grid.querySelectorAll('.topic')); var idx=all.indexOf(btn);
+    var cols=Math.max(1,Math.floor(grid.clientWidth/(112+10)));
+    var after=all[Math.min(all.length-1,(Math.floor(idx/cols)+1)*cols-1)];
+    after.parentNode.insertBefore(box,after.nextSibling);
+    try{ box.scrollIntoView({block:'nearest',behavior:'smooth'}); }catch(e){}
+  }
+  chips.addEventListener('click',function(e){var b=e.target.closest('.chip'); if(!b) return; age=b.getAttribute('data-a'); openSlug=null; renderChips(); render();});
+  grid.addEventListener('click',function(e){var b=e.target.closest('.topic'); if(!b) return; openTopic(b.getAttribute('data-s'));});
+  document.getElementById('q').addEventListener('input',function(e){q=e.target.value.trim(); openSlug=null; render();});
+  renderChips(); render();
+  fetch('activities.json?v='+Date.now()).then(function(r){return r.json();}).then(function(j){
+    topics=(j.topics||[]).filter(function(t){return preview || t.visible;});
+    render();
+  }).catch(function(){ render(); });
+})();
+</script>
+</body>
+</html>
