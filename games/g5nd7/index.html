@@ -847,5 +847,16 @@ if (/[?&]autostart/.test(location.search)) { $('go').click(); }
 window.__ab = { go: go, cur: () => cur, state: () => ({ cur, done: [...done] }) };
 </script>
 <script>(function(){var s=document.getElementById('start'),g=document.getElementById('go');if(s&&g)s.addEventListener('click',function(e){if(e.target!==g&&!g.contains(e.target))g.click()})})();</script>
+<script id="vguard">(function(){var N=0;function guard(v){if(v.__vg)return;v.__vg=1;var tm=0,tries=0,badge=null;
+function show(){if(badge||!v.parentNode)return;badge=document.createElement('div');badge.textContent='הסרטון נטען, רגע אחד...';badge.style.cssText='position:absolute;left:50%;top:12px;transform:translateX(-50%);background:rgba(255,255,255,.92);color:#B8236B;font:700 14px Rubik,Arial,sans-serif;padding:6px 14px;border-radius:99px;z-index:50;pointer-events:none;box-shadow:0 2px 8px rgba(0,0,0,.15)';var p=v.parentNode;if(getComputedStyle(p).position==='static')p.style.position='relative';p.appendChild(badge)}
+function hide(){clearTimeout(tm);tm=0;if(badge&&badge.parentNode)badge.parentNode.removeChild(badge);badge=null}
+function retry(){if(tries>=4)return;tries++;var t=v.currentTime||0,s=v.currentSrc||v.src;if(!s)return;var u=s.replace(/([?&])_r=\d+/,'').replace(/[?&]$/,'');v.src=u+(u.indexOf('?')<0?'?':'&')+'_r='+(++N);v.load();var go=function(){try{if(t>0.5)v.currentTime=t}catch(e){}var p=v.play();if(p&&p.catch)p.catch(function(){})};v.addEventListener('loadedmetadata',function f(){v.removeEventListener('loadedmetadata',f);go()});if(v.readyState>=1)go()}
+function wait(){show();clearTimeout(tm);tm=setTimeout(retry,6000)}
+['waiting','stalled'].forEach(function(e){v.addEventListener(e,wait)});
+['playing','canplay','canplaythrough','ended','pause'].forEach(function(e){v.addEventListener(e,function(){if(e==='pause'&&v.readyState<3)return;hide()})});
+v.addEventListener('error',function(){show();clearTimeout(tm);tm=setTimeout(retry,1500)});
+if(v.preload!=='auto')v.preload='auto'}
+function scan(){var a=document.getElementsByTagName('video');for(var i=0;i<a.length;i++)guard(a[i])}
+scan();try{new MutationObserver(scan).observe(document.documentElement,{childList:true,subtree:true})}catch(e){}setInterval(scan,2000)})();</script>
 </body>
 </html>
