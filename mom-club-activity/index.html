@@ -69,8 +69,7 @@
 <script>
 (function(){
   var AGES=[['all','כל הגילים'],['a23','גיל 2-3'],['a45','גיל 4-5'],['a68','גיל 6-8']];
-  var AGENAME={a23:'גיל 2-3',a45:'גיל 4-5',a68:'גיל 6-8'};
-  var DOMAIN='https://www.talkwithkids.co.il';
+    var DOMAIN='https://www.talkwithkids.co.il';
   var age='all', q='', openSlug=null, topics=[];
   var preview=/[?&]preview=1/.test(location.search);
   var chips=document.getElementById('chips'), grid=document.getElementById('grid'), count=document.getElementById('count');
@@ -80,7 +79,10 @@
   }
   function go(url){ try{ window.top.location.href=url; }catch(e){ window.open(url,'_top'); } }
   function render(){
-    var list=topics.filter(function(t){ return !q || (t.title+' '+(t.keywords||'')).indexOf(q)>=0; });
+    var list=topics.filter(function(t){
+      if(q && (t.title+' '+(t.keywords||'')).indexOf(q)<0) return false;
+      if(age!=='all' && !(t.buttons||[]).some(function(b){return !b.ages||!b.ages.length||b.ages.indexOf(age)>=0;})) return false;
+      return true; });
     count.textContent=list.length? (list.length+' נושאים') : '';
     if(!list.length){ grid.innerHTML='<div class="empty" style="grid-column:1/-1">'+(topics.length?'לא נמצא נושא כזה, אפשר לנסות מילה אחרת.':'הפעילויות הראשונות מתווספות כאן בקרוב.')+'</div>'; return; }
     var html='';
@@ -89,19 +91,22 @@
     });
     grid.innerHTML=html;
   }
+  function btnsFor(t){
+    var arr=(t.buttons||[]).filter(function(b){ return age==='all' || !b.ages || !b.ages.length || b.ages.indexOf(age)>=0; });
+    return arr.length? arr : (t.buttons||[]);
+  }
   function openTopic(slug){
     var t=topics.filter(function(x){return x.slug===slug;})[0]; if(!t) return;
-    if(age!=='all' && t.links[age]){ go(DOMAIN+t.links[age]); return; }
+    var bs=btnsFor(t);
+    if(bs.length===1){ go(DOMAIN+bs[0].link); return; }
     openSlug=(openSlug===slug?null:slug); render();
     if(!openSlug) return;
     var btn=grid.querySelector('[data-s="'+slug+'"]');
     var box=document.createElement('div'); box.className='ages show';
-    var h='<h2>'+esc(t.title)+': בוחרות גיל</h2><div class="agebtns">';
-    ['a23','a45','a68'].forEach(function(k){ if(t.links[k]) h+='<a class="agebtn" href="'+DOMAIN+t.links[k]+'" target="_top">'+AGENAME[k]+'</a>'; });
-    if(t.links.main) h+='<a class="agebtn main" href="'+DOMAIN+t.links.main+'" target="_top">כל הגילים</a>';
+    var h='<h2>'+esc(t.title)+'</h2><div class="agebtns">';
+    bs.forEach(function(b){ h+='<a class="agebtn" href="'+DOMAIN+b.link+'" target="_top">'+esc(b.label)+'</a>'; });
     h+='</div>';
     box.innerHTML=h;
-    // place the three age buttons right after the row that holds the chosen topic
     var all=[].slice.call(grid.querySelectorAll('.topic')); var idx=all.indexOf(btn);
     var cols=Math.max(1,Math.floor(grid.clientWidth/(112+10)));
     var after=all[Math.min(all.length-1,(Math.floor(idx/cols)+1)*cols-1)];

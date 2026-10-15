@@ -1,33 +1,122 @@
 {
- "updated": "2026-10-15T05:00:44.081Z",
+ "updated": "2026-10-15T05:09:53.742Z",
  "topics": [
   {
    "slug": "elections-2026",
-   "title": "בחירות",
+   "title": "בחירות 2026",
    "icon": "ballot-box",
-   "links": {
-    "main": "/premium-moms/elections",
-    "a23": "/premium-moms/elections-2-3",
-    "a45": "/premium-moms/elections-4-5",
-    "a68": "/premium-moms/elections-6-8"
-   },
    "visible": false,
    "due": "2026-10-22",
-   "keywords": "בחירות ומדינת ישראל"
+   "keywords": "בחירות ומדינת ישראל",
+   "buttons": [
+    {
+     "label": "לפעילויות בחירות 2026",
+     "link": "/premium-moms/elections"
+    }
+   ]
   },
   {
    "slug": "autumn-2026",
-   "title": "סתיו",
+   "title": "סתיו 2026",
    "icon": "leaf-orange",
-   "links": {
-    "main": "/premium-moms/autumn",
-    "a23": "/premium-moms/autumn-2-3",
-    "a45": "/premium-moms/autumn-4-5",
-    "a68": "/premium-moms/autumn-6-8"
-   },
    "visible": false,
    "due": "2026-10-15",
-   "keywords": "סתיו - 2026"
+   "keywords": "סתיו - 2026",
+   "buttons": [
+    {
+     "label": "לפעילויות סתיו 2026",
+     "link": "/premium-moms/autumn"
+    }
+   ]
+  },
+  {
+   "slug": "legacy-זמן-חשיבה",
+   "title": "זמן חשיבה",
+   "icon": "topic-bulb",
+   "visible": true,
+   "due": "",
+   "keywords": "זמן חשיבה",
+   "buttons": [
+    {
+     "label": "חוברת לביהס",
+     "link": "/premium-moms/%D7%96%D7%9E%D7%9F-%D7%97%D7%A9%D7%99%D7%91%D7%94---%D7%97%D7%95%D7%91%D7%A8%D7%AA-%D7%9C%D7%91%D7%99%D7%94%D7%A1",
+     "ages": []
+    },
+    {
+     "label": "חוברת לגן",
+     "link": "/premium-moms/%D7%96%D7%9E%D7%9F-%D7%97%D7%A9%D7%99%D7%91%D7%94---%D7%97%D7%95%D7%91%D7%A8%D7%AA-%D7%9C%D7%92%D7%9F",
+     "ages": []
+    },
+    {
+     "label": "חצים ומספרים",
+     "link": "/premium-moms/%D7%96%D7%9E%D7%9F-%D7%97%D7%A9%D7%99%D7%91%D7%94---%D7%97%D7%A6%D7%99%D7%9D-%D7%95%D7%9E%D7%A1%D7%A4%D7%A8%D7%99%D7%9D",
+     "ages": []
+    }
+   ]
+  },
+  {
+   "slug": "legacy-פסח",
+   "title": "פסח",
+   "icon": "topic-matza",
+   "visible": true,
+   "due": "",
+   "keywords": "פסח",
+   "buttons": [
+    {
+     "label": "התאמת מילה לתמונה",
+     "link": "/premium-moms/%D7%A4%D7%A1%D7%97-%D7%94%D7%AA%D7%90%D7%9E%D7%AA-%D7%9E%D7%99%D7%9C%D7%94-%D7%9C%D7%AA%D7%9E%D7%95%D7%A0%D7%94",
+     "ages": []
+    },
+    {
+     "label": "חידון",
+     "link": "/premium-moms/%D7%97%D7%99%D7%93%D7%95%D7%9F-%D7%A4%D7%A1%D7%97",
+     "ages": []
+    },
+    {
+     "label": "משחק זיכרון",
+     "link": "/premium-moms/%D7%9E%D7%A9%D7%97%D7%A7-%D7%96%D7%99%D7%9B%D7%A8%D7%95%D7%9F-%D7%9C%D7%A4%D7%A1%D7%97",
+     "ages": []
+    }
+   ]
+  },
+  {
+   "slug": "legacy-חוברות-עצמאות",
+   "title": "חוברות עצמאות",
+   "icon": "topic-sneakers",
+   "visible": true,
+   "due": "",
+   "keywords": "חוברות עצמאות",
+   "buttons": [
+    {
+     "label": "גיל 1-2",
+     "link": "/premium-moms/%D7%97%D7%95%D7%91%D7%A8%D7%AA-%D7%A2%D7%A6%D7%9E%D7%90%D7%95%D7%AA-%D7%92%D7%99%D7%9C-1-2",
+     "ages": [
+      "a23"
+     ]
+    },
+    {
+     "label": "גיל 3-5",
+     "link": "/premium-moms/%D7%97%D7%95%D7%91%D7%A8%D7%AA-%D7%A2%D7%A6%D7%9E%D7%90%D7%95%D7%AA-%D7%92%D7%99%D7%9C-3-5",
+     "ages": [
+      "a23",
+      "a45"
+     ]
+    },
+    {
+     "label": "גיל 6-8",
+     "link": "/premium-moms/%D7%97%D7%95%D7%91%D7%A8%D7%AA-%D7%A2%D7%A6%D7%9E%D7%90%D7%95%D7%AA-%D7%92%D7%99%D7%9C-6-8",
+     "ages": [
+      "a68"
+     ]
+    },
+    {
+     "label": "גיל 9-12",
+     "link": "/premium-moms/%D7%97%D7%95%D7%91%D7%A8%D7%AA-%D7%A2%D7%A6%D7%9E%D7%90%D7%95%D7%AA-%D7%92%D7%99%D7%9C-9-12",
+     "ages": [
+      "a68"
+     ]
+    }
+   ]
   }
  ]
 }
