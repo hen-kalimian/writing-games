@@ -16,7 +16,7 @@ canvas#cf{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
 <div class="dots" id="dots"></div>
 <div id="stage"><svg id="sv" viewBox="0 0 420 520" preserveAspectRatio="xMidYMid meet"></svg><canvas id="cf"></canvas><button class="again" id="again" type="button">עוד פעם</button></div></div>
 <script>
-var Q=new URLSearchParams(location.search),L=Q.get('l')||'ה',BASE=location.pathname.replace(/[^\/]*$/,'')+'img/';
+var Q=new URLSearchParams(location.search),SYMS=Array.from((Q.get('l')||'ה').replace(/[\s,]/g,'')),L=SYMS[0],BASE=location.pathname.replace(/[^\/]*$/,'')+'img/';
 function mkPath(mir,ph){var W=420,P=[],y0=440,dy=110,amp=13;
  function row(r,x0,x1){var n=7;for(var k=0;k<=n;k++){var x=x0+(x1-x0)*k/n,y=y0-dy*r+amp*Math.sin(k*1.3+ph+r);P.push([x,y])}}
  row(0,62,332);P.push([372,y0-18],[386,y0-55],[372,y0-92]);
@@ -27,10 +27,9 @@ function mkPath(mir,ph){var W=420,P=[],y0=440,dy=110,amp=13;
  for(var i=0;i<P.length-1;i++){var p0=P[Math.max(0,i-1)],p1=P[i],p2=P[i+1],p3=P[Math.min(P.length-1,i+2)];
   d+=' C'+(p1[0]+(p2[0]-p0[0])/6).toFixed(1)+' '+(p1[1]+(p2[1]-p0[1])/6).toFixed(1)+' '+(p2[0]-(p3[0]-p1[0])/6).toFixed(1)+' '+(p2[1]-(p3[1]-p1[1])/6).toFixed(1)+' '+p2[0].toFixed(1)+' '+p2[1].toFixed(1)}
  return d}
-var ROUNDS=[
- {veh:'police',dest:'policest',vw:104,dw:150,d:mkPath(false,0),deco:[['cone',398,470,40],['cone',24,335,38]]},
- {veh:'ambulance',dest:'hospital',vw:110,dw:150,d:mkPath(true,1.1),deco:[['cone',22,470,40],['cone',398,335,38]]}
-];
+var PAIRS=[['police','policest',104,150,['cone','cone']],['ambulance','hospital',110,150,['cone','cone']],['firetruck','firest',112,140,['cone','cone']],['bus','school',116,150,['cone','cone']],['train','trainst',116,140,['cone','cone']]];
+if(SYMS.length===1)SYMS=[SYMS[0],SYMS[0]];
+var ROUNDS=SYMS.map(function(sy,i){var P=PAIRS[i%PAIRS.length],mir=i%2===1;return {sym:sy,veh:P[0],dest:P[1],vw:P[2],dw:P[3],d:mkPath(mir,i*1.1),deco:mir?[['cone',22,470,40],['cone',398,335,38]]:[['cone',398,470,40],['cone',24,335,38]]}});
 var NL=40,LET=[];
 var SV=document.getElementById('sv'),NS='http://www.w3.org/2000/svg',ri=0,cur=0,drag=false,busy=false,pts=[],pathEl=null,car=null,lastTone=0;
 function el(n,a,p){var e=document.createElementNS(NS,n);for(var k in a)e.setAttribute(k,a[k]);if(p)p.appendChild(e);return e}
@@ -41,7 +40,7 @@ function tone(f,d,ty,v,at){var a=ac();if(!a)return;var t=a.currentTime+(at||0),o
 var BUFS={},iaDone=false;
 function loadBuf(u){if(BUFS[u])return BUFS[u];return BUFS[u]=fetch(u).then(function(r){return r.arrayBuffer()}).then(function(b){var a=ac();return new Promise(function(res,rej){a.decodeAudioData(b,res,rej)})}).catch(function(){BUFS[u]=null;return null})}
 function playUrl(u,cb){var a=ac();if(!a){return}loadBuf(u).then(function(buf){if(!buf)return;if(a.state==='suspended')a.resume();var s=a.createBufferSource();s.buffer=buf;var g=a.createGain();g.gain.value=1;s.connect(g);g.connect(a.destination);s.start();if(cb)cb()})}
-function letterUrl(){return BASE.replace('img/','audio/')+'l'+('0000'+L.charCodeAt(0).toString(16)).slice(-4)+'.mp3'}
+function letterUrl(){return BASE.replace('img/','audio/')+(/[0-9]/.test(L)?'d':'l')+('0000'+L.charCodeAt(0).toString(16)).slice(-4)+'.mp3'}
 function instrUrl(){return BASE.replace('img/','audio/')+'i_'+ROUNDS[ri].veh+'.mp3'}
 function sayInstr(){if(iaDone)return;var a=ac();if(!a||a.state!=='running'){return}iaDone=true;playUrl(instrUrl())}
 function sayL(){playUrl(letterUrl())}
@@ -53,7 +52,7 @@ function beep(){var n=Date.now();if(n-lastTone<140)return;lastTone=n;tone(300+cu
 /* build round */
 function build(){
  SV.innerHTML='';busy=false;drag=false;cur=0;var R=ROUNDS[ri];
- document.getElementById('ttl').textContent='מובילים את האות '+L;
+ L=R.sym;document.getElementById('ttl').textContent=(/[0-9]/.test(L)?'מובילים את הספרה ':'מובילים את האות ')+L;
  var dd=document.getElementById('dots');dd.innerHTML='';ROUNDS.forEach(function(x,i){var d=document.createElement('i');if(i<ri)d.className='on';dd.appendChild(d)});
  var g=el('g',{},SV);
  el('rect',{x:-20,y:-20,width:460,height:560,fill:'#FEF6F5'},g);
