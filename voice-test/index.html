@@ -1,0 +1,7 @@
+<!doctype html><html lang="he" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex"><title>בחירת קול</title>
+<style>body{font-family:Rubik,Arial,sans-serif;background:#FEF6F5;color:#5E5A73;margin:0;padding:14px;text-align:center}h1{color:#B8236B;font-size:22px}.v{background:#fff;border:3px solid #FBD9D6;border-radius:22px;margin:12px auto;max-width:460px;padding:12px}.v h2{margin:0 0 8px;color:#B8236B;font-size:20px}button{font:700 17px Rubik,Arial;background:#EF406E;color:#fff;border:0;border-radius:99px;padding:10px 18px;margin:4px;box-shadow:0 4px 0 #D14175}p{margin:2px 0;font-size:14px}</style></head><body>
+<h1>איזה קול הכי נעים?</h1><p>לחצי על כל כפתור ושמעי. כתבי לי את האות של הקול שאהבת.</p>
+<div id="o"></div><script>
+var N={A:'קול א: כמו היום',B:'קול ב: איטי ורך',C:'קול ג: שמח וגבוה יותר',D:'קול ד: רגוע ונמוך יותר'},K={letter:'שם אות',ask:'הוראה',word:'משפט'};
+var h='';for(var v in N){h+='<div class="v"><h2>'+N[v]+'</h2>';for(var k in K)h+='<button onclick="p(\''+v+'_'+k+'\')">'+K[k]+'</button>';h+='</div>'}document.getElementById('o').innerHTML=h;
+var a=null;function p(n){if(a)a.pause();a=new Audio(n+'.mp3');a.play()}</script></body></html>
