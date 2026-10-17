@@ -1,6 +1,48 @@
 {
- "updated": "2026-10-15T05:21:09.680Z",
+ "updated": "2026-10-17T05:08:23.458Z",
  "topics": [
+  {
+   "slug": "winter-2026",
+   "title": "חורף 2026",
+   "icon": "umbrella-pink",
+   "visible": false,
+   "due": "2026-12-10",
+   "keywords": "חורף - 2026",
+   "buttons": [
+    {
+     "label": "לפעילויות חורף 2026",
+     "link": "/premium-moms/winter"
+    }
+   ]
+  },
+  {
+   "slug": "hanukkah-2026",
+   "title": "חנוכה 2026",
+   "icon": "dreidel",
+   "visible": false,
+   "due": "2026-11-26",
+   "keywords": "חנוכה - 2026",
+   "buttons": [
+    {
+     "label": "לפעילויות חנוכה 2026",
+     "link": "/premium-moms/hanukkah"
+    }
+   ]
+  },
+  {
+   "slug": "nachliely-2026",
+   "title": "הנחליאלי 2026",
+   "icon": "nachliely",
+   "visible": false,
+   "due": "2026-11-12",
+   "keywords": "הנחליאלי - 2026",
+   "buttons": [
+    {
+     "label": "לפעילויות הנחליאלי 2026",
+     "link": "/premium-moms/nachliely"
+    }
+   ]
+  },
   {
    "slug": "elections-2026",
    "title": "בחירות 2026",
@@ -19,7 +61,7 @@
    "slug": "autumn-2026",
    "title": "סתיו 2026",
    "icon": "leaf-orange",
-   "visible": false,
+   "visible": true,
    "due": "2026-10-15",
    "keywords": "סתיו - 2026",
    "buttons": [
