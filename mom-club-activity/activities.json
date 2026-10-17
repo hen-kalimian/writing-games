@@ -1,5 +1,5 @@
 {
- "updated": "2026-10-17T05:08:23.458Z",
+ "updated": "2026-10-17T05:18:25.146Z",
  "topics": [
   {
    "slug": "winter-2026",
@@ -47,7 +47,7 @@
    "slug": "elections-2026",
    "title": "בחירות 2026",
    "icon": "ballot-box",
-   "visible": false,
+   "visible": true,
    "due": "2026-10-22",
    "keywords": "בחירות ומדינת ישראל",
    "buttons": [
