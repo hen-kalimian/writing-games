@@ -1,12 +1,12 @@
 {
- "updated": "2026-10-17T05:18:25.146Z",
+ "updated": "2026-10-17T05:48:24.168Z",
  "topics": [
   {
    "slug": "winter-2026",
    "title": "חורף 2026",
    "icon": "umbrella-pink",
    "visible": false,
-   "due": "2026-12-10",
+   "due": "2026-12-09",
    "keywords": "חורף - 2026",
    "buttons": [
     {
@@ -20,7 +20,7 @@
    "title": "חנוכה 2026",
    "icon": "dreidel",
    "visible": false,
-   "due": "2026-11-26",
+   "due": "2026-11-25",
    "keywords": "חנוכה - 2026",
    "buttons": [
     {
@@ -34,7 +34,7 @@
    "title": "הנחליאלי 2026",
    "icon": "nachliely",
    "visible": false,
-   "due": "2026-11-12",
+   "due": "2026-11-11",
    "keywords": "הנחליאלי - 2026",
    "buttons": [
     {
