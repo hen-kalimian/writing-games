@@ -108,7 +108,7 @@ body.framed #app .top .brand{display:none}
 #app.side #main{position:absolute;inset:0;flex:none}#app.side .bottom{position:absolute;left:0;right:0;bottom:8px;height:48px;z-index:6;pointer-events:none;justify-content:space-between}#app.side .bottom .bar{display:none}#app.side .bottom .nav{pointer-events:auto}
 .vwrap video{max-width:100%!important;max-height:100%!important;width:100%;height:100%;object-fit:contain;border-radius:0!important;box-shadow:none!important;background:#000}
 </style>
-</head>
+<style>/*__SPKCSS*/#spk{border-color:var(--pink);color:var(--pink);background:#FDE1EA}#spk[hidden]{display:none}#spk.need{animation:pulse 1.2s infinite}#app.compact #spk{pointer-events:auto}</style></head>
 <body>
 <div id="app">
   <div class="top">
@@ -116,6 +116,7 @@ body.framed #app .top .brand{display:none}
       <button class="fsbtn" id="back" style="display:none;border-color:var(--blue-deep);color:var(--blue-deep);background:var(--blue-bg)">חזרה לשיעור</button>
       <button class="fsbtn" id="closebtn" style="display:none;border-color:var(--pink);color:var(--pink);background:#fff">סגירה</button>
       <button class="fsbtn" id="rotbtn" style="display:none;border-color:var(--blue-deep);color:var(--blue-deep);background:var(--blue-bg)"><svg viewBox="0 0 24 24"><path d="M20 12a8 8 0 1 1-3-6.2M20 4v5h-5"/></svg><span>בלי סיבוב</span></button>
+      <button class="fsbtn" id="spk" hidden aria-label="שמיעת ההנחיה"><svg viewBox="0 0 24 24"><path d="M4 9v6h4l5 4V5L8 9H4z"/><path d="M16 9a4 4 0 0 1 0 6M18.5 6.5a8 8 0 0 1 0 11"/></svg><span>הנחיה</span></button>
       <button class="ico" id="mute" aria-label="צליל"><svg viewBox="0 0 24 24"><path d="M4 9v6h4l5 4V5L8 9H4z"/><path d="M16 9a4 4 0 0 1 0 6M18.5 6.5a8 8 0 0 1 0 11" id="waves"/></svg></button>
       <button class="fsbtn" id="fs" aria-label="מסך מלא לרוחב"><svg viewBox="0 0 24 24"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg>מסך מלא</button>
     </div>
@@ -157,7 +158,7 @@ body.framed #app .top .brand{display:none}
 </script>
 <script>
 /*CFGLINE*/
-const CFG = {"slides": [{"i": 0, "t": "S", "img": "img/s0.jpg?b=4", "acts": []}, {"i": 1, "t": "T", "img": "img/s1.jpg?b=4", "acts": [{"intro": null, "advance": false, "idle": null, "shapes": [{"d": "M 495.5 602.8 L 495.5 670.1 C 495.5 673.9 492.4 677.1 488.5 677.1 L 363.1 677.1 C 359.2 677.1 356.1 673.9 356.1 670.1 L 356.1 535.4 C 356.1 531.6 359.2 528.4 363.1 528.4 L 488.5 528.4 C 492.4 528.4 495.5 531.6 495.5 535.4 Z", "bb": [356, 528, 496, 677], "r1": null, "r2": null, "ans": ["6"], "link": null, "tx": 0, "ty": 0, "idle": null}, {"d": "M 501.0 156.5 L 501.0 218.9 C 501.0 222.7 497.9 225.9 494.0 225.9 L 360.6 225.9 C 356.7 225.9 353.6 222.7 353.6 218.9 L 353.6 94.1 C 353.6 90.3 356.7 87.1 360.6 87.1 L 494.0 87.1 C 497.9 87.1 501.0 90.3 501.0 94.1 Z", "bb": [354, 87, 501, 226], "r1": null, "r2": null, "ans": ["2"], "link": null, "tx": 0, "ty": 0, "idle": null}, {"d": "M 496.1 360.0 L 496.1 424.1 C 496.1 427.9 493.0 431.1 489.1 431.1 L 359.4 431.1 C 355.5 431.1 352.4 427.9 352.4 424.1 L 352.4 295.9 C 352.4 292.1 355.5 288.9 359.4 288.9 L 489.1 288.9 C 493.0 288.9 496.1 292.1 496.1 295.9 Z", "bb": [352, 289, 496, 431], "r1": null, "r2": null, "ans": ["4"], "link": null, "tx": 0, "ty": 0, "idle": null}]}]}, {"i": 2, "t": "T", "img": "img/s2.jpg?b=4", "acts": [{"intro": null, "advance": false, "idle": null, "shapes": [{"d": "M 495.5 602.8 L 495.5 670.1 C 495.5 673.9 492.4 677.1 488.5 677.1 L 363.1 677.1 C 359.2 677.1 356.1 673.9 356.1 670.1 L 356.1 535.4 C 356.1 531.6 359.2 528.4 363.1 528.4 L 488.5 528.4 C 492.4 528.4 495.5 531.6 495.5 535.4 Z", "bb": [356, 528, 496, 677], "r1": null, "r2": null, "ans": ["12"], "link": null, "tx": 0, "ty": 0, "idle": null}, {"d": "M 501.0 156.5 L 501.0 218.9 C 501.0 222.7 497.9 225.9 494.0 225.9 L 360.6 225.9 C 356.7 225.9 353.6 222.7 353.6 218.9 L 353.6 94.1 C 353.6 90.3 356.7 87.1 360.6 87.1 L 494.0 87.1 C 497.9 87.1 501.0 90.3 501.0 94.1 Z", "bb": [354, 87, 501, 226], "r1": null, "r2": null, "ans": ["8"], "link": null, "tx": 0, "ty": 0, "idle": null}, {"d": "M 496.1 360.0 L 496.1 424.1 C 496.1 427.9 493.0 431.1 489.1 431.1 L 359.4 431.1 C 355.5 431.1 352.4 427.9 352.4 424.1 L 352.4 295.9 C 352.4 292.1 355.5 288.9 359.4 288.9 L 489.1 288.9 C 493.0 288.9 496.1 292.1 496.1 295.9 Z", "bb": [352, 289, 496, 431], "r1": null, "r2": null, "ans": ["10"], "link": null, "tx": 0, "ty": 0, "idle": null}]}]}, {"i": 3, "t": "T", "img": "img/s3.jpg?b=4", "acts": [{"intro": null, "advance": false, "idle": null, "shapes": [{"d": "M 496.1 360.0 L 496.1 424.1 C 496.1 427.9 493.0 431.1 489.1 431.1 L 359.4 431.1 C 355.5 431.1 352.4 427.9 352.4 424.1 L 352.4 295.9 C 352.4 292.1 355.5 288.9 359.4 288.9 L 489.1 288.9 C 493.0 288.9 496.1 292.1 496.1 295.9 Z", "bb": [352, 289, 496, 431], "r1": null, "r2": null, "ans": ["16"], "link": null, "tx": 0, "ty": 0, "idle": null}, {"d": "M 495.5 602.8 L 495.5 670.1 C 495.5 673.9 492.4 677.1 488.5 677.1 L 363.1 677.1 C 359.2 677.1 356.1 673.9 356.1 670.1 L 356.1 535.4 C 356.1 531.6 359.2 528.4 363.1 528.4 L 488.5 528.4 C 492.4 528.4 495.5 531.6 495.5 535.4 Z", "bb": [356, 528, 496, 677], "r1": null, "r2": null, "ans": ["18"], "link": null, "tx": 0, "ty": 0, "idle": null}, {"d": "M 501.0 156.5 L 501.0 218.9 C 501.0 222.7 497.9 225.9 494.0 225.9 L 360.6 225.9 C 356.7 225.9 353.6 222.7 353.6 218.9 L 353.6 94.1 C 353.6 90.3 356.7 87.1 360.6 87.1 L 494.0 87.1 C 497.9 87.1 501.0 90.3 501.0 94.1 Z", "bb": [354, 87, 501, 226], "r1": null, "r2": null, "ans": ["14"], "link": null, "tx": 0, "ty": 0, "idle": null}]}]}, {"i": 4, "t": "T", "img": "img/s4.jpg?b=4", "acts": [{"intro": null, "advance": false, "idle": null, "shapes": [{"d": "M 907.5 240.8 L 907.5 330.4 C 907.5 334.3 904.3 337.4 900.5 337.4 L 716.0 337.4 C 712.2 337.4 709.0 334.3 709.0 330.4 L 709.0 151.1 C 709.0 147.2 712.2 144.1 716.0 144.1 L 900.5 144.1 C 904.3 144.1 907.5 147.2 907.5 151.1 Z", "bb": [709, 144, 907, 337], "r1": null, "r2": null, "ans": ["20"], "link": null, "tx": 0, "ty": 0, "idle": null}]}]}], "title": "תרגילי חיבור תאומים תחום ה-20", "hash": "g3tmo", "brand": "מספרים בקלות - חן קלימיאן", "writeBase": "../../letters/"};
+const CFG = {"slides": [{"i": 0, "t": "S", "img": "img/s0.jpg?b=4", "acts": []}, {"i": 1, "t": "T", "img": "img/s1.jpg?b=4", "acts": [{"intro": null, "advance": false, "idle": null, "shapes": [{"d": "M 495.5 602.8 L 495.5 670.1 C 495.5 673.9 492.4 677.1 488.5 677.1 L 363.1 677.1 C 359.2 677.1 356.1 673.9 356.1 670.1 L 356.1 535.4 C 356.1 531.6 359.2 528.4 363.1 528.4 L 488.5 528.4 C 492.4 528.4 495.5 531.6 495.5 535.4 Z", "bb": [356, 528, 496, 677], "r1": null, "r2": null, "ans": ["6"], "link": null, "tx": 0, "ty": 0, "idle": null}, {"d": "M 501.0 156.5 L 501.0 218.9 C 501.0 222.7 497.9 225.9 494.0 225.9 L 360.6 225.9 C 356.7 225.9 353.6 222.7 353.6 218.9 L 353.6 94.1 C 353.6 90.3 356.7 87.1 360.6 87.1 L 494.0 87.1 C 497.9 87.1 501.0 90.3 501.0 94.1 Z", "bb": [354, 87, 501, 226], "r1": null, "r2": null, "ans": ["2"], "link": null, "tx": 0, "ty": 0, "idle": null}, {"d": "M 496.1 360.0 L 496.1 424.1 C 496.1 427.9 493.0 431.1 489.1 431.1 L 359.4 431.1 C 355.5 431.1 352.4 427.9 352.4 424.1 L 352.4 295.9 C 352.4 292.1 355.5 288.9 359.4 288.9 L 489.1 288.9 C 493.0 288.9 496.1 292.1 496.1 295.9 Z", "bb": [352, 289, 496, 431], "r1": null, "r2": null, "ans": ["4"], "link": null, "tx": 0, "ty": 0, "idle": null}], "tts": "../_tts/53019e4f5f.mp3", "ttsT": "פתרו את התרגילים, והקלידו את התשובה בכל רבוע"}]}, {"i": 2, "t": "T", "img": "img/s2.jpg?b=4", "acts": [{"intro": null, "advance": false, "idle": null, "shapes": [{"d": "M 495.5 602.8 L 495.5 670.1 C 495.5 673.9 492.4 677.1 488.5 677.1 L 363.1 677.1 C 359.2 677.1 356.1 673.9 356.1 670.1 L 356.1 535.4 C 356.1 531.6 359.2 528.4 363.1 528.4 L 488.5 528.4 C 492.4 528.4 495.5 531.6 495.5 535.4 Z", "bb": [356, 528, 496, 677], "r1": null, "r2": null, "ans": ["12"], "link": null, "tx": 0, "ty": 0, "idle": null}, {"d": "M 501.0 156.5 L 501.0 218.9 C 501.0 222.7 497.9 225.9 494.0 225.9 L 360.6 225.9 C 356.7 225.9 353.6 222.7 353.6 218.9 L 353.6 94.1 C 353.6 90.3 356.7 87.1 360.6 87.1 L 494.0 87.1 C 497.9 87.1 501.0 90.3 501.0 94.1 Z", "bb": [354, 87, 501, 226], "r1": null, "r2": null, "ans": ["8"], "link": null, "tx": 0, "ty": 0, "idle": null}, {"d": "M 496.1 360.0 L 496.1 424.1 C 496.1 427.9 493.0 431.1 489.1 431.1 L 359.4 431.1 C 355.5 431.1 352.4 427.9 352.4 424.1 L 352.4 295.9 C 352.4 292.1 355.5 288.9 359.4 288.9 L 489.1 288.9 C 493.0 288.9 496.1 292.1 496.1 295.9 Z", "bb": [352, 289, 496, 431], "r1": null, "r2": null, "ans": ["10"], "link": null, "tx": 0, "ty": 0, "idle": null}], "tts": "../_tts/53019e4f5f.mp3", "ttsT": "פתרו את התרגילים, והקלידו את התשובה בכל רבוע"}]}, {"i": 3, "t": "T", "img": "img/s3.jpg?b=4", "acts": [{"intro": null, "advance": false, "idle": null, "shapes": [{"d": "M 496.1 360.0 L 496.1 424.1 C 496.1 427.9 493.0 431.1 489.1 431.1 L 359.4 431.1 C 355.5 431.1 352.4 427.9 352.4 424.1 L 352.4 295.9 C 352.4 292.1 355.5 288.9 359.4 288.9 L 489.1 288.9 C 493.0 288.9 496.1 292.1 496.1 295.9 Z", "bb": [352, 289, 496, 431], "r1": null, "r2": null, "ans": ["16"], "link": null, "tx": 0, "ty": 0, "idle": null}, {"d": "M 495.5 602.8 L 495.5 670.1 C 495.5 673.9 492.4 677.1 488.5 677.1 L 363.1 677.1 C 359.2 677.1 356.1 673.9 356.1 670.1 L 356.1 535.4 C 356.1 531.6 359.2 528.4 363.1 528.4 L 488.5 528.4 C 492.4 528.4 495.5 531.6 495.5 535.4 Z", "bb": [356, 528, 496, 677], "r1": null, "r2": null, "ans": ["18"], "link": null, "tx": 0, "ty": 0, "idle": null}, {"d": "M 501.0 156.5 L 501.0 218.9 C 501.0 222.7 497.9 225.9 494.0 225.9 L 360.6 225.9 C 356.7 225.9 353.6 222.7 353.6 218.9 L 353.6 94.1 C 353.6 90.3 356.7 87.1 360.6 87.1 L 494.0 87.1 C 497.9 87.1 501.0 90.3 501.0 94.1 Z", "bb": [354, 87, 501, 226], "r1": null, "r2": null, "ans": ["14"], "link": null, "tx": 0, "ty": 0, "idle": null}], "tts": "../_tts/53019e4f5f.mp3", "ttsT": "פתרו את התרגילים, והקלידו את התשובה בכל רבוע"}]}, {"i": 4, "t": "T", "img": "img/s4.jpg?b=4", "acts": [{"intro": null, "advance": false, "idle": null, "shapes": [{"d": "M 907.5 240.8 L 907.5 330.4 C 907.5 334.3 904.3 337.4 900.5 337.4 L 716.0 337.4 C 712.2 337.4 709.0 334.3 709.0 330.4 L 709.0 151.1 C 709.0 147.2 712.2 144.1 716.0 144.1 L 900.5 144.1 C 904.3 144.1 907.5 147.2 907.5 151.1 Z", "bb": [709, 144, 907, 337], "r1": null, "r2": null, "ans": ["20"], "link": null, "tx": 0, "ty": 0, "idle": null}], "tts": "../_tts/53019e4f5f.mp3", "ttsT": "פתרו את התרגילים, והקלידו את התשובה בכל רבוע"}]}], "title": "תרגילי חיבור תאומים תחום ה-20", "hash": "g3tmo", "brand": "מספרים בקלות - חן קלימיאן", "writeBase": "../../letters/"};
 const SL = CFG.slides, LAST = SL.length - 1;
 const NS = 'http://www.w3.org/2000/svg';
 const $ = id => document.getElementById(id);
@@ -256,11 +257,16 @@ function toStage(e){
 /* ---------- ניווט ---------- */
 const nextBtn = $('next'), prevBtn = $('prev');
 function pulseNext(on){ nextBtn.classList.toggle('pulse', on !== false); }
+/*__SPK: רמקול הנחיה - משמיע שוב את ההנחיה של הפעילות הנוכחית (חן, 17.10.26) */
+let curAct = null;
+function introOf(a){ curAct = a || null; spkUpd(); return a ? a.intro : null; }
+function spkSrc(){ return curAct && (curAct.intro || curAct.tts) || null; }
+function spkUpd(){ const b = document.getElementById('spk'); if (!b) return; const src = spkSrc(); b.hidden = !src; b.classList.toggle('need', !!(curAct && !curAct.intro && curAct.tts)); }
 function go(i){
   if (i < 0) i = 0;
   if (i > LAST){ return finish(); }
   if (SL[i].skip) return go(i + (i >= cur ? 1 : -1));
-  token++; stopVoice(); clearTimeout(idleT);
+  token++; stopVoice(); clearTimeout(idleT); curAct = null; spkUpd();
   stage.innerHTML = ''; document.querySelectorAll('.fover').forEach(x => x.remove()); pulseNext(false); main.classList.remove('gest');
   cur = i; __seen.add(i);
   const s = SL[i];
@@ -314,7 +320,7 @@ function renderLayers(s, t){
 function renderR(s, t){
   if (s.layers) renderLayers(s, t); else img(s);
   const a = s.acts[0];
-  say(a.intro, () => finishStep(t, a.intro ? 700 : 3000));   // שקף בלי פעילות: בסוף ההקלטה עוברים לבד (חן, 11.10.26)
+  say(introOf(a), () => finishStep(t, a.intro ? 700 : 3000));   // שקף בלי פעילות: בסוף ההקלטה עוברים לבד (חן, 11.10.26)
 }
 
 /* ---------- תפריט בחירת אות (עיצוב חדש) ---------- */
@@ -335,7 +341,7 @@ function renderMenu(s, t){
     c.onclick = () => { if (t !== token) return; c.style.borderColor = COLORS[L]; sectionLetter = L; say(sh.r1, () => go(sh.link)); setTimeout(() => { if (t === token && cur === s.i) go(sh.link); }, 3500); };
     m.appendChild(c);
   });
-  say(a.intro);
+  say(introOf(a));
   if (done.size === 4) setTimeout(() => finish(), 1200);
 }
 
@@ -423,7 +429,7 @@ function renderP(s, t){ main.classList.add('gest');
       if (u < 1 && t === token) requestAnimationFrame(step); else scatter.forEach(sp => { sp.busy = false; });
     })(t0);
   }, 1800);
-  say(a.intro, () => { if (remaining === 0) finishStep(t, 800); });
+  say(introOf(a), () => { if (remaining === 0) finishStep(t, 800); });
 }
 
 /* ---------- חידון: לוחצים על התשובה הנכונה ---------- */
@@ -443,7 +449,7 @@ function renderQ(s, t){
       p.setAttribute('fill', 'rgba(0,0,0,0.001)'); p.setAttribute('stroke', 'rgba(0,0,0,0.001)'); p.setAttribute('stroke-width', 40); p.setAttribute('stroke-linejoin', 'round');
       p.dataset.j = j; ov.appendChild(p); paths.push(p);
     });
-    say(a.intro, armIdle);
+    say(introOf(a), armIdle);
   }
   function armIdle(){ clearTimeout(idleT); idleT = setTimeout(() => { if (t === token){ const a = s.acts[k]; say((a.shapes[0] && a.shapes[0].idle) || a.idle || a.intro, armIdle); } }, 16000); }
   function hit(e){
@@ -548,7 +554,7 @@ function renderDraw(s, t){ main.classList.add('gest');
     setup();
     if (gi >= groups.length){ confetti(); cheer(); finishStep(t, 2300); }
   }
-  say(s.acts[0].intro);
+  say(introOf(s.acts[0]));
 }
 function placeFover(){
   const f = document.querySelector('.fover'); if (!f) return;
@@ -622,7 +628,7 @@ function renderTrace(s, t){ main.classList.add('gest');
     refresh();
     if (GL.every(q => q.done)) setTimeout(() => { if (t !== token) return; confetti(); cheer(); finishStep(t, 2300); }, 500);
   }
-  say(s.acts[0].intro);
+  say(introOf(s.acts[0]));
 }
 
 /* ---------- מעבר על קו מקווקו באיור (כתב, פרפר וכו'), עם זיהוי נכון/לא נכון (חן, 4.10.26) ----------
@@ -650,7 +656,7 @@ function renderCover(s, t){ main.classList.add('gest');
     if (total() >= P.length * .82 && !done){ done = true; dots.forEach(c => c.setAttribute('opacity', .9)); popSnd(); setTimeout(() => { if (t !== token) return; confetti(); cheer(); finishStep(t, 2300); }, 300); }
   };
   ov.addEventListener('pointerup', up); ov.addEventListener('pointercancel', up);
-  say(s.acts[0].intro);
+  say(introOf(s.acts[0]));
 }
 
 function renderF(s, t){ main.classList.add('gest');
@@ -663,13 +669,13 @@ function renderF(s, t){ main.classList.add('gest');
     // והקו השלישי והכפתורים לא הגיבו. הדף של האות מתאים את עצמו לגודל שהוא מקבל.
     const f = document.createElement('iframe'); f.className = 'fover'; f.src = CFG.writeBase + 'letter-' + WRITE[s.i] + '.html?embed=1&fit=1&v=6'; f.setAttribute('allow', 'autoplay');
     f.style.cssText = 'position:fixed;border:0;z-index:4;background:linear-gradient(180deg,#F0FAF5,#F1F6FB)';
-    $('app').appendChild(f); placeFover(); say(s.acts[0].intro); return;
+    $('app').appendChild(f); placeFover(); say(introOf(s.acts[0])); return;
   }
   const w = document.createElement('div'); w.className = 'fwrap'; stage.appendChild(w);
   const f = document.createElement('iframe'); f.src = CFG.writeBase + 'letter-' + WRITE[s.i] + '.html?embed=1&v=4'; f.setAttribute('allow', 'autoplay');
   f.style.transform = 'scale(' + (740 / 700) + ')';
   w.appendChild(f);
-  say(s.acts[0].intro);
+  say(introOf(s.acts[0]));
 }
 addEventListener('message', e => { if (e.data && e.data.wgDone && SL[cur] && SL[cur].t === 'F'){ confetti(); ding(); finishStep(token, 2600); } });
 
@@ -693,7 +699,7 @@ function renderA(s, t){
     });
     ov.appendChild(p);
   });
-  say(a.intro, () => { if (!n) finishStep(t, a.intro ? 700 : 3000); });
+  say(introOf(a), () => { if (!n) finishStep(t, a.intro ? 700 : 3000); });
   if (!n) return;
   setTimeout(() => { if (t === token) pulseNext(true); }, 12000);
 }
@@ -702,7 +708,7 @@ function renderA(s, t){
 function renderS(s, t){
   if (s.layers) renderLayers(s, t); else img(s);
   const a = s.acts[0] || {};
-  say(a.intro, () => finishStep(t, a.advance ? 700 : 0));
+  say(introOf(a), () => finishStep(t, a.advance ? 700 : 0));
   setTimeout(() => finishStep(t, 0), 900);
 }
 
@@ -711,7 +717,7 @@ function renderT(s, t){
   img(s);
   const a = s.acts[0] || { shapes: [] };
   const total = a.shapes.length; let ok = 0;
-  say(a.intro);
+  say(introOf(a));
   a.shapes.forEach((sh, j) => {
     const answers = (sh.ans || []).map(x => String(x).trim().toLowerCase()).filter(Boolean);
     const inp = document.createElement('input'); inp.type = 'text'; inp.autocomplete = 'off'; inp.spellcheck = false; inp.setAttribute('autocapitalize', 'off');
@@ -745,7 +751,7 @@ function renderFollow(s, t){ main.classList.add('gest');
   img(s);
   const a = s.acts[0] || { shapes: [] };
   const shapes = a.shapes;
-  if (!shapes.length){ say(a.intro, () => finishStep(t, 0)); return; }
+  if (!shapes.length){ say(introOf(a), () => finishStep(t, 0)); return; }
   const ov = overlay();
   const geo = shapes.map(sh => { const p = document.createElementNS(NS, 'path'); p.setAttribute('d', sh.d); p.setAttribute('fill', 'rgba(0,0,0,0.001)'); p.setAttribute('stroke', 'none'); ov.appendChild(p); return p; });
   const samples = shapes.map((sh, k) => {
@@ -777,7 +783,7 @@ function renderFollow(s, t){ main.classList.add('gest');
   });
   const up = () => { drawing = false; if (trail){ const tr = trail; setTimeout(() => tr.remove(), 500); trail = null; } };
   ov.addEventListener('pointerup', up); ov.addEventListener('pointercancel', up);
-  say(a.intro);
+  say(introOf(a));
 }
 
 /* ---------- סיום ---------- */
@@ -790,6 +796,8 @@ function finish(){
 
 /* ---------- כפתורים ---------- */
 $('mute').onclick = () => { muted = !muted; voice.volume = muted ? 0 : 1; $('waves').style.display = muted ? 'none' : ''; };
+$('spk').onclick = () => { const src = spkSrc(); if (!src) return; $('spk').classList.remove('need'); if (!voice.paused && voice.src && voice.src.split('/').pop() === src.split('/').pop()){ voice.currentTime = 0; return; } if (muted){ muted = false; $('waves').style.display = ''; } say(src); };
+
 const fsEl = document.documentElement;
 const canFs = !!(fsEl.requestFullscreen || fsEl.webkitRequestFullscreen);
 const standaloneUrl = () => location.href.split('#')[0].replace(/[?].*$/, '') + '?full=1';

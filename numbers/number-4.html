@@ -122,12 +122,12 @@ button.again{border-color:var(--mint-deep);background:var(--mint-bg);color:var(-
 }
 /*fit-frame*/@media (min-width:400px) and (max-height:640px){.card{max-width:calc(100vh - 195px);min-width:300px}}
 </style>
-</head>
+<style>/*__SSPK*/.sspk{display:inline-flex;align-items:center;justify-content:center;width:30px;height:30px;border-radius:50%;border:2.5px solid #FBC5D6;background:#FDE1EA;color:#B8236B;cursor:pointer;padding:0;vertical-align:middle;margin-inline-end:6px;flex:none}.sspkrow{display:flex;align-items:center;justify-content:center;gap:6px}</style></head>
 <body>
 <main class="card" id="card">
   <div class="brand"><span class="name" id="series"></span></div>
   <h1 class="title" id="title"></h1>
-  <p class="sub">עוקבים עם האצבע אחרי הקו, לפי המספרים</p>
+  <p class="sub sspkrow"><button type="button" class="sspk" aria-label="השמעת ההנחיה" onclick="(window.__sspk=window.__sspk||new Audio('tts/number-4.mp3?v=1')).currentTime=0;window.__sspk.play()"><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9v6h4l5 4V5L8 9H4z" fill="currentColor"/><path d="M16.5 8.5a5 5 0 0 1 0 7M19 6a8.5 8.5 0 0 1 0 12"/></svg></button>עוקבים עם האצבע אחרי הקו, לפי המספרים</p>
 
   <div class="boardbox" id="boardbox">
   <svg class="board" id="board" role="img" aria-label="לוח כתיבה">

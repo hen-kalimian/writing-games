@@ -24,10 +24,10 @@ html,body{margin:0;height:100%;overflow:hidden;font-family:Rubik,Arial,sans-seri
 .btn{display:inline-block;background:#EF406E;color:#fff;border:0;font-family:inherit;font-weight:700;font-size:16px;border-radius:99px;padding:9px 24px;box-shadow:0 4px 0 #D14175;cursor:pointer}
 #fx{position:fixed;inset:0;pointer-events:none;z-index:60}
 @media(max-width:430px){.ttl{font-size:13px}.ins{font-size:12px}.ib{width:28px;height:28px;font-size:13px}}
-</style></head><body>
+</style><style>.insrow{display:flex;align-items:center;justify-content:center;gap:6px}.insrow .ins{margin:0}#insspk[hidden]{display:none}</style></head><body>
 <div id="app">
   <div class="top"><button class="ib" id="fs" title="מסך מלא" aria-label="מסך מלא">&#x26F6;</button><button class="ib" id="mu" title="צליל" aria-label="צליל"></button><div class="ttl" id="ttl"></div><button class="ib" id="rs" title="להתחיל מחדש" aria-label="להתחיל מחדש">&#8635;</button></div>
-  <div class="ins" id="ins"></div>
+  <div class="insrow"><button class="ib" id="insspk" type="button" aria-label="השמעת ההנחיה" hidden><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9v6h4l5 4V5L8 9H4z" fill="currentColor"/><path d="M16.5 8.5a5 5 0 0 1 0 7M19 6a8.5 8.5 0 0 1 0 12"/></svg></button><div class="ins" id="ins"></div></div>
   <div id="play"><div id="tray"></div><div id="board"><canvas id="hint"></canvas></div></div>
 </div>
 <div id="end"><div class="box"><h2>כל הכבוד!</h2><button class="btn" id="again">לשחק שוב</button></div></div>
@@ -92,4 +92,4 @@ function build(fresh){$('end').style.display='none';layout();
   drawHint();P.forEach(function(o){mkPiece(o);var p=o.done?home(o):(o.free?{x:o.fx*play.offsetWidth,y:o.fy*play.offsetHeight}:slot(o.slot));o.x=p.x;o.y=p.y;put(o)})}
 var rz=0;addEventListener('resize',function(){clearTimeout(rz);rz=setTimeout(function(){if(CFG)build(false)},150)});
 fetch('data/'+PID+'.json').then(function(r){return r.json()}).then(function(c){CFG=c;COLS=c.cols||4;ROWS=c.rows||3;$('ttl').textContent=c.title||'';$('ins').textContent=c.ins||'גררו כל חלק למקום שלו והרכיבו את הפאזל';document.title=c.title||'פאזל';IMG.onload=function(){build(true);window.__pz={pieces:P,home:home,lock:lock,placed:function(){return placed},total:function(){return P.length},rect:function(o){var b=o.el.getBoundingClientRect();return {x:b.left+b.width/2,y:b.top+b.height/2}},target:function(o){var h=home(o),pr=play.getBoundingClientRect(),z=pr.width/play.offsetWidth||1;return {x:pr.left+(h.x+cell/2)*z,y:pr.top+(h.y+chh/2)*z}}}};IMG.onerror=function(){$('ins').textContent='התמונה לא נטענה'};IMG.src='img/'+c.img}).catch(function(){$('ins').textContent='הפאזל לא נמצא'});
-</script></body></html>
+</script><script>/*__SPKP רמקול הנחיה (חן, 17.10.26)*/(function(){var M={"גררו כל חלק למקום שלו והרכיבו את הפאזל": "p1", "גררו כל חלק למקום שלו והרכיבו את כריכת הספר": "p2"},b=document.getElementById('insspk'),i=document.getElementById('ins'),au=null;function upd(){b.hidden=!M[(i.textContent||'').trim()]}upd();new MutationObserver(upd).observe(i,{childList:true,characterData:true,subtree:true});b.onclick=function(e){e.stopPropagation();var k=M[(i.textContent||'').trim()];if(!k)return;if(au)au.pause();au=new Audio('tts/'+k+'.mp3');au.play()}})();</script></body></html>

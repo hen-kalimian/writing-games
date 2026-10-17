@@ -36,12 +36,12 @@ h1 b{color:#EF406E;font-weight:900}
 #fx{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:9}
 @media (max-height:620px){h1{font-size:19px}.btn{padding:7px 18px;font-size:14px}.wrap{gap:5px;padding-top:6px}}
 </style>
-</head>
+<style>/*__SSPK*/.sspk{display:inline-flex;align-items:center;justify-content:center;width:30px;height:30px;border-radius:50%;border:2.5px solid #FBC5D6;background:#FDE1EA;color:#B8236B;cursor:pointer;padding:0;vertical-align:middle;margin-inline-end:6px;flex:none}.sspkrow{display:flex;align-items:center;justify-content:center;gap:6px}</style></head>
 <body>
 <div class="bg"><i style="width:240px;height:240px;background:hsl(var(--h) 75% 90%);top:-90px;left:-70px;opacity:.8"></i><i style="width:180px;height:180px;background:hsl(calc(var(--h) + 150) 55% 90%);bottom:-60px;right:-50px;opacity:.7"></i><i style="width:90px;height:90px;background:hsl(calc(var(--h) + 210) 60% 91%);top:42%;left:-30px;opacity:.7"></i><i style="width:60px;height:60px;background:#FFF0B8;top:14%;right:-14px;opacity:.8"></i></div>
 <div class="wrap">
   <div class="brand">מספרים בקלות - חן קלימיאן</div>
-  <h1>צובעים את הספרה <b>2</b></h1>
+  <h1 class="sspkrow"><button type="button" class="sspk" aria-label="השמעת ההנחיה" onclick="(window.__sspk=window.__sspk||new Audio('tts/coloring-number-2.mp3?v=1')).currentTime=0;window.__sspk.play()"><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9v6h4l5 4V5L8 9H4z" fill="currentColor"/><path d="M16.5 8.5a5 5 0 0 1 0 7M19 6a8.5 8.5 0 0 1 0 12"/></svg></button>צובעים את הספרה <b>2</b></h1>
   <div class="pots" id="pots" role="radiogroup" aria-label="צבעים"></div>
   <div id="boardbox"><div class="board" id="board">
     <canvas id="cBase"></canvas><canvas id="cPaint"></canvas><canvas id="cLine"></canvas>
