@@ -89,6 +89,9 @@
   .tile:nth-child(3n+2) .ic{background:#dcf0e6;color:var(--mint-dark);} .tile:nth-child(3n) .ic{background:#dceaf2;color:var(--blue-dark);}
   .tile h3{font-size:1.1rem;margin-top:4px;} .tile p{margin:0;font-size:.95rem;color:var(--muted);flex:1;} .tile b{color:var(--rose-dark);font-family:'Rubik',sans-serif;}
   @media (max-width:420px){.tiles{grid-template-columns:1fr;}}
+  .rows{list-style:none;margin:0;padding:0;background:#fff;border-radius:var(--radius);box-shadow:var(--shadow);}
+  .rows li a{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:14px 16px;border-bottom:1px solid var(--line);text-decoration:none;font-weight:600;}
+  .rows li:last-child a{border-bottom:0;} .rows .chip{font-size:.8125rem;font-weight:600;background:var(--mint-tint);color:var(--mint-dark);border-radius:999px;padding:2px 10px;white-space:nowrap;}
   .faq details{border-bottom:1px solid var(--line);padding:10px 0;}
   footer{text-align:center;margin:34px 0 10px;color:var(--muted);font-size:.9375rem;}
   footer .sign{font-family:'Rubik',sans-serif;font-weight:700;color:var(--rose-dark);font-size:1.15rem;}
@@ -129,7 +132,7 @@
   <section id="search">
     <div class="card">
       <h2 style="font-size:1.2rem;margin-bottom:10px">מה את מחפשת?</h2>
-      <div class="sbox"><svg class="ic"><use href="#i-search"/></svg><input id="q" type="search" placeholder="למשל: גבולות, שינה, סתיו, פסח" autocomplete="off" aria-label="חיפוש בתכני המועדון"></div>
+      <div class="sbox"><svg class="ic"><use href="#i-search"/></svg><input id="q" type="search" placeholder="למשל: מתמטיקה, גבולות, שינה, סתיו" autocomplete="off" aria-label="חיפוש בתכני המועדון"></div>
       <ul id="results"></ul>
       <p class="note" id="shint">החיפוש עובר על כל התכנים בפורטל. בלחיצה תועברי להתחברות באתר, ורק חברות המועדון נכנסות.</p>
     </div>
@@ -168,6 +171,12 @@
     <p class="small" style="margin:-4px 0 12px">כל נושא מכיל דפי פעילות, משחקים דיגיטליים, יצירה וצביעה. מתווספת חבילה חדשה אחת לשבועיים.</p>
     <div class="grid" id="topics"></div>
     <a class="btn mint" style="margin-top:16px" href="https://www.talkwithkids.co.il/mom-club-activity" target="_blank" rel="noopener"><svg class="ic"><use href="#i-folder"/></svg>לכל הפעילויות לפי גיל ונושא</a>
+  </section>
+
+  <section id="downloads">
+    <h2><svg class="ic"><use href="#i-print"/></svg>הורדות</h2>
+    <p class="small" style="margin:-4px 0 12px">קבצים להדפסה ולהורדה, פתוחים לכל הרשומות באתר וגם לחברות המועדון.</p>
+    <ul class="rows" id="dls"></ul>
   </section>
 
   <section id="updates">
@@ -246,19 +255,37 @@
     document.getElementById('upd').innerHTML=h||'<p class="small">עדכונים חדשים יופיעו כאן.</p>';
     if(data.updated){var d=new Date(data.updated);document.getElementById('upd-at').textContent='הדף עודכן לאחרונה ב-'+('0'+d.getDate()).slice(-2)+'.'+('0'+(d.getMonth()+1)).slice(-2)+'.'+d.getFullYear();}
   }
+  function norm(t){ return String(t||'').replace(/[֑-ׇ]/g,'').replace(/[׳״"'`]/g,'').toLowerCase().trim(); }
+  function stems(w){ var o=[w]; if(w.length>3 && /^[בלהוכמש]/.test(w)) o.push(w.slice(1)); if(w.length>4 && /^(וה|שה|כש|מה|בה|לה)/.test(w)) o.push(w.slice(2)); return o; }
   var q=document.getElementById('q'), res=document.getElementById('results'), hint=document.getElementById('shint');
+  function score(item,tokens){
+    var title=norm(item.title), tags=norm((item.tags||[]).join(' ')), sec=norm(item.section);
+    var total=0;
+    for(var k=0;k<tokens.length;k++){
+      var forms=stems(tokens[k]), best=0;
+      for(var f=0;f<forms.length;f++){ var w=forms[f]; if(!w) continue;
+        if(title.indexOf(w)>=0) best=Math.max(best,3); else if(tags.indexOf(w)>=0) best=Math.max(best,2); else if(sec.indexOf(w)>=0) best=Math.max(best,1); }
+      if(!best) return 0; total+=best;
+    }
+    return total;
+  }
   q.addEventListener('input',function(){
-    var v=q.value.trim(); if(!v){res.innerHTML='';hint.hidden=false;return;}
-    var out=data.items.filter(function(i){return (i.title+' '+(i.section||'')).indexOf(v)>=0;}).slice(0,12);
+    var v=norm(q.value); if(!v){res.innerHTML='';hint.hidden=false;return;}
+    var tokens=v.split(/\s+/).filter(Boolean);
+    var out=data.items.map(function(i){return {i:i,s:score(i,tokens)};}).filter(function(x){return x.s>0;}).sort(function(a,b){return b.s-a.s;}).slice(0,14).map(function(x){return x.i;});
     hint.hidden=true;
     res.innerHTML=out.length?out.map(function(i){return '<li><a href="'+esc(link(i.link))+'" target="_blank" rel="noopener"><span>'+esc(i.title)+'</span><span class="chip">'+esc(i.section||'')+'</span></a></li>';}).join(''):'<li class="small" style="padding:10px 4px">לא נמצא. אפשר לנסות מילה אחרת.</li>';
   });
-  fetch('data.json?v='+Date.now()).then(function(r){return r.json();}).then(function(j){data=j;renderTopics();renderUpdates();}).catch(function(){renderTopics();renderUpdates();});
+  function renderDownloads(){
+    var h=(data.downloads||[]).map(function(d){return '<li><a href="'+esc(link(d.link))+'" target="_blank" rel="noopener"><span>'+esc(d.title)+'</span><span class="chip">'+(d.count?d.count+' קבצים':'לכניסה')+'</span></a></li>';}).join('');
+    document.getElementById('dls').innerHTML=h||'<li class="small" style="padding:14px 16px">קבצים להורדה יופיעו כאן בקרוב.</li>';
+  }
+  fetch('data.json?v='+Date.now()).then(function(r){return r.json();}).then(function(j){data=j;renderTopics();renderUpdates();renderDownloads();}).catch(function(){renderTopics();renderUpdates();renderDownloads();});
   /* how to save */
   document.getElementById('howsave').addEventListener('click',function(){ document.getElementById('savephone').open=true; });
   /* bottom nav highlight */
   var links=[].slice.call(document.querySelectorAll('nav.bottom a'));
-  function onScroll(){ var cur='main'; ['activities','search','updates','help'].forEach(function(id){var e=document.getElementById(id); if(e && e.getBoundingClientRect().top<window.innerHeight*0.4) cur=id;}); links.forEach(function(a){a.classList.toggle('on',a.dataset.s===cur);}); }
+  function onScroll(){ var cur='main'; ['activities','downloads','updates','help'].forEach(function(id){var e=document.getElementById(id); if(e && e.getBoundingClientRect().top<window.innerHeight*0.4) cur=id;}); links.forEach(function(a){a.classList.toggle('on',a.dataset.s===cur);}); }
   window.addEventListener('scroll',onScroll,{passive:true}); onScroll();
 })();
 </script>
