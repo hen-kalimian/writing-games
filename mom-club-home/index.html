@@ -150,7 +150,7 @@
       <h2 style="font-size:1.25rem"><svg class="ic"><use href="#i-star"/></svg>חדשה במועדון? התחילי כאן</h2>
       <ol class="steps">
         <li><span>היכנסי לפורטל המועדון עם המייל שאיתו נרשמת: <a href="https://www.talkwithkids.co.il/mom-club" target="_blank" rel="noopener">כניסה לפורטל</a></span></li>
-        <li><span>הצטרפי לקבוצת הוואטסאפ השקטה, שם מגיעות ההודעות על התכנים החדשים.<a class="btn-wa" href="https://chat.whatsapp.com/KNQoQLPrhCsHfSwVzfE9i7" target="_blank" rel="noopener"><svg class="wa"><use href="#i-wa"/></svg>להצטרפות לקבוצה</a></span></li>
+        <li><span>הצטרפי לקבוצת הוואטסאפ השקטה, שם מגיעות ההודעות על התכנים החדשים: <a href="https://chat.whatsapp.com/KNQoQLPrhCsHfSwVzfE9i7" target="_blank" rel="noopener">לקבוצה</a></span></li>
         <li><span>שמרי את הדף הזה בטלפון, ככה הכול תמיד אצלך. <a href="#help" id="howsave">איך עושים את זה?</a></span></li>
       </ol>
     </div>
@@ -181,9 +181,7 @@
   </section>
 
   <section id="downloads">
-    <h2><svg class="ic"><use href="#i-print"/></svg>הורדות</h2>
-    <p class="small" style="margin:-4px 0 12px">קבצים להדפסה ולהורדה, פתוחים לכל הרשומות באתר וגם לחברות המועדון.</p>
-    <ul class="rows" id="dls"></ul>
+    <a class="btn-line" style="display:flex;width:100%;min-height:52px" href="https://www.talkwithkids.co.il/download" target="_blank" rel="noopener"><svg class="ic"><use href="#i-folder"/></svg>למאגר קבצי בונוס</a>
   </section>
 
   <section id="updates">
@@ -280,7 +278,7 @@
   });
   function renderDownloads(){
     var h=(data.downloads||[]).map(function(d){return '<li><a href="'+esc(link(d.link))+'" target="_blank" rel="noopener"><span>'+esc(d.title)+'</span><span class="chip">'+(d.count?d.count+' קבצים':'לכניסה')+'</span></a></li>';}).join('');
-    document.getElementById('dls').innerHTML=h||'<li class="small" style="padding:14px 16px">קבצים להורדה יופיעו כאן בקרוב.</li>';
+    var el=document.getElementById('dls'); if(el) el.innerHTML=h||'<li class="small" style="padding:14px 16px">קבצים להורדה יופיעו כאן בקרוב.</li>';
   }
   fetch('data.json?v='+Date.now()).then(function(r){return r.json();}).then(function(j){data=j;renderTopics();renderUpdates();renderDownloads();}).catch(function(){renderTopics();renderUpdates();renderDownloads();});
   /* how to save */
