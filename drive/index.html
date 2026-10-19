@@ -35,6 +35,7 @@ var SV=document.getElementById('sv'),NS='http://www.w3.org/2000/svg',ri=0,cur=0,
 function el(n,a,p){var e=document.createElementNS(NS,n);for(var k in a)e.setAttribute(k,a[k]);if(p)p.appendChild(e);return e}
 /* audio */
 var AC=null;function ac(){if(!AC){try{AC=new(window.AudioContext||window.webkitAudioContext)()}catch(e){}}if(AC&&AC.state==='suspended')AC.resume();return AC}
+/*__NOAUTO: ההנחיה מושמעת רק אחרי שהילד נגע במשחק עצמו, לא כשהדף נטען (חן, 19.10.26: נשמע 'הובילו את ניידת המשטרה' בשיעור בלי שפתחו משחק)*/['pointerdown','touchstart','keydown'].forEach(function(e){document.addEventListener(e,function(){window.__touched=true},{capture:true,passive:true})});
 ['pointerdown','touchstart','click'].forEach(function(e){document.addEventListener(e,function(){try{if(navigator.audioSession)navigator.audioSession.type='playback'}catch(x){}ac()},{capture:true,passive:true})});
 function tone(f,d,ty,v,at){var a=ac();if(!a)return;var t=a.currentTime+(at||0),o=a.createOscillator(),g=a.createGain();o.type=ty||'sine';o.frequency.value=f;g.gain.setValueAtTime(0.0001,t);g.gain.exponentialRampToValueAtTime(v||.12,t+.015);g.gain.exponentialRampToValueAtTime(.0001,t+d);o.connect(g);g.connect(a.destination);o.start(t);o.stop(t+d+.02)}
 var BUFS={},iaDone=false;
@@ -42,7 +43,7 @@ function loadBuf(u){if(BUFS[u])return BUFS[u];return BUFS[u]=fetch(u).then(funct
 function playUrl(u,cb){var a=ac();if(!a){return}loadBuf(u).then(function(buf){if(!buf)return;if(a.state==='suspended')a.resume();var s=a.createBufferSource();s.buffer=buf;var g=a.createGain();g.gain.value=1;s.connect(g);g.connect(a.destination);s.start();if(cb)cb()})}
 function letterUrl(){return BASE.replace('img/','audio/')+(/[0-9]/.test(L)?'d':'l')+('0000'+L.charCodeAt(0).toString(16)).slice(-4)+'.mp3'}
 function instrUrl(){return BASE.replace('img/','audio/')+'i_'+ROUNDS[ri].veh+'.mp3'}
-function sayInstr(){if(iaDone)return;var a=ac();if(!a||a.state!=='running'){return}iaDone=true;playUrl(instrUrl())}
+function sayInstr(){if(iaDone||!window.__touched)return;var a=ac();if(!a||a.state!=='running'){return}iaDone=true;playUrl(instrUrl())}
 /*__SPKI רמקול הנחיה (חן, 17.10.26)*/document.getElementById('spkI').onclick=function(e){e.stopPropagation();var a=ac();if(a&&a.state==='suspended')a.resume();playUrl(instrUrl())};
 function sayL(){playUrl(letterUrl())}
 ['pointerdown','touchstart','click'].forEach(function(e){document.addEventListener(e,function(){var a=ac();try{loadBuf(letterUrl());loadBuf(instrUrl())}catch(x){}if(a&&a.state==='suspended'){a.resume().then(function(){if(!iaDone&&!drag)sayInstr()})}else if(!iaDone&&!drag)sayInstr()},{capture:true,passive:true})});
