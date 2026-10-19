@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>בית מועדון האימהות | לדבר עם ילדים</title>
+<meta name="description" content="כל מה שמחכה לך במועדון האימהות, במקום אחד">
+<meta name="theme-color" content="#fdeef3">
+<link rel="icon" type="image/png" href="img/icon-180.png">
+<link rel="apple-touch-icon" href="img/icon-180.png">
+<link rel="manifest" href="manifest.json">
+<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700&family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+<script>try{var fs=localStorage.getItem('mch-fs');if(fs)document.documentElement.setAttribute('data-fs',fs);}catch(e){}</script>
+<style>
+  :root{
+    --bg:#fff; --ink:#1e2a31; --muted:#5d727e; --line:#e6dde2;
+    --rose:#d14175; --rose-dark:#ae2f5f; --rose-tint:#fef1f5; --pink:#fde1ea; --pink-strong:#ec5a93;
+    --mint:#3a8e69; --mint-dark:#317255; --mint-tint:#f0faf5;
+    --blue:#467c9c; --blue-dark:#386380; --blue-tint:#f0f7fb; --gold-tint:#fbf6e8;
+    --radius:20px; --shadow:0 2px 12px rgba(60,40,60,.08); --nav:66px;
+  }
+  html[data-fs="1"]{font-size:112.5%;} html[data-fs="2"]{font-size:125%;} html[data-fs="3"]{font-size:137.5%;}
+  *{box-sizing:border-box;}
+  @media (prefers-reduced-motion:no-preference){html{scroll-behavior:smooth;}}
+  body{margin:0;font-family:'Open Sans',Arial,sans-serif;font-size:1.0625rem;line-height:1.6;color:var(--ink);
+    background:linear-gradient(160deg,#fff 0%,#fdeef3 40%,#eaf7f1 72%,#eaf4fb 100%);background-attachment:fixed;padding-bottom:calc(var(--nav) + 24px);}
+  a{color:inherit;} img{max-width:100%;}
+  h1,h2,h3{font-family:'Rubik','Open Sans',sans-serif;line-height:1.25;margin:0;}
+  .wrap{max-width:660px;margin:0 auto;padding:0 16px;}
+  .ic{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex:none;}
+  .small{font-size:.9375rem;color:var(--muted);}
+  .skip{position:absolute;top:-100px;right:16px;background:var(--ink);color:#fff;padding:10px 16px;border-radius:10px;z-index:99;}
+  .skip:focus{top:10px;}
+  a:focus-visible,button:focus-visible,summary:focus-visible,input:focus-visible{outline:3px solid var(--rose-dark);outline-offset:3px;border-radius:10px;}
+  .topbar{display:flex;justify-content:flex-end;align-items:center;gap:8px;padding-top:10px;}
+  .topbar .label{font-size:.875rem;color:var(--muted);}
+  .fs{min-width:44px;height:44px;border-radius:12px;border:1px solid var(--line);background:#fff;font-family:'Rubik',sans-serif;font-weight:700;font-size:1rem;color:var(--ink);cursor:pointer;}
+  .fs:disabled{opacity:.45;}
+  header{text-align:center;}
+  header img{width:170px;max-width:52%;height:auto;}
+  header .name{display:block;font-family:'Rubik',sans-serif;font-weight:700;font-size:1.25rem;color:var(--rose);margin-top:2px;}
+  .hero{display:flex;gap:16px;align-items:center;background:linear-gradient(160deg,#fff 55%,var(--rose-tint));border-radius:22px;box-shadow:var(--shadow);padding:18px;margin-top:12px;}
+  .hero img{width:104px;height:104px;border-radius:50%;object-fit:cover;flex:none;border:4px solid #fff;box-shadow:0 0 0 3px var(--pink);}
+  .hero p{margin:0;} .hero .hi{font-family:'Rubik',sans-serif;font-weight:700;font-size:1.3rem;color:var(--rose-dark);margin-bottom:4px;}
+  @media (max-width:380px){.hero{flex-direction:column;text-align:center;}}
+  section{margin-top:30px;scroll-margin-top:12px;}
+  h2{font-size:1.4rem;display:flex;align-items:center;gap:10px;color:var(--ink);margin-bottom:12px;}
+  h2 .ic{width:38px;height:38px;padding:8px;border-radius:50%;background:var(--pink-strong);color:#fff;}
+  .card{background:#fff;border-radius:var(--radius);box-shadow:var(--shadow);padding:18px;}
+  .btn{display:flex;align-items:center;justify-content:center;gap:10px;min-height:56px;padding:14px 20px;border-radius:999px;background:var(--rose);color:#fff;text-decoration:none;
+    font-family:'Rubik',sans-serif;font-weight:700;font-size:1.15rem;box-shadow:0 6px 18px rgba(209,65,117,.3);}
+  .btn.mint{background:var(--mint);box-shadow:0 6px 18px rgba(58,142,105,.25);}
+  .btn-line{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;padding:8px 16px;border-radius:999px;border:2px solid var(--rose-dark);color:var(--rose-dark);background:#fff;font-weight:700;text-decoration:none;font-size:1rem;font-family:inherit;cursor:pointer;}
+  .note{text-align:center;font-size:.9375rem;color:var(--muted);margin:8px 0 0;}
+  .note a{color:var(--rose-dark);font-weight:700;}
+  /* search */
+  .sbox{position:relative;} .sbox input{width:100%;min-height:54px;font:inherit;font-size:1.05rem;padding:12px 48px 12px 16px;border:2px solid var(--pink);border-radius:16px;background:#fffafc;}
+  .sbox .ic{position:absolute;right:14px;top:16px;color:var(--rose);}
+  #results{margin:10px 0 0;padding:0;list-style:none;}
+  #results li a{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 4px;border-bottom:1px solid var(--line);text-decoration:none;font-weight:600;}
+  #results .chip{font-size:.8125rem;font-weight:600;background:var(--mint-tint);color:var(--mint-dark);border-radius:999px;padding:2px 10px;white-space:nowrap;}
+  /* start */
+  .steps{list-style:none;margin:0;padding:0;counter-reset:s;} .steps li{display:flex;gap:12px;align-items:flex-start;margin:14px 0;}
+  .steps li:before{counter-increment:s;content:counter(s);flex:none;width:36px;height:36px;border-radius:50%;background:var(--pink-strong);color:#fff;font-family:'Rubik',sans-serif;font-weight:700;display:flex;align-items:center;justify-content:center;}
+  .steps a{color:var(--rose-dark);font-weight:700;}
+  details{margin-top:6px;} summary{cursor:pointer;color:var(--rose-dark);font-weight:700;}
+  details p{margin:8px 0;}
+  /* next */
+  .next{background:linear-gradient(160deg,#fff 55%,var(--mint-tint));border:2px solid #cfeadd;}
+  .next .kick{font-family:'Rubik',sans-serif;font-weight:700;color:var(--mint-dark);font-size:.95rem;}
+  .next h3{font-size:1.5rem;margin:2px 0 6px;} .next .when{font-size:1.15rem;display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+  .badge{background:var(--pink);color:var(--rose-dark);border-radius:999px;padding:2px 12px;font-weight:700;font-size:.95rem;}
+  .row{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px;}
+  /* topics */
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:10px;}
+  .topic{display:flex;flex-direction:column;align-items:center;gap:6px;padding:12px 6px;border-radius:16px;text-decoration:none;text-align:center;border:1.5px solid transparent;box-shadow:0 1px 3px rgba(30,42,49,.06);}
+  .topic img{width:56px;height:56px;object-fit:contain;} .topic span{font-family:'Rubik',sans-serif;font-weight:600;font-size:.95rem;line-height:1.3;}
+  .t0{background:var(--rose-tint);border-color:#fbd9e4;color:var(--rose-dark);} .t1{background:var(--mint-tint);border-color:#dcf0e6;color:var(--mint-dark);}
+  .t2{background:var(--blue-tint);border-color:#dceaf2;color:var(--blue-dark);} .t3{background:var(--gold-tint);border-color:#f3e6bf;color:#85601f;}
+  /* updates */
+  .upd{border-right:6px solid var(--pink-strong);margin-bottom:12px;} .upd .meta{display:flex;align-items:center;gap:10px;color:var(--muted);font-size:.9375rem;}
+  .new{background:var(--pink);color:var(--rose-dark);font-weight:700;border-radius:999px;padding:1px 10px;font-size:.8125rem;}
+  .upd h3{margin:6px 0 4px;font-size:1.15rem;} .upd p{margin:0 0 8px;} .upd a{color:var(--rose-dark);font-weight:700;text-decoration:none;}
+  /* what is in the club */
+  .tiles{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+  .tile{display:flex;flex-direction:column;gap:6px;background:#fff;border-radius:var(--radius);box-shadow:var(--shadow);padding:16px;text-decoration:none;}
+  .tile .ic{width:40px;height:40px;padding:9px;border-radius:50%;background:var(--pink);color:var(--rose-dark);}
+  .tile:nth-child(3n+2) .ic{background:#dcf0e6;color:var(--mint-dark);} .tile:nth-child(3n) .ic{background:#dceaf2;color:var(--blue-dark);}
+  .tile h3{font-size:1.1rem;margin-top:4px;} .tile p{margin:0;font-size:.95rem;color:var(--muted);flex:1;} .tile b{color:var(--rose-dark);font-family:'Rubik',sans-serif;}
+  @media (max-width:420px){.tiles{grid-template-columns:1fr;}}
+  .faq details{border-bottom:1px solid var(--line);padding:10px 0;}
+  footer{text-align:center;margin:34px 0 10px;color:var(--muted);font-size:.9375rem;}
+  footer .sign{font-family:'Rubik',sans-serif;font-weight:700;color:var(--rose-dark);font-size:1.15rem;}
+  nav.bottom{position:fixed;bottom:0;right:0;left:0;height:var(--nav);background:#fff;border-top:1px solid var(--line);display:flex;justify-content:space-around;align-items:center;z-index:20;padding-bottom:env(safe-area-inset-bottom);}
+  nav.bottom a{display:flex;flex-direction:column;align-items:center;gap:2px;text-decoration:none;font-size:.8125rem;font-weight:700;color:var(--muted);min-width:60px;}
+  nav.bottom a.on{color:var(--rose-dark);}
+  nav.bottom .ic{width:26px;height:26px;}
+  .reveal{opacity:1;}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">דלגי לתוכן</a>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></symbol>
+  <symbol id="i-play" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polygon points="10 8 16 12 10 16 10 8"/></symbol>
+  <symbol id="i-star" viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></symbol>
+  <symbol id="i-cal" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></symbol>
+  <symbol id="i-folder" viewBox="0 0 24 24"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></symbol>
+  <symbol id="i-video" viewBox="0 0 24 24"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></symbol>
+  <symbol id="i-chat" viewBox="0 0 24 24"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></symbol>
+  <symbol id="i-bell" viewBox="0 0 24 24"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></symbol>
+  <symbol id="i-print" viewBox="0 0 24 24"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></symbol>
+  <symbol id="i-book" viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></symbol>
+  <symbol id="i-help" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></symbol>
+  <symbol id="i-home" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></symbol>
+  <symbol id="i-grid" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></symbol>
+</svg>
+
+<div class="wrap" id="main">
+  <div class="topbar"><span class="label">גודל טקסט</span><button class="fs" id="fsm" aria-label="הקטנת הטקסט">א-</button><button class="fs" id="fsp" aria-label="הגדלת הטקסט">א+</button></div>
+  <header><img src="img/logo.png" alt="לדבר עם ילדים"><h1 class="name">בית מועדון האימהות</h1></header>
+
+  <div class="hero">
+    <img src="img/hen.jpg" alt="חן קלימיאן">
+    <div><p class="hi">בוקר טוב, כאן חן ❤️</p><p>כל מה שמחכה לך במועדון נמצא כאן, במקום אחד: הקלטות מפגשים, מסלולים, לוחות להדפסה, פעילויות לפי נושא וקבוצת הוואטסאפ.</p></div>
+  </div>
+
+  <section id="search">
+    <div class="card">
+      <h2 style="font-size:1.2rem;margin-bottom:10px">מה את מחפשת?</h2>
+      <div class="sbox"><svg class="ic"><use href="#i-search"/></svg><input id="q" type="search" placeholder="למשל: גבולות, שינה, סתיו, פסח" autocomplete="off" aria-label="חיפוש בתכני המועדון"></div>
+      <ul id="results"></ul>
+      <p class="note" id="shint">החיפוש עובר על כל התכנים בפורטל. בלחיצה תועברי להתחברות באתר, ורק חברות המועדון נכנסות.</p>
+    </div>
+  </section>
+
+  <section id="start">
+    <div class="card">
+      <h2 style="font-size:1.25rem"><svg class="ic"><use href="#i-star"/></svg>חדשה במועדון? התחילי כאן</h2>
+      <ol class="steps">
+        <li><span>היכנסי לפורטל המועדון עם המייל שאיתו נרשמת: <a href="https://www.talkwithkids.co.il/mom-club" target="_blank" rel="noopener">כניסה לפורטל</a></span></li>
+        <li><span>הצטרפי לקבוצת הוואטסאפ השקטה, שם מגיעות ההודעות על התכנים החדשים: <a href="https://chat.whatsapp.com/KNQoQLPrhCsHfSwVzfE9i7" target="_blank" rel="noopener">לקבוצה</a></span></li>
+        <li><span>שמרי את הדף הזה בטלפון, ככה הכול תמיד אצלך. <a href="#help" id="howsave">איך עושים את זה?</a></span></li>
+      </ol>
+    </div>
+    <a class="btn" style="margin-top:16px" href="https://www.talkwithkids.co.il/mom-club" target="_blank" rel="noopener"><svg class="ic"><use href="#i-play"/></svg>כניסה לפורטל המועדון</a>
+    <p class="note">הכניסה היא עם המייל שאיתו נרשמת. לא מצליחה להיכנס? <a href="https://www.talkwithkids.co.il/contact" target="_blank" rel="noopener">כתבי לי כאן</a></p>
+  </section>
+
+  <section id="next">
+    <div class="card next">
+      <div class="kick">הדבר הבא במועדון</div>
+      <h3>שאלות ותשובות בקבוצת הוואטסאפ</h3>
+      <div class="when"><span id="nextwhen"></span><span class="badge" id="nextbadge" hidden></span></div>
+      <p class="small" style="margin:6px 0 0">בימי שלישי בין 8:00 ל-12:00 הקבוצה נפתחת לשאלות, ואני משיבה לכולן. אפשר לשאול על הורות, התפתחות ולמידה.</p>
+      <div class="row">
+        <a class="btn-line" href="https://chat.whatsapp.com/KNQoQLPrhCsHfSwVzfE9i7" target="_blank" rel="noopener"><svg class="ic"><use href="#i-chat"/></svg>לקבוצה</a>
+        <a class="btn-line" id="gcal" href="#" target="_blank" rel="noopener"><svg class="ic"><use href="#i-cal"/></svg>ליומן גוגל</a>
+        <a class="btn-line" id="ics" href="#"><svg class="ic"><use href="#i-cal"/></svg>ליומן באייפון</a>
+      </div>
+      <p class="small" style="margin:12px 0 0">בכל שבועיים מתקיימת הרצאה חדשה בנושא לבחירת החברות, והיא מוקלטת. <a href="https://us02web.zoom.us/meeting/register/BZy2TEj0RkaWJpyfY9zV0A" target="_blank" rel="noopener" style="color:var(--rose-dark);font-weight:700">להרשמה לזום של ההרצאות</a></p>
+    </div>
+  </section>
+
+  <section id="activities">
+    <h2><svg class="ic"><use href="#i-grid"/></svg>פעילויות לפי נושא</h2>
+    <p class="small" style="margin:-4px 0 12px">כל נושא מכיל דפי פעילות, משחקים דיגיטליים, יצירה וצביעה. מתווספת חבילה חדשה אחת לשבועיים.</p>
+    <div class="grid" id="topics"></div>
+    <a class="btn mint" style="margin-top:16px" href="https://www.talkwithkids.co.il/mom-club-activity" target="_blank" rel="noopener"><svg class="ic"><use href="#i-folder"/></svg>לכל הפעילויות לפי גיל ונושא</a>
+  </section>
+
+  <section id="updates">
+    <h2><svg class="ic"><use href="#i-bell"/></svg>עדכונים חשובים</h2>
+    <div id="upd"></div>
+  </section>
+
+  <section id="club">
+    <h2><svg class="ic"><use href="#i-home"/></svg>מה יש במועדון</h2>
+    <div class="tiles">
+      <a class="tile" href="https://www.talkwithkids.co.il/mom-club" target="_blank" rel="noopener"><svg class="ic"><use href="#i-play"/></svg><h3>פורטל התוכן</h3><p>הקלטות מפגשים, מסלולים ולוחות להדפסה במקום אחד</p><b>כניסה</b></a>
+      <a class="tile" href="https://www.talkwithkids.co.il/mom-club-activity" target="_blank" rel="noopener"><svg class="ic"><use href="#i-grid"/></svg><h3>פעילויות לפי נושא</h3><p>חבילות מוכנות להדפסה ולמשחק, לפי גיל ולפי הנושא שבגן</p><b>לפעילויות</b></a>
+      <a class="tile" href="https://www.talkwithkids.co.il/mom-club" target="_blank" rel="noopener"><svg class="ic"><use href="#i-video"/></svg><h3>הקלטות מפגשים</h3><p>כל ההרצאות שהתקיימו, לצפייה מתי שנוח לך</p><b>לצפייה</b></a>
+      <a class="tile" href="https://www.talkwithkids.co.il/mom-club" target="_blank" rel="noopener"><svg class="ic"><use href="#i-print"/></svg><h3>לוחות להדפסה</h3><p>לוחות וטבלאות לבית, מוכנים להדפסה</p><b>להדפסה</b></a>
+      <a class="tile" href="https://us02web.zoom.us/meeting/register/BZy2TEj0RkaWJpyfY9zV0A" target="_blank" rel="noopener"><svg class="ic"><use href="#i-cal"/></svg><h3>הרצאה בזום</h3><p>הרצאה חדשה אחת לשבועיים, בנושא שהחברות בוחרות</p><b>להרשמה</b></a>
+      <a class="tile" href="https://chat.whatsapp.com/KNQoQLPrhCsHfSwVzfE9i7" target="_blank" rel="noopener"><svg class="ic"><use href="#i-chat"/></svg><h3>קבוצת הוואטסאפ</h3><p>הודעות על תכנים חדשים, ושאלות ותשובות בימי שלישי</p><b>לקבוצה</b></a>
+    </div>
+  </section>
+
+  <section id="help" class="faq">
+    <h2><svg class="ic"><use href="#i-help"/></svg>עזרה</h2>
+    <div class="card">
+      <details id="savephone"><summary>איך שומרים את הדף הזה בטלפון?</summary>
+        <p><b>באייפון:</b> פתחי את הדף בספארי, לחצי על כפתור השיתוף (ריבוע עם חץ), בחרי "הוספה למסך הבית" ולחצי "הוסף".</p>
+        <p><b>באנדרואיד:</b> פתחי את הדף בכרום, לחצי על שלוש הנקודות בפינה ובחרי "הוספה למסך הבית".</p></details>
+      <details><summary>למה אני מועברת להתחברות?</summary><p>התכנים פתוחים רק לחברות המועדון. בלחיצה על כל תוכן תועברי להתחברות באתר, עם המייל שאיתו נרשמת למועדון.</p></details>
+      <details><summary>לא מצליחה להיכנס</summary><p>כתבי לי דרך <a href="https://www.talkwithkids.co.il/contact" target="_blank" rel="noopener" style="color:var(--rose-dark);font-weight:700">עמוד יצירת הקשר</a> ואעזור לך.</p></details>
+      <details><summary>איך מבטלים מנוי?</summary><p>הביטול נעשה באזור האישי באתר: <a href="https://www.talkwithkids.co.il/account/my-subscriptions" target="_blank" rel="noopener" style="color:var(--rose-dark);font-weight:700">המנויים שלי</a>.</p></details>
+    </div>
+  </section>
+
+  <footer><div class="sign">באהבה, חן</div><div>לדבר עם ילדים · מועדון האימהות</div><div class="small" id="upd-at"></div></footer>
+</div>
+
+<nav class="bottom" aria-label="ניווט ראשי">
+  <a href="#main" class="on" data-s="main"><svg class="ic"><use href="#i-home"/></svg>בית</a>
+  <a href="#activities" data-s="activities"><svg class="ic"><use href="#i-grid"/></svg>פעילויות</a>
+  <a href="#search" data-s="search"><svg class="ic"><use href="#i-search"/></svg>חיפוש</a>
+  <a href="#updates" data-s="updates"><svg class="ic"><use href="#i-bell"/></svg>עדכונים</a>
+  <a href="#help" data-s="help"><svg class="ic"><use href="#i-help"/></svg>עזרה</a>
+</nav>
+
+<script>
+(function(){
+  var SITE='https://www.talkwithkids.co.il';
+  function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
+  function link(u){return /^https?:/.test(u)?u:SITE+u;}
+  /* text size */
+  var fsv=+(document.documentElement.getAttribute('data-fs')||0);
+  function applyFs(){ if(fsv) document.documentElement.setAttribute('data-fs',fsv); else document.documentElement.removeAttribute('data-fs'); try{localStorage.setItem('mch-fs',fsv);}catch(e){} document.getElementById('fsm').disabled=fsv<=0; document.getElementById('fsp').disabled=fsv>=3; }
+  document.getElementById('fsm').onclick=function(){ if(fsv>0){fsv--;applyFs();} };
+  document.getElementById('fsp').onclick=function(){ if(fsv<3){fsv++;applyFs();} };
+  applyFs();
+  /* next Tuesday (Israel time) */
+  (function(){
+    var now=new Date(); var d=new Date(now.getFullYear(),now.getMonth(),now.getDate());
+    var add=(2-d.getDay()+7)%7; if(add===0 && now.getHours()>=12) add=7; d.setDate(d.getDate()+add);
+    var dd=('0'+d.getDate()).slice(-2)+'.'+('0'+(d.getMonth()+1)).slice(-2);
+    document.getElementById('nextwhen').textContent='יום שלישי, '+dd+', בין 8:00 ל-12:00';
+    var b=document.getElementById('nextbadge'); if(add===0){b.textContent='היום';b.hidden=false;} else if(add===1){b.textContent='מחר';b.hidden=false;}
+    var y=d.getFullYear(), mo=('0'+(d.getMonth()+1)).slice(-2), da=('0'+d.getDate()).slice(-2);
+    document.getElementById('gcal').href='https://calendar.google.com/calendar/render?action=TEMPLATE&text='+encodeURIComponent('שאלות ותשובות במועדון האימהות')+'&dates='+y+mo+da+'T080000/'+y+mo+da+'T120000&ctz=Asia/Jerusalem&details='+encodeURIComponent('הקבוצה נפתחת לשאלות, וחן משיבה לכולן.')+'&recur=RRULE:FREQ%3DWEEKLY';
+    var ics='BEGIN:VCALENDAR\r\nVERSION:2.0\r\nBEGIN:VEVENT\r\nSUMMARY:שאלות ותשובות במועדון האימהות\r\nDTSTART;TZID=Asia/Jerusalem:'+y+mo+da+'T080000\r\nDTEND;TZID=Asia/Jerusalem:'+y+mo+da+'T120000\r\nRRULE:FREQ=WEEKLY\r\nEND:VEVENT\r\nEND:VCALENDAR';
+    document.getElementById('ics').href='data:text/calendar;charset=utf-8,'+encodeURIComponent(ics);
+    document.getElementById('ics').setAttribute('download','mom-club.ics');
+  })();
+  /* data */
+  var data={items:[],topics:[],updates:[]};
+  function renderTopics(){
+    var h=''; data.topics.forEach(function(t,i){ h+='<a class="topic t'+(i%4)+'" href="'+esc(link(t.link))+'" target="_blank" rel="noopener"><img src="img/topics/'+esc(t.icon)+'.png" alt=""><span>'+esc(t.title)+'</span></a>'; });
+    document.getElementById('topics').innerHTML=h||'<p class="small">הנושאים הראשונים מתווספים כאן בקרוב.</p>';
+  }
+  function renderUpdates(){
+    var h=''; data.updates.slice(0,6).forEach(function(u){
+      h+='<div class="card upd"><div class="meta">'+(u.isNew?'<span class="new">חדש</span>':'')+'<span>'+esc(u.date)+'</span></div><h3>'+esc(u.title)+'</h3><p>'+esc(u.text)+'</p><a href="'+esc(link(u.link))+'" target="_blank" rel="noopener">'+esc(u.cta||'לצפייה')+' &#8249;</a></div>';
+    });
+    document.getElementById('upd').innerHTML=h||'<p class="small">עדכונים חדשים יופיעו כאן.</p>';
+    if(data.updated){var d=new Date(data.updated);document.getElementById('upd-at').textContent='הדף עודכן לאחרונה ב-'+('0'+d.getDate()).slice(-2)+'.'+('0'+(d.getMonth()+1)).slice(-2)+'.'+d.getFullYear();}
+  }
+  var q=document.getElementById('q'), res=document.getElementById('results'), hint=document.getElementById('shint');
+  q.addEventListener('input',function(){
+    var v=q.value.trim(); if(!v){res.innerHTML='';hint.hidden=false;return;}
+    var out=data.items.filter(function(i){return (i.title+' '+(i.section||'')).indexOf(v)>=0;}).slice(0,12);
+    hint.hidden=true;
+    res.innerHTML=out.length?out.map(function(i){return '<li><a href="'+esc(link(i.link))+'" target="_blank" rel="noopener"><span>'+esc(i.title)+'</span><span class="chip">'+esc(i.section||'')+'</span></a></li>';}).join(''):'<li class="small" style="padding:10px 4px">לא נמצא. אפשר לנסות מילה אחרת.</li>';
+  });
+  fetch('data.json?v='+Date.now()).then(function(r){return r.json();}).then(function(j){data=j;renderTopics();renderUpdates();}).catch(function(){renderTopics();renderUpdates();});
+  /* how to save */
+  document.getElementById('howsave').addEventListener('click',function(){ document.getElementById('savephone').open=true; });
+  /* bottom nav highlight */
+  var links=[].slice.call(document.querySelectorAll('nav.bottom a'));
+  function onScroll(){ var cur='main'; ['activities','search','updates','help'].forEach(function(id){var e=document.getElementById(id); if(e && e.getBoundingClientRect().top<window.innerHeight*0.4) cur=id;}); links.forEach(function(a){a.classList.toggle('on',a.dataset.s===cur);}); }
+  window.addEventListener('scroll',onScroll,{passive:true}); onScroll();
+})();
+</script>
+</body>
+</html>
