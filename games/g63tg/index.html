@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="he" dir="rtl">
-<head>
+<head><script>/*__NOLEAVE: מסך מלא לא מוציא מהשיעור (חן, 19.10.26)*/(function(){var d=document,e=d.documentElement,ua=navigator.userAgent,apple=/iPad|iPhone|iPod/.test(ua)||(/Macintosh/.test(ua)&&navigator.maxTouchPoints>1),can=!apple&&!!(e.requestFullscreen||e.webkitRequestFullscreen)&&(d.fullscreenEnabled||d.webkitFullscreenEnabled||window.self===window.top);window.__fsOK=can;if(can)return;var o=window.open;window.open=function(u,t){try{if(String(u||'').split(/[?#]/)[0]===location.href.split(/[?#]/)[0])return null}catch(x){}return o.apply(window,arguments)};var s=d.createElement('style');s.textContent='#fs,#gofs,#full,#btn-fs,button[aria-label="מסך מלא"],button[aria-label="מסך מלא לרוחב"]{display:none!important}';(d.head||e).appendChild(s)})()</script>
 <script>/*__ACS*/(function(){var O=window.AudioContext||window.webkitAudioContext,S=null,gest=false;if(!O)return;function F(){if(!S){S=new O();window.__AC=S}return S}F.prototype=O.prototype;window.AudioContext=F;window.webkitAudioContext=F;
 var sil='data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQAAAAA=',loopOn=false;
 function u(){gest=true;try{if(navigator.audioSession)navigator.audioSession.type='playback'}catch(e){}try{var c=new F();if(c.state!=='running')c.resume();var b=c.createBuffer(1,1,22050),s=c.createBufferSource();s.buffer=b;s.connect(c.destination);s.start(0)}catch(e){}
@@ -834,8 +834,7 @@ async function goFull(){
     } catch (e) {}
   }
   if (framed){   // מנסים לעבור לדף חדש באותו חלון (אז כפתור חזור בדפדפן מחזיר לשיעור); אם נחסם, נפתחת לשונית חדשה
-    try { window.top.location.href = standaloneUrl(); return; } catch (e) {}
-    window.open(standaloneUrl(), '_blank');
+    return;   // לא יוצאים מהשיעור (חן, 19.10.26): בלי מסך מלא אמיתי המשחק נשאר במקום
   }
 }
 $('fs').onclick = goFull;

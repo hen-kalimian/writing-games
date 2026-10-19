@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="he" dir="rtl">
-<head>
+<head><script>/*__NOLEAVE: מסך מלא לא מוציא מהשיעור (חן, 19.10.26)*/(function(){var d=document,e=d.documentElement,ua=navigator.userAgent,apple=/iPad|iPhone|iPod/.test(ua)||(/Macintosh/.test(ua)&&navigator.maxTouchPoints>1),can=!apple&&!!(e.requestFullscreen||e.webkitRequestFullscreen)&&(d.fullscreenEnabled||d.webkitFullscreenEnabled||window.self===window.top);window.__fsOK=can;if(can)return;var o=window.open;window.open=function(u,t){try{if(String(u||'').split(/[?#]/)[0]===location.href.split(/[?#]/)[0])return null}catch(x){}return o.apply(window,arguments)};var s=d.createElement('style');s.textContent='#fs,#gofs,#full,#btn-fs,button[aria-label="מסך מלא"],button[aria-label="מסך מלא לרוחב"]{display:none!important}';(d.head||e).appendChild(s)})()</script>
 <script>/*__VIS*/window.__vis=true;window.__ioSeen=false;(function(){if(!('IntersectionObserver' in window))return;window.__vis=false;try{new IntersectionObserver(function(es){window.__ioSeen=true;var v=es.some(function(e){return e.isIntersecting});if(v===window.__vis)return;window.__vis=v;document.documentElement.classList.toggle('offscr',!v);if(v)dispatchEvent(new Event('wgvisible'))},{rootMargin:'300px 0px 300px 0px'}).observe(document.documentElement)}catch(e){window.__vis=true}})();</script>
 <style>.offscr *,.offscr *:before,.offscr *:after{animation-play-state:paused!important}</style>
 <script>document.addEventListener('touchmove',function(e){var t=e.target;if(t&&t.closest&&t.closest('.arena.play,.trainarena,.psboard,.tray,.pcard,.chip,.cbox,.drag,[style*="touch-action:none"]'))e.preventDefault()},{passive:false});
@@ -137,7 +137,7 @@ body{background:linear-gradient(180deg,#fff 0%,#FEF6F5 40%,#FBDCD8 100%)}
   <div class="prog" id="prog"></div>
 </div>
 <div id="end"><h2>כל הכבוד!</h2><p id="endp"></p><button class="btn" id="again" type="button">לשחק שוב</button></div>
-<button id="cl" type="button">&#x2715; סגירה וחזרה לאתר</button><canvas id="fx"></canvas>
+<button id="cl" type="button">&#x2715; יציאה ממסך מלא</button><canvas id="fx"></canvas>
 <script>
 (function(){
 var $=function(i){return document.getElementById(i)},stage=$('stage'),ins=$('ins'),prog=$('prog');
@@ -157,12 +157,13 @@ function spkBtn(t){var b=el('button','ib spk',SPK_ICON);b.type='button';b.setAtt
   function upd(){b.hidden=!(i.textContent||'').trim()}upd();new MutationObserver(upd).observe(i,{childList:true,characterData:true,subtree:true})})();
 
 function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;')}
-var AC=null;function ctx(){if(!AC)try{AC=new(window.AudioContext||window.webkitAudioContext)()}catch(e){}return AC}
-function tone(f,d,ty,v,t0){var c=ctx();if(!c)return;var o=c.createOscillator(),g=c.createGain();o.type=ty||'sine';o.frequency.value=f;var t=c.currentTime+(t0||0);g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(v||.16,t+.02);g.gain.exponentialRampToValueAtTime(.001,t+d);o.connect(g);g.connect(c.destination);o.start(t);o.stop(t+d+.05)}
+var AC=null;/*__NOSNDBEFORETOUCH: שום צליל והנחיה לפני שהילד נגע במשחק עצמו (חן, 19.10.26)*/['pointerdown','touchstart','keydown'].forEach(function(e){document.addEventListener(e,function(){window.__touched=true},true)});
+function ctx(){if(!AC)try{AC=new(window.AudioContext||window.webkitAudioContext)()}catch(e){}return AC}
+function tone(f,d,ty,v,t0){if(!window.__touched)return;var c=ctx();if(!c)return;var o=c.createOscillator(),g=c.createGain();o.type=ty||'sine';o.frequency.value=f;var t=c.currentTime+(t0||0);g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(v||.16,t+.02);g.gain.exponentialRampToValueAtTime(.001,t+d);o.connect(g);g.connect(c.destination);o.start(t);o.stop(t+d+.05)}
 function good(){tone(660,.18,'triangle');tone(880,.22,'triangle',.16,.1)}
 function bad(){tone(220,.22,'sine',.12)}
 function win(){[523,659,784,1046].forEach(function(f,i){tone(f,.3,'triangle',.15,i*.11)})}
-var cache={},cur=null;function say(s){if(!s)return;try{if(cur){cur.pause();cur.currentTime=0}var a=cache[s]||(cache[s]=new Audio(BASE+'assets/'+s));cur=a;a.currentTime=0;var p=a.play();if(p&&p.catch)p.catch(function(){})}catch(e){}}
+var cache={},cur=null;function say(s){if(!s||!window.__touched)return;try{if(cur){cur.pause();cur.currentTime=0}var a=cache[s]||(cache[s]=new Audio(BASE+'assets/'+s));cur=a;a.currentTime=0;var p=a.play();if(p&&p.catch)p.catch(function(){})}catch(e){}}
 function fs(n){var l=n.length;return l>40?14:l>24?17:l>12?21:l>6?26:34}
 function mk(o,cls,opt){opt=opt||{};var c=el('div','card '+(cls||''));if(o.i){var im=el('img');im.src=BASE+'assets/'+o.i;im.alt='';im.draggable=false;c.appendChild(im)}
   var ot=o.t;if(ot&&ot.length<=6){var cl0=ot.replace(/^[^֐-׿A-Za-z0-9]+|[^֐-׿A-Za-z0-9]+$/g,'');if(!cl0&&o.i)ot=''; else if(cl0)ot=cl0}
@@ -738,7 +739,7 @@ function runMode(m){
 var TH={55:'ocean',52:'meadow',51:'spring',53:'autumn',46:'sky',23:'space',27:'jungle',58:'party',22:'desert',54:'snow',57:'hearts',43:'cork',49:'library',48:'library',41:'wood',59:'comic',60:'dino',61:'room',42:'cards',21:'tiles',50:'dark',56:'dark',2:'gold'};
 var DARK={ocean:1,space:1,jungle:1,dark:1,library:1,cards:1,comic:0};
 function noiseBuf(d){var c=ctx();if(!c)return null;var n=Math.floor(c.sampleRate*d),b=c.createBuffer(1,n,c.sampleRate),a=b.getChannelData(0);for(var i=0;i<n;i++)a[i]=(Math.random()*2-1)*(1-i/n);return b}
-function noise(d,v,f0,f1){var c=ctx();if(!c)return;var s=c.createBufferSource(),g=c.createGain(),fl=c.createBiquadFilter();s.buffer=noiseBuf(d);fl.type='bandpass';fl.frequency.setValueAtTime(f0||1200,c.currentTime);if(f1)fl.frequency.exponentialRampToValueAtTime(f1,c.currentTime+d);g.gain.value=v||.2;s.connect(fl);fl.connect(g);g.connect(c.destination);s.start()}
+function noise(d,v,f0,f1){if(!window.__touched)return;var c=ctx();if(!c)return;var s=c.createBufferSource(),g=c.createGain(),fl=c.createBiquadFilter();s.buffer=noiseBuf(d);fl.type='bandpass';fl.frequency.setValueAtTime(f0||1200,c.currentTime);if(f1)fl.frequency.exponentialRampToValueAtTime(f1,c.currentTime+d);g.gain.value=v||.2;s.connect(fl);fl.connect(g);g.connect(c.destination);s.start()}
 var _ft=0,_fx=0,_fy=0;function fing(ev){var t=performance.now();if(t-_ft<55)return;var d=Math.hypot(ev.clientX-_fx,ev.clientY-_fy);_fx=ev.clientX;_fy=ev.clientY;_ft=t;if(d<2)return;tone(330+Math.min(d,50)*7+Math.random()*20,.09,'sine',.035)}
 function pickup(){tone(520,.09,'sine',.12);tone(720,.1,'sine',.1,.05)}
 function drop(){tone(180,.12,'sine',.18);noise(.08,.1,600)}
@@ -787,9 +788,9 @@ var fb=$('fs'),inF=window.self!==window.top,NT=Q.get('nt')==='1',REF=Q.get('ref'
 function openTab(){var u=new URL(location.href);u.searchParams.set('nt','1');u.searchParams.set('ref',document.referrer||'');window.open(u.toString(),'_blank')}
 function sync(){document.body.classList.toggle('full',!!fsEl()||NT)}
 fb.onclick=function(){var d=document.documentElement,rq=d.requestFullscreen||d.webkitRequestFullscreen;if(fsEl()){(document.exitFullscreen||document.webkitExitFullscreen).call(document);return}
-  if(rq){try{var r=rq.call(d);if(r&&r.catch)r.catch(function(){if(inF)openTab()})}catch(_){if(inF)openTab()}}else if(inF)openTab()};
+  if(rq){try{var r=rq.call(d);if(r&&r.catch)r.catch(function(){})}catch(_){}}};/* לא פותחים לשונית ולא יוצאים מהשיעור (חן, 19.10.26) */
 $('cl').onclick=function(){if(fsEl()){(document.exitFullscreen||document.webkitExitFullscreen).call(document);return}
-  if(NT){try{window.close()}catch(e){}setTimeout(function(){if(REF)location.href=REF;else if(history.length>1)history.back()},250)}};
+  if(NT){try{window.close()}catch(e){}setTimeout(function(){if(history.length>1)history.back()},250)}};
 document.addEventListener('fullscreenchange',sync);document.addEventListener('webkitfullscreenchange',sync);sync();
 var st0=document.createElement('style');st0.textContent='#fs{width:auto;border-radius:20px;padding:0 12px;gap:6px;font-size:13px;white-space:nowrap}';document.head.appendChild(st0);document.addEventListener('contextmenu',function(e){e.preventDefault()});
 /*__RETRY*/function __fj(u,n){return fetch(u).then(function(r){if(!r.ok)throw new Error('http '+r.status+' '+u);return r.json()}).catch(function(e){if(n<=0)throw e;return new Promise(function(res){setTimeout(res,800*(5-n))}).then(function(){return __fj(u.split('?')[0]+'?r='+Date.now(),n-1)})})}
