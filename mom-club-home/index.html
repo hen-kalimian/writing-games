@@ -159,8 +159,8 @@
       <p class="small" style="margin:6px 0 0">בימי שלישי בין 8:00 ל-12:00 הקבוצה נפתחת לשאלות, ואני משיבה לכולן. אפשר לשאול על הורות, התפתחות ולמידה.</p>
       <div class="row">
         <a class="btn-line" href="https://chat.whatsapp.com/KNQoQLPrhCsHfSwVzfE9i7" target="_blank" rel="noopener"><svg class="ic"><use href="#i-chat"/></svg>לקבוצה</a>
-        <a class="btn-line" id="gcal" href="#" target="_blank" rel="noopener"><svg class="ic"><use href="#i-cal"/></svg>ליומן גוגל</a>
-        <a class="btn-line" id="ics" href="#"><svg class="ic"><use href="#i-cal"/></svg>ליומן באייפון</a>
+        <a class="btn-line" id="gcal" href="https://calendar.google.com/calendar/r?cid=0563e3261175df8235a9a523b9f5d8179170d54cbbdd9048fae30054f9d46802%40group.calendar.google.com" target="_blank" rel="noopener"><svg class="ic"><use href="#i-cal"/></svg>יומן המועדון בגוגל</a>
+        <a class="btn-line" id="ics" href="webcal://calendar.google.com/calendar/ical/0563e3261175df8235a9a523b9f5d8179170d54cbbdd9048fae30054f9d46802%40group.calendar.google.com/public/basic.ics"><svg class="ic"><use href="#i-cal"/></svg>יומן המועדון באייפון</a>
       </div>
       <p class="small" style="margin:12px 0 0">בכל שבועיים מתקיימת הרצאה חדשה בזום, והיא מוקלטת. התאריכים מתעדכנים בקבוצה. <a href="https://us02web.zoom.us/meeting/register/BZy2TEj0RkaWJpyfY9zV0A" target="_blank" rel="noopener" style="color:var(--rose-dark);font-weight:700">הקישור הקבוע שלנו לזום</a></p>
     </div>
@@ -236,11 +236,6 @@
     var dd=('0'+d.getDate()).slice(-2)+'.'+('0'+(d.getMonth()+1)).slice(-2);
     document.getElementById('nextwhen').textContent='יום שלישי, '+dd+', בין 8:00 ל-12:00';
     var b=document.getElementById('nextbadge'); if(add===0){b.textContent='היום';b.hidden=false;} else if(add===1){b.textContent='מחר';b.hidden=false;}
-    var y=d.getFullYear(), mo=('0'+(d.getMonth()+1)).slice(-2), da=('0'+d.getDate()).slice(-2);
-    document.getElementById('gcal').href='https://calendar.google.com/calendar/render?action=TEMPLATE&text='+encodeURIComponent('שאלות ותשובות במועדון האימהות')+'&dates='+y+mo+da+'T080000/'+y+mo+da+'T120000&ctz=Asia/Jerusalem&details='+encodeURIComponent('הקבוצה נפתחת לשאלות, וחן משיבה לכולן.')+'&recur=RRULE:FREQ%3DWEEKLY';
-    var ics='BEGIN:VCALENDAR\r\nVERSION:2.0\r\nBEGIN:VEVENT\r\nSUMMARY:שאלות ותשובות במועדון האימהות\r\nDTSTART;TZID=Asia/Jerusalem:'+y+mo+da+'T080000\r\nDTEND;TZID=Asia/Jerusalem:'+y+mo+da+'T120000\r\nRRULE:FREQ=WEEKLY\r\nEND:VEVENT\r\nEND:VCALENDAR';
-    document.getElementById('ics').href='data:text/calendar;charset=utf-8,'+encodeURIComponent(ics);
-    document.getElementById('ics').setAttribute('download','mom-club.ics');
   })();
   /* data */
   var data={items:[],topics:[],updates:[]};
