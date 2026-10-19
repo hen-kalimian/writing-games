@@ -99,6 +99,12 @@
   nav.bottom a{display:flex;flex-direction:column;align-items:center;gap:2px;text-decoration:none;font-size:.8125rem;font-weight:700;color:var(--muted);min-width:60px;}
   nav.bottom a.on{color:var(--rose-dark);}
   nav.bottom .ic{width:26px;height:26px;}
+  .btn-wa{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:48px;padding:10px 24px;border-radius:999px;background:linear-gradient(135deg,#fff 0%,#f0faf5 45%,#dff3e9 100%);border:1.5px solid #bfe3d0;color:var(--mint-dark);font-family:'Rubik',sans-serif;font-weight:600;font-size:1.05rem;text-decoration:none;box-shadow:0 4px 14px rgba(58,142,105,.14);transition:box-shadow .2s,transform .2s;}
+  .btn-wa:hover{box-shadow:0 6px 18px rgba(58,142,105,.22);transform:translateY(-1px);}
+  .btn-wa .wa{width:24px;height:24px;fill:var(--mint);stroke:none;flex:none;}
+  .steps a.btn-wa{color:var(--mint-dark);font-weight:600;}
+  .steps .btn-wa{display:flex;margin-top:8px;width:max-content;max-width:100%;}
+  .tile .ic.wa{fill:var(--mint-dark);stroke:none;padding:9px;}
   .reveal{opacity:1;}
 </style>
 </head>
@@ -118,6 +124,7 @@
   <symbol id="i-help" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></symbol>
   <symbol id="i-home" viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></symbol>
   <symbol id="i-grid" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></symbol>
+  <symbol id="i-wa" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></symbol>
 </svg>
 
 <div class="wrap" id="main">
@@ -143,7 +150,7 @@
       <h2 style="font-size:1.25rem"><svg class="ic"><use href="#i-star"/></svg>חדשה במועדון? התחילי כאן</h2>
       <ol class="steps">
         <li><span>היכנסי לפורטל המועדון עם המייל שאיתו נרשמת: <a href="https://www.talkwithkids.co.il/mom-club" target="_blank" rel="noopener">כניסה לפורטל</a></span></li>
-        <li><span>הצטרפי לקבוצת הוואטסאפ השקטה, שם מגיעות ההודעות על התכנים החדשים: <a href="https://chat.whatsapp.com/KNQoQLPrhCsHfSwVzfE9i7" target="_blank" rel="noopener">לקבוצה</a></span></li>
+        <li><span>הצטרפי לקבוצת הוואטסאפ השקטה, שם מגיעות ההודעות על התכנים החדשים.<a class="btn-wa" href="https://chat.whatsapp.com/KNQoQLPrhCsHfSwVzfE9i7" target="_blank" rel="noopener"><svg class="wa"><use href="#i-wa"/></svg>להצטרפות לקבוצה</a></span></li>
         <li><span>שמרי את הדף הזה בטלפון, ככה הכול תמיד אצלך. <a href="#help" id="howsave">איך עושים את זה?</a></span></li>
       </ol>
     </div>
@@ -158,7 +165,7 @@
       <div class="when"><span id="nextwhen"></span><span class="badge" id="nextbadge" hidden></span></div>
       <p class="small" style="margin:6px 0 0">בימי שלישי בין 8:00 ל-12:00 הקבוצה נפתחת לשאלות, ואני משיבה לכולן. אפשר לשאול על הורות, התפתחות ולמידה.</p>
       <div class="row">
-        <a class="btn-line" href="https://chat.whatsapp.com/KNQoQLPrhCsHfSwVzfE9i7" target="_blank" rel="noopener"><svg class="ic"><use href="#i-chat"/></svg>לקבוצה</a>
+        <a class="btn-wa" href="https://chat.whatsapp.com/KNQoQLPrhCsHfSwVzfE9i7" target="_blank" rel="noopener"><svg class="wa"><use href="#i-wa"/></svg>לקבוצת הוואטסאפ</a>
         <a class="btn-line" id="gcal" href="https://calendar.google.com/calendar/r?cid=0563e3261175df8235a9a523b9f5d8179170d54cbbdd9048fae30054f9d46802%40group.calendar.google.com" target="_blank" rel="noopener"><svg class="ic"><use href="#i-cal"/></svg>יומן המועדון בגוגל</a>
         <a class="btn-line" id="ics" href="webcal://calendar.google.com/calendar/ical/0563e3261175df8235a9a523b9f5d8179170d54cbbdd9048fae30054f9d46802%40group.calendar.google.com/public/basic.ics"><svg class="ic"><use href="#i-cal"/></svg>יומן המועדון באייפון</a>
       </div>
@@ -169,8 +176,8 @@
   <section id="activities">
     <h2><svg class="ic"><use href="#i-grid"/></svg>פעילויות לפי נושא</h2>
     <p class="small" style="margin:-4px 0 12px">כל נושא מכיל דפי פעילות, משחקים דיגיטליים, יצירה וצביעה. מתווספת חבילה חדשה אחת לשבועיים.</p>
-    <div class="grid" id="topics"></div>
-    <a class="btn mint" style="margin-top:16px" href="https://www.talkwithkids.co.il/mom-club-activity" target="_blank" rel="noopener"><svg class="ic"><use href="#i-folder"/></svg>לכל הפעילויות לפי גיל ונושא</a>
+    <ul class="rows" id="topics"></ul>
+    <p class="note" style="margin-top:14px"><a href="https://www.talkwithkids.co.il/mom-club-activity" target="_blank" rel="noopener">לכל הפעילויות לפי גיל ונושא &#8249;</a></p>
   </section>
 
   <section id="downloads">
@@ -192,7 +199,7 @@
       <a class="tile" href="https://www.talkwithkids.co.il/mom-club" target="_blank" rel="noopener"><svg class="ic"><use href="#i-video"/></svg><h3>הקלטות מפגשים</h3><p>כל ההרצאות שהתקיימו, לצפייה מתי שנוח לך</p><b>לצפייה</b></a>
       <a class="tile" href="https://www.talkwithkids.co.il/mom-club" target="_blank" rel="noopener"><svg class="ic"><use href="#i-print"/></svg><h3>לוחות להדפסה</h3><p>לוחות וטבלאות לבית, מוכנים להדפסה</p><b>להדפסה</b></a>
       <a class="tile" href="https://us02web.zoom.us/meeting/register/BZy2TEj0RkaWJpyfY9zV0A" target="_blank" rel="noopener"><svg class="ic"><use href="#i-cal"/></svg><h3>הרצאה בזום</h3><p>הרצאה חדשה אחת לשבועיים. התאריכים מתעדכנים בקבוצה</p><b>הקישור הקבוע שלנו</b></a>
-      <a class="tile" href="https://chat.whatsapp.com/KNQoQLPrhCsHfSwVzfE9i7" target="_blank" rel="noopener"><svg class="ic"><use href="#i-chat"/></svg><h3>קבוצת הוואטסאפ</h3><p>הודעות על תכנים חדשים, ושאלות ותשובות בימי שלישי</p><b>לקבוצה</b></a>
+      <a class="tile" href="https://chat.whatsapp.com/KNQoQLPrhCsHfSwVzfE9i7" target="_blank" rel="noopener"><svg class="ic wa"><use href="#i-wa"/></svg><h3>קבוצת הוואטסאפ</h3><p>הודעות על תכנים חדשים, ושאלות ותשובות בימי שלישי</p><b>לקבוצה</b></a>
     </div>
   </section>
 
@@ -240,8 +247,8 @@
   /* data */
   var data={items:[],topics:[],updates:[]};
   function renderTopics(){
-    var h=''; data.topics.forEach(function(t,i){ h+='<a class="topic t'+(i%4)+'" href="'+esc(link(t.link))+'" target="_blank" rel="noopener"><img src="img/topics/'+esc(t.icon)+'.png" alt=""><span>'+esc(t.title)+'</span></a>'; });
-    document.getElementById('topics').innerHTML=h||'<p class="small">הנושאים הראשונים מתווספים כאן בקרוב.</p>';
+    var h=''; data.topics.forEach(function(t,i){ h+='<li><a href="'+esc(link(t.link))+'" target="_blank" rel="noopener"><span>'+esc(t.title)+'</span><span class="chip">לחבילה</span></a></li>'; });
+    document.getElementById('topics').innerHTML=h||'<li class="small" style="padding:14px 16px">הנושאים הראשונים מתווספים כאן בקרוב.</li>';
   }
   function renderUpdates(){
     var h=''; data.updates.slice(0,6).forEach(function(u){
