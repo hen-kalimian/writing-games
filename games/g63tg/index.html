@@ -104,7 +104,7 @@ body.framed #app #fs.fsbtn{width:34px;height:34px;padding:0;justify-content:cent
 body.framed #app.compact #fs.fsbtn{width:28px;height:28px}
 body.framed #app .top .brand{display:none}
 </style>
-<style>/*__SPKCSS*/#spk{border-color:var(--pink);color:var(--pink);background:#FDE1EA}#spk[hidden]{display:none}#spk.need{animation:pulse 1.2s infinite}#app.compact #spk{pointer-events:auto}</style></head>
+<style>/*__SPKCSS*/#spk{border-color:var(--pink);color:var(--pink);background:#FDE1EA}#spk[hidden]{display:none}#spk.need{animation:pulse 1.2s infinite}#app.compact #spk{pointer-events:auto}</style><style>/*__NAVSIDE*/.nav::before{content:none!important}.nav.side{position:absolute!important;z-index:15;margin:0!important}</style></head>
 <body>
 <div id="app">
   <div class="top">
@@ -260,7 +260,7 @@ function go(i){
   if (i < 0) i = 0;
   if (i > LAST){ return finish(); }
   if (SL[i].skip) return go(i + (i >= cur ? 1 : -1));
-  token++; stopVoice(); clearTimeout(idleT); curAct = null; spkUpd();
+  token++; stopVoice(); clearTimeout(idleT); curAct = null; spkUpd(); __sh = new Map(); __shs = new Map();
   stage.innerHTML = ''; document.querySelectorAll('.fover').forEach(x => x.remove()); pulseNext(false);
   cur = i;
   const s = SL[i];
@@ -278,10 +278,24 @@ function finishStep(t, auto){ if (t !== token) return;
   pulseNext(true); if (auto) setTimeout(() => { if (t === token) next(); }, auto); }
 
 /* ---------- שכבות: כמו במשחק המקורי (רקע, תמונות, אנימציות, מדבקות שנחשפות בלחיצה) ---------- */
+/*__LAYERCLAMP: רכיב שבולט מעט מהמלבן זז פנימה יחד עם מה שצמוד אליו (למשל חץ והכיתוב שלו), שלא ייחתך (חן, 20.10.26)*/
+let __sh = new Map();
+function lbox(l){ const m = l.m, hx = (l.w * Math.abs(m[0]) + l.h * Math.abs(m[2])) / 2, hy = (l.h * Math.abs(m[3]) + l.w * Math.abs(m[1])) / 2, cx = 512 + m[4], cy = 384 + m[5]; return [cx - hx, cy - hy, cx + hx, cy + hy, hx, hy]; }
+function slideShift(s){ const M = 16, out = new Map(), L = !/^[RAQ]$/.test(s.t) ? [] : (s.layers || []).filter(l => l.t !== 'bg' && l.m);
+  L.forEach(l => { const b = lbox(l); let dx = 0, dy = 0; if (b[4] * 2 < 1024 - 2 * M){ if (b[2] > 1024 - M && b[2] - (1024 - M) <= Math.min(80, b[4] * .9)) dx = (1024 - M) - b[2]; else if (b[0] < M && M - b[0] <= Math.min(80, b[4] * .9)) dx = M - b[0]; }
+    if (b[5] * 2 < 768 - 2 * M){ if (b[3] > 768 - M && b[3] - (768 - M) <= Math.min(80, b[5] * .9)) dy = (768 - M) - b[3]; else if (b[1] < M && M - b[1] <= Math.min(80, b[5] * .9)) dy = M - b[1]; }
+    if (dx || dy) out.set(l, [dx, dy]); });
+  for (let k = 0; k < 3; k++) [...out.entries()].forEach(([l, d]) => { const a = lbox(l); L.forEach(o => { if (o === l) return; const b = lbox(o); if (!(b[0] < a[2] && b[2] > a[0] && b[1] < a[3] && b[3] > a[1]) || b[4] > a[4] * 2.5 && !out.has(o)) return;
+    const e = out.get(o) || [0, 0], u = [Math.abs(e[0]) > Math.abs(d[0]) ? e[0] : d[0], Math.abs(e[1]) > Math.abs(d[1]) ? e[1] : d[1]]; out.set(o, u); out.set(l, u); }); });
+  __shs = new Map(); out.forEach((d, l) => { const a = lbox(l); (s.acts || []).forEach(ac => (ac.shapes || []).forEach(sh => { const bb = sh.bb; if (bb && bb[2] && bb[0] < a[2] && bb[2] > a[0] && bb[1] < a[3] && bb[3] > a[1]) __shs.set(sh, d); })); });
+  return out; }
+let __shs = new Map();
+function __shT(el, sh){ const d = __shs.get(sh); if (d) el.setAttribute('transform', 'translate(' + d[0] + ',' + d[1] + ')'); }
+function inSlide(l, ax){ const d = __sh.get(l); return l.m[4 + ax] + (d ? d[ax] : 0); }
 function layerEl(l, pointer){
   const e = document.createElement('img'); e.src = l.src; e.draggable = false;
   if (l.t === 'bg'){ e.className = 'bg'; return e; }
-  e.style.cssText = 'position:absolute;left:' + (512 - l.w / 2) + 'px;top:' + (384 - l.h / 2) + 'px;width:' + l.w + 'px;height:' + l.h + 'px;transform-origin:50% 50%;transform:translate(' + l.m[4] + 'px,' + l.m[5] + 'px) matrix(' + l.m.slice(0, 4).join(',') + ',0,0);pointer-events:' + (pointer ? 'auto' : 'none');
+  e.style.cssText = 'position:absolute;left:' + (512 - l.w / 2) + 'px;top:' + (384 - l.h / 2) + 'px;width:' + l.w + 'px;height:' + l.h + 'px;transform-origin:50% 50%;transform:translate(' + inSlide(l, 0) + 'px,' + inSlide(l, 1) + 'px) matrix(' + l.m.slice(0, 4).join(',') + ',0,0);pointer-events:' + (pointer ? 'auto' : 'none');
   return e;
 }
 function popSticker(e, l){
@@ -289,7 +303,7 @@ function popSticker(e, l){
   e.animate([{ transform: e.style.transform + ' scale(.2)', opacity: 0 }, { transform: e.style.transform + ' scale(1.12)', opacity: 1, offset: .7 }, { transform: e.style.transform + ' scale(1)', opacity: 1 }], { duration: 480, easing: 'ease-out' });
 }
 const HUES = [0, 130, 215, 295];   // כל מדבקת ד בצבע אחר
-function renderLayers(s, t){
+function renderLayers(s, t){ __sh = slideShift(s);
   let ci = 0;
   s.layers.forEach(l => {
     const interactive = l.show === 2 || !!l.snd;
@@ -373,16 +387,16 @@ function renderP(s, t){
   const pieces = [], scatter = [], ghosts = [];
   a.shapes.forEach((sh, k) => {
     const cp = document.createElementNS(NS, 'clipPath'); cp.setAttribute('id', 'cp' + k);
-    const pp = document.createElementNS(NS, 'path'); pp.setAttribute('d', sh.d); cp.appendChild(pp); defs.appendChild(cp);
-    const ghost = document.createElementNS(NS, 'path'); ghost.setAttribute('d', sh.d); ghost.setAttribute('class', 'ghost'); ghost.setAttribute('fill', 'rgba(255,255,255,.9)'); ghost.style.opacity = 0; ghost.style.transition = 'opacity .9s'; ghosts.push(ghost); ov.appendChild(ghost);
+    const pp = document.createElementNS(NS, 'path'); pp.setAttribute('d', sh.d); __shT(pp, sh); cp.appendChild(pp); defs.appendChild(cp);
+    const ghost = document.createElementNS(NS, 'path'); ghost.setAttribute('d', sh.d); __shT(ghost, sh); ghost.setAttribute('class', 'ghost'); ghost.setAttribute('fill', 'rgba(255,255,255,.9)'); ghost.style.opacity = 0; ghost.style.transition = 'opacity .9s'; ghosts.push(ghost); ov.appendChild(ghost);
   });
   a.shapes.forEach((sh, k) => {
     const g = document.createElementNS(NS, 'g'); g.setAttribute('class', 'piece');
     const inner = document.createElementNS(NS, 'g'); inner.setAttribute('clip-path', 'url(#cp' + k + ')');
     const im = document.createElementNS(NS, 'image'); im.setAttribute('href', s.img); im.setAttribute('x', 0); im.setAttribute('y', 0); im.setAttribute('width', 1024); im.setAttribute('height', 768); im.setAttribute('preserveAspectRatio', 'none');
     inner.appendChild(im); g.appendChild(inner);
-    const rim = document.createElementNS(NS, 'path'); rim.setAttribute('d', sh.d); rim.setAttribute('fill', 'none'); rim.setAttribute('stroke', '#fff'); rim.setAttribute('stroke-width', 5); rim.setAttribute('stroke-linejoin', 'round'); g.appendChild(rim);
-    const hitp = document.createElementNS(NS, 'path'); hitp.setAttribute('d', sh.d); hitp.setAttribute('fill', 'transparent'); hitp.setAttribute('stroke', 'transparent'); hitp.setAttribute('stroke-width', 44); hitp.setAttribute('stroke-linejoin', 'round'); hitp.style.pointerEvents = 'all'; g.appendChild(hitp);
+    const rim = document.createElementNS(NS, 'path'); rim.setAttribute('d', sh.d); __shT(rim, sh); rim.setAttribute('fill', 'none'); rim.setAttribute('stroke', '#fff'); rim.setAttribute('stroke-width', 5); rim.setAttribute('stroke-linejoin', 'round'); g.appendChild(rim);
+    const hitp = document.createElementNS(NS, 'path'); hitp.setAttribute('d', sh.d); __shT(hitp, sh); hitp.setAttribute('fill', 'transparent'); hitp.setAttribute('stroke', 'transparent'); hitp.setAttribute('stroke-width', 44); hitp.setAttribute('stroke-linejoin', 'round'); hitp.style.pointerEvents = 'all'; g.appendChild(hitp);
     const st = { tx: sh.tx, ty: sh.ty, lock: false, sx: sh.tx, sy: sh.ty, busy: false };
     const near0 = Math.hypot(st.tx, st.ty) < 8;
     const place = () => g.setAttribute('transform', 'translate(' + st.tx + ',' + st.ty + ')');
@@ -437,7 +451,7 @@ function renderQ(s, t){
     ov.innerHTML = ''; paths = []; locked = false;
     const a = s.acts[k];
     a.shapes.forEach((sh, j) => {
-      const p = document.createElementNS(NS, 'path'); p.setAttribute('d', sh.d);
+      const p = document.createElementNS(NS, 'path'); p.setAttribute('d', sh.d); __shT(p, sh);
       p.setAttribute('fill', 'rgba(0,0,0,0.001)'); p.setAttribute('stroke', 'rgba(0,0,0,0.001)'); p.setAttribute('stroke-width', 40); p.setAttribute('stroke-linejoin', 'round');
       p.dataset.j = j; ov.appendChild(p); paths.push(p);
     });
@@ -678,7 +692,7 @@ function renderA(s, t){
   const ov = overlay();
   const seen = new Set(), n = a.shapes.length;
   a.shapes.forEach((sh, j) => {
-    const p = document.createElementNS(NS, 'path'); p.setAttribute('d', sh.d);
+    const p = document.createElementNS(NS, 'path'); p.setAttribute('d', sh.d); __shT(p, sh);
     p.setAttribute('fill', 'rgba(0,0,0,0.001)'); p.setAttribute('stroke', 'rgba(0,0,0,0.001)'); p.setAttribute('stroke-width', 26); p.style.cursor = 'pointer';
     p.addEventListener('pointerdown', e => {
       if (t !== token) return; e.preventDefault();
@@ -745,7 +759,7 @@ function renderFollow(s, t){
   const shapes = a.shapes;
   if (!shapes.length){ say(introOf(a), () => finishStep(t, 0)); return; }
   const ov = overlay();
-  const geo = shapes.map(sh => { const p = document.createElementNS(NS, 'path'); p.setAttribute('d', sh.d); p.setAttribute('fill', 'rgba(0,0,0,0.001)'); p.setAttribute('stroke', 'none'); ov.appendChild(p); return p; });
+  const geo = shapes.map(sh => { const p = document.createElementNS(NS, 'path'); p.setAttribute('d', sh.d); __shT(p, sh); p.setAttribute('fill', 'rgba(0,0,0,0.001)'); p.setAttribute('stroke', 'none'); ov.appendChild(p); return p; });
   const samples = shapes.map((sh, k) => {
     const b = sh.bb; let pts = [];
     for (let y = b[1]; y <= b[3]; y += 10) for (let x = b[0]; x <= b[2]; x += 10){ try { if (geo[k].isPointInFill(new DOMPoint(x, y))) pts.push([x, y]); } catch (e) {} }
@@ -754,7 +768,7 @@ function renderFollow(s, t){
     return pts;
   });
   let k = 0, drawing = false, seen = new Set(), trail = null;
-  const ghosts = shapes.map(sh => { const g = document.createElementNS(NS, 'path'); g.setAttribute('d', sh.d); g.setAttribute('fill', 'none'); g.setAttribute('stroke', '#EF406E'); g.setAttribute('stroke-width', 4); g.setAttribute('stroke-dasharray', '10 8'); g.setAttribute('opacity', 0); g.setAttribute('pointer-events', 'none'); ov.appendChild(g); return g; });
+  const ghosts = shapes.map(sh => { const g = document.createElementNS(NS, 'path'); g.setAttribute('d', sh.d); __shT(g, sh); g.setAttribute('fill', 'none'); g.setAttribute('stroke', '#EF406E'); g.setAttribute('stroke-width', 4); g.setAttribute('stroke-dasharray', '10 8'); g.setAttribute('opacity', 0); g.setAttribute('pointer-events', 'none'); ov.appendChild(g); return g; });
   function showCurrent(){ ghosts.forEach((g, i) => g.setAttribute('opacity', i === k ? .8 : 0)); }
   showCurrent();
   ov.addEventListener('pointerdown', e => {
@@ -857,5 +871,12 @@ v.addEventListener('error',function(){show();clearTimeout(tm);tm=setTimeout(retr
 if(v.preload!=='auto')v.preload='auto'}
 function scan(){var a=document.getElementsByTagName('video');for(var i=0;i<a.length;i++)guard(a[i])}
 scan();try{new MutationObserver(scan).observe(document.documentElement,{childList:true,subtree:true})}catch(e){}setInterval(scan,2000)})();</script>
-</body>
+<script>/*__NAVSIDE: החצים צמודים לצידי המשחק (חן, 20.10.26)*/(function(){var P=document.getElementById('prev'),N=document.getElementById('next'),S=document.getElementById('stage'),A=document.getElementById('app');if(!P||!N||!S||!A)return;var home=P.parentNode;
+function back(){if(P.parentNode!==home){home.insertBefore(P,home.firstChild);home.appendChild(N)}P.classList.remove('side');N.classList.remove('side');P.style.left=P.style.top=N.style.left=N.style.top=''}
+function place(){if(A.classList.contains('rot')){back();return}var r=S.getBoundingClientRect();if(r.width<60||r.height<60)return;
+  if(P.parentNode!==A){A.appendChild(P);A.appendChild(N)}P.classList.add('side');N.classList.add('side');
+  var a=A.getBoundingClientRect(),z=(A.offsetWidth&&a.width/A.offsetWidth)||1,sz=P.offsetWidth||46,g=8,y=r.top+r.height/2-sz*z/2,
+  lx=r.left-sz*z-g,rx=r.right+g;if(lx<4)lx=r.left+6;if(rx+sz*z>innerWidth-4)rx=r.right-sz*z-6;
+  N.style.left=((lx-a.left)/z)+'px';N.style.top=((y-a.top)/z)+'px';P.style.left=((rx-a.left)/z)+'px';P.style.top=((y-a.top)/z)+'px'}
+addEventListener('resize',function(){setTimeout(place,60)});setInterval(place,400);setTimeout(place,50)})()</script></body>
 </html>
