@@ -260,14 +260,14 @@
   var q=document.getElementById('q'), res=document.getElementById('results'), hint=document.getElementById('shint');
   function score(item,tokens){
     var title=norm(item.title), tags=norm((item.tags||[]).join(' ')), sec=norm(item.section);
-    var total=0;
+    var total=0, hit=0;
     for(var k=0;k<tokens.length;k++){
       var forms=stems(tokens[k]), best=0;
       for(var f=0;f<forms.length;f++){ var w=forms[f]; if(!w) continue;
         if(title.indexOf(w)>=0) best=Math.max(best,3); else if(tags.indexOf(w)>=0) best=Math.max(best,2); else if(sec.indexOf(w)>=0) best=Math.max(best,1); }
-      if(!best) return 0; total+=best;
+      if(best){ total+=best; hit++; }
     }
-    return total;
+    return hit? total+(hit===tokens.length?100:0) : 0;
   }
   q.addEventListener('input',function(){
     var v=norm(q.value); if(!v){res.innerHTML='';hint.hidden=false;return;}
