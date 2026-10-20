@@ -149,8 +149,8 @@ function el(tag,cls,html){var e=document.createElement(tag);if(cls)e.className=c
 var SPK_ICON='<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9v6h4l5 4V5L8 9H4z" fill="currentColor"/><path d="M16.5 8.5a5 5 0 0 1 0 7M19 6a8.5 8.5 0 0 1 0 12"/></svg>';
 /*__INSSPK: רמקול ליד כל הנחיה (חן, 17.10.26). הקלטה מוכנה בקול ג לפי מפתח הטקסט, ואם אין, קול הדפדפן */
 function ttsKey(t){t=(t||'').replace(/\s+/g,' ').trim();var h=2166136261;for(var i=0;i<t.length;i++){h^=t.charCodeAt(i);h=Math.imul(h,16777619)>>>0}return ('0000000'+h.toString(16)).slice(-8)}
-var TTSM=null,TTSW=[];function ttsMan(cb){if(TTSM)return cb(TTSM);TTSW.push(cb);if(TTSW.length>1)return;fetch(BASE+'assets/tts/index.json?v=1').then(function(r){return r.json()}).then(function(j){TTSM=j}).catch(function(){TTSM={}}).then(function(){var w=TTSW;TTSW=[];w.forEach(function(f){f(TTSM)})})}
-function sayText(t){t=(t||'').replace(/\s+/g,' ').trim();if(!t)return;ttsMan(function(m){var k=ttsKey(t);if(m[k]){say('tts/'+k+'.mp3')}else if(window.speechSynthesis){try{speechSynthesis.cancel();var u=new SpeechSynthesisUtterance(t);u.lang='he-IL';u.rate=.9;speechSynthesis.speak(u)}catch(e){}}})}
+var TTSM=null,TTSW=[],HENM={};/*__HENVOICE: הקול של חן מהאולפן קודם לקול הממוחשב (21.10.26)*/function henS(id){var v=HENM['x'+id];if(!v||!window.__touched)return false;try{var a=henS.c[id]||(henS.c[id]=new Audio(BASE+'assets/hen/x'+id+'.mp3?v='+v));a.currentTime=0;var p=a.play();if(p&&p.catch)p.catch(function(){})}catch(e){}return true}henS.c={};function henPick(pre,gap){var now=Date.now(),l=Object.keys(HENM).filter(function(k){return k.indexOf('x'+pre)===0});if(!l.length||now-(henPick.t||0)<gap)return false;henPick.t=now;var k=l[Math.floor(Math.random()*l.length)];if(l.length>1&&k===henPick.l)k=l[(l.indexOf(k)+1)%l.length];henPick.l=k;return henS(k.slice(1))}setTimeout(function(){ttsMan(function(){})},0);function ttsMan(cb){if(TTSM)return cb(TTSM);TTSW.push(cb);if(TTSW.length>1)return;fetch(BASE+'assets/hen/index.json?v='+Math.floor(Date.now()/3e5)).then(function(r){return r.ok?r.json():{}}).catch(function(){return {}}).then(function(j){HENM=j}).then(function(){return fetch(BASE+'assets/tts/index.json?v=1')}).then(function(r){return r.json()}).then(function(j){TTSM=j}).catch(function(){TTSM=TTSM||{}}).then(function(){var w=TTSW;TTSW=[];w.forEach(function(f){f(TTSM)})})}
+function sayText(t){t=(t||'').replace(/\s+/g,' ').trim();if(!t)return;ttsMan(function(m){var k=ttsKey(t);if(HENM[k]){say('hen/'+k+'.mp3?v='+HENM[k])}else if(m[k]){say('tts/'+k+'.mp3')}else if(window.speechSynthesis){try{speechSynthesis.cancel();var u=new SpeechSynthesisUtterance(t);u.lang='he-IL';u.rate=.9;speechSynthesis.speak(u)}catch(e){}}})}
 function isInstr(t){t=(t||'').replace(/[֑-ׇ]/g,'').trim();return /^(מצאו|איפה|מה |כמה|לחצו|בחרו|סמנו|הקריאו|אמרו|ספרו|התאימו|גררו|מי |באיזו|באיזה|האם|הקשיבו|חברו|מתחו|השלימו|סדרו|פתרו)/.test(t)||/\?\s*$/.test(t)}/* רמקול בכרטיס רק להנחיה או שאלה, לא למילה שהילד צריך לקרוא בעצמו */
 function spkBtn(t){var b=el('button','ib spk',SPK_ICON);b.type='button';b.setAttribute('aria-label','השמעת ההנחיה');b.onclick=function(e){e.stopPropagation();sayText(t)};return b}
 (function(){var b=document.getElementById('insspk'),i=document.getElementById('ins');if(!b||!i)return;b.innerHTML=SPK_ICON;b.onclick=function(e){e.stopPropagation();sayText(i.textContent)};
@@ -160,9 +160,9 @@ function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;')}
 var AC=null;/*__NOSNDBEFORETOUCH: שום צליל והנחיה לפני שהילד נגע במשחק עצמו (חן, 19.10.26)*/['pointerdown','touchstart','keydown'].forEach(function(e){document.addEventListener(e,function(){window.__touched=true},true)});
 function ctx(){if(!AC)try{AC=new(window.AudioContext||window.webkitAudioContext)()}catch(e){}return AC}
 function tone(f,d,ty,v,t0){if(!window.__touched)return;var c=ctx();if(!c)return;var o=c.createOscillator(),g=c.createGain();o.type=ty||'sine';o.frequency.value=f;var t=c.currentTime+(t0||0);g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(v||.16,t+.02);g.gain.exponentialRampToValueAtTime(.001,t+d);o.connect(g);g.connect(c.destination);o.start(t);o.stop(t+d+.05)}
-function good(){tone(660,.18,'triangle');tone(880,.22,'triangle',.16,.1)}
-function bad(){tone(220,.22,'sine',.12)}
-function win(){[523,659,784,1046].forEach(function(f,i){tone(f,.3,'triangle',.15,i*.11)})}
+function good(){tone(660,.18,'triangle');tone(880,.22,'triangle',.16,.1);setTimeout(function(){henPick('p',1200)},180)}
+function bad(){tone(220,.22,'sine',.12);setTimeout(function(){henPick('r',2500)},150)}
+function win(){[523,659,784,1046].forEach(function(f,i){tone(f,.3,'triangle',.15,i*.11)});setTimeout(function(){henPick.t=0;henPick('w',0)},650)}
 var cache={},cur=null;function say(s){if(!s||!window.__touched)return;try{if(cur){cur.pause();cur.currentTime=0}var a=cache[s]||(cache[s]=new Audio(BASE+'assets/'+s));cur=a;a.currentTime=0;var p=a.play();if(p&&p.catch)p.catch(function(){})}catch(e){}}
 function fs(n){var l=n.length;return l>40?14:l>24?17:l>12?21:l>6?26:34}
 function mk(o,cls,opt){opt=opt||{};var c=el('div','card '+(cls||''));if(o.i){var im=el('img');im.src=BASE+'assets/'+o.i;im.alt='';im.draggable=false;c.appendChild(im)}
@@ -741,8 +741,8 @@ var DARK={ocean:1,space:1,jungle:1,dark:1,library:1,cards:1,comic:0};
 function noiseBuf(d){var c=ctx();if(!c)return null;var n=Math.floor(c.sampleRate*d),b=c.createBuffer(1,n,c.sampleRate),a=b.getChannelData(0);for(var i=0;i<n;i++)a[i]=(Math.random()*2-1)*(1-i/n);return b}
 function noise(d,v,f0,f1){if(!window.__touched)return;var c=ctx();if(!c)return;var s=c.createBufferSource(),g=c.createGain(),fl=c.createBiquadFilter();s.buffer=noiseBuf(d);fl.type='bandpass';fl.frequency.setValueAtTime(f0||1200,c.currentTime);if(f1)fl.frequency.exponentialRampToValueAtTime(f1,c.currentTime+d);g.gain.value=v||.2;s.connect(fl);fl.connect(g);g.connect(c.destination);s.start()}
 var _ft=0,_fx=0,_fy=0;function fing(ev){var t=performance.now();if(t-_ft<55)return;var d=Math.hypot(ev.clientX-_fx,ev.clientY-_fy);_fx=ev.clientX;_fy=ev.clientY;_ft=t;if(d<2)return;tone(330+Math.min(d,50)*7+Math.random()*20,.09,'sine',.035)}
-function pickup(){tone(520,.09,'sine',.12);tone(720,.1,'sine',.1,.05)}
-function drop(){tone(180,.12,'sine',.18);noise(.08,.1,600)}
+function pickup(){if(henS('g1'))return;tone(520,.09,'sine',.12);tone(720,.1,'sine',.1,.05)}
+function drop(){if(henS('g2'))return;tone(180,.12,'sine',.18);noise(.08,.1,600)}
 function popS(){noise(.18,.3,1800,300);tone(300,.1,'square',.06)}
 function whoosh(){noise(.7,.18,400,2600)}
 function sparkle(){[1046,1318,1568,2093].forEach(function(f,i){tone(f,.16,'triangle',.07,i*.06)})}
