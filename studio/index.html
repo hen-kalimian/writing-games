@@ -83,6 +83,7 @@ if (!secret) { $('main').innerHTML = '<div class="lock">האולפן נפתח ר
 
 const SECS = [{ id: 'kb', name: 'קוראים בקלות', note: 'ההנחיות שהילדים שומעים במשחקים של קוראים בקלות. כל הנחיה נכנסת לכל המשחקים שמופיעים מתחתיה (וגם למשחקים אחרים עם אותה הנחיה). לחיצה על משחק פותחת אותו.' },
   { id: 'syl', name: 'הברות לפי ניקוד', note: 'הקלטה אחת לכל צליל. כל מה שבשורה נשמע אותו דבר (קָמָץ ופַּתָּח, כּ ו-ק), ולכן מספיקה הקלטה אחת לכולם. במשחקים, לחיצה על אריח עם ההברה משמיעה את הקול שלך. המשחקים שבהם יש הברות של האות מופיעים מתחת לאות.' },
+  { id: 'words', name: 'מילים מהשאלות', note: 'המילים שמופיעות בשאלות של קוראים בקלות. ליד תמונה יופיע רמקול שמשמיע את המילה בקול שלך. מילה שהילד צריך לקרוא בעצמו נשמעת רק אחרי שענה נכון, כדי שלא יגלה את התשובה לפני שקרא.' },
   { id: 'all', name: 'עידוד וצלילים', note: 'מילים וצלילים שנשמעים בכל המשחקים. כל הכבוד, נסו שוב, סיום משחק וגרירת פריטים. עד שתקליטי, המשחקים נשארים כמו היום.' }];
 let D, HEN = {}, sent = store.get(SENT, {}), sec = store.get('hen-studio-sec', 'kb');
 const [d, h] = await Promise.all([fetch('items.json?v=' + Date.now()).then(r => r.json()), fetch('../play/assets/hen/index.json?v=' + Date.now()).then(r => r.ok ? r.json() : {}).catch(() => ({}))]);
@@ -97,7 +98,7 @@ function card(it) {
   const st = status(it);
   const gs = (it.games || []).map(n => G[n]).filter(Boolean);
   return '<section class="item ' + st + '" id="' + it.id + '"><div class="nik">' + esc(it.nik) + '</div>' +
-    (gs.length ? '<div class="when">נשמע ב-' + gs.length + ' משחקים' + (gs.length > 1 ? ', אפשר לגלול הצידה' : '') + '</div><div class="games">' + gs.map(g => '<button type="button" class="g" data-g="' + g.n + '"><img loading="lazy" src="th/' + g.n + '.jpg" alt=""><span>' + esc(g.title) + '</span></button>').join('') + '</div>' : '<div class="when">' + esc(it.when || '') + '</div>') +
+    (it.when && gs.length ? '<div class="when">' + esc(it.when) + '</div>' : '') + (gs.length ? '<div class="when">נשמע ב-' + gs.length + ' משחקים' + (gs.length > 1 ? ', אפשר לגלול הצידה' : '') + '</div><div class="games">' + gs.map(g => '<button type="button" class="g" data-g="' + g.n + '"><img loading="lazy" src="th/' + g.n + '.jpg" alt=""><span>' + esc(g.title) + '</span></button>').join('') + '</div>' : '<div class="when">' + esc(it.when || '') + '</div>') +
     '<div class="row"><button type="button" class="btn rec" data-a="rec"><span class="dot"></span><span>' + (st ? 'הקלטה מחדש' : 'הקלטה') + '</span></button>' +
     '<button type="button" class="btn soft" data-a="play" disabled>להשמיע את מה שהקלטתי</button>' +
     '<button type="button" class="btn save" data-a="save" disabled>שמירה</button></div>' +

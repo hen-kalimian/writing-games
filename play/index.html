@@ -192,11 +192,13 @@ var E={};
 E.quiz=function(){var qs=D.qs,qi=0;total=qs.length;hits=0;
   function show(){stage.innerHTML='';dots(qs.length,qi);var q=qs[qi],need=q.n,got=0,miss=false,lock=false;
     if(q.q.t||q.q.i){var qc=mk(q.q,'fixed');qc.style.cssText+=';width:100%;max-width:460px;min-height:'+(q.q.i?'220px':'90px')+';max-height:320px;flex:0 1 auto';stage.appendChild(qc);
-      if(q.q.sp){var spk=el('button','ib spk',SPK_ICON);spk.type='button';spk.setAttribute('aria-label','השמעת ההנחיה');spk.onclick=function(e){e.stopPropagation();say(q.q.sp)};qc.appendChild(spk)}else if(q.q.t&&isInstr(q.q.t)){qc.appendChild(spkBtn(q.q.t))}}
+      if(q.q.sp){var spk=el('button','ib spk',SPK_ICON);spk.type='button';spk.setAttribute('aria-label','השמעת ההנחיה');spk.onclick=function(e){e.stopPropagation();say(q.q.sp)};qc.appendChild(spk)}else if(q.q.t&&isInstr(q.q.t)){qc.appendChild(spkBtn(q.q.t))}
+      /*__HENWORD: המילה שבשאלה בקול של חן (21.10.26). ליד תמונה: רמקול. מילה לקריאה: נשמעת רק אחרי תשובה נכונה, כדי לא לגלות לפני שקראו*/
+      else if(q.q.t){var wk='w'+ttsKey(q.q.t),wq=q;ttsMan(function(){if(!HENM[wk]||qs[qi]!==wq)return;var wa=function(){if(!window.__touched)return;henPick.t=Date.now();say('hen/'+wk+'.mp3?v='+HENM[wk])};if(q.q.i){var b=el('button','ib spk',SPK_ICON);b.type='button';b.setAttribute('aria-label','השמעת המילה');b.onclick=function(e){e.stopPropagation();wa()};qc.appendChild(b)}else{q.__after=wa}})}}
     var n=q.a.length,g=el('div','grid');g.style.gridTemplateColumns='repeat('+(n<=4?n:Math.min(4,n))+',minmax(0,1fr))';g.style.maxWidth='430px';
     sh(q.a).forEach(function(a){var c=mk(a,'',{fs:a.i?18:30});c.style.minHeight=a.i?'110px':'74px';c.style.maxHeight='150px';
       c.onclick=function(){if(lock||c.classList.contains('ok'))return;say(a.s);
-        if(a.ok){c.classList.add('ok');good();got++;if(got>=need){lock=true;if(!miss)hits++;after(next,800)}}else{miss=true;c.classList.add('no');bad();after(function(){c.classList.remove('no')},400)}};g.appendChild(c)});
+        if(a.ok){c.classList.add('ok');if(q.__after&&got+1>=need)henPick.t=Date.now();good();got++;if(got>=need){lock=true;if(!miss)hits++;if(q.__after){setTimeout(q.__after,250);after(next,1600)}else after(next,800)}}else{miss=true;c.classList.add('no');bad();after(function(){c.classList.remove('no')},400)}};g.appendChild(c)});
     stage.appendChild(g)}
   function next(){qi++;if(qi>=qs.length){dots(qs.length,qs.length);finish('ענית נכון בניסיון הראשון על '+hits+' מתוך '+qs.length)}else show()}
   show()};
