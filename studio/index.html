@@ -89,6 +89,8 @@ if (!secret) { $('main').innerHTML = '<div class="lock">האולפן נפתח ר
 const SECS = [{ id: 'kb', name: 'קוראים בקלות', note: 'ההנחיות שהילדים שומעים במשחקים של קוראים בקלות. כל הנחיה נכנסת לכל המשחקים שמופיעים מתחתיה (וגם למשחקים אחרים עם אותה הנחיה). לחיצה על משחק פותחת אותו.' },
   { id: 'syl', name: 'הברות לפי ניקוד', note: 'הקלטה אחת לכל צליל. כל מה שבשורה נשמע אותו דבר (קָמָץ ופַּתָּח, כּ ו-ק), ולכן מספיקה הקלטה אחת לכולם. במשחקים, לחיצה על אריח עם ההברה משמיעה את הקול שלך. המשחקים שבהם יש הברות של האות מופיעים מתחת לאות.' },
   { id: 'words', name: 'מילים מהשאלות', note: 'המילים שמופיעות בשאלות של קוראים בקלות. ליד תמונה יופיע רמקול שמשמיע את המילה בקול שלך. מילה שהילד צריך לקרוא בעצמו נשמעת רק אחרי שענה נכון, כדי שלא יגלה את התשובה לפני שקרא.' },
+  { id: 'names', name: 'שמות האותיות', note: 'שם האות נשמע במשחק "מתחו קו אל האות הזהה" בכל נגיעה ובכל התאמה. עד שתקליטי, נשמע קול ממוחשב.' },
+  { id: 'more', name: 'הנחיות במשחקים נוספים', note: 'הנחיות של הפאזלים ושל משחק מתיחת הקו. לחיצה על המשחק פותחת אותו.' },
   { id: 'all', name: 'עידוד וצלילים', note: 'מילים וצלילים שנשמעים בכל המשחקים. כל הכבוד, נסו שוב, סיום משחק וגרירת פריטים. עד שתקליטי, המשחקים נשארים כמו היום.' }];
 let D, HEN = {}, sent = store.get(SENT, {}), sec = store.get('hen-studio-sec', 'kb');
 const [d, h] = await Promise.all([fetch('items.json?v=' + Date.now()).then(r => r.json()), fetch('../play/assets/hen/index.json?v=' + Date.now()).then(r => r.ok ? r.json() : {}).catch(() => ({}))]);
@@ -127,7 +129,7 @@ function sylHtml() {
   return Object.values(by).map(l => { const gs = [...new Set(l.flatMap(i => i.games || []))].map(n => G[n]).filter(Boolean);
     return '<div class="grp"><h3>' + esc(l[0].grpName) + '</h3>' + (gs.length ? '<div class="when">מופיע ב-' + gs.length + ' משחקים</div><div class="games">' + gs.map(g => '<button type="button" class="g" data-g="' + g.n + '"><img loading="lazy" src="th/' + g.n + '.jpg" alt=""><span>' + esc(g.title) + '</span></button>').join('') + '</div>' : '') + l.map(srow).join('') + '</div>'; }).join('');
 }
-function render() { tabs(); progress(); const s = SECS.find(x => x.id === sec) || SECS[0]; $('main').innerHTML = '<p class="secnote">' + s.note + '</p>' + (s.id === 'syl' ? sylHtml() : D.items.filter(i => i.sec === s.id).map(card).join('')); }
+function render() { tabs(); progress(); const s = SECS.find(x => x.id === sec) || SECS[0]; $('main').innerHTML = '<p class="secnote">' + s.note + '</p>' + (s.id === 'syl' ? sylHtml() : D.items.filter(i => i.sec === s.id).map(s.id === 'names' ? srow : card).join('')); }
 render();
 
 // ===== הקלטה =====
@@ -164,15 +166,15 @@ async function save(id) {
     const c = await client();
     await c.items.insert(COL, { title: secret, itemId: id, k: it.k, text: it.nik, mime: blob.type, audio, synced: false });
     sent[id] = Date.now(); store.set(SENT, sent);
-    delete opened[id]; tabs(); progress(); const s = el0(); if (s) s.outerHTML = (it.sec === 'syl' ? srow : card)(it);
+    delete opened[id]; tabs(); progress(); const s = el0(); if (s) s.outerHTML = (it.sec === 'syl' || it.sec === 'names' ? srow : card)(it);
   } catch (e) { takes[id] = blob; const b2 = el0() && el0().querySelector('[data-a=save]'); if (b2) b2.disabled = false; setSt(id, e.message === 'long' ? 'ההקלטה ארוכה מדי. נסי שוב קצת יותר קצר' : 'השמירה לא הצליחה. בדקי שיש אינטרנט ולחצי שוב על שמירה', 'err'); console.error(e); }
 }
 function play(src) { player.pause(); player.src = src; player.currentTime = 0; player.play().catch(() => {}); }
 document.addEventListener('click', e => {
-  const m = e.target.closest('.item.mini'); if (m) { opened[m.id] = 1; m.outerHTML = (D.items.find(i => i.id === m.id).sec === 'syl' ? srow : card)(D.items.find(i => i.id === m.id)); return; }
+  const m = e.target.closest('.item.mini'); if (m) { opened[m.id] = 1; m.outerHTML = (/^(syl|names)$/.test(D.items.find(i => i.id === m.id).sec) ? srow : card)(D.items.find(i => i.id === m.id)); return; }
   const t = e.target.closest('button'); if (!t) return;
   if (t.dataset.s) { stopRec(); sec = t.dataset.s; store.set('hen-studio-sec', sec); render(); scrollTo(0, 0); return; }
-  if (t.dataset.g) { const g = G[t.dataset.g]; $('mt').textContent = g.title; $('mf').src = '../play/index.html?' + g.q; $('mo').onclick = () => open('../play/index.html?' + g.q, '_blank'); $('modal').classList.add('on'); return; }
+  if (t.dataset.g) { const g = G[t.dataset.g]; $('mt').textContent = g.title; const gu = g.u || '../play/index.html?' + g.q; $('mf').src = gu; $('mo').onclick = () => open(gu, '_blank'); $('modal').classList.add('on'); return; }
   if (t.id === 'mx') { $('modal').classList.remove('on'); $('mf').src = 'about:blank'; return; }
   const s = t.closest('.item'); if (!s) return; const id = s.id, it = D.items.find(i => i.id === id);
   if (t.dataset.a === 'rec') startRec(id);
