@@ -57,6 +57,11 @@ main{max-width:760px;margin:0 auto}
 .srow .nik{font-size:32px;margin:0;letter-spacing:2px}
 .srow .hint{text-align:center;font-size:13px;color:var(--muted);direction:ltr}
 .srow .row{margin-top:6px;gap:6px}.srow .btn{font-size:14px;padding:8px 12px;min-height:40px}
+.item.mini{display:flex;align-items:center;gap:8px;padding:7px 12px;margin:0 0 6px;border:1.5px solid var(--mint-deep);border-radius:12px;background:var(--mint-wash);box-shadow:none;cursor:pointer;font-size:15px;line-height:1.4}
+.item.mini .v{flex:none;width:20px;height:20px;border-radius:50%;background:var(--mint-deep);color:#fff;display:inline-flex;align-items:center;justify-content:center}
+.item.mini .v svg{width:13px;height:13px}
+.item.mini .mt{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.item.mini .mx{flex:none;font-size:12px;color:var(--muted)}
 .tip{max-width:760px;margin:0 auto 12px;background:var(--sky-wash);border:1.5px solid var(--sky);border-radius:14px;padding:10px 14px;font-size:14px;line-height:1.55}
 </style>
 </head>
@@ -94,8 +99,10 @@ function status(it) { return HEN[it.k] && (!sent[it.id] || HEN[it.k] >= sent[it.
 function progress() { const n = D.items.filter(i => status(i)).length; $('bar').style.width = (100 * n / D.items.length) + '%'; $('cnt').textContent = 'הוקלטו ' + n + ' מתוך ' + D.items.length; }
 function tabs() { $('tabs').innerHTML = SECS.map(s => { const all = D.items.filter(i => i.sec === s.id), n = all.filter(i => status(i)).length; return '<button type="button" data-s="' + s.id + '" class="' + (s.id === sec ? 'on' : '') + '">' + s.name + ' (' + n + '/' + all.length + ')</button>' }).join(''); }
 const esc = t => String(t).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const opened = {};
 function card(it) {
   const st = status(it);
+  if (st && !opened[it.id]) return '<section class="item mini" id="' + it.id + '" data-a="open" title="לחיצה פותחת להקלטה מחדש"><span class="v"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l5 5L19 7"/></svg></span><span class="mt">' + esc(it.nik) + '</span><span class="mx">' + (st === 'done' ? 'בוצע' : 'נשמר') + '</span></section>';
   const gs = (it.games || []).map(n => G[n]).filter(Boolean);
   return '<section class="item ' + st + '" id="' + it.id + '"><div class="nik">' + esc(it.nik) + '</div>' +
     (it.when && gs.length ? '<div class="when">' + esc(it.when) + '</div>' : '') + (gs.length ? '<div class="when">נשמע ב-' + gs.length + ' משחקים' + (gs.length > 1 ? ', אפשר לגלול הצידה' : '') + '</div><div class="games">' + gs.map(g => '<button type="button" class="g" data-g="' + g.n + '"><img loading="lazy" src="th/' + g.n + '.jpg" alt=""><span>' + esc(g.title) + '</span></button>').join('') + '</div>' : '<div class="when">' + esc(it.when || '') + '</div>') +
@@ -108,6 +115,7 @@ function card(it) {
 }
 function srow(it) {
   const st = status(it);
+  if (st && !opened[it.id]) return '<section class="item mini" id="' + it.id + '" data-a="open" title="לחיצה פותחת להקלטה מחדש"><span class="v"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l5 5L19 7"/></svg></span><span class="mt">' + esc(it.nik) + '</span><span class="mx">' + (st === 'done' ? 'בוצע' : 'נשמר') + '</span></section>';
   return '<section class="item srow ' + st + '" id="' + it.id + '"><div class="nik">' + esc(it.nik) + '</div><div class="hint">' + esc(it.hint) + '</div>' +
     '<div class="row"><button type="button" class="btn rec" data-a="rec"><span class="dot"></span><span>' + (st ? 'הקלטה מחדש' : 'הקלטה') + '</span></button>' +
     '<button type="button" class="btn soft" data-a="play" disabled>להשמיע</button><button type="button" class="btn save" data-a="save" disabled>שמירה</button>' +
@@ -154,11 +162,12 @@ async function save(id) {
     const c = await client();
     await c.items.insert(COL, { title: secret, itemId: id, k: it.k, text: it.nik, mime: blob.type, audio, synced: false });
     sent[id] = Date.now(); store.set(SENT, sent); delete takes[id];
-    s.className = 'item sent'; setSt(id, 'נשמר. ייכנס למשחקים בעוד כמה דקות', 'ok'); tabs(); progress();
+    delete opened[id]; tabs(); progress(); const nit = D.items.find(i => i.id === id); s.outerHTML = (nit.sec === 'syl' ? srow : card)(nit);
   } catch (e) { btn.disabled = false; setSt(id, e.message === 'long' ? 'ההקלטה ארוכה מדי. נסי שוב קצת יותר קצר' : 'השמירה לא הצליחה. בדקי שיש אינטרנט ולחצי שוב על שמירה', 'err'); console.error(e); }
 }
 function play(src) { player.pause(); player.src = src; player.currentTime = 0; player.play().catch(() => {}); }
 document.addEventListener('click', e => {
+  const m = e.target.closest('.item.mini'); if (m) { opened[m.id] = 1; m.outerHTML = (D.items.find(i => i.id === m.id).sec === 'syl' ? srow : card)(D.items.find(i => i.id === m.id)); return; }
   const t = e.target.closest('button'); if (!t) return;
   if (t.dataset.s) { stopRec(); sec = t.dataset.s; store.set('hen-studio-sec', sec); render(); scrollTo(0, 0); return; }
   if (t.dataset.g) { const g = G[t.dataset.g]; $('mt').textContent = g.title; $('mf').src = '../play/index.html?' + g.q; $('mo').onclick = () => open('../play/index.html?' + g.q, '_blank'); $('modal').classList.add('on'); return; }
