@@ -68,7 +68,7 @@ main{max-width:760px;margin:0 auto}
 <body>
 <header>
   <h1>אולפן ההקלטות של חן</h1>
-  <p class="sub">קוראים את השורה עם הניקוד, לוחצים "הקלטה", ואחר כך "שמירה". ההקלטה נכנסת לבד לכל המשחקים שמופיעים מתחת לשורה.</p>
+  <p class="sub">לחצי "הקלטה", קראי את השורה ולחצי "עצירה". ההקלטה נשמרת לבד אחרי 3 שניות ונכנסת לכל המשחקים שמופיעים מתחת לשורה. רוצה לנסות שוב? לחצי "הקלטה מחדש".</p>
   <div class="bar"><i id="bar"></i></div>
   <div class="cnt" id="cnt"></div>
 </header>
@@ -108,7 +108,7 @@ function card(it) {
     (it.when && gs.length ? '<div class="when">' + esc(it.when) + '</div>' : '') + (gs.length ? '<div class="when">נשמע ב-' + gs.length + ' משחקים' + (gs.length > 1 ? ', אפשר לגלול הצידה' : '') + '</div><div class="games">' + gs.map(g => '<button type="button" class="g" data-g="' + g.n + '"><img loading="lazy" src="th/' + g.n + '.jpg" alt=""><span>' + esc(g.title) + '</span></button>').join('') + '</div>' : '<div class="when">' + esc(it.when || '') + '</div>') +
     '<div class="row"><button type="button" class="btn rec" data-a="rec"><span class="dot"></span><span>' + (st ? 'הקלטה מחדש' : 'הקלטה') + '</span></button>' +
     '<button type="button" class="btn soft" data-a="play" disabled>להשמיע את מה שהקלטתי</button>' +
-    '<button type="button" class="btn save" data-a="save" disabled>שמירה</button></div>' +
+    '<button type="button" class="btn save" data-a="save" disabled>לשמור עכשיו</button></div>' +
     '<div class="row">' + (st === 'done' ? '<button type="button" class="btn soft" data-a="mine">להשמיע את הקול שלך במשחק</button>' : '') +
     (it.sec === 'kb' && !st ? '<button type="button" class="btn soft" data-a="tts">להשמיע את הקול הממוחשב שיש היום</button>' : '') + '</div>' +
     '<div class="st ' + (st === 'done' ? 'ok' : '') + '">' + (st === 'done' ? 'בקול שלך במשחקים' : st === 'sent' ? 'נשמר. ייכנס למשחקים בעוד כמה דקות' : '') + '</div></section>';
@@ -118,7 +118,7 @@ function srow(it) {
   if (st && !opened[it.id]) return '<section class="item mini" id="' + it.id + '" data-a="open" title="לחיצה פותחת להקלטה מחדש"><span class="v"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l5 5L19 7"/></svg></span><span class="mt">' + esc(it.nik) + '</span><span class="mx">' + (st === 'done' ? 'בוצע' : 'נשמר') + '</span></section>';
   return '<section class="item srow ' + st + '" id="' + it.id + '"><div class="nik">' + esc(it.nik) + '</div><div class="hint">' + esc(it.hint) + '</div>' +
     '<div class="row"><button type="button" class="btn rec" data-a="rec"><span class="dot"></span><span>' + (st ? 'הקלטה מחדש' : 'הקלטה') + '</span></button>' +
-    '<button type="button" class="btn soft" data-a="play" disabled>להשמיע</button><button type="button" class="btn save" data-a="save" disabled>שמירה</button>' +
+    '<button type="button" class="btn soft" data-a="play" disabled>להשמיע</button><button type="button" class="btn save" data-a="save" disabled>לשמור עכשיו</button>' +
     (st === 'done' ? '<button type="button" class="btn soft" data-a="mine">הקול שלך במשחק</button>' : '') + '</div>' +
     '<div class="st ' + (st === 'done' ? 'ok' : '') + '">' + (st === 'done' ? 'בקול שלך במשחקים' : st === 'sent' ? 'נשמר. ייכנס למשחקים בעוד כמה דקות' : '') + '</div></section>';
 }
@@ -134,14 +134,16 @@ render();
 let rec = null, chunks = [], recItem = null, takes = {}, stream = null, player = new Audio(), t0 = 0, tmr = 0;
 const MIME = ['audio/mp4', 'audio/webm;codecs=opus', 'audio/webm', 'audio/ogg;codecs=opus'].find(m => window.MediaRecorder && MediaRecorder.isTypeSupported(m)) || '';
 function setSt(id, msg, cls) { const e = document.querySelector('#' + id + ' .st'); if (e) { e.className = 'st ' + (cls || ''); e.textContent = msg; } }
+const auto = {};
 async function startRec(id) {
   if (rec) { stopRec(); if (recItem === id) return; }
+  if (auto[id]) { clearInterval(auto[id]); delete auto[id]; }
   try { stream = stream && stream.active ? stream : await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: false, noiseSuppression: true, autoGainControl: true, channelCount: 1 } }); }
   catch (e) { setSt(id, 'צריך לאשר לדפדפן להשתמש במיקרופון, ואז ללחוץ שוב על הקלטה', 'err'); return; }
   player.pause(); chunks = []; recItem = id;
   rec = new MediaRecorder(stream, MIME ? { mimeType: MIME, audioBitsPerSecond: 128000 } : undefined);
   rec.ondataavailable = e => e.data.size && chunks.push(e.data);
-  rec.onstop = () => { const b = new Blob(chunks, { type: rec.mimeType || MIME || 'audio/mp4' }); takes[id] = b; const s = document.getElementById(id); s.querySelector('[data-a=play]').disabled = false; s.querySelector('[data-a=save]').disabled = false; setSt(id, 'מוכן. אפשר להשמיע, ואם טוב ללחוץ "שמירה"'); rec = null; };
+  rec.onstop = () => { const b = new Blob(chunks, { type: rec.mimeType || MIME || 'audio/mp4' }); takes[id] = b; const s = document.getElementById(id); s.querySelector('[data-a=play]').disabled = false; s.querySelector('[data-a=save]').disabled = false; let left = 3; setSt(id, 'נשמר אוטומטית בעוד ' + left + ' שניות. רוצה לנסות שוב? לחצי "הקלטה מחדש"'); auto[id] = setInterval(() => { left--; if (left > 0) setSt(id, 'נשמר אוטומטית בעוד ' + left + ' שניות. רוצה לנסות שוב? לחצי "הקלטה מחדש"'); else { clearInterval(auto[id]); delete auto[id]; save(id); } }, 1000); rec = null; };
   rec.start(); t0 = Date.now();
   const s = document.getElementById(id), b = s.querySelector('[data-a=rec]'); b.classList.add('live'); b.lastChild.textContent = 'עצירה';
   clearInterval(tmr); tmr = setInterval(() => { const sec = Math.floor((Date.now() - t0) / 1000); setSt(id, 'מקליטה... ' + sec + ' שניות'); if (sec >= 30) stopRec(); }, 250);
@@ -155,15 +157,15 @@ async function client() {
   wix = createClient({ auth: OAuthStrategy({ clientId: CLIENT_ID }), modules: { items } }); return wix;
 }
 async function save(id) {
-  const it = D.items.find(i => i.id === id), blob = takes[id]; if (!blob) return;
-  const s = document.getElementById(id), btn = s.querySelector('[data-a=save]'); btn.disabled = true; setSt(id, 'שומרת...');
+  const it = D.items.find(i => i.id === id), blob = takes[id]; if (!blob) return; delete takes[id];
+  const el0 = () => document.getElementById(id), btn = el0() && el0().querySelector('[data-a=save]'); if (btn) btn.disabled = true; setSt(id, 'שומרת...');
   try {
     const audio = await b64(blob); if (audio.length > 480000) throw new Error('long');
     const c = await client();
     await c.items.insert(COL, { title: secret, itemId: id, k: it.k, text: it.nik, mime: blob.type, audio, synced: false });
-    sent[id] = Date.now(); store.set(SENT, sent); delete takes[id];
-    delete opened[id]; tabs(); progress(); const nit = D.items.find(i => i.id === id); s.outerHTML = (nit.sec === 'syl' ? srow : card)(nit);
-  } catch (e) { btn.disabled = false; setSt(id, e.message === 'long' ? 'ההקלטה ארוכה מדי. נסי שוב קצת יותר קצר' : 'השמירה לא הצליחה. בדקי שיש אינטרנט ולחצי שוב על שמירה', 'err'); console.error(e); }
+    sent[id] = Date.now(); store.set(SENT, sent);
+    delete opened[id]; tabs(); progress(); const s = el0(); if (s) s.outerHTML = (it.sec === 'syl' ? srow : card)(it);
+  } catch (e) { takes[id] = blob; const b2 = el0() && el0().querySelector('[data-a=save]'); if (b2) b2.disabled = false; setSt(id, e.message === 'long' ? 'ההקלטה ארוכה מדי. נסי שוב קצת יותר קצר' : 'השמירה לא הצליחה. בדקי שיש אינטרנט ולחצי שוב על שמירה', 'err'); console.error(e); }
 }
 function play(src) { player.pause(); player.src = src; player.currentTime = 0; player.play().catch(() => {}); }
 document.addEventListener('click', e => {
@@ -175,7 +177,7 @@ document.addEventListener('click', e => {
   const s = t.closest('.item'); if (!s) return; const id = s.id, it = D.items.find(i => i.id === id);
   if (t.dataset.a === 'rec') startRec(id);
   else if (t.dataset.a === 'play' && takes[id]) play(URL.createObjectURL(takes[id]));
-  else if (t.dataset.a === 'save') save(id);
+  else if (t.dataset.a === 'save') { if (auto[id]) { clearInterval(auto[id]); delete auto[id]; } save(id); }
   else if (t.dataset.a === 'mine') play('../play/assets/hen/' + it.k + '.mp3?v=' + HEN[it.k]);
   else if (t.dataset.a === 'tts') play('../play/assets/tts/' + it.k + '.mp3');
 });
