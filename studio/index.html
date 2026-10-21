@@ -62,6 +62,9 @@ main{max-width:760px;margin:0 auto}
 .item.mini .v svg{width:13px;height:13px}
 .item.mini .mt{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .item.mini .mx{flex:none;font-size:12px;color:var(--muted)}
+.mini-game{width:100%;height:420px;border:2px solid var(--sky);border-radius:14px;background:#fff;display:block;margin:0 0 10px}
+.srow .pimg{display:block;margin:0 auto 4px;height:84px;max-width:140px;object-fit:contain;border-radius:10px;background:#fff}
+.grp .gname{text-align:center;font-weight:700;color:var(--rose);margin:0 0 6px}
 .tip{max-width:760px;margin:0 auto 12px;background:var(--sky-wash);border:1.5px solid var(--sky);border-radius:14px;padding:10px 14px;font-size:14px;line-height:1.55}
 </style>
 </head>
@@ -89,6 +92,7 @@ if (!secret) { $('main').innerHTML = '<div class="lock">האולפן נפתח ר
 const SECS = [{ id: 'kb', name: 'קוראים בקלות', note: 'ההנחיות שהילדים שומעים במשחקים של קוראים בקלות. כל הנחיה נכנסת לכל המשחקים שמופיעים מתחתיה (וגם למשחקים אחרים עם אותה הנחיה). לחיצה על משחק פותחת אותו.' },
   { id: 'syl', name: 'הברות לפי ניקוד', note: 'הקלטה אחת לכל צליל. כל מה שבשורה נשמע אותו דבר (קָמָץ ופַּתָּח, כּ ו-ק), ולכן מספיקה הקלטה אחת לכולם. במשחקים, לחיצה על אריח עם ההברה משמיעה את הקול שלך. המשחקים שבהם יש הברות של האות מופיעים מתחת לאות.' },
   { id: 'words', name: 'מילים מהשאלות', note: 'המילים שמופיעות בשאלות של קוראים בקלות. ליד תמונה יופיע רמקול שמשמיע את המילה בקול שלך. מילה שהילד צריך לקרוא בעצמו נשמעת רק אחרי שענה נכון, כדי שלא יגלה את התשובה לפני שקרא.' },
+  { id: 'pics', name: 'מילים של תמונות', note: 'מילים שמופיעות במשחקים רק כתמונה. ליד כל מילה רואים את התמונה, ובראש כל קבוצה יש את המשחק עצמו בקטן, אפשר לשחק בו. במשחקי ספירת הצלילים יש גם שורה של המילה מחולקת להברות, למשל פָּ - רָה.' },
   { id: 'answers', name: 'מילים בתשובות', note: 'המילים שבאפשרויות התשובה, מסודרות לפי משחק. כל מילה נשמעת בקול שלך אחרי שהילד בחר בה נכון. אפשר להקליט בהדרגה.' },
   { id: 'names', name: 'שמות האותיות', note: 'שם האות נשמע במשחק "מתחו קו אל האות הזהה" בכל נגיעה ובכל התאמה. עד שתקליטי, נשמע קול ממוחשב.' },
   { id: 'more', name: 'הנחיות במשחקים נוספים', note: 'הנחיות של הפאזלים ושל משחק מתיחת הקו. לחיצה על המשחק פותחת אותו.' },
@@ -119,7 +123,7 @@ function card(it) {
 function srow(it) {
   const st = status(it);
   if (st && !opened[it.id]) return '<section class="item mini" id="' + it.id + '" data-a="open" title="לחיצה פותחת להקלטה מחדש"><span class="v"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l5 5L19 7"/></svg></span><span class="mt">' + esc(it.nik) + '</span><span class="mx">' + (st === 'done' ? 'בוצע' : 'נשמר') + '</span></section>';
-  return '<section class="item srow ' + st + '" id="' + it.id + '"><div class="nik">' + esc(it.nik) + '</div><div class="hint">' + esc(it.hint) + '</div>' +
+  return '<section class="item srow ' + st + '" id="' + it.id + '">' + (it.img ? '<img class="pimg" loading="lazy" src="../play/assets/' + it.img + '" alt="">' : '') + '<div class="nik">' + esc(it.nik) + '</div><div class="hint">' + esc(it.hint) + '</div>' +
     '<div class="row"><button type="button" class="btn rec" data-a="rec"><span class="dot"></span><span>' + (st ? 'הקלטה מחדש' : 'הקלטה') + '</span></button>' +
     '<button type="button" class="btn soft" data-a="play" disabled>להשמיע</button><button type="button" class="btn save" data-a="save" disabled>לשמור עכשיו</button>' +
     (st === 'done' ? '<button type="button" class="btn soft" data-a="mine">הקול שלך במשחק</button>' : '') + '</div>' +
@@ -130,11 +134,16 @@ function sylHtml() {
   return Object.values(by).map(l => { const gs = [...new Set(l.flatMap(i => i.games || []))].map(n => G[n]).filter(Boolean);
     return '<div class="grp"><h3>' + esc(l[0].grpName) + '</h3>' + (gs.length ? '<div class="when">מופיע ב-' + gs.length + ' משחקים</div><div class="games">' + gs.map(g => '<button type="button" class="g" data-g="' + g.n + '"><img loading="lazy" src="th/' + g.n + '.jpg" alt=""><span>' + esc(g.title) + '</span></button>').join('') + '</div>' : '') + l.map(srow).join('') + '</div>'; }).join('');
 }
-function ansHtml() {
+function groupHtml(sec) {
+  const by = new Map(); D.items.filter(i => i.sec === sec).forEach(i => { const g = (i.games || [])[0]; if (!by.has(g)) by.set(g, []); by.get(g).push(i); });
+  return [...by.entries()].map(([n, l]) => { const g = G[n]; const gu = g && (g.u || '../play/index.html?' + g.q); return '<div class="grp">' + (g ? '<div class="gname">' + esc(g.title) + '</div><iframe class="mini-game" loading="lazy" src="' + gu + '" title="' + esc(g.title) + '"></iframe>' : '') + l.map(srow).join('') + '</div>'; }).join('');
+}
+function ansHtml() { return groupHtml('answers'); }
+function ansHtmlOld() {
   const by = new Map(); D.items.filter(i => i.sec === 'answers').forEach(i => { const g = (i.games || [])[0]; if (!by.has(g)) by.set(g, []); by.get(g).push(i); });
   return [...by.entries()].map(([n, l]) => { const g = G[n]; return '<div class="grp">' + (g ? '<div class="games" style="justify-content:center"><button type="button" class="g" data-g="' + g.n + '"><img loading="lazy" src="th/' + g.n + '.jpg" alt=""><span>' + esc(g.title) + '</span></button></div>' : '') + l.map(srow).join('') + '</div>'; }).join('');
 }
-function render() { tabs(); progress(); const s = SECS.find(x => x.id === sec) || SECS[0]; $('main').innerHTML = '<p class="secnote">' + s.note + '</p>' + (s.id === 'syl' ? sylHtml() : s.id === 'answers' ? ansHtml() : D.items.filter(i => i.sec === s.id).map(s.id === 'names' ? srow : card).join('')); }
+function render() { tabs(); progress(); const s = SECS.find(x => x.id === sec) || SECS[0]; $('main').innerHTML = '<p class="secnote">' + s.note + '</p>' + (s.id === 'syl' ? sylHtml() : s.id === 'answers' || s.id === 'pics' ? groupHtml(s.id) : D.items.filter(i => i.sec === s.id).map(s.id === 'names' ? srow : card).join('')); }
 render();
 
 // ===== הקלטה =====
@@ -171,12 +180,12 @@ async function save(id) {
     const c = await client();
     await c.items.insert(COL, { title: secret, itemId: id, k: it.k, text: it.nik, mime: blob.type, audio, synced: false });
     sent[id] = Date.now(); store.set(SENT, sent);
-    delete opened[id]; tabs(); progress(); const s = el0(); if (s) s.outerHTML = (/^(syl|names|answers)$/.test(it.sec) ? srow : card)(it);
+    delete opened[id]; tabs(); progress(); const s = el0(); if (s) s.outerHTML = (/^(syl|names|answers|pics)$/.test(it.sec) ? srow : card)(it);
   } catch (e) { takes[id] = blob; const b2 = el0() && el0().querySelector('[data-a=save]'); if (b2) b2.disabled = false; setSt(id, e.message === 'long' ? 'ההקלטה ארוכה מדי. נסי שוב קצת יותר קצר' : 'השמירה לא הצליחה. בדקי שיש אינטרנט ולחצי שוב על שמירה', 'err'); console.error(e); }
 }
 function play(src) { player.pause(); player.src = src; player.currentTime = 0; player.play().catch(() => {}); }
 document.addEventListener('click', e => {
-  const m = e.target.closest('.item.mini'); if (m) { opened[m.id] = 1; m.outerHTML = (/^(syl|names|answers)$/.test(D.items.find(i => i.id === m.id).sec) ? srow : card)(D.items.find(i => i.id === m.id)); return; }
+  const m = e.target.closest('.item.mini'); if (m) { opened[m.id] = 1; m.outerHTML = (/^(syl|names|answers|pics)$/.test(D.items.find(i => i.id === m.id).sec) ? srow : card)(D.items.find(i => i.id === m.id)); return; }
   const t = e.target.closest('button'); if (!t) return;
   if (t.dataset.s) { stopRec(); sec = t.dataset.s; store.set('hen-studio-sec', sec); render(); scrollTo(0, 0); return; }
   if (t.dataset.g) { const g = G[t.dataset.g]; $('mt').textContent = g.title; const gu = g.u || '../play/index.html?' + g.q; $('mf').src = gu; $('mo').onclick = () => open(gu, '_blank'); $('modal').classList.add('on'); return; }
