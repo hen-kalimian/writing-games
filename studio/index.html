@@ -51,6 +51,12 @@ main{max-width:760px;margin:0 auto}
 #modal .top{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:8px 12px;border-bottom:1.5px solid var(--pink);font-weight:600;font-size:15px}
 #modal iframe{flex:1;border:0;width:100%}
 #modal .x{font:600 15px Rubik,Arial;border:2px solid var(--pink-deep);background:#fff;color:var(--rose);border-radius:20px;padding:6px 14px;cursor:pointer}
+.grp{background:#fff;border:2px solid var(--pink);border-radius:20px;padding:12px 12px 4px;margin:0 0 16px}
+.grp h3{margin:2px 0 6px;text-align:center;font-size:30px;color:var(--rose);letter-spacing:6px}
+.item.srow{border:1.5px solid var(--pink);border-radius:14px;padding:10px;margin:0 0 8px;box-shadow:none}
+.srow .nik{font-size:32px;margin:0;letter-spacing:2px}
+.srow .hint{text-align:center;font-size:13px;color:var(--muted);direction:ltr}
+.srow .row{margin-top:6px;gap:6px}.srow .btn{font-size:14px;padding:8px 12px;min-height:40px}
 .tip{max-width:760px;margin:0 auto 12px;background:var(--sky-wash);border:1.5px solid var(--sky);border-radius:14px;padding:10px 14px;font-size:14px;line-height:1.55}
 </style>
 </head>
@@ -76,6 +82,7 @@ if (secret) { store.set(KEYS, secret); if (location.hash) history.replaceState(n
 if (!secret) { $('main').innerHTML = '<div class="lock">האולפן נפתח רק מהקישור האישי ששלחתי לך.</div>'; $('tabs').remove(); $('tip').remove(); throw 0; }
 
 const SECS = [{ id: 'kb', name: 'קוראים בקלות', note: 'ההנחיות שהילדים שומעים במשחקים של קוראים בקלות. כל הנחיה נכנסת לכל המשחקים שמופיעים מתחתיה (וגם למשחקים אחרים עם אותה הנחיה). לחיצה על משחק פותחת אותו.' },
+  { id: 'syl', name: 'הברות לפי ניקוד', note: 'הקלטה אחת לכל צליל. כל מה שבשורה נשמע אותו דבר (קָמָץ ופַּתָּח, כּ ו-ק), ולכן מספיקה הקלטה אחת לכולם. במשחקים, לחיצה על אריח עם ההברה משמיעה את הקול שלך. המשחקים שבהם יש הברות של האות מופיעים מתחת לאות.' },
   { id: 'all', name: 'עידוד וצלילים', note: 'מילים וצלילים שנשמעים בכל המשחקים. כל הכבוד, נסו שוב, סיום משחק וגרירת פריטים. עד שתקליטי, המשחקים נשארים כמו היום.' }];
 let D, HEN = {}, sent = store.get(SENT, {}), sec = store.get('hen-studio-sec', 'kb');
 const [d, h] = await Promise.all([fetch('items.json?v=' + Date.now()).then(r => r.json()), fetch('../play/assets/hen/index.json?v=' + Date.now()).then(r => r.ok ? r.json() : {}).catch(() => ({}))]);
@@ -98,7 +105,20 @@ function card(it) {
     (it.sec === 'kb' && !st ? '<button type="button" class="btn soft" data-a="tts">להשמיע את הקול הממוחשב שיש היום</button>' : '') + '</div>' +
     '<div class="st ' + (st === 'done' ? 'ok' : '') + '">' + (st === 'done' ? 'בקול שלך במשחקים' : st === 'sent' ? 'נשמר. ייכנס למשחקים בעוד כמה דקות' : '') + '</div></section>';
 }
-function render() { tabs(); progress(); const s = SECS.find(x => x.id === sec) || SECS[0]; $('main').innerHTML = '<p class="secnote">' + s.note + '</p>' + D.items.filter(i => i.sec === s.id).map(card).join(''); }
+function srow(it) {
+  const st = status(it);
+  return '<section class="item srow ' + st + '" id="' + it.id + '"><div class="nik">' + esc(it.nik) + '</div><div class="hint">' + esc(it.hint) + '</div>' +
+    '<div class="row"><button type="button" class="btn rec" data-a="rec"><span class="dot"></span><span>' + (st ? 'הקלטה מחדש' : 'הקלטה') + '</span></button>' +
+    '<button type="button" class="btn soft" data-a="play" disabled>להשמיע</button><button type="button" class="btn save" data-a="save" disabled>שמירה</button>' +
+    (st === 'done' ? '<button type="button" class="btn soft" data-a="mine">הקול שלך במשחק</button>' : '') + '</div>' +
+    '<div class="st ' + (st === 'done' ? 'ok' : '') + '">' + (st === 'done' ? 'בקול שלך במשחקים' : st === 'sent' ? 'נשמר. ייכנס למשחקים בעוד כמה דקות' : '') + '</div></section>';
+}
+function sylHtml() {
+  const by = {}; D.items.filter(i => i.sec === 'syl').forEach(i => (by[i.grp] = by[i.grp] || []).push(i));
+  return Object.values(by).map(l => { const gs = [...new Set(l.flatMap(i => i.games || []))].map(n => G[n]).filter(Boolean);
+    return '<div class="grp"><h3>' + esc(l[0].grpName) + '</h3>' + (gs.length ? '<div class="when">מופיע ב-' + gs.length + ' משחקים</div><div class="games">' + gs.map(g => '<button type="button" class="g" data-g="' + g.n + '"><img loading="lazy" src="th/' + g.n + '.jpg" alt=""><span>' + esc(g.title) + '</span></button>').join('') + '</div>' : '') + l.map(srow).join('') + '</div>'; }).join('');
+}
+function render() { tabs(); progress(); const s = SECS.find(x => x.id === sec) || SECS[0]; $('main').innerHTML = '<p class="secnote">' + s.note + '</p>' + (s.id === 'syl' ? sylHtml() : D.items.filter(i => i.sec === s.id).map(card).join('')); }
 render();
 
 // ===== הקלטה =====
