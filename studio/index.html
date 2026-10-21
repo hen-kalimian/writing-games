@@ -181,6 +181,7 @@ document.addEventListener('click', e => {
   else if (t.dataset.a === 'mine') play('../play/assets/hen/' + it.k + '.mp3?v=' + HEN[it.k]);
   else if (t.dataset.a === 'tts') play('../play/assets/tts/' + it.k + '.mp3');
 });
+setTimeout(() => client().catch(() => {}), 1500); // טעינה מוקדמת, כדי שהשמירה הראשונה תהיה מהירה
 $('modal').addEventListener('click', e => { if (e.target.id === 'modal') $('mx').click(); });
 // כשההקלטות נכנסות למשחקים, הסטטוס מתעדכן לבד
 setInterval(async () => { if (!Object.keys(sent).some(id => !HEN[(D.items.find(i => i.id === id) || {}).k] || HEN[D.items.find(i => i.id === id).k] < sent[id])) return; try { const n = await fetch('../play/assets/hen/index.json?v=' + Date.now()).then(r => r.ok ? r.json() : null); if (n) { HEN = n; if (!rec) render(); } } catch (e) {} }, 60000);
