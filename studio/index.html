@@ -65,6 +65,7 @@ main{max-width:760px;margin:0 auto}
 .mini-game{width:100%;height:420px;border:2px solid var(--sky);border-radius:14px;background:#fff;display:block;margin:0 0 10px}
 .srow .pimg{display:block;margin:0 auto 4px;height:84px;max-width:140px;object-fit:contain;border-radius:10px;background:#fff}
 .grp .gname{text-align:center;font-weight:700;color:var(--rose);margin:0 0 6px}
+.item.mini .pl{flex:none;width:30px;height:30px;border-radius:50%;border:2px solid var(--mint-deep);background:#fff;color:#2f8f6f;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;padding:0}
 .tip{max-width:760px;margin:0 auto 12px;background:var(--sky-wash);border:1.5px solid var(--sky);border-radius:14px;padding:10px 14px;font-size:14px;line-height:1.55}
 </style>
 </head>
@@ -106,15 +107,16 @@ function status(it) { return HEN[it.k] && (!sent[it.id] || HEN[it.k] >= sent[it.
 function progress() { const n = D.items.filter(i => status(i)).length; $('bar').style.width = (100 * n / D.items.length) + '%'; $('cnt').textContent = 'הוקלטו ' + n + ' מתוך ' + D.items.length; }
 function tabs() { $('tabs').innerHTML = SECS.map(s => { const all = D.items.filter(i => i.sec === s.id), n = all.filter(i => status(i)).length; return '<button type="button" data-s="' + s.id + '" class="' + (s.id === sec ? 'on' : '') + '">' + s.name + ' (' + n + '/' + all.length + ')</button>' }).join(''); }
 const esc = t => String(t).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
-const opened = {};
+const opened = {}, saved = {};
+const canPlay = it => !!((takes && takes[it.id]) || saved[it.id] || HEN[it.k]);
 function card(it) {
   const st = status(it);
-  if (st && !opened[it.id]) return '<section class="item mini" id="' + it.id + '" data-a="open" title="לחיצה פותחת להקלטה מחדש"><span class="v"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l5 5L19 7"/></svg></span><span class="mt">' + esc(it.nik) + '</span><span class="mx">' + (st === 'done' ? 'בוצע' : 'נשמר') + '</span></section>';
+  if (st && !opened[it.id]) return '<section class="item mini" id="' + it.id + '" data-a="open" title="לחיצה פותחת להקלטה מחדש"><span class="v"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l5 5L19 7"/></svg></span><span class="mt">' + esc(it.nik) + '</span><button type="button" class="pl" data-a="play" aria-label="להשמיע את ההקלטה" title="להשמיע את ההקלטה"><svg viewBox="0 0 24 24" width="14" height="14"><path d="M7 5l12 7-12 7z" fill="currentColor"/></svg></button><span class="mx">' + (st === 'done' ? 'בוצע' : 'נשמר') + '</span></section>';
   const gs = (it.games || []).map(n => G[n]).filter(Boolean);
   return '<section class="item ' + st + '" id="' + it.id + '"><div class="nik">' + esc(it.nik) + '</div>' +
     (it.when && gs.length ? '<div class="when">' + esc(it.when) + '</div>' : '') + (gs.length ? '<div class="when">נשמע ב-' + gs.length + ' משחקים' + (gs.length > 1 ? ', אפשר לגלול הצידה' : '') + '</div><div class="games">' + gs.map(g => '<button type="button" class="g" data-g="' + g.n + '"><img loading="lazy" src="th/' + g.n + '.jpg" alt=""><span>' + esc(g.title) + '</span></button>').join('') + '</div>' : '<div class="when">' + esc(it.when || '') + '</div>') +
     '<div class="row"><button type="button" class="btn rec" data-a="rec"><span class="dot"></span><span>' + (st ? 'הקלטה מחדש' : 'הקלטה') + '</span></button>' +
-    '<button type="button" class="btn soft" data-a="play" disabled>להשמיע את מה שהקלטתי</button>' +
+    '<button type="button" class="btn soft" data-a="play"' + (canPlay(it) ? '' : ' disabled') + '>להשמיע את מה שהקלטתי</button>' +
     '<button type="button" class="btn save" data-a="save" disabled>לשמור עכשיו</button></div>' +
     '<div class="row">' + (st === 'done' ? '<button type="button" class="btn soft" data-a="mine">להשמיע את הקול שלך במשחק</button>' : '') +
     (it.sec === 'kb' && !st ? '<button type="button" class="btn soft" data-a="tts">להשמיע את הקול הממוחשב שיש היום</button>' : '') + '</div>' +
@@ -122,10 +124,10 @@ function card(it) {
 }
 function srow(it) {
   const st = status(it);
-  if (st && !opened[it.id]) return '<section class="item mini" id="' + it.id + '" data-a="open" title="לחיצה פותחת להקלטה מחדש"><span class="v"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l5 5L19 7"/></svg></span><span class="mt">' + esc(it.nik) + '</span><span class="mx">' + (st === 'done' ? 'בוצע' : 'נשמר') + '</span></section>';
+  if (st && !opened[it.id]) return '<section class="item mini" id="' + it.id + '" data-a="open" title="לחיצה פותחת להקלטה מחדש"><span class="v"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l5 5L19 7"/></svg></span><span class="mt">' + esc(it.nik) + '</span><button type="button" class="pl" data-a="play" aria-label="להשמיע את ההקלטה" title="להשמיע את ההקלטה"><svg viewBox="0 0 24 24" width="14" height="14"><path d="M7 5l12 7-12 7z" fill="currentColor"/></svg></button><span class="mx">' + (st === 'done' ? 'בוצע' : 'נשמר') + '</span></section>';
   return '<section class="item srow ' + st + '" id="' + it.id + '">' + (it.img ? '<img class="pimg" loading="lazy" src="../play/assets/' + it.img + '" alt="">' : '') + '<div class="nik">' + esc(it.nik) + '</div><div class="hint">' + esc(it.hint) + '</div>' +
     '<div class="row"><button type="button" class="btn rec" data-a="rec"><span class="dot"></span><span>' + (st ? 'הקלטה מחדש' : 'הקלטה') + '</span></button>' +
-    '<button type="button" class="btn soft" data-a="play" disabled>להשמיע</button><button type="button" class="btn save" data-a="save" disabled>לשמור עכשיו</button>' +
+    '<button type="button" class="btn soft" data-a="play"' + (canPlay(it) ? '' : ' disabled') + '>להשמיע</button><button type="button" class="btn save" data-a="save" disabled>לשמור עכשיו</button>' +
     (st === 'done' ? '<button type="button" class="btn soft" data-a="mine">הקול שלך במשחק</button>' : '') + '</div>' +
     '<div class="st ' + (st === 'done' ? 'ok' : '') + '">' + (st === 'done' ? 'בקול שלך במשחקים' : st === 'sent' ? 'נשמר. ייכנס למשחקים בעוד כמה דקות' : '') + '</div></section>';
 }
@@ -147,7 +149,7 @@ function render() { tabs(); progress(); const s = SECS.find(x => x.id === sec) |
 render();
 
 // ===== הקלטה =====
-let rec = null, chunks = [], recItem = null, takes = {}, stream = null, player = new Audio(), t0 = 0, tmr = 0;
+var rec = null, chunks = [], recItem = null, takes = {}, stream = null, player = new Audio(), t0 = 0, tmr = 0;
 const MIME = ['audio/mp4', 'audio/webm;codecs=opus', 'audio/webm', 'audio/ogg;codecs=opus'].find(m => window.MediaRecorder && MediaRecorder.isTypeSupported(m)) || '';
 function setSt(id, msg, cls) { const e = document.querySelector('#' + id + ' .st'); if (e) { e.className = 'st ' + (cls || ''); e.textContent = msg; } }
 const auto = {};
@@ -179,20 +181,20 @@ async function save(id) {
     const audio = await b64(blob); if (audio.length > 480000) throw new Error('long');
     const c = await client();
     await c.items.insert(COL, { title: secret, itemId: id, k: it.k, text: it.nik, mime: blob.type, audio, synced: false });
-    sent[id] = Date.now(); store.set(SENT, sent);
+    sent[id] = Date.now(); store.set(SENT, sent); saved[id] = blob;
     delete opened[id]; tabs(); progress(); const s = el0(); if (s) s.outerHTML = (/^(syl|names|answers|pics)$/.test(it.sec) ? srow : card)(it);
   } catch (e) { takes[id] = blob; const b2 = el0() && el0().querySelector('[data-a=save]'); if (b2) b2.disabled = false; setSt(id, e.message === 'long' ? 'ההקלטה ארוכה מדי. נסי שוב קצת יותר קצר' : 'השמירה לא הצליחה. בדקי שיש אינטרנט ולחצי שוב על שמירה', 'err'); console.error(e); }
 }
 function play(src) { player.pause(); player.src = src; player.currentTime = 0; player.play().catch(() => {}); }
 document.addEventListener('click', e => {
-  const m = e.target.closest('.item.mini'); if (m) { opened[m.id] = 1; m.outerHTML = (/^(syl|names|answers|pics)$/.test(D.items.find(i => i.id === m.id).sec) ? srow : card)(D.items.find(i => i.id === m.id)); return; }
+  const m = e.target.closest('.item.mini'); if (m && !e.target.closest('[data-a=play]')) { opened[m.id] = 1; m.outerHTML = (/^(syl|names|answers|pics)$/.test(D.items.find(i => i.id === m.id).sec) ? srow : card)(D.items.find(i => i.id === m.id)); return; }
   const t = e.target.closest('button'); if (!t) return;
   if (t.dataset.s) { stopRec(); sec = t.dataset.s; store.set('hen-studio-sec', sec); render(); scrollTo(0, 0); return; }
   if (t.dataset.g) { const g = G[t.dataset.g]; $('mt').textContent = g.title; const gu = g.u || '../play/index.html?' + g.q; $('mf').src = gu; $('mo').onclick = () => open(gu, '_blank'); $('modal').classList.add('on'); return; }
   if (t.id === 'mx') { $('modal').classList.remove('on'); $('mf').src = 'about:blank'; return; }
   const s = t.closest('.item'); if (!s) return; const id = s.id, it = D.items.find(i => i.id === id);
   if (t.dataset.a === 'rec') startRec(id);
-  else if (t.dataset.a === 'play' && takes[id]) play(URL.createObjectURL(takes[id]));
+  else if (t.dataset.a === 'play') { const bl = takes[id] || saved[id]; if (bl) play(URL.createObjectURL(bl)); else if (HEN[it.k]) play('../play/assets/hen/' + it.k + '.mp3?v=' + HEN[it.k]); }
   else if (t.dataset.a === 'save') { if (auto[id]) { clearInterval(auto[id]); delete auto[id]; } save(id); }
   else if (t.dataset.a === 'mine') play('../play/assets/hen/' + it.k + '.mp3?v=' + HEN[it.k]);
   else if (t.dataset.a === 'tts') play('../play/assets/tts/' + it.k + '.mp3');
