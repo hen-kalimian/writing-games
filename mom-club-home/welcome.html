@@ -10,7 +10,7 @@
   *{box-sizing:border-box;}
   html,body{margin:0;}
   body{min-height:100vh;font-family:'Open Sans','Rubik',sans-serif;color:#1e2a31;
-    background:linear-gradient(160deg,#fff 0%,#fdeef3 45%,#eaf7f1 75%,#eaf4fb 100%);padding:12px 14px 28px;}
+    background:linear-gradient(160deg,#fff 0%,#fdeef3 45%,#eaf7f1 75%,#eaf4fb 100%);padding:8px 8px 16px;}
   #wrap{max-width:720px;margin:0 auto;text-align:center;}
   .logo{width:84px;max-width:26vw;height:auto;display:block;margin:0 auto 4px;}
   h1{font-family:'Rubik',sans-serif;font-size:clamp(20px,5vw,28px);line-height:1.3;color:#d14175;margin:2px 0 2px;}
@@ -19,10 +19,10 @@
     font-weight:700;font-size:clamp(16px,4.2vw,19px);padding:13px 28px;border-radius:14px;
     box-shadow:0 6px 16px rgba(209,65,117,.3);transition:transform .15s;}
   .btn:hover{transform:translateY(-2px);background:#ae2f5f;}
-  .top{margin:0 0 14px;}
+  .top{margin:14px 0 0;}
   .video{position:relative;width:fit-content;max-width:100%;margin:0 auto;border-radius:20px;overflow:hidden;
     background:#fdeef3;border:3px solid #fbd0de;box-shadow:0 10px 30px rgba(209,65,117,.15);line-height:0;}
-  .video video{display:block;height:min(62vh,640px,calc((100vw - 34px) * 1.7778));max-width:100%;width:auto;aspect-ratio:9/16;background:#fdeef3;}
+  .video video{display:block;height:min(calc(100vh - 96px),calc((100vw - 22px) * 1.7778));max-width:100%;width:auto;aspect-ratio:9/16;background:#fdeef3;}
   .snd{position:absolute;right:12px;bottom:64px;display:none;align-items:center;gap:8px;line-height:1.2;background:rgba(209,65,117,.95);color:#fff;border:0;border-radius:30px;padding:11px 18px;
     font-family:'Rubik',sans-serif;font-weight:700;font-size:16px;cursor:pointer;box-shadow:0 6px 18px rgba(0,0,0,.25);}
   .snd svg{width:22px;height:22px;fill:#fff;}
@@ -34,19 +34,11 @@
 </head>
 <body>
 <div id="wrap">
-  <img class="logo" src="img/logo.png" alt="חן קלימיאן - לדבר עם ילדים">
-  <h1>ברוכה הבאה למועדון האימהות</h1>
-  <p class="sub">צפי בסרטון היכרות קצר:</p>
-  <div class="top"><a class="btn" target="_top" href="./">לכניסה לבית המועדון</a></div>
   <div class="video">
     <video id="v" controls autoplay muted playsinline preload="auto" poster="video/club-welcome-poster.jpg" src="video/club-welcome-2.mp4" title="ברוכה הבאה למועדון האימהות"></video>
     <button id="snd" class="snd" type="button" aria-label="הפעלת קול"><svg viewBox="0 0 24 24"><path d="M3 9v6h4l5 4V5L7 9H3Zm13.5 3a4.5 4.5 0 0 0-2.5-4v8a4.5 4.5 0 0 0 2.5-4Zm-2.5-9v2.1a7 7 0 0 1 0 13.8V21a9 9 0 0 0 0-18Z"/></svg>לחצי להפעלת קול</button>
   </div>
-  <div class="cta">
-    <p>לכל התכנים של המועדון לחצי כאן</p>
-    <a class="btn" target="_top" href="./">לכניסה לבית המועדון</a>
-  </div>
-  <div class="foot">talkwithkids.co.il</div>
+  <div class="top"><a class="btn" target="_top" href="./">לכניסה לבית המועדון</a></div>
 </div>
 <script>
   (function () {
