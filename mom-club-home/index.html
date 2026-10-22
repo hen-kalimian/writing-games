@@ -2,7 +2,7 @@
 <html lang="he" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 <meta name="robots" content="noindex, nofollow">
 <title>בית מועדון האימהות | לדבר עם ילדים</title>
 <meta name="description" content="כל מה שמחכה לך במועדון האימהות, במקום אחד">
@@ -11,7 +11,7 @@
 <link rel="apple-touch-icon" href="img/icon-180.png">
 <link rel="manifest" href="manifest.json">
 <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700&family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
-<script>try{var fs=localStorage.getItem('mch-fs');if(fs)document.documentElement.setAttribute('data-fs',fs);}catch(e){}</script>
+<script>try{localStorage.removeItem('mch-fs');}catch(e){}</script>
 <style>
   :root{
     --bg:#fff; --ink:#1e2a31; --muted:#5d727e; --line:#e6dde2;
@@ -20,7 +20,6 @@
     --blue:#467c9c; --blue-dark:#386380; --blue-tint:#f0f7fb; --gold-tint:#fbf6e8;
     --radius:20px; --shadow:0 2px 12px rgba(60,40,60,.08); --nav:66px;
   }
-  html[data-fs="1"]{font-size:112.5%;} html[data-fs="2"]{font-size:125%;} html[data-fs="3"]{font-size:137.5%;}
   *{box-sizing:border-box;}
   @media (prefers-reduced-motion:no-preference){html{scroll-behavior:smooth;}}
   body{margin:0;font-family:'Open Sans',Arial,sans-serif;font-size:1.0625rem;line-height:1.6;color:var(--ink);
@@ -128,7 +127,6 @@
 </svg>
 
 <div class="wrap" id="main">
-  <div class="topbar"><span class="label">גודל טקסט</span><button class="fs" id="fsm" aria-label="הקטנת הטקסט">א-</button><button class="fs" id="fsp" aria-label="הגדלת הטקסט">א+</button></div>
   <header><img src="img/logo.png" alt="לדבר עם ילדים"><h1 class="name">בית מועדון האימהות</h1></header>
 
   <div class="hero">
@@ -235,12 +233,6 @@
   var SITE='https://www.talkwithkids.co.il';
   function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
   function link(u){return /^https?:/.test(u)?u:SITE+u;}
-  /* text size */
-  var fsv=+(document.documentElement.getAttribute('data-fs')||0);
-  function applyFs(){ if(fsv) document.documentElement.setAttribute('data-fs',fsv); else document.documentElement.removeAttribute('data-fs'); try{localStorage.setItem('mch-fs',fsv);}catch(e){} document.getElementById('fsm').disabled=fsv<=0; document.getElementById('fsp').disabled=fsv>=3; }
-  document.getElementById('fsm').onclick=function(){ if(fsv>0){fsv--;applyFs();} };
-  document.getElementById('fsp').onclick=function(){ if(fsv<3){fsv++;applyFs();} };
-  applyFs();
   /* next Tuesday (Israel time) */
   (function(){
     var now=new Date(); var d=new Date(now.getFullYear(),now.getMonth(),now.getDate());
