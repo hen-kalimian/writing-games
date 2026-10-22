@@ -1,5 +1,5 @@
 {
- "updated": "2026-10-17T05:48:24.168Z",
+ "updated": "2026-10-19T07:51:10.379Z",
  "topics": [
   {
    "slug": "winter-2026",
@@ -18,7 +18,7 @@
   {
    "slug": "hanukkah-2026",
    "title": "חנוכה 2026",
-   "icon": "dreidel",
+   "icon": "menorah",
    "visible": false,
    "due": "2026-11-25",
    "keywords": "חנוכה - 2026",

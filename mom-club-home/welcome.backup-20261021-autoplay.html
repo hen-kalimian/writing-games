@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>ברוכה הבאה למועדון האימהות</title>
+<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box;}
+  html,body{margin:0;}
+  body{min-height:100vh;font-family:'Open Sans','Rubik',sans-serif;color:#1e2a31;
+    background:linear-gradient(160deg,#fff 0%,#fdeef3 45%,#eaf7f1 75%,#eaf4fb 100%);padding:8px 8px 16px;}
+  #wrap{max-width:720px;margin:0 auto;text-align:center;}
+  .logo{width:84px;max-width:26vw;height:auto;display:block;margin:0 auto 4px;}
+  h1{font-family:'Rubik',sans-serif;font-size:clamp(20px,5vw,28px);line-height:1.3;color:#d14175;margin:2px 0 2px;}
+  .sub{font-family:'Rubik',sans-serif;font-size:clamp(15px,3.8vw,20px);color:#3a8e69;font-weight:500;margin:0 0 10px;}
+  .btn{display:inline-block;background:#d14175;color:#fff;text-decoration:none;font-family:'Rubik',sans-serif;
+    font-weight:700;font-size:clamp(16px,4.2vw,19px);padding:13px 28px;border-radius:14px;
+    box-shadow:0 6px 16px rgba(209,65,117,.3);transition:transform .15s;}
+  .btn:hover{transform:translateY(-2px);background:#ae2f5f;}
+  .top{margin:14px 0 0;}
+  .video{position:relative;width:fit-content;max-width:100%;margin:0 auto;border-radius:20px;overflow:hidden;
+    background:#fdeef3;border:3px solid #fbd0de;box-shadow:0 10px 30px rgba(209,65,117,.15);line-height:0;}
+  .video video{display:block;height:min(calc(100vh - 96px),calc((100vw - 22px) * 1.7778));max-width:100%;width:auto;aspect-ratio:9/16;background:#fdeef3;}
+  .snd{position:absolute;right:12px;bottom:64px;display:none;align-items:center;gap:8px;line-height:1.2;background:rgba(209,65,117,.95);color:#fff;border:0;border-radius:30px;padding:11px 18px;
+    font-family:'Rubik',sans-serif;font-weight:700;font-size:16px;cursor:pointer;box-shadow:0 6px 18px rgba(0,0,0,.25);}
+  .snd svg{width:22px;height:22px;fill:#fff;}
+  .cta{margin-top:22px;background:#fff;border:2px solid #cfeadd;border-radius:20px;padding:18px 16px;
+    box-shadow:0 4px 16px rgba(58,142,105,.1);}
+  .cta p{margin:0 0 12px;font-family:'Rubik',sans-serif;font-size:clamp(15px,4vw,18px);font-weight:500;color:#386380;}
+  .foot{margin-top:20px;font-size:12px;color:#6c808c;}
+</style>
+</head>
+<body>
+<div id="wrap">
+  <div class="video">
+    <video id="v" controls autoplay muted playsinline preload="auto" poster="video/club-welcome-poster.jpg" src="video/club-welcome-2.mp4" title="ברוכה הבאה למועדון האימהות"></video>
+    <button id="snd" class="snd" type="button" aria-label="הפעלת קול"><svg viewBox="0 0 24 24"><path d="M3 9v6h4l5 4V5L7 9H3Zm13.5 3a4.5 4.5 0 0 0-2.5-4v8a4.5 4.5 0 0 0 2.5-4Zm-2.5-9v2.1a7 7 0 0 1 0 13.8V21a9 9 0 0 0 0-18Z"/></svg>לחצי להפעלת קול</button>
+  </div>
+  <div class="top"><a class="btn" target="_top" href="./">לכניסה לבית המועדון</a></div>
+</div>
+<script>
+  (function () {
+    var v = document.getElementById('v'), b = document.getElementById('snd');
+    function unmute() { v.muted = false; v.volume = 1; b.style.display = 'none'; if (v.paused) { var q = v.play(); if (q && q.catch) q.catch(function () {}); } }
+    b.addEventListener('click', unmute);
+    v.addEventListener('volumechange', function () { if (!v.muted) b.style.display = 'none'; });
+    // 1) try to start with sound (works when the browser allows it), 2) otherwise start muted and show the sound button
+    v.muted = false;
+    var p = v.play();
+    function muted() { v.muted = true; var q = v.play(); if (q && q.catch) q.catch(function () {}); b.style.display = 'flex'; }
+    if (p && p.catch) p.catch(muted); else if (v.paused) muted();
+    document.addEventListener('visibilitychange', function () { if (!document.hidden && v.paused && v.currentTime < 0.5) { var q = v.play(); if (q && q.catch) q.catch(function () {}); } });
+  })();
+</script>
+</body>
+</html>
