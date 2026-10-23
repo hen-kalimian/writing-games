@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>מועדון האימהות</title>
+<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@500;700;800&family=Assistant:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg-pink:#FEF6F5;--pink-2:#FBE3E1;--pink-strong:#F8B9B6;
+  --mint:#E4F5EF;--sky:#E6F2FB;
+  --card-pink:#FDE1EA;--card-line:#FBC5D6;
+  --ink:#27413C;--ink-soft:#5C6F6A;
+  --fuchsia:#EF406E;--fuchsia-deep:#B8236B;--highlight:#FCE8EA;--gold:#C9A227;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:#fff;color:var(--ink);font-family:Assistant,"Open Sans Hebrew",Arial,sans-serif;font-size:18px;line-height:1.7}
+h1,h2,h3{font-family:Rubik,Assistant,sans-serif;color:var(--ink);margin:0;line-height:1.25}
+.wrap{max-width:1040px;margin:0 auto;padding:0 20px;position:relative;z-index:1}
+.band{padding:64px 0;position:relative;overflow:hidden}
+.band.pink{background:linear-gradient(180deg,var(--bg-pink),var(--pink-2))}
+.band.mint{background:var(--mint)}
+.band.sky{background:var(--sky)}
+.band.white{background:#fff}
+.center{text-align:center}
+.kicker{display:inline-block;color:var(--fuchsia-deep);font-weight:700;font-size:17px;border-bottom:3px solid var(--fuchsia);padding-bottom:2px;margin-bottom:14px}
+h1{font-size:clamp(30px,5.2vw,50px);font-weight:800}
+h2{font-size:clamp(26px,4vw,38px);font-weight:800;margin-bottom:12px}
+h3{font-size:22px;font-weight:700}
+.hl{background:var(--highlight);padding:0 8px;border-radius:6px;box-decoration-break:clone;-webkit-box-decoration-break:clone}
+.und{color:var(--fuchsia-deep);font-weight:800;text-decoration:underline;text-decoration-color:var(--fuchsia);text-decoration-thickness:3px;text-underline-offset:6px}
+.sub{font-size:clamp(18px,2.3vw,22px);color:var(--ink-soft);max-width:720px;margin:14px auto 26px}
+.btn{display:inline-block;background:linear-gradient(135deg,#EF406E,#F27A9B);color:#fff;font-weight:800;font-family:Rubik,Assistant,sans-serif;font-size:20px;padding:16px 38px;border-radius:16px;text-decoration:none;box-shadow:0 8px 22px rgba(239,64,110,.28)}
+.note{font-size:15px;color:var(--ink-soft);margin-top:12px}
+.card{background:#fff;border:2px solid var(--card-line);border-radius:22px;padding:22px 24px;box-shadow:0 6px 18px rgba(184,35,107,.07)}
+.card.pink{background:var(--card-pink)}
+.grid{display:grid;gap:18px}
+.g2{grid-template-columns:repeat(2,1fr)}.g3{grid-template-columns:repeat(3,1fr)}
+@media(max-width:760px){.g2,.g3{grid-template-columns:1fr}.band{padding:44px 0}.btn{width:100%;max-width:420px}}
+.shape{position:absolute;border-radius:50%;opacity:.55;pointer-events:none}
+.s1{width:220px;height:220px;background:var(--card-pink);top:-60px;left:-60px}
+.s2{width:120px;height:120px;background:var(--mint);bottom:-30px;right:6%;border-radius:28px;transform:rotate(14deg)}
+.s3{width:90px;height:90px;background:var(--sky);top:40px;right:-20px;border-radius:24px;transform:rotate(-12deg)}
+.hero{display:grid;grid-template-columns:1.15fr .85fr;gap:30px;align-items:center}
+@media(max-width:860px){.hero{grid-template-columns:1fr;text-align:center}}
+.portrait{border-radius:50%;width:min(100%,340px);aspect-ratio:1;object-fit:cover;object-position:100% 20%;border:6px solid #fff;box-shadow:0 0 0 6px var(--card-line);display:block;margin:0 auto}
+.checks{list-style:none;padding:0;margin:0;display:grid;gap:12px}
+.checks li{display:flex;gap:12px;align-items:flex-start;background:#fff;border:2px solid var(--card-line);border-radius:16px;padding:14px 16px;font-weight:600}
+.tick{flex:none;width:28px;height:28px;border-radius:50%;background:var(--fuchsia);color:#fff;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:800;margin-top:2px}
+.pillar img{width:100%;border-radius:16px;display:block;margin-bottom:14px;border:2px solid var(--card-line)}
+.num{display:inline-flex;width:34px;height:34px;border-radius:50%;background:var(--fuchsia);color:#fff;font-weight:800;align-items:center;justify-content:center;margin-bottom:8px;font-family:Rubik,sans-serif}
+.rev{display:block;width:100%;border-radius:18px;border:2px solid var(--card-line);background:#fff}
+.masonry{columns:3 260px;column-gap:16px}.masonry .rev{margin-bottom:16px;break-inside:avoid}
+.topic{background:#fff;border:2px solid var(--card-line);border-radius:14px;padding:10px 14px;font-weight:600;font-size:16px}
+.price{font-family:Rubik,sans-serif;font-weight:800;font-size:clamp(54px,9vw,84px);color:var(--fuchsia-deep);line-height:1}
+.was{color:var(--ink-soft);text-decoration:line-through;font-size:22px}
+details{background:#fff;border:2px solid var(--card-line);border-radius:16px;padding:14px 18px;margin-bottom:12px}
+summary{font-weight:700;cursor:pointer;font-family:Rubik,sans-serif}
+.formbox{max-width:480px;margin:26px auto 0;background:#fff;border:3px solid var(--card-line);border-radius:22px;padding:22px}
+.field{background:var(--card-pink);border-radius:12px;padding:14px;margin-bottom:12px;color:var(--ink-soft);text-align:center;font-weight:600}
+.sign{font-family:Rubik,sans-serif;font-weight:700;color:var(--fuchsia-deep);margin-top:16px}
+.tag{position:fixed;inset-inline:0;bottom:0;background:#27413C;color:#fff;font-size:14px;text-align:center;padding:8px 12px;z-index:9}
+.sparkle{color:var(--gold);font-size:26px}
+.band{padding:48px 0}.wrap{padding:0 18px}html,body{overflow-x:hidden;-webkit-text-size-adjust:100%}.vid{position:relative;width:min(100%,300px);margin:0 auto;border-radius:26px;overflow:hidden;border:6px solid #fff;box-shadow:0 0 0 6px var(--card-line);background:var(--card-pink);line-height:0}.vid video{display:block;width:100%;aspect-ratio:9/16;background:var(--card-pink)}.snd{position:absolute;right:8px;top:8px;display:none;align-items:center;gap:6px;line-height:1.2;background:rgba(184,35,107,.95);color:#fff;border:0;border-radius:22px;padding:6px 12px;font-family:Rubik,sans-serif;font-weight:700;font-size:13px;cursor:pointer}.snd svg{width:16px;height:16px;fill:#fff}</style>
+</head>
+<body>
+<!-- 1. פתיחה -->
+<section class="band pink" id="top">
+  <div class="shape s1"></div><div class="shape s3"></div>
+  <div class="wrap hero">
+    <div>
+      <span class="kicker">מועדון האימהות של חן קלימיאן</span>
+      <h1>איך מגדלים ילדים תוססים <span class="hl">בבית רגוע</span>, בלי לצעוק ובלי להרגיש אשמה?</h1>
+      <p class="sub">הדרכה שבועית בוואטסאפ, קורסים ותכנים מקצועיים, ואמא לארבעה בנים שעוברת את זה איתך. הכל במקום אחד, ב-59 ש"ח לחודש.</p>
+      <a class="btn" target="_top" href="https://www.talkwithkids.co.il/mom#comp-m7tmom03">אני רוצה להצטרף למועדון</a>
+      <div class="note">בלי התחייבות. אפשר לבטל מתי שרוצים.</div>
+    </div>
+    <div>
+      <div class="vid"><video id="v" controls autoplay muted playsinline preload="auto" poster="https://hen-kalimian.github.io/writing-games/mom-club-home/video/club-welcome-poster.jpg" src="https://hen-kalimian.github.io/writing-games/mom-club-home/video/club-welcome-3.mp4" title="ברוכה הבאה למועדון האימהות"></video><button id="snd" class="snd" type="button"><svg viewBox="0 0 24 24"><path d="M3 9v6h4l5 4V5L7 9H3Zm13.5 3a4.5 4.5 0 0 0-2.5-4v8a4.5 4.5 0 0 0 2.5-4Zm-2.5-9v2.1a7 7 0 0 1 0 13.8V21a9 9 0 0 0 0-18Z"/></svg>לחצי להפעלת קול</button></div>
+      <p class="center sign">חן קלימיאן<br><span style="font-weight:600;color:var(--ink-soft)">קלינאית תקשורת ומדריכת הורים מוסמכת, אמא לארבעה</span></p>
+    </div>
+  </div>
+</section>
+
+<!-- 2. זיהוי -->
+<section class="band white">
+  <div class="wrap">
+    <div class="center"><span class="kicker">מכירה את זה?</span><h2>את אוהבת אותם עד כלות, ובכל זאת <span class="und">נגמר לך הכוח</span></h2></div>
+    <ul class="checks" style="margin-top:26px;max-width:760px;margin-inline:auto">
+      <li><span class="tick">✓</span>ילדים שלא מקשיבים, ואת חוזרת על אותה בקשה חמש פעמים</li>
+      <li><span class="tick">✓</span>ריבים ומלחמות בין אחים, ואת בתפקיד השופטת של הבית</li>
+      <li><span class="tick">✓</span>קושי להציב גבולות בלי להתפוצץ, ואחר כך אשמה</li>
+      <li><span class="tick">✓</span>הרגשה של חוסר אונים מול התפרצויות</li>
+      <li><span class="tick">✓</span>מחשבה שכולן מסתדרות יותר טוב ממך (הן לא)</li>
+    </ul>
+    <p class="center" style="max-width:700px;margin:26px auto 0;font-size:20px"><b>אין פה אמא גרועה.</b> יש משפחה תוססת וחוסר בכלים נכונים. את זה אפשר לשנות.</p>
+  </div>
+</section>
+
+<!-- 3. סיפור -->
+<section class="band mint">
+  <div class="shape s2"></div>
+  <div class="wrap" style="max-width:780px">
+    <div class="center"><span class="kicker">למה פתחתי את המועדון</span><h2>גם אצלי הבית לא תמיד שקט</h2></div>
+    <p>אני אמא לארבעה בנים, וגם קלינאית תקשורת כבר 11 שנים. הייתי בטוחה שאם אני מבינה התפתחות ילדים, בבית הכל יזרום.</p>
+    <p>זה לא עבד ככה. ריבים, התפרצויות, ערבים שנגמרים בעייפות. הבנתי שמה שעזר לי באמת הוא <span class="und">שגרה ברורה, גבולות רגועים ותמיכה של אימהות אחרות</span>.</p>
+    <p>אז אספתי הכל למקום אחד: הדרכות, קורסים, ומקום שאפשר לשאול בו כל שאלה בלי להתבייש. ככה נולד מועדון האימהות.</p>
+    <p class="sign">שלך, חן</p>
+  </div>
+</section>
+
+<script>(function(){var v=document.getElementById('v'),b=document.getElementById('snd');if(!v)return;function un(){v.muted=false;v.volume=1;b.style.display='none';if(v.paused){var q=v.play();if(q&&q.catch)q.catch(function(){})}}b.addEventListener('click',un);v.addEventListener('volumechange',function(){if(!v.muted)b.style.display='none'});v.muted=false;var p=v.play();function mu(){v.muted=true;var q=v.play();if(q&&q.catch)q.catch(function(){});b.style.display='flex'}if(p&&p.catch)p.catch(mu);else if(v.paused)mu()})();</script>
+</body></html>

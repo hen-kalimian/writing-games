@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>מועדון האימהות</title>
+<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@500;700;800&family=Assistant:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg-pink:#FEF6F5;--pink-2:#FBE3E1;--pink-strong:#F8B9B6;
+  --mint:#E4F5EF;--sky:#E6F2FB;
+  --card-pink:#FDE1EA;--card-line:#FBC5D6;
+  --ink:#27413C;--ink-soft:#5C6F6A;
+  --fuchsia:#EF406E;--fuchsia-deep:#B8236B;--highlight:#FCE8EA;--gold:#C9A227;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:#fff;color:var(--ink);font-family:Assistant,"Open Sans Hebrew",Arial,sans-serif;font-size:18px;line-height:1.7}
+h1,h2,h3{font-family:Rubik,Assistant,sans-serif;color:var(--ink);margin:0;line-height:1.25}
+.wrap{max-width:1040px;margin:0 auto;padding:0 20px;position:relative;z-index:1}
+.band{padding:64px 0;position:relative;overflow:hidden}
+.band.pink{background:linear-gradient(180deg,var(--bg-pink),var(--pink-2))}
+.band.mint{background:var(--mint)}
+.band.sky{background:var(--sky)}
+.band.white{background:#fff}
+.center{text-align:center}
+.kicker{display:inline-block;color:var(--fuchsia-deep);font-weight:700;font-size:17px;border-bottom:3px solid var(--fuchsia);padding-bottom:2px;margin-bottom:14px}
+h1{font-size:clamp(30px,5.2vw,50px);font-weight:800}
+h2{font-size:clamp(26px,4vw,38px);font-weight:800;margin-bottom:12px}
+h3{font-size:22px;font-weight:700}
+.hl{background:var(--highlight);padding:0 8px;border-radius:6px;box-decoration-break:clone;-webkit-box-decoration-break:clone}
+.und{color:var(--fuchsia-deep);font-weight:800;text-decoration:underline;text-decoration-color:var(--fuchsia);text-decoration-thickness:3px;text-underline-offset:6px}
+.sub{font-size:clamp(18px,2.3vw,22px);color:var(--ink-soft);max-width:720px;margin:14px auto 26px}
+.btn{display:inline-block;background:linear-gradient(135deg,#EF406E,#F27A9B);color:#fff;font-weight:800;font-family:Rubik,Assistant,sans-serif;font-size:20px;padding:16px 38px;border-radius:16px;text-decoration:none;box-shadow:0 8px 22px rgba(239,64,110,.28)}
+.note{font-size:15px;color:var(--ink-soft);margin-top:12px}
+.card{background:#fff;border:2px solid var(--card-line);border-radius:22px;padding:22px 24px;box-shadow:0 6px 18px rgba(184,35,107,.07)}
+.card.pink{background:var(--card-pink)}
+.grid{display:grid;gap:18px}
+.g2{grid-template-columns:repeat(2,1fr)}.g3{grid-template-columns:repeat(3,1fr)}
+@media(max-width:760px){.g2,.g3{grid-template-columns:1fr}.band{padding:44px 0}.btn{width:100%;max-width:420px}}
+.shape{position:absolute;border-radius:50%;opacity:.55;pointer-events:none}
+.s1{width:220px;height:220px;background:var(--card-pink);top:-60px;left:-60px}
+.s2{width:120px;height:120px;background:var(--mint);bottom:-30px;right:6%;border-radius:28px;transform:rotate(14deg)}
+.s3{width:90px;height:90px;background:var(--sky);top:40px;right:-20px;border-radius:24px;transform:rotate(-12deg)}
+.hero{display:grid;grid-template-columns:1.15fr .85fr;gap:30px;align-items:center}
+@media(max-width:860px){.hero{grid-template-columns:1fr;text-align:center}}
+.portrait{border-radius:50%;width:min(100%,340px);aspect-ratio:1;object-fit:cover;object-position:100% 20%;border:6px solid #fff;box-shadow:0 0 0 6px var(--card-line);display:block;margin:0 auto}
+.checks{list-style:none;padding:0;margin:0;display:grid;gap:12px}
+.checks li{display:flex;gap:12px;align-items:flex-start;background:#fff;border:2px solid var(--card-line);border-radius:16px;padding:14px 16px;font-weight:600}
+.tick{flex:none;width:28px;height:28px;border-radius:50%;background:var(--fuchsia);color:#fff;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:800;margin-top:2px}
+.pillar img{width:100%;border-radius:16px;display:block;margin-bottom:14px;border:2px solid var(--card-line)}
+.num{display:inline-flex;width:34px;height:34px;border-radius:50%;background:var(--fuchsia);color:#fff;font-weight:800;align-items:center;justify-content:center;margin-bottom:8px;font-family:Rubik,sans-serif}
+.rev{display:block;width:100%;border-radius:18px;border:2px solid var(--card-line);background:#fff}
+.masonry{columns:3 260px;column-gap:16px}.masonry .rev{margin-bottom:16px;break-inside:avoid}
+.topic{background:#fff;border:2px solid var(--card-line);border-radius:14px;padding:10px 14px;font-weight:600;font-size:16px}
+.price{font-family:Rubik,sans-serif;font-weight:800;font-size:clamp(54px,9vw,84px);color:var(--fuchsia-deep);line-height:1}
+.was{color:var(--ink-soft);text-decoration:line-through;font-size:22px}
+details{background:#fff;border:2px solid var(--card-line);border-radius:16px;padding:14px 18px;margin-bottom:12px}
+summary{font-weight:700;cursor:pointer;font-family:Rubik,sans-serif}
+.formbox{max-width:480px;margin:26px auto 0;background:#fff;border:3px solid var(--card-line);border-radius:22px;padding:22px}
+.field{background:var(--card-pink);border-radius:12px;padding:14px;margin-bottom:12px;color:var(--ink-soft);text-align:center;font-weight:600}
+.sign{font-family:Rubik,sans-serif;font-weight:700;color:var(--fuchsia-deep);margin-top:16px}
+.tag{position:fixed;inset-inline:0;bottom:0;background:#27413C;color:#fff;font-size:14px;text-align:center;padding:8px 12px;z-index:9}
+.sparkle{color:var(--gold);font-size:26px}
+.band{padding:48px 0}.wrap{padding:0 18px}html,body{overflow-x:hidden;-webkit-text-size-adjust:100%}.vid{position:relative;width:min(100%,300px);margin:0 auto;border-radius:26px;overflow:hidden;border:6px solid #fff;box-shadow:0 0 0 6px var(--card-line);background:var(--card-pink);line-height:0}.vid video{display:block;width:100%;aspect-ratio:9/16;background:var(--card-pink)}.snd{position:absolute;right:8px;top:8px;display:none;align-items:center;gap:6px;line-height:1.2;background:rgba(184,35,107,.95);color:#fff;border:0;border-radius:22px;padding:6px 12px;font-family:Rubik,sans-serif;font-weight:700;font-size:13px;cursor:pointer}.snd svg{width:16px;height:16px;fill:#fff}</style>
+</head>
+<body>
+<!-- 7. תכנים שמחכים -->
+<section class="band white">
+  <div class="wrap">
+    <div class="center"><span class="kicker">כבר בפורטל</span><h2>הרצאות וקורסים שאפשר לצפות בהם <span class="und">עוד היום</span></h2></div>
+    <div class="grid g3" style="margin-top:24px">
+      <div class="topic">ניהול זמן לאימהות</div><div class="topic">לגדל ילדים עם ביטחון עצמי</div><div class="topic">להפוך לאמא סמכותית ולהציב גבולות</div>
+      <div class="topic">איך לעזור לילדים להתמודד עם כעסים</div><div class="topic">יחסים בין אחים</div><div class="topic">חיבור ותקשורת מקרבת</div>
+      <div class="topic">שינה טובה: ייעוץ שינה וגמילה</div><div class="topic">פרידה מחיתולים</div><div class="topic">בררנות באוכל</div>
+      <div class="topic">התמודדות עם תנועתיות והפרעת קשב</div><div class="topic">איך לעבור חופשים עם הילדים ברוגע</div><div class="topic">מיינדפולנס לאימהות</div>
+      <div class="topic">איך משנים התנהגות של ילדים</div><div class="topic">איך לעזור לילדים לשתף</div><div class="topic">שירים ככלי לקידום שפה</div>
+    </div>
+    <p class="center note" style="margin-top:14px">ועוד הרצאות שמתווספות כל הזמן.</p>
+  </div>
+</section>
+
+
+</body></html>
