@@ -22,13 +22,13 @@
   }
   *{box-sizing:border-box;}
   @media (prefers-reduced-motion:no-preference){html{scroll-behavior:smooth;}}
-  body{margin:0;font-family:'Open Sans',Arial,sans-serif;font-size:1.0625rem;line-height:1.6;color:var(--ink);
+  body{margin:0;font-family:'Open Sans',Arial,sans-serif;font-size:1rem;line-height:1.55;color:var(--ink);
     background:linear-gradient(160deg,#fff 0%,#fdeef3 40%,#eaf7f1 72%,#eaf4fb 100%);background-attachment:fixed;padding-bottom:calc(var(--nav) + 24px);}
   a{color:inherit;} img{max-width:100%;}
   h1,h2,h3{font-family:'Rubik','Open Sans',sans-serif;line-height:1.25;margin:0;}
   .wrap{max-width:660px;margin:0 auto;padding:0 16px;}
   .ic{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex:none;}
-  .small{font-size:.9375rem;color:var(--muted);}
+  .small{font-size:.8125rem;color:var(--muted);}
   .skip{position:absolute;top:-100px;right:16px;background:var(--ink);color:#fff;padding:10px 16px;border-radius:10px;z-index:99;}
   .skip:focus{top:10px;}
   a:focus-visible,button:focus-visible,summary:focus-visible,input:focus-visible{outline:3px solid var(--rose-dark);outline-offset:3px;border-radius:10px;}
@@ -38,23 +38,23 @@
   .fs:disabled{opacity:.45;}
   header{text-align:center;}
   header img{width:170px;max-width:52%;height:auto;}
-  header .name{display:block;font-family:'Rubik',sans-serif;font-weight:700;font-size:1.25rem;color:var(--rose);margin-top:2px;}
+  header .name{display:block;font-family:'Rubik',sans-serif;font-weight:700;font-size:1.3125rem;color:var(--rose);margin-top:2px;}
   .hero{display:flex;gap:16px;align-items:center;background:linear-gradient(160deg,#fff 55%,var(--rose-tint));border-radius:22px;box-shadow:var(--shadow);padding:18px;margin-top:12px;}
   .hero img{width:104px;height:104px;border-radius:50%;object-fit:cover;flex:none;border:4px solid #fff;box-shadow:0 0 0 3px var(--pink);}
-  .hero p{margin:0;} .hero .hi{font-family:'Rubik',sans-serif;font-weight:700;font-size:1.3rem;color:var(--rose-dark);margin-bottom:4px;}
+  .hero p{margin:0;font-size:.9375rem;} .hero .hi{font-family:'Rubik',sans-serif;font-weight:700;font-size:1.125rem;color:var(--rose-dark);margin-bottom:4px;}
   @media (max-width:380px){.hero{flex-direction:column;text-align:center;}}
   section{margin-top:30px;scroll-margin-top:12px;}
-  h2{font-size:1.4rem;display:flex;align-items:center;gap:10px;color:var(--ink);margin-bottom:12px;}
+  h2{font-size:1.3125rem;display:flex;align-items:center;gap:10px;color:var(--ink);margin-bottom:12px;}
   h2 .ic{width:38px;height:38px;padding:8px;border-radius:50%;background:var(--pink-strong);color:#fff;}
   .card{background:#fff;border-radius:var(--radius);box-shadow:var(--shadow);padding:18px;}
   .btn{display:flex;align-items:center;justify-content:center;gap:10px;min-height:56px;padding:14px 20px;border-radius:999px;background:var(--rose);color:#fff;text-decoration:none;
-    font-family:'Rubik',sans-serif;font-weight:700;font-size:1.15rem;box-shadow:0 6px 18px rgba(209,65,117,.3);}
+    font-family:'Rubik',sans-serif;font-weight:700;font-size:1.0625rem;box-shadow:0 6px 18px rgba(209,65,117,.3);}
   .btn.mint{background:var(--mint);box-shadow:0 6px 18px rgba(58,142,105,.25);}
   .btn-line{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;padding:8px 16px;border-radius:999px;border:2px solid var(--rose-dark);color:var(--rose-dark);background:#fff;font-weight:700;text-decoration:none;font-size:1rem;font-family:inherit;cursor:pointer;}
-  .note{text-align:center;font-size:.9375rem;color:var(--muted);margin:8px 0 0;}
+  .note{text-align:center;font-size:.8125rem;color:var(--muted);margin:8px 0 0;}
   .note a{color:var(--rose-dark);font-weight:700;}
   /* search */
-  .sbox{position:relative;} .sbox input{width:100%;min-height:54px;font:inherit;font-size:1.05rem;padding:12px 48px 12px 16px;border:2px solid var(--pink);border-radius:16px;background:#fffafc;}
+  .sbox{position:relative;} .sbox input{width:100%;min-height:54px;font:inherit;font-size:1rem;padding:12px 48px 12px 16px;border:2px solid var(--pink);border-radius:16px;background:#fffafc;}
   .sbox .ic{position:absolute;right:14px;top:16px;color:var(--rose);}
   #results{margin:10px 0 0;padding:0;list-style:none;}
   #results li a{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 4px;border-bottom:1px solid var(--line);text-decoration:none;font-weight:600;}
@@ -67,38 +67,38 @@
   details p{margin:8px 0;}
   /* next */
   .next{background:linear-gradient(160deg,#fff 55%,var(--mint-tint));border:2px solid #cfeadd;}
-  .next .kick{font-family:'Rubik',sans-serif;font-weight:700;color:var(--mint-dark);font-size:.95rem;}
-  .next h3{font-size:1.5rem;margin:2px 0 6px;} .next .when{font-size:1.15rem;display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
-  .badge{background:var(--pink);color:var(--rose-dark);border-radius:999px;padding:2px 12px;font-weight:700;font-size:.95rem;}
+  .next .kick{font-family:'Rubik',sans-serif;font-weight:700;color:var(--mint-dark);font-size:.875rem;}
+  .next h3{font-size:1.0625rem;margin:2px 0 6px;} .next .when{font-size:1rem;display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+  .badge{background:var(--pink);color:var(--rose-dark);border-radius:999px;padding:2px 12px;font-weight:700;font-size:.8125rem;}
   .row{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px;}
   /* topics */
   .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:10px;}
   .topic{display:flex;flex-direction:column;align-items:center;gap:6px;padding:12px 6px;border-radius:16px;text-decoration:none;text-align:center;border:1.5px solid transparent;box-shadow:0 1px 3px rgba(30,42,49,.06);}
-  .topic img{width:56px;height:56px;object-fit:contain;} .topic span{font-family:'Rubik',sans-serif;font-weight:600;font-size:.95rem;line-height:1.3;}
+  .topic img{width:56px;height:56px;object-fit:contain;} .topic span{font-family:'Rubik',sans-serif;font-weight:600;font-size:.8125rem;line-height:1.3;}
   .t0{background:var(--rose-tint);border-color:#fbd9e4;color:var(--rose-dark);} .t1{background:var(--mint-tint);border-color:#dcf0e6;color:var(--mint-dark);}
   .t2{background:var(--blue-tint);border-color:#dceaf2;color:var(--blue-dark);} .t3{background:var(--gold-tint);border-color:#f3e6bf;color:#85601f;}
   /* updates */
-  .upd{border-right:6px solid var(--pink-strong);margin-bottom:12px;} .upd .meta{display:flex;align-items:center;gap:10px;color:var(--muted);font-size:.9375rem;}
-  .new{background:var(--pink);color:var(--rose-dark);font-weight:700;border-radius:999px;padding:1px 10px;font-size:.8125rem;}
-  .upd h3{margin:6px 0 4px;font-size:1.15rem;} .upd p{margin:0 0 8px;} .upd a{color:var(--rose-dark);font-weight:700;text-decoration:none;}
+  .upd{border-right:6px solid var(--pink-strong);margin-bottom:12px;} .upd .meta{display:flex;align-items:center;gap:10px;color:var(--muted);font-size:.8125rem;}
+  .new{background:var(--pink);color:var(--rose-dark);font-weight:700;border-radius:999px;padding:1px 10px;font-size:.75rem;}
+  .upd h3{margin:6px 0 4px;font-size:1.0625rem;} .upd p{margin:0 0 8px;} .upd a{color:var(--rose-dark);font-weight:700;text-decoration:none;}
   /* what is in the club */
   .tiles{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
   .tile{display:flex;flex-direction:column;gap:6px;background:#fff;border-radius:var(--radius);box-shadow:var(--shadow);padding:16px;text-decoration:none;}
   .tile .ic{width:40px;height:40px;padding:9px;border-radius:50%;background:var(--pink);color:var(--rose-dark);}
   .tile:nth-child(3n+2) .ic{background:#dcf0e6;color:var(--mint-dark);} .tile:nth-child(3n) .ic{background:#dceaf2;color:var(--blue-dark);}
-  .tile h3{font-size:1.1rem;margin-top:4px;} .tile p{margin:0;font-size:.95rem;color:var(--muted);flex:1;} .tile b{color:var(--rose-dark);font-family:'Rubik',sans-serif;}
+  .tile h3{font-size:1.0625rem;margin-top:4px;} .tile p{margin:0;font-size:.8125rem;color:var(--muted);flex:1;} .tile b{color:var(--rose-dark);font-family:'Rubik',sans-serif;}
   @media (max-width:420px){.tiles{grid-template-columns:1fr;}}
   .rows{list-style:none;margin:0;padding:0;background:#fff;border-radius:var(--radius);box-shadow:var(--shadow);}
   .rows li a{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:14px 16px;border-bottom:1px solid var(--line);text-decoration:none;font-weight:600;}
   .rows li:last-child a{border-bottom:0;} .rows .chip{font-size:.8125rem;font-weight:600;background:var(--mint-tint);color:var(--mint-dark);border-radius:999px;padding:2px 10px;white-space:nowrap;}
   .faq details{border-bottom:1px solid var(--line);padding:10px 0;}
-  footer{text-align:center;margin:34px 0 10px;color:var(--muted);font-size:.9375rem;}
-  footer .sign{font-family:'Rubik',sans-serif;font-weight:700;color:var(--rose-dark);font-size:1.15rem;}
+  footer{text-align:center;margin:34px 0 10px;color:var(--muted);font-size:.8125rem;}
+  footer .sign{font-family:'Rubik',sans-serif;font-weight:700;color:var(--rose-dark);font-size:1.0625rem;}
   nav.bottom{position:fixed;bottom:0;right:0;left:0;height:var(--nav);background:#fff;border-top:1px solid var(--line);display:flex;justify-content:space-around;align-items:center;z-index:20;padding-bottom:env(safe-area-inset-bottom);}
   nav.bottom a{display:flex;flex-direction:column;align-items:center;gap:2px;text-decoration:none;font-size:.8125rem;font-weight:700;color:var(--muted);min-width:60px;}
   nav.bottom a.on{color:var(--rose-dark);}
   nav.bottom .ic{width:26px;height:26px;}
-  .btn-wa{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:48px;padding:10px 24px;border-radius:999px;background:linear-gradient(135deg,#fff 0%,#f0faf5 45%,#dff3e9 100%);border:1.5px solid #bfe3d0;color:var(--mint-dark);font-family:'Rubik',sans-serif;font-weight:600;font-size:1.05rem;text-decoration:none;box-shadow:0 4px 14px rgba(58,142,105,.14);transition:box-shadow .2s,transform .2s;}
+  .btn-wa{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:48px;padding:10px 24px;border-radius:999px;background:linear-gradient(135deg,#fff 0%,#f0faf5 45%,#dff3e9 100%);border:1.5px solid #bfe3d0;color:var(--mint-dark);font-family:'Rubik',sans-serif;font-weight:600;font-size:1rem;text-decoration:none;box-shadow:0 4px 14px rgba(58,142,105,.14);transition:box-shadow .2s,transform .2s;}
   .btn-wa:hover{box-shadow:0 6px 18px rgba(58,142,105,.22);transform:translateY(-1px);}
   .btn-wa .wa{width:24px;height:24px;fill:var(--mint);stroke:none;flex:none;}
   .steps a.btn-wa{color:var(--mint-dark);font-weight:600;}
@@ -136,14 +136,14 @@
 
   <section id="welcome-video">
     <div class="card" style="text-align:center">
-      <h2 style="font-size:1.2rem;margin-bottom:10px">חדשה במועדון?</h2>
+      <h2 style="margin-bottom:10px">חדשה במועדון?</h2>
       <p class="note" style="margin:0 0 14px">סרטון היכרות קצר שמראה איפה נמצא כל דבר.</p>
       <a id="watch-video" target="_top" href="https://www.talkwithkids.co.il/welcomemom" style="display:inline-block;background:#d14175;color:#fff;text-decoration:none;font-weight:700;padding:14px 30px;border-radius:14px;box-shadow:0 6px 16px rgba(209,65,117,.3)">לצפייה בסרטון ההיכרות</a>
     </div>
   </section>
   <section id="search">
     <div class="card">
-      <h2 style="font-size:1.2rem;margin-bottom:10px">מה את מחפשת?</h2>
+      <h2 style="margin-bottom:10px">מה את מחפשת?</h2>
       <div class="sbox"><svg class="ic"><use href="#i-search"/></svg><input id="q" type="search" placeholder="למשל: מתמטיקה, גבולות, שינה, סתיו" autocomplete="off" aria-label="חיפוש בתכני המועדון"></div>
       <ul id="results"></ul>
       <p class="note" id="shint">החיפוש עובר על כל התכנים בפורטל. בלחיצה תועברי להתחברות באתר, ורק חברות המועדון נכנסות.</p>
@@ -152,7 +152,7 @@
 
   <section id="start">
     <div class="card">
-      <h2 style="font-size:1.25rem"><svg class="ic"><use href="#i-star"/></svg>חדשה במועדון? התחילי כאן</h2>
+      <h2><svg class="ic"><use href="#i-star"/></svg>חדשה במועדון? התחילי כאן</h2>
       <ol class="steps">
         <li><span>היכנסי לפורטל המועדון עם המייל שאיתו נרשמת: <a href="https://www.talkwithkids.co.il/mom-club" target="_blank" rel="noopener">כניסה לפורטל</a></span></li>
         <li><span>הצטרפי לקבוצת הוואטסאפ השקטה, שם מגיעות ההודעות על התכנים החדשים: <a href="https://chat.whatsapp.com/KNQoQLPrhCsHfSwVzfE9i7" target="_blank" rel="noopener">לקבוצה</a></span></li>
