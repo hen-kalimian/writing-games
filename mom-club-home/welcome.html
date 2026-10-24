@@ -11,35 +11,44 @@
   html,body{margin:0;}
   body{min-height:100vh;font-family:'Open Sans','Rubik',sans-serif;color:#1e2a31;
     background:linear-gradient(160deg,#fff 0%,#fdeef3 45%,#eaf7f1 75%,#eaf4fb 100%);padding:8px 8px 16px;}
-  #wrap{max-width:720px;margin:0 auto;text-align:center;}
-  .logo{width:84px;max-width:26vw;height:auto;display:block;margin:0 auto 4px;}
-  h1{font-family:'Rubik',sans-serif;font-size:clamp(20px,5vw,28px);line-height:1.3;color:#d14175;margin:2px 0 2px;}
-  .sub{font-family:'Rubik',sans-serif;font-size:clamp(15px,3.8vw,20px);color:#3a8e69;font-weight:500;margin:0 0 10px;}
-  .btn{display:inline-block;background:#d14175;color:#fff;text-decoration:none;font-family:'Rubik',sans-serif;
-    font-weight:700;font-size:clamp(16px,4.2vw,19px);padding:13px 28px;border-radius:14px;
-    box-shadow:0 6px 16px rgba(209,65,117,.3);transition:transform .15s;}
-  .btn:hover{transform:translateY(-2px);background:#ae2f5f;}
-  .top{margin:14px 0 0;}
-  .video{position:relative;width:fit-content;max-width:100%;margin:0 auto;border-radius:20px;overflow:hidden;
+  #wrap{max-width:560px;margin:0 auto;text-align:center;padding-top:6px;}
+  .logo{width:72px;max-width:22vw;height:auto;display:block;margin:0 auto 6px;}
+  h1{font-family:'Rubik',sans-serif;font-size:clamp(19px,4.6vw,24px);line-height:1.3;color:#d14175;margin:2px 0 4px;}
+  .sub{font-family:'Open Sans','Rubik',sans-serif;font-size:clamp(13px,3.4vw,15px);color:#5d727e;font-weight:600;margin:0 0 16px;}
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:52px;background:#3a8e69;color:#fff;text-decoration:none;font-family:'Rubik',sans-serif;
+    font-weight:700;font-size:clamp(15px,4vw,17px);padding:12px 26px;border-radius:999px;width:100%;max-width:340px;
+    box-shadow:0 6px 16px rgba(58,142,105,.3);transition:transform .15s;}
+  .btn:hover{transform:translateY(-2px);background:#317255;}
+  .videocard{margin-top:4px;background:#fff;border-radius:22px;box-shadow:0 2px 14px rgba(60,40,60,.09);padding:16px;}
+  .videocard .kick{font-family:'Rubik',sans-serif;font-weight:700;font-size:clamp(14px,3.8vw,16px);color:#1e2a31;margin:0 0 12px;}
+  .top{margin:18px 0 0;}
+  .note{font-family:'Open Sans',sans-serif;font-size:12.5px;color:#5d727e;margin:10px 0 0;}
+  .video{position:relative;width:fit-content;max-width:100%;margin:0 auto;border-radius:18px;overflow:hidden;
     background:#fdeef3;border:3px solid #fbd0de;box-shadow:0 10px 30px rgba(209,65,117,.15);line-height:0;}
-  .video video{display:block;height:min(calc(100vh - 96px),calc((100vw - 22px) * 1.7778));max-width:100%;width:auto;aspect-ratio:9/16;background:#fdeef3;}
+  .video video{display:block;height:min(calc(100vh - 170px),calc((100vw - 54px) * 1.7778));max-width:100%;width:auto;aspect-ratio:9/16;background:#fdeef3;}
   .snd{position:absolute;right:10px;top:10px;display:none;align-items:center;gap:6px;line-height:1.2;background:rgba(209,65,117,.95);color:#fff;border:0;border-radius:24px;padding:6px 12px;
     font-family:'Rubik',sans-serif;font-weight:700;font-size:13px;cursor:pointer;box-shadow:0 6px 18px rgba(0,0,0,.25);}
   .snd svg{width:16px;height:16px;fill:#fff;}
-  .cta{margin-top:22px;background:#fff;border:2px solid #cfeadd;border-radius:20px;padding:18px 16px;
-    box-shadow:0 4px 16px rgba(58,142,105,.1);}
-  .cta p{margin:0 0 12px;font-family:'Rubik',sans-serif;font-size:clamp(15px,4vw,18px);font-weight:500;color:#386380;}
-  .foot{margin-top:20px;font-size:12px;color:#6c808c;}
+  .foot{margin-top:18px;font-size:12px;color:#6c808c;}
 </style>
 <style id="noscrollbar">html,body{scrollbar-width:none;-ms-overflow-style:none}html::-webkit-scrollbar,body::-webkit-scrollbar{display:none;width:0;height:0}</style>
-<style id="dkcap">.dk .video video{height:min(calc(100vh - 96px),470px)}</style><script>if(window.self!==window.top&&window.innerWidth>=400)document.documentElement.className+=' dk';</script></head>
+<style id="dkcap">.dk .video video{height:min(calc(100vh - 220px),430px)}</style><script>if(window.self!==window.top&&window.innerWidth>=400)document.documentElement.className+=' dk';</script></head>
 <body>
 <div id="wrap">
-  <div class="video">
-    <video id="v" controls autoplay muted playsinline preload="auto" poster="video/club-welcome-poster.jpg" src="video/club-welcome-4.mp4" title="ברוכה הבאה למועדון האימהות"></video>
-    <button id="snd" class="snd" type="button" aria-label="הפעלת קול"><svg viewBox="0 0 24 24"><path d="M3 9v6h4l5 4V5L7 9H3Zm13.5 3a4.5 4.5 0 0 0-2.5-4v8a4.5 4.5 0 0 0 2.5-4Zm-2.5-9v2.1a7 7 0 0 1 0 13.8V21a9 9 0 0 0 0-18Z"/></svg>לחצי להפעלת קול</button>
+  <img class="logo" src="img/logo.png" alt="לדבר עם ילדים">
+  <h1>ברוכה הבאה למועדון האימהות</h1>
+  <p class="sub">הכול מחכה לך במקום אחד: הקלטות, מסלולים, לוחות ופעילויות</p>
+  <div class="videocard">
+    <p class="kick">סרטון היכרות קצר, מראה איפה נמצא כל דבר</p>
+    <div class="video">
+      <video id="v" controls autoplay muted playsinline preload="auto" poster="video/club-welcome-poster.jpg" src="video/club-welcome-4.mp4" title="ברוכה הבאה למועדון האימהות"></video>
+      <button id="snd" class="snd" type="button" aria-label="הפעלת קול"><svg viewBox="0 0 24 24"><path d="M3 9v6h4l5 4V5L7 9H3Zm13.5 3a4.5 4.5 0 0 0-2.5-4v8a4.5 4.5 0 0 0 2.5-4Zm-2.5-9v2.1a7 7 0 0 1 0 13.8V21a9 9 0 0 0 0-18Z"/></svg>לחצי להפעלת קול</button>
+    </div>
   </div>
-  <div class="top"><a class="btn" target="_top" href="https://www.talkwithkids.co.il/welcome-mom">לכניסה לבית המועדון</a></div>
+  <div class="top">
+    <a class="btn" target="_top" href="https://www.talkwithkids.co.il/welcome-mom">לכניסה לבית המועדון</a>
+    <p class="note">כל התכנים, המסלולים והפעילויות מחכים לך שם</p>
+  </div>
 </div>
 <script>
   (function () {
