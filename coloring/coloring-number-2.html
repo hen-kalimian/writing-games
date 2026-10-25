@@ -156,5 +156,10 @@ var ro=new ResizeObserver(fit);ro.observe(bbox);
 window.__coloring={coverage:coverage,state:function(){return {done:done,S:S}}};
 })();
 </script>
-</body>
+<script>/*__HENSTATIC: הנחיה קצרה בקול של חן (25.10.26)*/(function(){var G='50e8c1e4',N='31621c8c',FB='tts/coloring-number-2-s.mp3',HB='../play/assets/hen/',au=new Audio();
+function play(list){var i=0;function nx(){if(i>=list.length)return;au.src=list[i++];au.onended=nx;au.play().catch(function(){})}nx()}
+function go(e){if(e){e.preventDefault();e.stopImmediatePropagation()}fetch(HB+'index.json?v='+Math.floor(Date.now()/3e5)).then(function(r){return r.ok?r.json():{}}).catch(function(){return {}}).then(function(h){
+  if(h[G]&&h[N])play([HB+G+'.mp3?v='+h[G],HB+N+'.mp3?v='+h[N]]);else play([FB])})}
+function bind(){[].forEach.call(document.querySelectorAll('.sspk'),function(b){b.removeAttribute('onclick');b.onclick=go})}
+if(document.readyState!=='loading')bind();else document.addEventListener('DOMContentLoaded',bind)})()</script></body>
 </html>

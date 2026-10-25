@@ -90,14 +90,14 @@ let secret = (location.hash.match(/k=([\w-]+)/) || [])[1] || store.get(KEYS, '')
 if (secret) { store.set(KEYS, secret); if (location.hash) history.replaceState(null, '', location.pathname + location.search); }
 if (!secret) { $('main').innerHTML = '<div class="lock">האולפן נפתח רק מהקישור האישי ששלחתי לך.</div>'; $('tabs').remove(); $('tip').remove(); throw 0; }
 
-const SECS = [{ id: 'kb', name: 'קוראים בקלות', note: 'ההנחיות שהילדים שומעים במשחקים של קוראים בקלות. כל הנחיה נכנסת לכל המשחקים שמופיעים מתחתיה (וגם למשחקים אחרים עם אותה הנחיה). לחיצה על משחק פותחת אותו.' },
+const SECS = [{ id: 'kb', name: 'הנחיות במשחקים', note: 'כל ההנחיות הקצרות במשחקים, קוראים בקלות קודם. כל הנחיה נכנסת לכל המשחקים שמופיעים מתחתיה (גם למשחקים נוספים עם אותה הנחיה). לחיצה על משחק פותחת אותו.' },
   { id: 'syl', name: 'הברות לפי ניקוד', note: 'הקלטה אחת לכל צליל. כל מה שבשורה נשמע אותו דבר (קָמָץ ופַּתָּח, כּ ו-ק), ולכן מספיקה הקלטה אחת לכולם. במשחקים, לחיצה על אריח עם ההברה משמיעה את הקול שלך. המשחקים שבהם יש הברות של האות מופיעים מתחת לאות.' },
   { id: 'words', name: 'מילים מהשאלות', note: 'המילים שמופיעות בשאלות של קוראים בקלות. ליד תמונה יופיע רמקול שמשמיע את המילה בקול שלך. מילה שהילד צריך לקרוא בעצמו נשמעת רק אחרי שענה נכון, כדי שלא יגלה את התשובה לפני שקרא.' },
   { id: 'qs', name: 'שאלות במשחקים', note: 'השאלה הגדולה שמופיעה בראש המשחק, למשל "איפה החיות?". כל שאלה נכנסת לכל המשחקים שמתחתיה. לחיצה על משחק פותחת אותו.' },
   { id: 'pics', name: 'מילים של תמונות', note: 'מילים שמופיעות במשחקים רק כתמונה. ליד כל מילה רואים את התמונה, ובראש כל קבוצה יש את המשחק עצמו בקטן, אפשר לשחק בו. במשחקי ספירת הצלילים יש גם שורה של המילה מחולקת להברות, למשל פָּ - רָה.' },
   { id: 'answers', name: 'מילים בתשובות', note: 'המילים שבאפשרויות התשובה, מסודרות לפי משחק. כל מילה נשמעת בקול שלך אחרי שהילד בחר בה נכון. אפשר להקליט בהדרגה.' },
-  { id: 'names', name: 'שמות האותיות', note: 'שם האות נשמע במשחק "מתחו קו אל האות הזהה" בכל נגיעה ובכל התאמה. עד שתקליטי, נשמע קול ממוחשב.' },
-  { id: 'more', name: 'הנחיות במשחקים נוספים', note: 'הנחיות של הפאזלים ושל משחק מתיחת הקו. לחיצה על המשחק פותחת אותו.' },
+  { id: 'names', name: 'שמות האותיות והמספרים', note: 'שם האות נשמע במשחק "מתחו קו אל האות הזהה" בכל נגיעה ובכל התאמה. עד שתקליטי, נשמע קול ממוחשב.' },
+  { id: 'more', name: 'הנחיות בכתיבה, צביעה, כביש וטייני טפ', note: 'ההנחיות הקצרות של משחקי הכתיבה, הצביעה, הכביש, הפאזלים וטייני טפ. בכתיבה ובצביעה שם האות או המספר נשמע אחרי ההנחיה, מהלשונית שמות האותיות והמספרים.' },
   { id: 'all', name: 'עידוד וצלילים', note: 'מילים וצלילים שנשמעים בכל המשחקים. כל הכבוד, נסו שוב, סיום משחק וגרירת פריטים. עד שתקליטי, המשחקים נשארים כמו היום.' }];
 let D, HEN = {}, sent = store.get(SENT, {}), sec = store.get('hen-studio-sec', 'kb');
 const [d, h] = await Promise.all([fetch('items.json?v=' + Date.now()).then(r => r.json()), fetch('../play/assets/hen/index.json?v=' + Date.now()).then(r => r.ok ? r.json() : {}).catch(() => ({}))]);
@@ -115,7 +115,7 @@ function card(it) {
   if (st && !opened[it.id]) return '<section class="item mini" id="' + it.id + '" data-a="open" title="לחיצה פותחת להקלטה מחדש"><span class="v"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l5 5L19 7"/></svg></span><span class="mt">' + esc(it.nik) + '</span><button type="button" class="pl" data-a="play" aria-label="להשמיע את ההקלטה" title="להשמיע את ההקלטה"><svg viewBox="0 0 24 24" width="14" height="14"><path d="M7 5l12 7-12 7z" fill="currentColor"/></svg></button><span class="mx">' + (st === 'done' ? 'בוצע' : 'נשמר') + '</span></section>';
   const gs = (it.games || []).map(n => G[n]).filter(Boolean);
   return '<section class="item ' + st + '" id="' + it.id + '"><div class="nik">' + esc(it.nik) + '</div>' +
-    (it.when && gs.length ? '<div class="when">' + esc(it.when) + '</div>' : '') + (gs.length ? '<div class="when">נשמע ב-' + gs.length + ' משחקים' + (gs.length > 1 ? ', אפשר לגלול הצידה' : '') + '</div><div class="games">' + gs.map(g => '<button type="button" class="g" data-g="' + g.n + '"><img loading="lazy" src="th/' + g.n + '.jpg" alt=""><span>' + esc(g.title) + '</span></button>').join('') + '</div>' : '<div class="when">' + esc(it.when || '') + '</div>') +
+    (it.when && gs.length ? '<div class="when">' + esc(it.when) + '</div>' : '') + (gs.length ? '<div class="when">נשמע ב-' + gs.length + ' משחקים' + (gs.length > 1 ? ', אפשר לגלול הצידה' : '') + '</div><div class="games">' + gs.map(g => '<button type="button" class="g" data-g="' + g.n + '"><img loading="lazy" src="th2/' + g.n + '.jpg" alt=""><span>' + esc(g.title) + '</span></button>').join('') + '</div>' : '<div class="when">' + esc(it.when || '') + '</div>') +
     '<div class="row"><button type="button" class="btn rec" data-a="rec"><span class="dot"></span><span>' + (st ? 'הקלטה מחדש' : 'הקלטה') + '</span></button>' +
     '<button type="button" class="btn soft" data-a="play"' + (canPlay(it) ? '' : ' disabled') + '>להשמיע את מה שהקלטתי</button>' +
     '<button type="button" class="btn save" data-a="save" disabled>לשמור עכשיו</button></div>' +
@@ -135,7 +135,7 @@ function srow(it) {
 function sylHtml() {
   const by = {}; D.items.filter(i => i.sec === 'syl').forEach(i => (by[i.grp] = by[i.grp] || []).push(i));
   return Object.values(by).map(l => { const gs = [...new Set(l.flatMap(i => i.games || []))].map(n => G[n]).filter(Boolean);
-    return '<div class="grp"><h3>' + esc(l[0].grpName) + '</h3>' + (gs.length ? '<div class="when">מופיע ב-' + gs.length + ' משחקים</div><div class="games">' + gs.map(g => '<button type="button" class="g" data-g="' + g.n + '"><img loading="lazy" src="th/' + g.n + '.jpg" alt=""><span>' + esc(g.title) + '</span></button>').join('') + '</div>' : '') + l.map(srow).join('') + '</div>'; }).join('');
+    return '<div class="grp"><h3>' + esc(l[0].grpName) + '</h3>' + (gs.length ? '<div class="when">מופיע ב-' + gs.length + ' משחקים</div><div class="games">' + gs.map(g => '<button type="button" class="g" data-g="' + g.n + '"><img loading="lazy" src="th2/' + g.n + '.jpg" alt=""><span>' + esc(g.title) + '</span></button>').join('') + '</div>' : '') + l.map(srow).join('') + '</div>'; }).join('');
 }
 function groupHtml(sec) {
   const by = new Map(); D.items.filter(i => i.sec === sec).forEach(i => { const g = (i.games || [])[0]; if (!by.has(g)) by.set(g, []); by.get(g).push(i); });
@@ -144,7 +144,7 @@ function groupHtml(sec) {
 function ansHtml() { return groupHtml('answers'); }
 function ansHtmlOld() {
   const by = new Map(); D.items.filter(i => i.sec === 'answers').forEach(i => { const g = (i.games || [])[0]; if (!by.has(g)) by.set(g, []); by.get(g).push(i); });
-  return [...by.entries()].map(([n, l]) => { const g = G[n]; return '<div class="grp">' + (g ? '<div class="games" style="justify-content:center"><button type="button" class="g" data-g="' + g.n + '"><img loading="lazy" src="th/' + g.n + '.jpg" alt=""><span>' + esc(g.title) + '</span></button></div>' : '') + l.map(srow).join('') + '</div>'; }).join('');
+  return [...by.entries()].map(([n, l]) => { const g = G[n]; return '<div class="grp">' + (g ? '<div class="games" style="justify-content:center"><button type="button" class="g" data-g="' + g.n + '"><img loading="lazy" src="th2/' + g.n + '.jpg" alt=""><span>' + esc(g.title) + '</span></button></div>' : '') + l.map(srow).join('') + '</div>'; }).join('');
 }
 function render() { tabs(); progress(); const s = SECS.find(x => x.id === sec) || SECS[0]; $('main').innerHTML = '<p class="secnote">' + s.note + '</p>' + (s.id === 'syl' ? sylHtml() : s.id === 'answers' || s.id === 'pics' ? groupHtml(s.id) : D.items.filter(i => i.sec === s.id).map(s.id === 'names' ? srow : card).join('')); }
 render();

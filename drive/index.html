@@ -42,7 +42,8 @@ var BUFS={},iaDone=false;
 function loadBuf(u){if(BUFS[u])return BUFS[u];return BUFS[u]=fetch(u).then(function(r){return r.arrayBuffer()}).then(function(b){var a=ac();return new Promise(function(res,rej){a.decodeAudioData(b,res,rej)})}).catch(function(){BUFS[u]=null;return null})}
 function playUrl(u,cb){var a=ac();if(!a){return}loadBuf(u).then(function(buf){if(!buf)return;if(a.state==='suspended')a.resume();var s=a.createBufferSource();s.buffer=buf;var g=a.createGain();g.gain.value=1;s.connect(g);g.connect(a.destination);s.start();if(cb)cb()})}
 function letterUrl(){return BASE.replace('img/','audio/')+(/[0-9]/.test(L)?'d':'l')+('0000'+L.charCodeAt(0).toString(16)).slice(-4)+'.mp3'}
-function instrUrl(){return BASE.replace('img/','audio/')+'i_'+ROUNDS[ri].veh+'.mp3'}
+/*__HENDRIVE: ההנחיה בקול של חן (25.10.26)*/var DTX={"police": "הובילו את הניידת לתחנה", "ambulance": "הובילו את האמבולנס לבית החולים", "firetruck": "הובילו את הכבאית לתחנה", "bus": "הובילו את האוטובוס לבית הספר", "train": "הובילו את הרכבת לתחנה"},HENX={};fetch('../play/assets/hen/index.json?v='+Math.floor(Date.now()/3e5)).then(function(r){return r.ok?r.json():{}}).then(function(j){HENX=j}).catch(function(){});function hk(t){t=(t||'').replace(/\s+/g,' ').trim();var h=2166136261;for(var i=0;i<t.length;i++){h^=t.charCodeAt(i);h=Math.imul(h,16777619)>>>0}return ('0000000'+h.toString(16)).slice(-8)}
+function instrUrl(){var v=ROUNDS[ri].veh,k=hk(DTX[v]||'');if(HENX[k])return '../play/assets/hen/'+k+'.mp3?v='+HENX[k];return BASE.replace('img/','audio/')+'i_'+v+'.mp3?v=2'}
 function sayInstr(){if(iaDone||!window.__touched)return;var a=ac();if(!a||a.state!=='running'){return}iaDone=true;playUrl(instrUrl())}
 /*__SPKI רמקול הנחיה (חן, 17.10.26)*/document.getElementById('spkI').onclick=function(e){e.stopPropagation();var a=ac();if(a&&a.state==='suspended')a.resume();playUrl(instrUrl())};
 function sayL(){playUrl(letterUrl())}
