@@ -21,16 +21,21 @@
   button:active { transform:scale(.98); }
   button.done { background:#2f9e6e; }
   .poll h2 { margin:0 0 8px; font-size:18px; color:var(--fuchsia); }
-  .stamp { text-align:center; color:#888; font-size:13px; margin-top:6px; }
+  .when { text-align:center; margin:0 0 10px; font-size:18px; font-weight:500; color:var(--ink); }
+  .banner { text-align:center; border-radius:14px; padding:12px 14px; margin:0 0 14px; font-weight:600; font-size:16px; line-height:1.5; }
+  .banner.ok { background:var(--mint); color:#1d6b4a; border:2px solid #9ad8bc; }
+  .banner.soon { background:var(--sky); color:#245a8d; border:2px solid #a9cdf0; }
+  .banner.old { background:#ffe3e3; color:#b3261e; border:2px solid #f0a5a0; }
   .empty { text-align:center; padding:30px 10px; color:#777; }
 </style>
 </head>
 <body>
 <main>
   <h1 id="title">ההודעה לקבוצה</h1>
+  <p class="when" id="when"></p>
+  <div class="banner" id="banner" hidden></div>
   <p class="sub" id="sub">טוען את ההודעה...</p>
   <div id="app"></div>
-  <p class="stamp" id="stamp"></p>
 </main>
 <script>
 async function copyText(text) {
@@ -62,13 +67,26 @@ function block(label, text, btnText, doneText, cls) {
     const r = await fetch('message.json?t=' + Date.now(), { cache: 'no-store' });
     const d = await r.json();
     document.getElementById('title').textContent = d.title || 'ההודעה לקבוצה';
+    // the day, date and time of this message are always on top, with a clear banner saying if it is today's message or an old one
+    const heb = new Intl.DateTimeFormat('he-IL', { timeZone: 'Asia/Jerusalem', weekday: 'long', day: '2-digit', month: '2-digit', year: 'numeric' });
+    const today = new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Jerusalem' }).format(new Date());
+    const [Y, M, D] = (d.forDate || '').split('-').map(Number);
+    const dayText = d.forDate ? heb.format(new Date(Date.UTC(Y, M - 1, D, 9))) : '';
+    document.getElementById('when').textContent = [dayText && ('ההודעה של ' + dayText + (d.sendTime ? ', בשעה ' + d.sendTime : '')), d.updated && ('נכתבה ועודכנה: ' + d.updated)].filter(Boolean).join('\n');
+    document.getElementById('when').style.whiteSpace = 'pre-line';
+    const bn = document.getElementById('banner');
+    if (d.forDate) {
+      bn.hidden = false;
+      if (d.forDate === today) { bn.className = 'banner ok'; bn.textContent = 'זו ההודעה של היום. אפשר להעתיק ולשלוח בקבוצה.'; }
+      else if (d.forDate > today) { bn.className = 'banner soon'; bn.textContent = 'זו ההודעה הבאה, והיא מיועדת ל' + dayText + '.'; }
+      else { bn.className = 'banner old'; bn.textContent = 'שימי לב: זו הודעה של ' + dayText + ', לא של היום. ההודעה החדשה עדיין לא עלתה, אל תעתיקי את זו.'; }
+    }
     document.getElementById('sub').textContent = d.group ? 'להעתקה והדבקה ב' + d.group : '';
     app.appendChild(block('', d.text, 'העתקת ההודעה', 'הועתק! אפשר להדביק בקבוצה'));
     if (d.poll && d.poll.length) {
       const pollText = d.poll.join('\n');
       app.appendChild(block('סקר: נושאים ליצירה בקבוצה (בחירה אחת)', pollText, 'העתקת נושאי הסקר', 'הועתק!', 'poll'));
     }
-    document.getElementById('stamp').textContent = d.updated ? 'עודכן: ' + d.updated : '';
   } catch (e) {
     document.getElementById('sub').textContent = '';
     app.innerHTML = '<div class="card empty">לא הצלחתי לטעון את ההודעה כרגע. אפשר לנסות לרענן את הדף.</div>';
