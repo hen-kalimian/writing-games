@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex, nofollow">
-<title>ההודעה לקבוצה</title>
+<title>ההודעות לקבוצות</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
@@ -13,31 +13,38 @@
   body { margin:0; font-family:'Rubik','Open Sans',Arial,sans-serif; color:var(--ink); background:linear-gradient(180deg,var(--pink-soft),#fff 40%,var(--sky)); min-height:100vh; }
   main { max-width:640px; margin:0 auto; padding:24px 16px 48px; }
   h1 { text-align:center; font-size:26px; margin:8px 0 4px; color:var(--gold); font-weight:600; }
-  .sub { text-align:center; margin:0 0 18px; color:#666; font-size:15px; }
-  .card { background:#fff; border-radius:18px; padding:18px; box-shadow:0 4px 18px rgba(214,51,108,.10); border:2px solid var(--pink); margin-bottom:18px; }
-  .msg { white-space:pre-wrap; line-height:1.7; font-size:17px; word-break:break-word; }
-  .row { display:flex; justify-content:center; margin-top:16px; }
-  button { font:inherit; font-weight:600; font-size:18px; background:var(--fuchsia); color:#fff; border:0; border-radius:14px; padding:14px 26px; cursor:pointer; min-width:230px; }
-  button:active { transform:scale(.98); }
-  button.done { background:#2f9e6e; }
-  .poll h2 { margin:0 0 8px; font-size:18px; color:var(--fuchsia); }
-  .when { text-align:center; margin:0 0 10px; font-size:18px; font-weight:500; color:var(--ink); }
-  .banner { text-align:center; border-radius:14px; padding:12px 14px; margin:0 0 14px; font-weight:600; font-size:16px; line-height:1.5; }
+  .sub { text-align:center; margin:0 0 20px; color:#666; font-size:15px; }
+  .card { background:#fff; border-radius:18px; padding:18px; box-shadow:0 4px 18px rgba(214,51,108,.10); border:2px solid var(--pink); margin-bottom:22px; }
+  .when { text-align:center; margin:0 0 4px; font-size:20px; font-weight:600; color:var(--ink); }
+  .group { text-align:center; margin:0 0 10px; font-size:15px; color:var(--fuchsia); font-weight:500; }
+  .stamp { text-align:center; color:#777; font-size:13px; margin:0 0 12px; }
+  .banner { text-align:center; border-radius:14px; padding:11px 14px; margin:0 0 14px; font-weight:600; font-size:16px; line-height:1.5; }
   .banner.ok { background:var(--mint); color:#1d6b4a; border:2px solid #9ad8bc; }
   .banner.soon { background:var(--sky); color:#245a8d; border:2px solid #a9cdf0; }
   .banner.old { background:#ffe3e3; color:#b3261e; border:2px solid #f0a5a0; }
+  .banner.draft { background:#fff3d6; color:#8a5a00; border:2px solid #f0d28a; }
+  .msg { white-space:pre-wrap; line-height:1.7; font-size:17px; word-break:break-word; background:#fffafc; border-radius:12px; padding:12px; }
+  .msg.dim { opacity:.55; }
+  .row { display:flex; justify-content:center; margin-top:14px; }
+  button { font:inherit; font-weight:600; font-size:18px; background:var(--fuchsia); color:#fff; border:0; border-radius:14px; padding:14px 26px; cursor:pointer; min-width:230px; }
+  button:active { transform:scale(.98); }
+  button.done { background:#2f9e6e; }
+  button:disabled { background:#cfc6ca; cursor:not-allowed; }
+  .poll h3 { margin:16px 0 8px; font-size:16px; color:var(--fuchsia); text-align:center; }
   .empty { text-align:center; padding:30px 10px; color:#777; }
 </style>
 </head>
 <body>
 <main>
-  <h1 id="title">ההודעה לקבוצה</h1>
-  <p class="when" id="when"></p>
-  <div class="banner" id="banner" hidden></div>
-  <p class="sub" id="sub">טוען את ההודעה...</p>
+  <h1>ההודעות לקבוצות</h1>
+  <p class="sub" id="sub">טוען...</p>
   <div id="app"></div>
 </main>
 <script>
+const fmtDay = new Intl.DateTimeFormat('he-IL', { timeZone: 'Asia/Jerusalem', weekday: 'long', day: '2-digit', month: '2-digit', year: 'numeric' });
+const todayIL = () => new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Jerusalem' }).format(new Date());
+const dayText = ymd => { const [Y, M, D] = ymd.split('-').map(Number); return fmtDay.format(new Date(Date.UTC(Y, M - 1, D, 9))); };
+
 async function copyText(text) {
   try { await navigator.clipboard.writeText(text); return true; } catch (e) {}
   const ta = document.createElement('textarea');
@@ -46,50 +53,61 @@ async function copyText(text) {
   let ok = false; try { ok = document.execCommand('copy'); } catch (e) {}
   document.body.removeChild(ta); return ok;
 }
-function block(label, text, btnText, doneText, cls) {
-  const card = document.createElement('div'); card.className = 'card ' + (cls || '');
-  if (label) { const h = document.createElement('h2'); h.textContent = label; card.appendChild(h); }
-  const m = document.createElement('div'); m.className = 'msg'; m.textContent = text; card.appendChild(m);
+function copyButton(text, label, doneText, disabled) {
   const row = document.createElement('div'); row.className = 'row';
-  const b = document.createElement('button'); b.type = 'button'; b.textContent = btnText;
+  const b = document.createElement('button'); b.type = 'button'; b.textContent = label; b.disabled = !!disabled;
   b.addEventListener('click', async () => {
     const ok = await copyText(text);
     b.textContent = ok ? doneText : 'לא הצלחתי להעתיק, אפשר ללחוץ ארוך על הטקסט ולבחור העתקה';
     b.classList.toggle('done', ok);
-    setTimeout(() => { b.textContent = btnText; b.classList.remove('done'); }, 3500);
+    setTimeout(() => { b.textContent = label; b.classList.remove('done'); }, 3500);
   });
-  row.appendChild(b); card.appendChild(row);
+  row.appendChild(b); return row;
+}
+function el(tag, cls, text) { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; }
+
+function render(m, today, isStale) {
+  const card = el('div', 'card');
+  card.appendChild(el('p', 'when', 'ההודעה של ' + dayText(m.forDate) + (m.sendTime ? ', בשעה ' + m.sendTime : '')));
+  if (m.group) card.appendChild(el('p', 'group', m.group));
+  if (m.updated) card.appendChild(el('p', 'stamp', 'נכתבה ועודכנה: ' + m.updated));
+  const bn = el('div', 'banner');
+  if (isStale) { bn.className += ' old'; bn.textContent = 'שימי לב: זו הודעה של ' + dayText(m.forDate) + ', לא של היום. ההודעה החדשה עדיין לא עלתה, אל תעתיקי את זו.'; }
+  else if (!m.approved) { bn.className += ' draft'; bn.textContent = 'ההודעה עדיין ממתינה לאישור של חן. אל תעתיקי עדיין, תקבלי תזכורת בוואטסאפ כשהיא מוכנה.'; }
+  else if (m.forDate === today) { bn.className += ' ok'; bn.textContent = 'זו ההודעה של היום. אפשר להעתיק ולשלוח בקבוצה.'; }
+  else { bn.className += ' soon'; bn.textContent = 'זו ההודעה הבאה, והיא מיועדת ל' + dayText(m.forDate) + '.'; }
+  card.appendChild(bn);
+  card.appendChild(el('div', 'msg' + (m.approved && !isStale ? '' : ' dim'), m.text));
+  const canCopy = m.approved && !isStale;
+  card.appendChild(copyButton(m.text, 'העתקת ההודעה', 'הועתק! אפשר להדביק בקבוצה', !canCopy));
+  if (m.poll && m.poll.length) {
+    const p = el('div', 'poll'); p.appendChild(el('h3', null, 'סקר: נושאים ליצירה בקבוצה (בחירה אחת)'));
+    p.appendChild(el('div', 'msg' + (canCopy ? '' : ' dim'), m.poll.join('\n')));
+    p.appendChild(copyButton(m.poll.join('\n'), 'העתקת נושאי הסקר', 'הועתק!', !canCopy));
+    card.appendChild(p);
+  }
   return card;
 }
+
 (async () => {
   const app = document.getElementById('app');
   try {
-    const r = await fetch('message.json?t=' + Date.now(), { cache: 'no-store' });
-    const d = await r.json();
-    document.getElementById('title').textContent = d.title || 'ההודעה לקבוצה';
-    // the day, date and time of this message are always on top, with a clear banner saying if it is today's message or an old one
-    const heb = new Intl.DateTimeFormat('he-IL', { timeZone: 'Asia/Jerusalem', weekday: 'long', day: '2-digit', month: '2-digit', year: 'numeric' });
-    const today = new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Jerusalem' }).format(new Date());
-    const [Y, M, D] = (d.forDate || '').split('-').map(Number);
-    const dayText = d.forDate ? heb.format(new Date(Date.UTC(Y, M - 1, D, 9))) : '';
-    document.getElementById('when').textContent = [dayText && ('ההודעה של ' + dayText + (d.sendTime ? ', בשעה ' + d.sendTime : '')), d.updated && ('נכתבה ועודכנה: ' + d.updated)].filter(Boolean).join('\n');
-    document.getElementById('when').style.whiteSpace = 'pre-line';
-    const bn = document.getElementById('banner');
-    if (d.forDate) {
-      bn.hidden = false;
-      if (d.forDate === today) { bn.className = 'banner ok'; bn.textContent = 'זו ההודעה של היום. אפשר להעתיק ולשלוח בקבוצה.'; }
-      else if (d.forDate > today) { bn.className = 'banner soon'; bn.textContent = 'זו ההודעה הבאה, והיא מיועדת ל' + dayText + '.'; }
-      else { bn.className = 'banner old'; bn.textContent = 'שימי לב: זו הודעה של ' + dayText + ', לא של היום. ההודעה החדשה עדיין לא עלתה, אל תעתיקי את זו.'; }
+    const r = await fetch('messages.json?t=' + Date.now(), { cache: 'no-store' });
+    const all = (await r.json()).messages || [];
+    const today = todayIL();
+    // always the two nearest messages from today on; when a message's day passes, the next one takes its place by itself
+    const upcoming = all.filter(m => m.forDate >= today).sort((a, b) => a.forDate.localeCompare(b.forDate) || (a.sendTime || '').localeCompare(b.sendTime || ''));
+    let shown = upcoming.slice(0, 2).map(m => [m, false]);
+    if (!shown.length) {
+      const last = all.slice().sort((a, b) => b.forDate.localeCompare(a.forDate))[0];
+      if (last) shown = [[last, true]];
     }
-    document.getElementById('sub').textContent = d.group ? 'להעתקה והדבקה ב' + d.group : '';
-    app.appendChild(block('', d.text, 'העתקת ההודעה', 'הועתק! אפשר להדביק בקבוצה'));
-    if (d.poll && d.poll.length) {
-      const pollText = d.poll.join('\n');
-      app.appendChild(block('סקר: נושאים ליצירה בקבוצה (בחירה אחת)', pollText, 'העתקת נושאי הסקר', 'הועתק!', 'poll'));
-    }
+    document.getElementById('sub').textContent = shown.length ? 'הדף מתעדכן לבד: ההודעה הקרובה תמיד למעלה, ובחצות היא מוחלפת בהודעה הבאה' : '';
+    if (!shown.length) app.innerHTML = '<div class="card empty">אין כרגע הודעה. כשתהיה, תגיע תזכורת בוואטסאפ.</div>';
+    shown.forEach(([m, stale]) => app.appendChild(render(m, today, stale)));
   } catch (e) {
     document.getElementById('sub').textContent = '';
-    app.innerHTML = '<div class="card empty">לא הצלחתי לטעון את ההודעה כרגע. אפשר לנסות לרענן את הדף.</div>';
+    app.innerHTML = '<div class="card empty">לא הצלחתי לטעון את ההודעות כרגע. אפשר לנסות לרענן את הדף.</div>';
   }
 })();
 </script>
