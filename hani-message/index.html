@@ -95,14 +95,14 @@ function render(m, today, isStale) {
     const r = await fetch('messages.json?t=' + Date.now(), { cache: 'no-store' });
     const all = (await r.json()).messages || [];
     const today = todayIL();
-    // always the two nearest messages from today on; when a message's day passes, the next one takes its place by itself
+    // always the four nearest messages from today on; when a message's day passes, the next one takes its place by itself
     const upcoming = all.filter(m => m.forDate >= today).sort((a, b) => a.forDate.localeCompare(b.forDate) || (a.sendTime || '').localeCompare(b.sendTime || ''));
-    let shown = upcoming.slice(0, 2).map(m => [m, false]);
+    let shown = upcoming.slice(0, 4).map(m => [m, false]);
     if (!shown.length) {
       const last = all.slice().sort((a, b) => b.forDate.localeCompare(a.forDate))[0];
       if (last) shown = [[last, true]];
     }
-    document.getElementById('sub').textContent = shown.length ? 'הדף מתעדכן לבד: ההודעה הקרובה תמיד למעלה, ובחצות היא מוחלפת בהודעה הבאה' : '';
+    document.getElementById('sub').textContent = shown.length ? 'ארבע ההודעות הקרובות. הדף מתעדכן לבד: ההודעה הקרובה תמיד למעלה, ובחצות היא מוחלפת בהודעה הבאה' : '';
     if (!shown.length) app.innerHTML = '<div class="card empty">אין כרגע הודעה. כשתהיה, תגיע תזכורת בוואטסאפ.</div>';
     shown.forEach(([m, stale]) => app.appendChild(render(m, today, stale)));
   } catch (e) {
