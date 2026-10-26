@@ -69,7 +69,7 @@ function el(tag, cls, text) { const e = document.createElement(tag); if (cls) e.
 function render(m, today, isStale) {
   const card = el('div', 'card');
   card.appendChild(el('p', 'when', 'ההודעה של ' + dayText(m.forDate) + (m.sendTime ? ', בשעה ' + m.sendTime : '')));
-  if (m.group) card.appendChild(el('p', 'group', m.group));
+  if (m.group) card.appendChild(el('p', 'group', m.group + (m.label ? ' · ' + m.label : '')));
   if (m.updated) card.appendChild(el('p', 'stamp', 'נכתבה ועודכנה: ' + m.updated));
   const bn = el('div', 'banner');
   if (isStale) { bn.className += ' old'; bn.textContent = 'שימי לב: זו הודעה של ' + dayText(m.forDate) + ', לא של היום. ההודעה החדשה עדיין לא עלתה, אל תעתיקי את זו.'; }
