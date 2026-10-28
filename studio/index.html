@@ -102,6 +102,13 @@ main{max-width:760px;margin:0 auto}
 .grp.pk h3{font-size:20px;letter-spacing:0}
 .tabs{gap:6px;margin:10px auto 4px}.tabs button{font-size:13px;padding:6px 11px;border-width:1.5px}
 .sub{font-size:14px;margin:4px 0 0}.tip{font-size:13px;padding:7px 12px;margin-bottom:8px}header{padding:14px 0 4px}h1{font-size:22px}
+.tile .gi{position:static;min-width:0;height:auto;border-radius:14px;padding:3px 10px;font:600 12px Rubik,Arial;border:1.5px solid var(--sky-deep);background:var(--sky-wash);color:#2f6f93;cursor:pointer;margin:0}
+.tile .st.ok:before,.tile .st.sv:before{content:"✓ ";font-weight:800}
+.tile .st.sv{color:#2f6f93}
+.tile{min-height:170px}.tile.wide{min-height:170px}
+.bhead .bclose{font:600 12px Rubik,Arial;border:1.5px solid var(--mint-deep);background:var(--mint-wash);color:#2f8f6f;border-radius:14px;padding:3px 12px;cursor:pointer}
+.bhead .bclose[hidden]{display:none}
+.g.pk img{display:block;width:100%;height:120px;object-fit:cover;object-position:top}
 </style>
 </head>
 <body>
@@ -153,11 +160,10 @@ function tile(it) {
   const st = status(it), gs = (it.games || []).filter(n => G[n]), long = (it.nik || '').length > 34;
   const txt = st === 'done' ? 'בקול שלך במשחקים' : st === 'sent' ? 'נשמר, ייכנס בעוד כמה דקות' : '';
   return '<section class="item tile ' + st + (long ? ' wide' : '') + '" id="' + it.id + '">' +
-    (gs.length ? '<button type="button" class="gi" data-gl="' + it.id + '" title="באילו משחקים זה נשמע" aria-label="באילו משחקים זה נשמע">' + gs.length + '</button>' : '') +
-    (st ? '<span class="v">' + CHECK + '</span>' : '') +
     (it.img ? '<img class="pimg" loading="lazy" src="../play/assets/' + it.img + '" alt="">' : '') +
     '<div class="nik">' + esc(it.nik) + '</div>' +
-    '<div class="st ' + (st === 'done' ? 'ok' : '') + '">' + txt + '</div>' +
+    (gs.length ? '<button type="button" class="gi" data-gl="' + it.id + '">איפה זה נשמע? (' + gs.length + ')</button>' : '') +
+    '<div class="st ' + (st === 'done' ? 'ok' : st === 'sent' ? 'sv' : '') + '">' + txt + '</div>' +
     '<div class="trow"><button type="button" class="btn rec" data-a="rec"><span class="dot"></span><span>' + (st ? 'מחדש' : 'הקלטה') + '</span></button>' +
     '<div class="two"><button type="button" class="btn soft" data-a="play"' + (canPlay(it) ? '' : ' disabled') + '>' + PLAY + '<span>שמעי</span></button>' +
     (it.sec === 'kb' && !st ? '<button type="button" class="btn soft" data-a="tts" title="הקול הממוחשב שיש היום">ממוחשב</button>' : '') + '</div></div></section>';
@@ -166,7 +172,7 @@ const BATCH = {}, openedB = {}, BN = 10;
 function batchHtml(bid) {
   const B = BATCH[bid], its = B.ids.map(id => D.items.find(i => i.id === id)), all = its.every(i => status(i));
   if (all && !openedB[bid]) return '<div class="batch" id="' + bid + '" data-b="' + bid + '"><div class="bmini" data-bopen="' + bid + '" title="לחיצה פותחת את הקבוצה"><span class="v">' + CHECK + '</span><span>' + esc(B.label) + ': ' + its.length + ' מתוך ' + its.length + ' הוקלטו</span><span class="mx">לחיצה פותחת</span></div></div>';
-  return '<div class="batch" id="' + bid + '" data-b="' + bid + '"><div class="bhead">' + esc(B.label) + '</div><div class="tiles">' + its.map(tile).join('') + '</div></div>';
+  return '<div class="batch" id="' + bid + '" data-b="' + bid + '"><div class="bhead"><span>' + esc(B.label) + '</span><button type="button" class="bclose" data-bclose="' + bid + '"' + (all ? '' : ' hidden') + '>סגירת הקבוצה</button></div><div class="tiles">' + its.map(tile).join('') + '</div></div>';
 }
 function batches(key, items) {
   let h = '';
@@ -177,14 +183,17 @@ function batches(key, items) {
   }
   return h;
 }
-function gamesRow(l) { const gs = [...new Set(l.flatMap(i => i.games || []))].map(n => G[n]).filter(Boolean); return gs.length ? '<div class="when">מופיע ב-' + gs.length + ' משחקים</div><div class="games">' + gs.map(g => '<button type="button" class="g" data-g="' + g.n + '"><img loading="lazy" src="th2/' + g.n + '.jpg" alt=""><span>' + esc(g.title) + '</span></button>').join('') + '</div>' : ''; }
+function gamesRow(l) { const gs = [...new Set(l.flatMap(i => i.games || []))].map(n => G[n]).filter(Boolean); return gs.length ? '<div class="when">מופיע ב-' + gs.length + ' משחקים</div><div class="games">' + gs.map(g => '<button type="button" class="g" data-g="' + g.n + '"><img loading="lazy" src="' + (g.th || 'th2/' + g.n + '.jpg') + '" alt=""><span>' + esc(g.title) + '</span></button>').join('') + '</div>' : ''; }
 function groupBy(sec, keyf) { const by = new Map(); D.items.filter(i => i.sec === sec).forEach(i => { const k = keyf(i); if (!by.has(k)) by.set(k, []); by.get(k).push(i); }); return [...by.entries()]; }
 function sylHtml() { return groupBy('syl', i => i.grp).map(([k, l]) => '<div class="grp"><h3>' + esc(l[0].grpName) + '</h3>' + gamesRow(l) + batches('syl' + k, l) + '</div>').join(''); }
-function packsHtml() { return groupBy('packs', i => i.grp).map(([k, l]) => '<div class="grp pk"><h3>' + esc(l[0].grpName) + '</h3>' + batches('pk' + k, l) + '</div>').join(''); }
+function packsHtml() { return groupBy('packs', i => i.grp).map(([k, l]) => '<div class="grp pk"><h3>' + esc(l[0].grpName) + '</h3>' + gamesRow(l) + batches('pk' + k, l) + '</div>').join(''); }
 function groupHtml(sec) {
   return groupBy(sec, i => (i.games || [])[0]).map(([n, l]) => { const g = G[n]; const gu = g && (g.u || '../play/index.html?' + g.q); return '<div class="grp">' + (g ? '<div class="gname">' + esc(g.title) + '</div><iframe class="mini-game" loading="lazy" src="' + gu + '" title="' + esc(g.title) + '"></iframe>' : '') + batches(sec + n, l) + '</div>'; }).join('');
 }
 function render() { tabs(); progress(); const s = SECS.find(x => x.id === sec) || SECS[0]; $('main').innerHTML = '<p class="secnote">' + s.note + '</p>' + (s.id === 'syl' ? sylHtml() : s.id === 'packs' ? packsHtml() : s.id === 'answers' || s.id === 'pics' ? groupHtml(s.id) : batches(s.id, D.items.filter(i => i.sec === s.id))); }
+function busyBatch(bid) { const el = document.getElementById(bid); return !!(el && el.querySelector('.btn.rec.live')) || BATCH[bid].ids.some(id => auto[id] || takes[id]); }
+// כל כמה שניות: קבוצה שהושלמה נסגרת (אלא אם פתחת אותה בכוונה), ובקבוצה פתוחה שהושלמה מופיע כפתור "סגירת הקבוצה"
+function syncBatches() { Object.keys(BATCH).forEach(bid => { const el = document.getElementById(bid); if (!el) return; const done = BATCH[bid].ids.every(id => status(D.items.find(i => i.id === id))); const cb = el.querySelector('.bclose'); if (cb) cb.hidden = !done; if (done && !openedB[bid] && !busyBatch(bid)) collapseBatch(bid); }); }
 // סוגרים קבוצה שהושלמה בלי להזיז את מה שמתחתיה: מחשבים מחדש את המיקום כדי שכפתור ההקלטה ישאר בדיוק איפה שהוא
 function collapseBatch(bid) {
   const el = document.getElementById(bid); if (!el || openedB[bid] || !BATCH[bid]) return;
@@ -228,17 +237,18 @@ async function save(id) {
   try {
     const audio = await b64(blob); if (audio.length > 480000) throw new Error('long');
     const c = await client();
-    await c.items.insert(COL, { title: secret, itemId: id, k: it.k, text: it.nik, mime: blob.type, audio, synced: false });
+    for (let tr = 0; ; tr++) { try { await c.items.insert(COL, { title: secret, itemId: id, k: it.k, text: it.nik, mime: blob.type, audio, synced: false }); break; } catch (er) { if (tr >= 2) throw er; setSt(id, 'מנסה לשמור שוב...'); await new Promise(r => setTimeout(r, 1500)); } }
     sent[id] = Date.now(); store.set(SENT, sent); saved[id] = blob;
-    tabs(); progress(); const s = el0(); if (s) { const bEl = s.closest('.batch'); s.outerHTML = tile(it); if (bEl) setTimeout(() => collapseBatch(bEl.id), 900); }
+    tabs(); progress(); const s = el0(); if (s) { const bEl = s.closest('.batch'); s.outerHTML = tile(it); if (bEl) { delete openedB[bEl.id]; setTimeout(syncBatches, 900); } }
   } catch (e) { takes[id] = blob; setSt(id, e.message === 'long' ? 'ההקלטה ארוכה מדי. נסי שוב קצת יותר קצר' : 'השמירה לא הצליחה. בדקי שיש אינטרנט ולחצי שוב על שמירה', 'err'); console.error(e); }
 }
 function play(src) { player.pause(); player.src = src; player.currentTime = 0; player.play().catch(() => {}); }
 document.addEventListener('click', e => {
+  const bc = e.target.closest('[data-bclose]'); if (bc) { delete openedB[bc.dataset.bclose]; collapseBatch(bc.dataset.bclose); return; }
   const bo = e.target.closest('[data-bopen]'); if (bo) { const bid = bo.dataset.bopen; openedB[bid] = 1; document.getElementById(bid).outerHTML = batchHtml(bid); return; }
   const t = e.target.closest('button'); if (!t) return;
   if (t.dataset.s) { stopRec(); sec = t.dataset.s; store.set('hen-studio-sec', sec); render(); scrollTo(0, 0); return; }
-  if (t.dataset.gl) { const it0 = D.items.find(i => i.id === t.dataset.gl); $('glt').textContent = 'נשמע ב: ' + it0.nik; $('glb').innerHTML = (it0.games || []).map(n => G[n]).filter(Boolean).map(g => '<button type="button" class="g" data-g="' + g.n + '">' + (g.n < 1000 ? '<img loading="lazy" src="th2/' + g.n + '.jpg" alt="">' : '') + '<span>' + esc(g.title) + '</span></button>').join(''); $('glm').classList.add('on'); return; }
+  if (t.dataset.gl) { const it0 = D.items.find(i => i.id === t.dataset.gl); const g1 = (it0.games || []).filter(n => G[n]); if (g1.length === 1) { const g = G[g1[0]]; $('mt').textContent = g.title; const gu = g.u || '../play/index.html?' + g.q; $('mf').src = gu; $('mo').onclick = () => open(gu, '_blank'); $('modal').classList.add('on'); return; } $('glt').textContent = 'נשמע ב: ' + it0.nik; $('glb').innerHTML = (it0.games || []).map(n => G[n]).filter(Boolean).map(g => '<button type="button" class="g" data-g="' + g.n + '">' + '<img loading="lazy" src="' + (g.th || 'th2/' + g.n + '.jpg') + '" alt="">' + '<span>' + esc(g.title) + '</span></button>').join(''); $('glm').classList.add('on'); return; }
   if (t.id === 'glx') { $('glm').classList.remove('on'); return; }
   if (t.dataset.g) { $('glm').classList.remove('on'); const g = G[t.dataset.g]; $('mt').textContent = g.title; const gu = g.u || '../play/index.html?' + g.q; $('mf').src = gu; $('mo').onclick = () => open(gu, '_blank'); $('modal').classList.add('on'); return; }
   if (t.id === 'mx') { $('modal').classList.remove('on'); $('mf').src = 'about:blank'; return; }
@@ -249,6 +259,8 @@ document.addEventListener('click', e => {
   else if (t.dataset.a === 'mine') play('../play/assets/hen/' + it.k + '.mp3?v=' + HEN[it.k]);
   else if (t.dataset.a === 'tts') play('../play/assets/tts/' + it.k + '.mp3');
 });
+setInterval(() => { if (!rec) syncBatches(); }, 3000);
+window.__studio = { openedB, BATCH, syncBatches, busyBatch, status: it => status(it), D };
 setTimeout(() => client().catch(() => {}), 1500); // טעינה מוקדמת, כדי שהשמירה הראשונה תהיה מהירה
 $('glm').addEventListener('click', e => { if (e.target.id === 'glm') $('glx').click(); });
 $('modal').addEventListener('click', e => { if (e.target.id === 'modal') $('mx').click(); });
