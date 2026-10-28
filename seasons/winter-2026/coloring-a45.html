@@ -95,13 +95,16 @@ window.SFX={
  hit:function(){tone(150,0,.25,'sawtooth',.12)},
  step:function(){tone(300,0,.04,'sine',.05)}
 };
+var __HEN=null;try{fetch('../../play/assets/hen/index.json?v='+Date.now()).then(function(r){return r.ok?r.json():{}}).then(function(j){__HEN=j}).catch(function(){})}catch(e){}
+function __hk(t){t=(t||'').replace(/\s+/g,' ').trim();var h=2166136261;for(var i=0;i<t.length;i++){h^=t.charCodeAt(i);h=Math.imul(h,16777619)>>>0}return ('0000000'+h.toString(16)).slice(-8)}
+function __henSrc(t){if(!__HEN)return null;var k=__hk(t);return __HEN[k]?'../../play/assets/hen/'+k+'.mp3?v='+__HEN[k]:null}
 var cur=null;
 window.say=function(text){
- if(muted)return;var src=(window.AUDIO||{})[text];if(!src)return;
+ if(muted)return;var src=__henSrc(text)||(window.AUDIO||{})[text];if(!src)return;
  try{if(cur){cur.pause()}}catch(e){}
  try{cur=new Audio(src);var p=cur.play();if(p&&p.catch)p.catch(function(){})}catch(e){}
 };
-window.sayForce=function(text){var src=(window.AUDIO||{})[text];if(!src)return;try{if(cur){cur.pause()}}catch(e){}try{cur=new Audio(src);var p=cur.play();if(p&&p.catch)p.catch(function(){})}catch(e){}};
+window.sayForce=function(text){var src=__henSrc(text)||(window.AUDIO||{})[text];if(!src)return;try{if(cur){cur.pause()}}catch(e){}try{cur=new Audio(src);var p=cur.play();if(p&&p.catch)p.catch(function(){})}catch(e){}};
 window.stopSay=function(){try{if(cur)cur.pause()}catch(e){}};
 window.isMuted=function(){return muted};
 window.setMuted=function(m){muted=m;try{localStorage.setItem('sp_muted',m?'1':'0')}catch(e){}if(m)window.stopSay()};
