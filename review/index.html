@@ -79,7 +79,7 @@ function render() {
     if (g.lesson !== lastL) { lastL = g.lesson; const h = document.createElement('div'); h.className = 'lessonH'; h.textContent = g.lesson; m.appendChild(h) }
     const c = document.createElement('div'); c.className = 'card ' + s.status + (s.status !== 'review' ? ' closed' : ''); c.dataset.id = g.id;
     const chip = s.status === 'approved' ? '<span class="chip" style="background:#D8F0E4;color:#2F7A5F">אושר</span>' : s.status === 'fixing' ? '<span class="chip" style="background:#fff;color:#A33A3A">בתיקון</span>' : s.status === 'deleted' ? '<span class="chip" style="background:#fff;color:#8A7A83">נמחק</span>' : g.isNew ? '<span class="chip new">חדש</span>' : '';
-    c.innerHTML = '<div class="top"><b>' + g.label + '</b>' + chip + (s.status === 'review' ? '<button class="fsb" type="button" aria-label="מסך מלא"><svg viewBox="0 0 24 24" fill="none" stroke="#EF406E" stroke-width="2.4" stroke-linecap="round"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg></button>' : '') + (s.status !== 'review' ? '<button class="reopen" type="button">פתיחה</button>' : '') + '</div>' +
+    c.innerHTML = '<div class="top"><b>' + g.label + '</b>' + chip + /* חן: 2 כפתורי מסך מלא. לכל משחק יש כפתור משלו, אז בדף אין */  (s.status !== 'review' ? '<button class="reopen" type="button">פתיחה</button>' : '') + '</div>' +
       (s.status === 'fixing' && s.note ? '<div class="msg" style="display:block;background:#fff;color:#A33A3A;margin:0 14px 10px">' + esc(s.note) + '</div>' : '') +
       (s.msg && s.status === 'review' ? '<div class="msg">תוקן: ' + esc(s.msg) + '</div>' : '') +
       '<div class="frame"><div class="ph">המשחק נטען כשמגיעים אליו</div></div>' +

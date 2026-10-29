@@ -11,7 +11,7 @@
    כתובת: ?w=<עולם>&l=אבגד (או n=0123 לספרות). העולמות ב-snake/worlds. */
 :root{--pink:#FDE1EA;--pink2:#FBC5D6;--fuchsia:#EF406E;--deep:#B8236B}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-html,body{margin:0;height:100%;background:#FEF6F5;font-family:Rubik,Arial,sans-serif;overflow:hidden;overscroll-behavior:none}
+html,body{touch-action:none;margin:0;height:100%;background:#FEF6F5;font-family:Rubik,Arial,sans-serif;overflow:hidden;overscroll-behavior:none}
 .wrap{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;padding:8px;gap:6px}
 .hud{width:100%;max-width:900px;display:flex;align-items:center;justify-content:space-between;gap:8px;font-weight:800;color:var(--deep)}
 .goal{flex:1;display:flex;align-items:center;justify-content:center;gap:8px;font-size:clamp(17px,4.4vw,23px)}
@@ -21,6 +21,15 @@ html,body{margin:0;height:100%;background:#FEF6F5;font-family:Rubik,Arial,sans-s
 .spk svg,.mute svg,.fs svg,.pause svg{width:21px;height:21px}.spk.big{width:54px;height:54px}.spk.big svg{width:28px;height:28px}
 #stage{position:relative;flex:1;min-height:0;width:100%;max-width:900px;display:flex;align-items:center;justify-content:center;touch-action:none;user-select:none;-webkit-user-select:none}
 #cv{border-radius:22px;box-shadow:0 0 0 4px var(--pink),0 8px 22px rgba(239,64,110,.12);display:block;touch-action:none}
+.joy{position:relative;width:min(56vw,230px);aspect-ratio:1;flex:none;touch-action:none}
+.joy button{position:absolute;width:36%;height:36%;border:0;border-radius:22px;background:#fff;box-shadow:0 0 0 3px var(--pink2),0 5px 0 #F2A7B8;cursor:pointer;padding:0;touch-action:none}
+.joy button:active,.joy button.on{background:var(--pink);transform:translateY(3px);box-shadow:0 0 0 3px var(--pink2),0 2px 0 #F2A7B8}
+.joy button::after{content:'';position:absolute;left:50%;top:50%;width:0;height:0;border:16px solid transparent;transform:translate(-50%,-50%)}
+.joy .up{left:32%;top:0}.joy .up::after{border-bottom:22px solid var(--fuchsia);border-top:0;margin-top:-4px}
+.joy .dn{left:32%;bottom:0}.joy .dn::after{border-top:22px solid var(--fuchsia);border-bottom:0;margin-top:4px}
+.joy .rt{right:0;top:32%}.joy .rt::after{border-left:22px solid var(--fuchsia);border-right:0;margin-left:4px}
+.joy .lt{left:0;top:32%}.joy .lt::after{border-right:22px solid var(--fuchsia);border-left:0;margin-left:-4px}
+@media (orientation:landscape) and (max-height:520px){.wrap{flex-direction:row;flex-wrap:wrap}.joy{width:min(30vh,170px)}}
 .overlay{position:fixed;inset:0;background:rgba(253,225,234,.72);backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;z-index:20;padding:16px}
 .overlay.hidden{display:none}
 .card{background:#fff;border-radius:28px;padding:22px;max-width:420px;width:100%;text-align:center;box-shadow:0 10px 30px rgba(239,64,110,.18),0 0 0 4px var(--pink);animation:pop .45s cubic-bezier(.2,1.6,.4,1)}
@@ -43,6 +52,7 @@ html,body{margin:0;height:100%;background:#FEF6F5;font-family:Rubik,Arial,sans-s
   <button class="fs" id="fs" type="button" aria-label="מסך מלא"><svg viewBox="0 0 24 24" fill="none" stroke="#EF406E" stroke-width="2.2" stroke-linecap="round"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg></button>
  </div>
  <div id="stage"><canvas id="cv"></canvas></div>
+ <div class="joy" id="joy"><button data-d="0,-1" class="up" type="button" aria-label="למעלה"></button><button data-d="1,0" class="rt" type="button" aria-label="ימינה"></button><button data-d="0,1" class="dn" type="button" aria-label="למטה"></button><button data-d="-1,0" class="lt" type="button" aria-label="שמאלה"></button></div>
 </div>
 <div class="overlay" id="ov"><div class="card" id="card"></div></div>
 <script src="../hen-voice.js"></script>
@@ -58,7 +68,7 @@ function ac(){ try{ AC=AC||new (window.AudioContext||window.webkitAudioContext)(
 function tone(f1,f2,d,type,vol){ if(muted||!ac())return; var o=AC.createOscillator(),g=AC.createGain(),t=AC.currentTime; o.type=type||'sine'; o.frequency.setValueAtTime(f1,t); o.frequency.exponentialRampToValueAtTime(f2,t+d); g.gain.setValueAtTime(.0001,t); g.gain.exponentialRampToValueAtTime(vol||.1,t+.015); g.gain.exponentialRampToValueAtTime(.0001,t+d); o.connect(g); g.connect(AC.destination); o.start(t); o.stop(t+d+.02) }
 function yum(){ tone(520,780,.12,'sine',.12); setTimeout(function(){ tone(780,1040,.14,'sine',.1) },90) }
 /* ---------- לוח ---------- */
-function fit(){ var r=stage.getBoundingClientRect(), portrait=r.height>r.width; CW=portrait?7:12; CH=portrait?10:8; S=Math.floor(Math.min(r.width/CW,r.height/CH)); var dpr=Math.min(2,devicePixelRatio||1);
+function fit(){ var r=stage.getBoundingClientRect(), portrait=innerHeight>innerWidth; if(portrait){ CW=7; CH=Math.max(6,Math.min(10,Math.round(7*r.height/r.width))) } else { CH=7; CW=Math.max(9,Math.min(13,Math.round(7*r.width/r.height))) } /* משבצות גדולות גם כשהג'ויסטיק תופס מקום */ S=Math.floor(Math.min(r.width/CW,r.height/CH)); var dpr=Math.min(2,devicePixelRatio||1);
   cv.style.width=(S*CW)+'px'; cv.style.height=(S*CH)+'px'; cv.width=S*CW*dpr; cv.height=S*CH*dpr; cx.setTransform(dpr,0,0,dpr,0,0) }
 addEventListener('resize',function(){ fit() });
 function free(){ var occ={}; snake.forEach(function(p){occ[p[0]+','+p[1]]=1}); items.forEach(function(o){occ[o.x+','+o.y]=1}); for(var t=0;t<200;t++){ var x=Math.floor(Math.random()*CW), y=Math.floor(Math.random()*CH); var h=snake[0]; if(!occ[x+','+y]&&(Math.abs(x-h[0])+Math.abs(y-h[1])>2)) return [x,y] } return [0,0] }
@@ -67,7 +77,7 @@ function refill(){ var n=Math.min(6,Math.max(4,SET.length+2)); var has=items.fil
   var others=SET.filter(function(c){return c!==target}); while(items.length<n&&others.length) addItem(others[Math.floor(Math.random()*others.length)]); while(items.length<n) addItem(target) }
 function pick(){ var opts=SET.length>1?SET.filter(function(c){return c!==target}):SET; target=opts[Math.floor(Math.random()*opts.length)]; refill(); say(nameOf(target)) }
 function dots(){ var h=''; for(var i=0;i<GOAL;i++) h+='<i class="'+(i<score?'on':'')+'"></i>'; document.getElementById('dots').innerHTML=h }
-function speed(){ return .5-.2*Math.min(1,score/GOAL) } // בהתחלה לאט, ובהדרגה קצת מהר יותר
+function speed(){ return .75-.25*Math.min(1,score/GOAL) } // בהתחלה לאט, ובהדרגה קצת מהר יותר
 function turn(d){ if(state!=='play') return; var cur=nextDir||dir; if(d[0]===-cur[0]&&d[1]===-cur[1]) return; nextDir=d }
 function tick(){ if(nextDir){ dir=nextDir; nextDir=null } var h=snake[0], nx=(h[0]+dir[0]+CW)%CW, ny=(h[1]+dir[1]+CH)%CH; snake.unshift([nx,ny]); if(grow>0) grow--; else snake.pop();
   for(var i=0;i<items.length;i++){ var o=items[i]; if(o.x===nx&&o.y===ny){ items.splice(i,1); eat(o); break } } }
@@ -87,7 +97,7 @@ function draw(){ if(!W) return; var w=S*CW, h=S*CH;
     var g=cx.createRadialGradient(x-r*.35,y-r*.4,r*.1,x,y,r); g.addColorStop(0,'#fff'); g.addColorStop(.3,o.col); g.addColorStop(1,o.col); cx.fillStyle=g; cx.beginPath(); cx.arc(x,y,r,0,6.28); cx.fill();
     cx.fillStyle='#4A2C3A'; cx.font='800 '+Math.round(r*1.2)+'px Rubik,Arial'; cx.textAlign='center'; cx.textBaseline='middle'; cx.fillText(o.ch,x,y+r*.08) });
   // גוף הנחש: חרוזים בצבעי פסטל, נעים בגל עדין
-  var prog=Math.min(1,stepT/speed());
+  var prog=1;
   for(var i=snake.length-1;i>=1;i--){ var p=snake[i], q=snake[i-1], ix=p[0]+(q[0]-p[0])*(Math.abs(q[0]-p[0])>1?0:prog), iy=p[1]+(q[1]-p[1])*(Math.abs(q[1]-p[1])>1?0:prog);
     var rr=S*(.42-.12*i/snake.length); cx.fillStyle=W.body[i%W.body.length]; cx.beginPath(); cx.arc((ix+.5)*S,(iy+.5)*S+Math.sin(clock*6-i*.7)*S*.04,rr,0,6.28); cx.fill(); cx.fillStyle='rgba(255,255,255,.35)'; cx.beginPath(); cx.arc((ix+.4)*S,(iy+.38)*S,rr*.35,0,6.28); cx.fill() }
   var hd=snake[0], nb=snake[1]||hd, hx=hd[0], hy=hd[1]; if(Math.abs(hd[0]-nb[0])<=1&&Math.abs(hd[1]-nb[1])<=1){ hx=nb[0]+(hd[0]-nb[0])*prog; hy=nb[1]+(hd[1]-nb[1])*prog }
@@ -95,12 +105,8 @@ function draw(){ if(!W) return; var w=S*CW, h=S*CH;
   parts.forEach(function(p){ cx.globalAlpha=Math.max(0,Math.min(1,p.l*2)); cx.fillStyle=p.c; cx.beginPath(); cx.arc(p.x,p.y,p.r,0,6.28); cx.fill() }); cx.globalAlpha=1 }
 var tP=0; function loop(t){ var dt=Math.min(.05,(t-(tP||t))/1000); tP=t; if(state!=='pause') step(dt); draw(); requestAnimationFrame(loop) }
 /* ---------- שליטה: נגיעה = פונים לכיוון הנגיעה, החלקה, חצים ---------- */
-var tp=null;
-cv.addEventListener('pointerdown',function(e){ e.preventDefault(); tp={x:e.clientX,y:e.clientY} });
-cv.addEventListener('pointerup',function(e){ if(!tp) return; var dx=e.clientX-tp.x, dy=e.clientY-tp.y; tp=null;
-  if(Math.hypot(dx,dy)>25){ turn(Math.abs(dx)>Math.abs(dy)?[dx>0?1:-1,0]:[0,dy>0?1:-1]); return }
-  var r=cv.getBoundingClientRect(), hd=snake[0], ox=e.clientX-r.left-(hd[0]+.5)*S, oy=e.clientY-r.top-(hd[1]+.5)*S;
-  var cur=nextDir||dir; if(cur[0]!==0) turn([0,oy>0?1:-1]); else turn([ox>0?1:-1,0]) });
+document.querySelectorAll('#joy button').forEach(function(bt){ bt.addEventListener('pointerdown',function(e){ e.preventDefault(); var d=bt.getAttribute('data-d').split(',').map(Number); turn(d); bt.classList.add('on'); setTimeout(function(){bt.classList.remove('on')},180) }) });
+document.addEventListener('touchmove',function(e){ e.preventDefault() },{passive:false}); /* החלקה לא גוללת את הדף */
 addEventListener('keydown',function(e){ var m={ArrowLeft:[-1,0],ArrowRight:[1,0],ArrowUp:[0,-1],ArrowDown:[0,1]}[e.key]; if(m){ turn(m); e.preventDefault() } if(e.key==='Enter'&&!ov.classList.contains('hidden')){ var b=ov.querySelector('.btn'); b&&b.click() } });
 /* ---------- מסכים ---------- */
 function intro(){ state='intro'; ov.classList.remove('hidden'); card.innerHTML='<img src="../jump/art/'+W.hero+'.png" alt=""><h2>'+W.intro+'</h2><button class="btn" id="go">'+(W.start||'מַתְחִילִים')+'</button>';

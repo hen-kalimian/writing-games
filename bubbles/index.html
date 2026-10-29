@@ -81,7 +81,10 @@ function snap(){ /* הבועה נעצרת. עזרה בכיוון לילדים: �
   var sx=shot.x, sy=shot.y; shot=null;
   if(hit){ var grp=flood(hit.r,hit.c,function(b){return b.ch===ch}); burst(sx,sy,'#FBC5D6'); grp.forEach(function(p){ var q=pos(p[0],p[1]); var bb=grid[p[0]][p[1]]; burst(q.x,q.y,bb&&bb.col||'#FBC5D6'); grid[p[0]][p[1]]=null }); popSnd(); popped+=grp.length; dropFloating();
     if(!present().length) return win(); setTimeout(load,350); return }
-  falling.push({x:sx,y:sy,vy:-120,ch:ch}); tone(320,220,.2,'sine',.08); setTimeout(function(){ if(state==='play'&&cur) say(nameOf(cur)) },300) } /* פגיעה באות אחרת: לא נדבקת, האות נאמרת שוב */
+  /* חן, 29.10.26: "האות שאין לה מקום תדבק למעלה": בועה שלא פגעה באותה אות נדבקת ללוח במקום שבו עצרה */
+  var best=null; for(var r=0;r<=grid.length;r++){ for(var c=0;c<cols(r);c++){ if(at(r,c)) continue; var p=pos(r,c), d=Math.hypot(p.x-sx,p.y-sy); var ok=r===0||neigh(r,c).some(function(n){return at(n[0],n[1])}); if(ok&&(!best||d<best.d)) best={r:r,c:c,d:d} } }
+  if(best){ grid[best.r]=grid[best.r]||[]; grid[best.r][best.c]={ch:ch,born:clock,col:COLS[Math.floor(Math.random()*COLS.length)]} }
+  tone(320,220,.2,'sine',.08); setTimeout(function(){ if(state==='play') load() },350) }
 function flood(r,c,fn){ var seen={}, st=[[r,c]], out=[]; while(st.length){ var p=st.pop(), k=p[0]+','+p[1]; if(seen[k]) continue; seen[k]=1; var b=at(p[0],p[1]); if(!b||!fn(b)) continue; out.push(p); neigh(p[0],p[1]).forEach(function(n){st.push(n)}) } return out }
 function dropFloating(){ var keep={}; for(var c=0;c<cols(0);c++) if(at(0,c)) flood(0,c,function(){return true}).forEach(function(p){keep[p[0]+','+p[1]]=1});
   grid.forEach(function(row,r){ row&&row.forEach(function(b,c){ if(b&&!keep[r+','+c]){ var q=pos(r,c); falling.push({x:q.x,y:q.y,vy:-60,ch:b.ch,col:b.col}); row[c]=null } }) }) }
