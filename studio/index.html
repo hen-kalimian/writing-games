@@ -173,7 +173,7 @@ const BATCH = {}, openedB = {}, BN = 10;
 function batchHtml(bid) {
   const B = BATCH[bid], its = B.ids.map(id => D.items.find(i => i.id === id)), all = its.every(i => status(i));
   if (all && !openedB[bid]) return '<div class="batch" id="' + bid + '" data-b="' + bid + '"><div class="bmini" data-bopen="' + bid + '" title="לחיצה פותחת את הקבוצה"><span class="v">' + CHECK + '</span><span>' + esc(B.label) + ': ' + its.length + ' מתוך ' + its.length + ' הוקלטו</span><span class="mx">לחיצה פותחת</span></div></div>';
-  return '<div class="batch" id="' + bid + '" data-b="' + bid + '"><div class="bhead"><span>' + esc(B.label) + '</span><button type="button" class="bclose" data-bclose="' + bid + '"' + (all ? '' : ' hidden') + '>סגירת הקבוצה</button></div><div class="tiles">' + its.map(tile).join('') + '</div></div>';
+  return '<div class="batch" id="' + bid + '" data-b="' + bid + '"><div class="bhead"><span>' + esc(B.label) + ' · <b class="bcnt">' + its.filter(i => status(i)).length + ' מתוך ' + its.length + ' הוקלטו</b>' + (all ? '' : ' · נסגרת לבד כשכולן מוקלטות') + '</span><button type="button" class="bclose" data-bclose="' + bid + '"' + (all ? '' : ' hidden') + '>סגירת הקבוצה</button></div><div class="tiles">' + its.map(tile).join('') + '</div></div>';
 }
 function batches(key, items) {
   let h = '';
@@ -194,7 +194,7 @@ function groupHtml(sec) {
 function render() { tabs(); progress(); const s = SECS.find(x => x.id === sec) || SECS[0]; $('main').innerHTML = '<p class="secnote">' + s.note + '</p>' + (s.id === 'syl' ? sylHtml() : s.id === 'packs' ? packsHtml() : s.id === 'answers' || s.id === 'pics' ? groupHtml(s.id) : batches(s.id, D.items.filter(i => i.sec === s.id))); }
 function busyBatch(bid) { const el = document.getElementById(bid); return !!(el && el.querySelector('.btn.rec.live')) || BATCH[bid].ids.some(id => auto[id] || takes[id]); }
 // כל כמה שניות: קבוצה שהושלמה נסגרת (אלא אם פתחת אותה בכוונה), ובקבוצה פתוחה שהושלמה מופיע כפתור "סגירת הקבוצה"
-function syncBatches() { Object.keys(BATCH).forEach(bid => { const el = document.getElementById(bid); if (!el) return; const done = BATCH[bid].ids.every(id => status(D.items.find(i => i.id === id))); const cb = el.querySelector('.bclose'); if (cb) cb.hidden = !done; if (done && !openedB[bid] && !busyBatch(bid)) collapseBatch(bid); }); }
+function syncBatches() { Object.keys(BATCH).forEach(bid => { const el = document.getElementById(bid); if (!el) return; const done = BATCH[bid].ids.every(id => status(D.items.find(i => i.id === id))); const cb = el.querySelector('.bclose'); if (cb) cb.hidden = !done; const bc = el.querySelector('.bcnt'); if (bc) bc.textContent = BATCH[bid].ids.filter(id => status(D.items.find(i => i.id === id))).length + ' מתוך ' + BATCH[bid].ids.length + ' הוקלטו'; if (done && !openedB[bid] && !busyBatch(bid)) collapseBatch(bid); }); }
 // סוגרים קבוצה שהושלמה בלי להזיז את מה שמתחתיה: מחשבים מחדש את המיקום כדי שכפתור ההקלטה ישאר בדיוק איפה שהוא
 function collapseBatch(bid) {
   const el = document.getElementById(bid); if (!el || openedB[bid] || !BATCH[bid]) return;
