@@ -71,7 +71,7 @@ function shoot(tx,ty){ if(state!=='play'||shot||!cur) return; var sx=W/2, sy=H-R
   if(t){ var tp=pos(t.r,t.c), aa=Math.atan2(tp.y-sy,tp.x-sx); shot.vx=Math.cos(aa)*sp; shot.vy=Math.sin(aa)*sp; shot.t=t }
   tone(500,800,.12,'sine',.08) }
 function snap(){ /* הבועה נעצרת. עזרה בכיוון לילדים: אם היא קרובה לבועה עם אותה אות, הקבוצה של הבועה הזו מתפוצצת */
-  var ch=shot.ch, hit=null; if(shot.t&&at(shot.t.r,shot.t.c)&&at(shot.t.r,shot.t.c).ch===ch) hit={r:shot.t.r,c:shot.t.c,d:0}; if(!hit) grid.forEach(function(row,r){ row&&row.forEach(function(b,c){ if(!b||b.ch!==ch) return; var p=pos(r,c), d=Math.hypot(p.x-shot.x,p.y-shot.y); if(d<R*2.6&&(!hit||d<hit.d)) hit={r:r,c:c,d:d} }) });
+  var ch=shot.ch, hit=null; if(shot.t&&at(shot.t.r,shot.t.c)&&at(shot.t.r,shot.t.c).ch===ch) hit={r:shot.t.r,c:shot.t.c,d:0}; if(!hit&&!shot.t) grid.forEach(function(row,r){ row&&row.forEach(function(b,c){ if(!b||b.ch!==ch) return; var p=pos(r,c), d=Math.hypot(p.x-shot.x,p.y-shot.y); if(d<R*2.6&&(!hit||d<hit.d)) hit={r:r,c:c,d:d} }) });
   var sx=shot.x, sy=shot.y; shot=null;
   if(hit){ var grp=flood(hit.r,hit.c,function(b){return b.ch===ch}); burst(sx,sy,'#FBC5D6'); grp.forEach(function(p){ var q=pos(p[0],p[1]); var bb=grid[p[0]][p[1]]; burst(q.x,q.y,bb&&bb.col||'#FBC5D6'); grid[p[0]][p[1]]=null }); popSnd(); popped+=grp.length; dropFloating();
     if(!present().length) return win(); setTimeout(load,350); return }
