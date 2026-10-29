@@ -35,9 +35,8 @@
  ],
  "bubble": "#FBC5D6",
  "props": [
-  "tree-red",
-  "tree-orange",
-  "flower-pot",
+  "dove",
+  "olive-branch",
   "tree-yellow"
  ],
  "obstacle": "cone",

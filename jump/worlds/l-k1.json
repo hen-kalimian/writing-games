@@ -1,23 +1,26 @@
 {
- "title": "הַדְּבוֹרָה בַּשְּׁקִיעָה",
+ "title": "הַצִּפּוֹר עַל חוֹף הַיָּם",
  "intro": "אוֹסְפִים צְלִילִים עִם קָמַץ וּפַתָּח",
- "hero": "bee",
+ "hero": "bird",
  "heroFlip": true,
  "sky": [
-  "#F9C9C1",
-  "#FCE6D4"
+  "#BFE6F7",
+  "#FFF6EC"
  ],
  "ground": [
-  "#C9B6E4",
-  "#EBDDF2"
+  "#F1D9A6",
+  "#F6E7C6"
  ],
- "hazard": "fire",
+ "hazard": "water",
  "bubble": "#FDE1EA",
  "decor": [
-  "tree-red",
-  "tree-orange",
-  "flower-pot",
-  "tree-yellow"
+  "stork",
+  "dove",
+  "olive-branch"
+ ],
+ "hills": [
+  "#9ED8EE",
+  "#7FC8E6"
  ],
  "done": "כָּל הַכָּבוֹד! סִיַּמְתֶּם אֶת כָּל הַשְּׁלָבִים",
  "levels": [

@@ -36,10 +36,8 @@
  "bubble": "#FBC5D6",
  "props": [
   "umbrella-pink",
-  "umbrella-blue",
   "stork",
-  "umbrella-red",
-  "olive-branch"
+  "umbrella-blue"
  ],
  "obstacle": "cone",
  "cars": [

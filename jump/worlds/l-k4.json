@@ -1,24 +1,28 @@
 {
- "title": "הַפַּרְפַּר בַּיַּעַר",
+ "title": "הַשַּׁבְּלוּל בַּשֶּׁלֶג",
  "intro": "אוֹסְפִים צְלִילִים עִם חוֹלָם",
- "hero": "butterfly",
+ "hero": "snail",
  "heroFlip": false,
  "sky": [
-  "#D9F0E4",
-  "#FDF3F6"
+  "#DCEAF6",
+  "#F7FBFE"
  ],
  "ground": [
-  "#86C97A",
-  "#D9C2A0"
+  "#F7FAFD",
+  "#DDE8F0"
  ],
  "hazard": "fire",
- "bubble": "#FDE1EA",
+ "bubble": "#E4DAFA",
  "decor": [
-  "tree-green",
-  "mushroom",
-  "tree-green",
-  "mushroom"
+  "nest-empty",
+  "jacket"
  ],
+ "hills": [
+  "#EEF4FA",
+  "#DCE7F1"
+ ],
+ "weather": "snow",
+ "sun": false,
  "done": "כָּל הַכָּבוֹד! סִיַּמְתֶּם אֶת כָּל הַשְּׁלָבִים",
  "levels": [
   {

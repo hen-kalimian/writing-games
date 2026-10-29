@@ -35,12 +35,12 @@
  ],
  "bubble": "#FBC5D6",
  "props": [
-  "flower-pot",
-  "butterfly",
-  "tree-green",
-  "flower-pot"
+  "almond-blossom",
+  "nest-eggs",
+  "almond-blossom"
  ],
  "obstacle": "cone",
+ "weather": "petals",
  "cars": [
   {
    "color": "#B79BE6"

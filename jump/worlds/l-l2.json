@@ -1,24 +1,30 @@
 {
- "title": "הַשַּׁבְּלוּל בָּאָבִיב",
+ "title": "הַשַּׁבְּלוּל בַּסְּתָיו",
  "intro": "אוֹסְפִים רַק אֶת הָאוֹת שֶׁשּׁוֹמְעִים",
  "hero": "snail",
  "heroFlip": false,
  "sky": [
-  "#E6E0FA",
-  "#FDF0F6"
+  "#FCD9B8",
+  "#FDF0E4"
  ],
  "ground": [
-  "#B5E3A1",
-  "#DCEFD0"
+  "#C98F5A",
+  "#E9C9A0"
  ],
  "hazard": "fire",
- "bubble": "#E4DAFA",
+ "bubble": "#FFF1C9",
  "decor": [
-  "tree-green",
-  "flower-pot",
-  "pear",
-  "leaf-green"
+  "tree-orange",
+  "pumpkin",
+  "acorn",
+  "mushroom"
  ],
+ "hills": [
+  "#F2C59A",
+  "#E8AE7C"
+ ],
+ "clouds": "",
+ "weather": "leaves",
  "names": true,
  "done": "כָּל הַכָּבוֹד! סִיַּמְתֶּם אֶת כָּל הַשְּׁלָבִים",
  "levels": [

@@ -1,24 +1,29 @@
 {
- "title": "הַשַּׁבְּלוּל בַּסְּתָיו",
+ "title": "הַדְּבוֹרָה בִּשְׂדֵה הַחִטָּה",
  "intro": "אוֹסְפִים צְלִילִים עִם שְׁוָא",
- "hero": "snail",
- "heroFlip": false,
+ "hero": "bee",
+ "heroFlip": true,
  "sky": [
-  "#FCE9D8",
-  "#FDF3F6"
+  "#FFF4D2",
+  "#FDF6EA"
  ],
  "ground": [
-  "#E7B77F",
-  "#F3DDBF"
+  "#E6C35C",
+  "#F2DFA5"
  ],
  "hazard": "water",
  "bubble": "#FFF1C9",
  "decor": [
-  "tree-orange",
-  "pumpkin",
-  "mushroom",
-  "tree-yellow"
+  "wheat",
+  "tree-yellow",
+  "wheat",
+  "date-fruit"
  ],
+ "hills": [
+  "#F2DE9B",
+  "#E8CF7E"
+ ],
+ "clouds": "",
  "done": "כָּל הַכָּבוֹד! סִיַּמְתֶּם אֶת כָּל הַשְּׁלָבִים",
  "levels": [
   {

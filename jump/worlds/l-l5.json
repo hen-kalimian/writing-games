@@ -1,24 +1,31 @@
 {
- "title": "הַפַּרְפַּר בַּפַּרְדֵּס",
+ "title": "הַפַּרְפַּר בַּלַּיְלָה",
  "intro": "אוֹסְפִים רַק אֶת הָאוֹת שֶׁשּׁוֹמְעִים",
  "hero": "butterfly",
  "heroFlip": false,
  "sky": [
-  "#FFF0D9",
-  "#FDF3F6"
+  "#3E3A6E",
+  "#8C6FA8"
  ],
  "ground": [
-  "#A8D98A",
-  "#EAD3B0"
+  "#6F8F72",
+  "#B7A9C9"
  ],
  "hazard": "water",
- "bubble": "#CFEFE3",
+ "bubble": "#FDE1EA",
  "decor": [
-  "tree-yellow",
-  "apple-red",
-  "pear",
+  "tree-green",
+  "sapling",
   "tree-green"
  ],
+ "hills": [
+  "#5A5688",
+  "#4A4778"
+ ],
+ "clouds": "",
+ "weather": "fireflies",
+ "night": true,
+ "sun": false,
  "names": true,
  "done": "כָּל הַכָּבוֹד! סִיַּמְתֶּם אֶת כָּל הַשְּׁלָבִים",
  "levels": [

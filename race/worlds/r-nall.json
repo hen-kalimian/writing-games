@@ -1,5 +1,5 @@
 {
- "title": "מֵרוֹץ בָּאָחוּ",
+ "title": "מֵרוֹץ בִּשְׂדֵה הַחִטָּה",
  "goal": "אִסְפוּ 10 סְפָרוֹת 9",
  "goalSay": [
   "אִסְפוּ אֶת הַסִּפְרָה",
@@ -22,12 +22,12 @@
  "need": 10,
  "time": 60,
  "sky": [
-  "#E3F6F0",
-  "#FDF3F6"
+  "#FFF4D2",
+  "#FDF6EA"
  ],
  "grass": [
-  "#CDEFC0",
-  "#BFE8B0"
+  "#E8D27E",
+  "#E0C86C"
  ],
  "road": [
   "#CBC3C8",
@@ -35,11 +35,9 @@
  ],
  "bubble": "#FBC5D6",
  "props": [
-  "flower-pot",
-  "butterfly",
-  "tree-green",
-  "apple-red",
-  "flower-pot"
+  "wheat",
+  "bird",
+  "wheat"
  ],
  "obstacle": "cone",
  "cars": [

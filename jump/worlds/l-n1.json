@@ -1,24 +1,32 @@
 {
- "title": "הַטִּפָּה בָּאָבִיב",
+ "title": "הַטִּפָּה בַּגֶּשֶׁם",
  "intro": "אוֹסְפִים רַק אֶת הַסִּפְרָה שֶׁשּׁוֹמְעִים",
  "hero": "drop",
  "heroFlip": false,
  "sky": [
-  "#E6E0FA",
-  "#FDF0F6"
+  "#B9C8D8",
+  "#E8EEF4"
  ],
  "ground": [
-  "#B5E3A1",
-  "#DCEFD0"
+  "#8DBF97",
+  "#C9D3C4"
  ],
  "hazard": "water",
- "bubble": "#E4DAFA",
+ "bubble": "#DDF1FB",
  "decor": [
-  "tree-green",
-  "flower-pot",
-  "pear",
-  "leaf-green"
+  "umbrella-blue",
+  "boot-red",
+  "umbrella-red",
+  "umbrella-pink"
  ],
+ "hills": [
+  "#A8BCCB",
+  "#94AABB"
+ ],
+ "clouds": "cloud-rain",
+ "cloudN": 5,
+ "weather": "rain",
+ "sun": false,
  "names": "num",
  "done": "כָּל הַכָּבוֹד! סִיַּמְתֶּם אֶת כָּל הַשְּׁלָבִים",
  "levels": [

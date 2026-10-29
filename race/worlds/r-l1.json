@@ -35,14 +35,12 @@
  ],
  "bubble": "#FBC5D6",
  "props": [
-  "tree-green",
   "flower-pot",
-  "mushroom",
-  "tree-yellow",
   "butterfly",
-  "tree-orange"
+  "hatzav"
  ],
  "obstacle": "cone",
+ "weather": "petals",
  "cars": [
   {
    "color": "#EF406E"

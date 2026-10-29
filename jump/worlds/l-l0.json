@@ -1,5 +1,5 @@
 {
- "title": "הַדְּבוֹרָה בַּגִּנָּה",
+ "title": "הַדְּבוֹרָה בְּגִינַת הַפְּרָחִים",
  "intro": "אוֹסְפִים רַק אֶת הָאוֹת שֶׁשּׁוֹמְעִים",
  "hero": "bee",
  "heroFlip": true,
@@ -15,9 +15,13 @@
  "bubble": "#FBC5D6",
  "decor": [
   "flower-pot",
-  "tree-green",
-  "apple-red",
-  "tree-green"
+  "hatzav",
+  "garden",
+  "hatzav"
+ ],
+ "hills": [
+  "#CDE8C0",
+  "#B5DDA6"
  ],
  "names": true,
  "done": "כָּל הַכָּבוֹד! סִיַּמְתֶּם אֶת כָּל הַשְּׁלָבִים",

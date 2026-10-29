@@ -1,24 +1,28 @@
 {
- "title": "הַקִּפּוֹד בַּשְּׁקִיעָה",
+ "title": "הַפַּרְפַּר בְּפְרִיחַת הַשְּׁקֵדִיָּה",
  "intro": "אוֹסְפִים צְלִילִים עִם פִּיצוּץ",
- "hero": "hedgehog",
- "heroFlip": true,
+ "hero": "butterfly",
+ "heroFlip": false,
  "sky": [
-  "#F9C9C1",
-  "#FCE6D4"
+  "#E9E1F7",
+  "#FDF0F6"
  ],
  "ground": [
-  "#C9B6E4",
-  "#EBDDF2"
+  "#B5E3A1",
+  "#EBD8E6"
  ],
  "hazard": "water",
- "bubble": "#FDE1EA",
+ "bubble": "#FBC5D6",
  "decor": [
-  "tree-red",
-  "tree-orange",
-  "flower-pot",
-  "tree-yellow"
+  "almond-blossom",
+  "nest-eggs",
+  "almond-blossom"
  ],
+ "hills": [
+  "#F2CFE0",
+  "#E9BCD2"
+ ],
+ "weather": "petals",
  "done": "כָּל הַכָּבוֹד! סִיַּמְתֶּם אֶת כָּל הַשְּׁלָבִים",
  "levels": [
   {

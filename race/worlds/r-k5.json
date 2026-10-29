@@ -35,13 +35,13 @@
  ],
  "bubble": "#FBC5D6",
  "props": [
-  "umbrella-blue",
-  "tree-green",
-  "umbrella-pink",
-  "sapling",
-  "umbrella-red"
+  "umbrella-red",
+  "boot-red",
+  "jacket"
  ],
- "obstacle": "cone",
+ "obstacle": "boot-red",
+ "weather": "rain",
+ "sun": false,
  "cars": [
   {
    "color": "#F2C94C"

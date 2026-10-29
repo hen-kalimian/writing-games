@@ -35,11 +35,9 @@
  ],
  "bubble": "#FBC5D6",
  "props": [
-  "tree-green",
-  "sapling",
-  "tree-yellow",
-  "flower-pot",
-  "tree-green"
+  "pomegranate",
+  "fig",
+  "grapes"
  ],
  "obstacle": "cone",
  "cars": [

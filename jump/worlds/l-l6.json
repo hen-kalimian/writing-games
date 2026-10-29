@@ -1,23 +1,27 @@
 {
- "title": "הַקִּפּוֹד בַּגִּנָּה",
+ "title": "הַקִּפּוֹד בַּפַּרְדֵּס",
  "intro": "אוֹסְפִים רַק אֶת הָאוֹת שֶׁשּׁוֹמְעִים",
  "hero": "hedgehog",
  "heroFlip": true,
  "sky": [
-  "#DDF1FB",
+  "#FFF0D9",
   "#FDF3F6"
  ],
  "ground": [
-  "#9BD97A",
-  "#E8C9A0"
+  "#A8D98A",
+  "#EAD3B0"
  ],
  "hazard": "fire",
- "bubble": "#FBC5D6",
+ "bubble": "#CFEFE3",
  "decor": [
-  "flower-pot",
-  "tree-green",
-  "apple-red",
-  "tree-green"
+  "pomegranate",
+  "tree-red",
+  "fig",
+  "grapes"
+ ],
+ "hills": [
+  "#E7E3A8",
+  "#D8D58F"
  ],
  "names": true,
  "done": "כָּל הַכָּבוֹד! סִיַּמְתֶּם אֶת כָּל הַשְּׁלָבִים",

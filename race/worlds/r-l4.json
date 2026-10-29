@@ -37,12 +37,10 @@
  "props": [
   "tree-green",
   "mushroom",
-  "tree-red",
-  "sapling",
-  "pumpkin",
-  "mushroom"
+  "sapling"
  ],
- "obstacle": "cone",
+ "obstacle": "mushroom",
+ "sun": false,
  "cars": [
   {
    "color": "#B79BE6"
@@ -57,6 +55,5 @@
  "winTitle": "וָאוּ! אֵיזוֹ נְסִיעָה מְהִירָה!",
  "winSay": "תְּפַסְתֶּם אֶת",
  "finishSay": "הִנֵּה קַו הַסִּיּוּם!",
- "night": true,
- "sun": false
+ "night": true
 }

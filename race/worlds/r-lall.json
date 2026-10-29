@@ -37,11 +37,10 @@
  "props": [
   "tree-orange",
   "tree-red",
-  "pumpkin",
-  "tree-yellow",
-  "mushroom"
+  "acorn"
  ],
- "obstacle": "cone",
+ "obstacle": "pumpkin",
+ "weather": "leaves",
  "cars": [
   {
    "color": "#F6B18E"

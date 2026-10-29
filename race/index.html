@@ -118,7 +118,7 @@ function draw(){
   var g=cx.createLinearGradient(0,0,0,VH*.55); g.addColorStop(0,W.sky[0]); g.addColorStop(1,W.sky[1]); cx.fillStyle=g; cx.fillRect(0,0,VW,VH);
   if(W.sun!==false) dImg('sun',VW*.78,VH*.05,VW*.11,VW*.11);
   if(W.night){ for(var f=0;f<40;f++){ var fx=(f*97.3%1)*VW, fy=((f*53.7)%1)*VH*.55; fx=(f*137)%VW; fy=(f*71)%(VH*.5); cx.globalAlpha=.4+.6*Math.abs(Math.sin(clock*2+f)); cx.fillStyle=f%3?'#FFF3B0':'#FBC5D6'; cx.beginPath(); cx.arc(fx,fy,1.5+f%3,0,6.28); cx.fill() } cx.globalAlpha=1 }
-  if(!W.night) for(var c=0;c<3;c++) dImg('cloud',((c*VW*.4-pos*.002+clock*6)%(VW*1.2)+VW*1.2)%(VW*1.2)-VW*.15,VH*(.06+c%2*.07),VW*.16,VW*.1,.8);
+  if(!W.night&&W.sun!==false||W.clouds) for(var c=0;c<3;c++) dImg('cloud',((c*VW*.4-pos*.002+clock*6)%(VW*1.2)+VW*1.2)%(VW*1.2)-VW*.15,VH*(.06+c%2*.07),VW*.16,VW*.1,.8);
   cx.save(); cx.translate(sk,0);
   var base=Math.floor(pos/SEG)%segs.length, bs=segs[base], pp=(pos%SEG)/SEG, camY=CAMH+(bs.p1.y+(bs.p2.y-bs.p1.y)*pp), maxy=VH, x=0, dx=-(bs.curve*pp), list=[];
   cx.fillStyle=W.grass[0]; cx.fillRect(0,VH*.5,VW,VH*.5);
@@ -152,8 +152,16 @@ function draw(){
   else { cx.fillStyle=carCol; cx.beginPath(); cx.moveTo(-10,VH+10); cx.quadraticCurveTo(VW*.08,hb,VW*.5,hb-VH*.03); cx.quadraticCurveTo(VW*.92,hb,VW+10,VH+10); cx.fill();
     cx.fillStyle='rgba(255,255,255,.35)'; cx.beginPath(); cx.ellipse(VW*.5,hb+VH*.03,VW*.28,VH*.02,0,0,6.28); cx.fill() }
   parts.forEach(function(p){ cx.globalAlpha=Math.max(0,Math.min(1,p.l*2)); cx.fillStyle=p.c; cx.beginPath(); cx.arc(p.x,p.y,p.r,0,6.28); cx.fill() }); cx.globalAlpha=1;
+  weather();
   cx.restore();
 }
+var WX=null;
+function weather(){ var t=W.weather; if(!t) return; if(!WX){ WX=[]; for(var i=0;i<(t==='rain'?80:36);i++) WX.push({x:Math.random(),y:Math.random(),s:.6+Math.random()*.8,p:Math.random()*6,k:Math.floor(Math.random()*4)}) }
+  var sp=speed/MAXS; WX.forEach(function(w){ var tt=clock, x=w.x*VW, y;
+    if(t==='leaves'){ y=((w.y*VH+tt*(40+60*sp)*w.s)%(VH+40))-20; x=((x+Math.sin(tt+w.p)*30)%VW+VW)%VW; var im=IMG[['leaf-orange','leaf-yellow','leaf-red','leaf-brown'][w.k]]; if(im){ cx.save(); cx.translate(x,y); cx.rotate(Math.sin(tt*2+w.p)); cx.globalAlpha=.85; cx.drawImage(im,-13*w.s,-13*w.s,26*w.s,26*w.s); cx.restore() } }
+    else if(t==='rain'){ y=(w.y*VH+tt*520*w.s)%VH; cx.strokeStyle='rgba(120,160,210,.55)'; cx.lineWidth=1.6; cx.beginPath(); cx.moveTo(x,y); cx.lineTo(x-4,y+14); cx.stroke() }
+    else if(t==='snow'){ y=(w.y*VH+tt*40*w.s)%VH; x=((x+Math.sin(tt+w.p)*18)%VW+VW)%VW; cx.fillStyle='rgba(255,255,255,.95)'; cx.beginPath(); cx.arc(x,y,2+w.s*2,0,6.28); cx.fill() }
+    else if(t==='petals'){ y=(w.y*VH+tt*30*w.s)%VH; x=((x+Math.sin(tt*1.2+w.p)*26)%VW+VW)%VW; cx.save(); cx.translate(x,y); cx.rotate(tt+w.p); cx.fillStyle=['#F7A8C0','#FBC5D6','#FFFFFF','#E4C6F2'][w.k]; cx.beginPath(); cx.ellipse(0,0,5*w.s,3*w.s,0,0,6.28); cx.fill(); cx.restore() } }); cx.globalAlpha=1 }
 function dImg(k,x,y,w,h,al){ var im=IMG[k]; if(!im) return; var a=im.width/im.height; if(a>w/h){h=w/a}else{w=h*a} cx.save(); if(al!=null) cx.globalAlpha=al; cx.drawImage(im,x,y,w,h); cx.restore() }
 var tPrev=0; function loop(t){ var dt=Math.min(.033,(t-(tPrev||t))/1000); tPrev=t; if(state!=='pause') step(dt); if(W&&segs.length) draw(); requestAnimationFrame(loop) }
 /* ---------- שליטה: ימינה ושמאלה בלבד ---------- */
@@ -190,7 +198,7 @@ window.__R=function(){ return {state:state,got:got,need:need,time:time,laneI:lan
   near:(function(){ var out=[], b=Math.floor(pos/SEG); for(var n=2;n<26;n++){ var s=segs[(b+n)%segs.length]; s&&s.it.forEach(function(o){ if(!o.dead) out.push({n:n,g:o.g?1:0,box:o.box?1:0,lane:LANES.indexOf(o.off)}) }) } return out })() } };
 fetch('worlds/'+(Q.get('w')||'spring')+'.json?v=1').then(function(r){return r.json()}).then(function(w){
   W=w; document.title=W.title; document.getElementById('hint').textContent=W.hint||'נוֹגְעִים מִיָּמִין אוֹ מִשְּׂמֹאל כְּדֵי לִפְנוֹת';
-  var ks=['sun','cloud',W.obstacle||'cone'].concat(W.props).concat((W.cars||[]).map(function(c){return c.img}).filter(Boolean)).concat(W.trophy?[W.trophy]:[]), n=0;
+  var ks=['sun','cloud',W.obstacle||'cone'].concat(W.weather==='leaves'?['leaf-orange','leaf-yellow','leaf-red','leaf-brown']:[]).concat(W.props).concat((W.cars||[]).map(function(c){return c.img}).filter(Boolean)).concat(W.trophy?[W.trophy]:[]), n=0;
   ks.forEach(function(k){ var im=new Image(); im.onload=im.onerror=function(){ if(++n===ks.length){ fit(); buildTrack(); show('intro'); requestAnimationFrame(loop) } }; im.src='art/'+k+'.png'; IMG[k]=im; if(/^car_/.test(k)) IMG[k]=im });
 });
 })();
