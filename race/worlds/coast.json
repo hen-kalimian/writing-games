@@ -1,21 +1,55 @@
 {
  "title": "מֵרוֹץ בִּכְבִישׁ הַחוֹף",
- "goal": "תִּפְסוּ חָמֵשׁ סְפָרוֹת 3",
- "show": ["3"],
- "good": ["3"],
- "bad": ["8", "2", "5"],
+ "goal": "אִסְפוּ 5 סְפָרוֹת 3",
+ "show": [
+  "3"
+ ],
+ "good": [
+  "3"
+ ],
+ "bad": [
+  "8",
+  "2",
+  "5"
+ ],
  "names": "num",
  "need": 5,
  "time": 60,
  "sea": true,
- "sky": ["#BFE6F7", "#FFF6EC"],
- "grass": ["#F6E3B8", "#F1DCAA"],
- "road": ["#CFC6CB", "#C7BEC4"],
+ "sky": [
+  "#BFE6F7",
+  "#FFF6EC"
+ ],
+ "grass": [
+  "#F6E3B8",
+  "#F1DCAA"
+ ],
+ "road": [
+  "#CFC6CB",
+  "#C7BEC4"
+ ],
  "bubble": "#CFEFE3",
- "props": ["umbrella-pink", "umbrella-blue", "stork", "umbrella-red", "olive-branch"],
+ "props": [
+  "umbrella-pink",
+  "umbrella-blue",
+  "stork",
+  "umbrella-red",
+  "olive-branch"
+ ],
  "obstacle": "cone",
- "cars": [{"color": "#7FCFD9"}, {"color": "#F2C94C"}, {"color": "#EF406E"}],
+ "cars": [
+  {
+   "color": "#7FCFD9"
+  },
+  {
+   "color": "#F2C94C"
+  },
+  {
+   "color": "#EF406E"
+  }
+ ],
  "winTitle": "וָאוּ! אֵיזוֹ נְסִיעָה מְהִירָה!",
  "winSay": "תְּפַסְתֶּם אֶת כָּל הַסְּפָרוֹת 3",
- "finishSay": "הִנֵּה קַו הַסִּיּוּם!"
+ "finishSay": "הִנֵּה קַו הַסִּיּוּם!",
+ "goalSay": "אִסְפוּ אֶת הַסִּפְרָה שָׁלוֹשׁ חָמֵשׁ פְּעָמִים לִפְנֵי שֶׁנִּגְמַר הַזְּמַן"
 }

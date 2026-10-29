@@ -68,7 +68,7 @@ function tone(f1,f2,d,type,vol){ if(muted)return; try{ AC=AC||new (window.AudioC
 var SFX={good:function(){tone(660,990,.12,'triangle',.14);setTimeout(function(){tone(880,1320,.14,'triangle',.12)},90)},bump:function(){tone(220,90,.35,'sawtooth',.08)},tick:function(){tone(900,900,.06,'square',.05)},
  win:function(){[523,659,784,1047,1319].forEach(function(f,i){setTimeout(function(){tone(f,f*1.01,.2,'triangle',.12)},i*110)})}};
 /* ---------- כביש בתלת-ממד מדומה (מקטעים שמוקרנים לפי המרחק) ---------- */
-var SEG=200, RW=2000, LANES=[-.62,0,.62], CAMH=900, DEPTH=1/Math.tan(50*Math.PI/180), DRAW=140, segs=[], trackLen=0;
+var FAR=70, SEG=200, RW=2000, LANES=[-.62,0,.62], CAMH=900, DEPTH=1/Math.tan(50*Math.PI/180), DRAW=140, segs=[], trackLen=0;
 var VW=640, VH=400, DPR=1;
 function fit(){ var r=stage.getBoundingClientRect(); if(r.height>r.width*1.25){ stage.style.maxHeight=Math.round(r.width*1.25)+'px'; stage.style.margin='auto 0'; r=stage.getBoundingClientRect() } DPR=Math.min(2,window.devicePixelRatio||1); cv.width=Math.round(r.width*DPR); cv.height=Math.round(r.height*DPR); VW=r.width; VH=r.height }
 addEventListener('resize',fit);
@@ -88,10 +88,10 @@ function spawnRow(){ // שורה חדשה לפני הנהג: צליל נכון, 
   var si=Math.floor((pos+SEG*70)/SEG), s=segs[si]; if(!s||finishAt>=0) return;
   var lanes=[0,1,2].sort(function(){return Math.random()-.5}), r=Math.random();
   var hasG=Math.random()<.55; if(hasG) s.it.push({g:1,t:W.good[Math.floor(Math.random()*W.good.length)],off:LANES[lanes[0]],ph:Math.random()*6});
-  if(r<.75||!hasG) s.it.push(Math.random()<.55?{g:0,t:W.bad[Math.floor(Math.random()*W.bad.length)],off:LANES[lanes[1]],ph:Math.random()*6}:{box:1,off:LANES[lanes[1]]});
-  if(r<.3) s.it.push({box:1,off:LANES[lanes[2]]});
+  if(r<.45||!hasG) s.it.push(Math.random()<.5?{g:0,t:W.bad[Math.floor(Math.random()*W.bad.length)],off:LANES[lanes[1]],ph:Math.random()*6}:{box:1,off:LANES[lanes[1]]});
+  if(r<.12&&hasG) s.it.push({box:1,off:LANES[lanes[2]]});
 }
-function project(p,camX,camY,camZ,offX){ var tx=(p.x||0)-camX, ty=p.y-camY, tz=p.z-camZ; var sc=DEPTH/tz; return {x:Math.round(VW/2+sc*(tx+offX)*VW/2), y:Math.round(VH/2-sc*ty*VH/2), w:Math.round(sc*RW*VW/2), sc:sc} }
+function project(p,camX,camY,camZ,offX){ var tx=(p.x||0)-camX, ty=p.y-camY, tz=p.z-camZ; var sc=DEPTH/tz; return {x:VW/2+sc*(tx+offX)*VW/2, y:VH/2-sc*ty*VH/2, w:sc*RW*VW/2, sc:sc} }
 function poly(x1,y1,w1,x2,y2,w2,c){ cx.fillStyle=c; cx.beginPath(); cx.moveTo(x1-w1,y1); cx.lineTo(x2-w2,y2); cx.lineTo(x2+w2,y2); cx.lineTo(x1+w1,y1); cx.closePath(); cx.fill() }
 function step(dt){
   clock+=dt; if(shake>0) shake-=dt; parts.forEach(function(p){p.x+=p.vx*dt;p.y+=p.vy*dt;p.vy+=600*dt;p.l-=dt}); parts=parts.filter(function(p){return p.l>0});
@@ -132,9 +132,9 @@ function draw(){
     poly(p1.x,p1.y+1,p1.w,p2.x,p2.y-1,p2.w,sg.stripe?W.road[0]:W.road[1]);
     if(sg.stripe){ [-1/3,1/3].forEach(function(l){ poly(p1.x+l*p1.w*2*.5,p1.y,p1.w*.02,p2.x+l*p2.w*2*.5,p2.y,p2.w*.02,'rgba(255,255,255,.9)') }) }
     if(sg.i===finishAt){ for(var q=0;q<10;q++){ poly(p1.x-p1.w+(q+.5)*p1.w*.2,p1.y,p1.w*.1,p2.x-p2.w+(q+.5)*p2.w*.2,p2.y,p2.w*.1,q%2?'#fff':'#4A2C3A') } }
-    maxy=p1.y; list.push(sg) }
+    maxy=p1.y; sg.n=n; list.push(sg) }
   // מהרחוק לקרוב: נוף, פריטים, קשת סיום
-  for(var m=list.length-1;m>=0;m--){ var sg2=list[m], cl=sg2.cl, sc=cl.p1.sc*VW/2;
+  for(var m=list.length-1;m>=0;m--){ var sg2=list[m], cl=sg2.cl, sc=cl.p1.sc*VW/2; if(sg2.n>FAR) continue; cx.globalAlpha=Math.min(1,(FAR-sg2.n)/14);
     sg2.sp.forEach(function(sp){ var im=IMG[sp.k]; if(!im) return; var w=sc*900, h=w*im.height/im.width, sx=cl.p1.x+sc*sp.off*RW; if(cl.p1.y-h>cl.clip) return; cx.drawImage(im,sx-w/2,cl.p1.y-h,w,h) });
     sg2.it.forEach(function(o){ if(o.dead) return; var sx=cl.p1.x+sc*o.off*RW, r=sc*230, yy=cl.p1.y-r*1.6+Math.sin(clock*3+(o.ph||0))*r*.08;
       if(o.box){ var im=IMG[W.obstacle||'cone']; if(im){ var w=sc*520, h=w*im.height/im.width; cx.drawImage(im,sx-w/2,cl.p1.y-h,w,h) } return }
@@ -144,6 +144,7 @@ function draw(){
       if(r>6){ cx.fillStyle='#4A2C3A'; cx.font='800 '+Math.round(r*(o.t.length>2?.8:1.05))+'px Rubik,Arial'; cx.textAlign='center'; cx.textBaseline='middle'; cx.fillText(o.t,sx,yy+r*.06) } });
     if(sg2.i===finishAt){ var aw=cl.p1.w*1.25, ah=aw*.55; cx.lineWidth=Math.max(2,aw*.05); cx.strokeStyle='#EF406E'; cx.beginPath(); cx.moveTo(cl.p1.x-aw,cl.p1.y); cx.lineTo(cl.p1.x-aw,cl.p1.y-ah); cx.lineTo(cl.p1.x+aw,cl.p1.y-ah); cx.lineTo(cl.p1.x+aw,cl.p1.y); cx.stroke();
       cx.fillStyle='#fff'; cx.fillRect(cl.p1.x-aw*.6,cl.p1.y-ah-aw*.14,aw*1.2,aw*.2); cx.fillStyle='#B8236B'; cx.font='800 '+Math.round(aw*.13)+'px Rubik'; cx.textAlign='center'; cx.textBaseline='middle'; cx.fillText(W.finishWord||'סִיּוּם',cl.p1.x,cl.p1.y-ah-aw*.04) } }
+  cx.globalAlpha=1;
   // מכסה המנוע של המכונית שנבחרה (נקודת המבט של הנהג)
   var hb=VH*.82+Math.sin(clock*18)*(speed/MAXS)*1.5;
   if(car&&IMG['car_'+car]){ var ci=IMG['car_'+car], cw=VW*.9, ch=cw*ci.height/ci.width; cx.drawImage(ci,VW/2-cw/2,VH-ch*.62+(hb-VH*.82),cw,ch) }
@@ -168,16 +169,19 @@ function big10(n){ var b=document.getElementById('big10'); b.textContent=n; b.st
 function spk(t){ return '<button class="spk" type="button" data-say="'+t+'" aria-label="להשמיע"><svg viewBox="0 0 24 24" fill="#EF406E"><path d="M4 9v6h4l5 4V5L8 9H4z"/><path d="M16 8.5a5 5 0 0 1 0 7" stroke="#EF406E" stroke-width="2" fill="none" stroke-linecap="round"/></svg></button>' }
 function bind(fn){ card.querySelectorAll('[data-say]').forEach(function(b){ b.onclick=function(e){e.stopPropagation();say(b.getAttribute('data-say'))} }); var g=document.getElementById('go'); if(g) g.onclick=function(){ ov.classList.add('hidden'); fn() } }
 function show(kind){ ov.classList.remove('hidden'); var h='';
-  if(kind==='intro'){ var cars=W.cars||[]; h='<h2>'+W.title+'</h2><p>'+W.goal+' '+spk(W.goal)+'</p><div class="big">'+W.show.map(function(t){return '<span>'+t+'</span>'}).join('')+'</div>'+(cars.length?'<p>'+(W.pick||'בַּחֲרוּ מְכוֹנִית')+'</p><div class="cars">'+cars.map(function(c,i){return '<button type="button" data-car="'+i+'"'+(c.img?'><img src="art/'+c.img+'.png" alt="">':' class="sw" style="background:'+c.color+'">')+'</button>'}).join('')+'</div>':'<button class="btn" id="go">'+(W.start||'נוֹסְעִים')+'</button>');
+  if(kind==='intro'){ var cars=W.cars||[]; h='<h2>'+W.title+'</h2><p>'+W.goal+' '+spk(W.goalSay||W.goal)+'</p><div class="big">'+W.show.map(function(t){return '<span>'+t+'</span>'}).join('')+'</div>'+(cars.length?'<p>'+(W.pick||'בַּחֲרוּ מְכוֹנִית')+'</p><div class="cars">'+cars.map(function(c,i){return '<button type="button" data-car="'+i+'"'+(c.img?'><img src="art/'+c.img+'.png" alt="">':' class="sw" style="background:'+c.color+'">')+'</button>'}).join('')+'</div>':'<button class="btn" id="go">'+(W.start||'נוֹסְעִים')+'</button>');
     card.innerHTML=h; bind(start); card.querySelectorAll('[data-car]').forEach(function(b){ b.onclick=function(){ var c=cars[+b.getAttribute('data-car')]; car=c.img?c.img.replace(/^car_/,''):null; carCol=c.color||carCol; ov.classList.add('hidden'); start() } }); say(W.goal); state='card'; return }
-  if(kind==='win'){ h='<img class="trophy" src="art/'+(W.trophy||'sun')+'.png" alt=""><h2>'+W.winTitle+'</h2><p>'+W.winSay+' '+spk(W.winSay)+'</p><button class="btn" id="go">'+(W.replay||'נוֹסְעִים שׁוּב')+'</button>'; card.innerHTML=h; bind(function(){ show('intro') }); say(W.winTitle,function(){ say(W.winSay) }); try{parent.postMessage({wgDone:1},'*')}catch(e){} return }
+  if(kind==='win'){ /* חן, 29.10.26: "תפסתם את..." הקלטה אחת, ואחריה שם האות או הספרה בקול שלה */
+    var nm=W.names==='num'?HenVoice.numberName(W.show[0]):W.names?HenVoice.letterName(W.show[0]):'', CAUGHT='תְּפַסְתֶּם אֶת';
+    var line=nm?CAUGHT+' '+(W.names==='num'?'הַסִּפְרָה ':'הָאוֹת ')+W.show[0]:W.winSay;
+    h='<img class="trophy" src="art/'+(W.trophy||'sun')+'.png" alt=""><h2>'+W.winTitle+'</h2><p>'+line+' '+spk(nm?CAUGHT:W.winSay)+'</p><button class="btn" id="go">'+(W.replay||'נוֹסְעִים שׁוּב')+'</button>'; card.innerHTML=h; bind(function(){ show('intro') }); say(W.winTitle,function(){ if(nm) say(CAUGHT,function(){ say(nm) }); else say(W.winSay) }); try{parent.postMessage({wgDone:1},'*')}catch(e){} return }
   if(kind==='late'){ h='<h2>'+(W.lateTitle||'נִגְמַר הַזְּמַן')+'</h2><p>'+(W.late||'נְנַסֶּה שׁוּב?')+'</p><button class="btn" id="go">'+(W.again||'עוֹד נְסִיעָה')+'</button>'; card.innerHTML=h; bind(start); say(W.late||'נְנַסֶּה שׁוּב?'); return }
 }
-function start(){ buildTrack(); pos=0; speed=0; laneI=1; px=0; got=0; time=W.time||60; finishAt=-1; nextSpawn=SEG*20; last10=-1; slow=0; need=W.need||10; state='play'; renderHud(); document.getElementById('goal').textContent=W.goal }
+function start(){ buildTrack(); pos=0; speed=0; laneI=1; px=0; got=0; time=W.time||60; finishAt=-1; nextSpawn=SEG*20; last10=-1; slow=0; need=W.need||10; state='play'; renderHud(); document.getElementById('goal').textContent=W.goal; say(W.goalSay||W.goal) }
 function timeUp(){ state='over'; setTimeout(function(){ show('late') },500) }
 function win(){ state='won'; SFX.win(); for(var i=0;i<6;i++) setTimeout(function(){ burst(rnd(VW*.2,VW*.8),rnd(VH*.2,VH*.5)) },i*150); setTimeout(function(){ show('win') },1300) }
 var hintT=0; function hideHint(){ if(hintT) return; hintT=1; setTimeout(function(){ document.getElementById('hint').classList.add('gone') },2500) }
-document.getElementById('goalSpk').onclick=function(){ W&&say(W.goal) };
+document.getElementById('goalSpk').onclick=function(){ W&&say(W.goalSay||W.goal) };
 document.getElementById('mute').onclick=function(){ muted=!muted; document.getElementById('muteX').style.display=muted?'':'none'; if(muted)try{aud.pause()}catch(e){} };
 document.getElementById('pause').onclick=function(){ if(state!=='play'&&state!=='finish') return; var was=state; state='pause'; try{aud.pause()}catch(e){} ov.classList.remove('hidden'); card.innerHTML='<h2>'+(W.paused||'הַמִּשְׂחָק עָצוּר')+'</h2><button class="btn" id="go">'+(W.resume||'מַמְשִׁיכִים')+'</button>'; bind(function(){ state=was }) };
 document.getElementById('fs').onclick=function(){ var d=document.documentElement; if(document.fullscreenElement) document.exitFullscreen(); else (d.requestFullscreen||d.webkitRequestFullscreen||function(){}).call(d) };
