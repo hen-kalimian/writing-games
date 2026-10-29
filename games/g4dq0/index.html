@@ -326,6 +326,7 @@ function renderLayers(s, t){ __sh = slideShift(s);
         if (l.show === 2 && shown && l.tog){ e.style.opacity = 0; return; }
         if (l.show === 2 && !shown){ popSticker(e, l); cheer(); if (typeof stkHook === 'function') stkHook(l, e); }
         if (l.snd) say(l.snd);
+        if (l.hot){ try { const pt = toStage(ev); popAt(pt.x, pt.y); } catch (x) {} cheer(); if (typeof stkHook === 'function') stkHook(l, e); }   /*__HOT: אזור לחיצה שמחזיר צליל במקום ציור שנעלם בעיצוב מחדש (חן, 29.10.26)*/
       });
     }
     stage.appendChild(e);
@@ -336,7 +337,7 @@ function renderR(s, t){
   stkHook = null;
   if (s.layers) renderLayers(s, t); else img(s);
   const a = s.acts[0];
-  const stk = (s.layers || []).filter(l => l.show === 2);
+  const stk = (s.layers || []).filter(l => l.show === 2 || l.hot);
   if (!stk.length){ say(introOf(a), () => finishStep(t, a.intro ? 700 : 3000)); return; }   // שקף בלי פעילות: בסוף ההקלטה עוברים לבד (חן, 11.10.26)
   /*__STKWAIT: שקף עם מדבקות שלוחצים עליהן לא עובר לבד אחרי ההוראה; ממשיכים רק אחרי שנלחצו כולן (חן, 29.10.26) */
   const seen = new Set();
