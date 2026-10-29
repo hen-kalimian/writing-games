@@ -68,9 +68,11 @@ function build(){ COLSN=easy?6:8; fit(); grid=[]; var POOL=SET.slice().sort(func
 function present(){ var s={}; grid.forEach(function(row){ row&&row.forEach(function(b){ if(b) s[b.ch]=1 }) }); return Object.keys(s) }
 function newCur(){ var p=present(); if(!p.length) return null; return p[Math.floor(Math.random()*p.length)] }
 function load(){ var pr=present(); cur=(nxt&&pr.indexOf(nxt)>=0)?nxt:newCur(); nxt=newCur(); /* הבועה הבאה תמיד מאות שעוד נמצאת בלוח */ if(!cur) return; document.getElementById('goal').textContent=''; say(nameOf(cur)) }
-function shoot(tx,ty){ if(state!=='play'||shot||!cur) return; var sx=W/2, sy=H-R*1.6, a=Math.atan2(ty-sy,tx-sx); if(a>-.12) a=-.12; if(a<-Math.PI+.12) a=-Math.PI+.12; var sp=Math.max(W,H)*1.5; shot={x:sx,y:sy,vx:Math.cos(a)*sp,vy:Math.sin(a)*sp,ch:cur};
+function shoot(tx,ty,drag){ if(state!=='play'||shot||!cur) return; var sx=W/2, sy=H-R*1.6, a=Math.atan2(ty-sy,tx-sx); if(a>-.12) a=-.12; if(a<-Math.PI+.12) a=-Math.PI+.12; var sp=Math.max(W,H)*1.5; shot={x:sx,y:sy,vx:Math.cos(a)*sp,vy:Math.sin(a)*sp,ch:cur};
   /* חן, 29.10.26: המטרה היא לזהות את האות, לא לכוון. נגיעה בבועה: הבועה טסה ישר אליה (בלי להיתקע בבועות שבדרך) */
-  var t=null; grid.forEach(function(row,r){ row&&row.forEach(function(b,c){ if(!b) return; var p=pos(r,c), d=Math.hypot(p.x-tx,p.y-ty); if(d<R*1.5&&(!t||d<t.d)) t={r:r,c:c,d:d} }) });
+  var t=null; if(!drag) grid.forEach(function(row,r){ row&&row.forEach(function(b,c){ if(!b) return; var p=pos(r,c), d=Math.hypot(p.x-tx,p.y-ty); if(d<R*1.5&&(!t||d<t.d)) t={r:r,c:c,d:d} }) });
+  if(!t){ /* כיוון בגרירה (לא נגיעה על בועה): הבועה הקרובה ביותר לקו הכיוון עם אותה אות, כדי שבועות אחרות בדרך לא יחסמו (חן, 29.10.26) */
+    var ux=Math.cos(a), uy=Math.sin(a); grid.forEach(function(row,r){ row&&row.forEach(function(b,c){ if(!b||b.ch!==cur) return; var p=pos(r,c), vx=p.x-sx, vy=p.y-sy, along=vx*ux+vy*uy; if(along<=0) return; var perp=Math.abs(vx*uy-vy*ux); if(perp<R*2.2&&(!t||perp<t.d)) t={r:r,c:c,d:perp} }) }) }
   if(t){ var tp=pos(t.r,t.c), aa=Math.atan2(tp.y-sy,tp.x-sx); shot.vx=Math.cos(aa)*sp; shot.vy=Math.sin(aa)*sp; shot.t=t }
   tone(500,800,.12,'sine',.08) }
 function snap(){ /* הבועה נעצרת. עזרה בכיוון לילדים: אם היא קרובה לבועה עם אותה אות, הקבוצה של הבועה הזו מתפוצצת */
@@ -104,9 +106,9 @@ function draw(){ var s=cv.height/H; cx.setTransform(s,0,0,s,0,0); var g=cx.creat
   parts.forEach(function(p){ cx.globalAlpha=Math.max(0,Math.min(1,p.l*2)); cx.fillStyle=p.c; cx.beginPath(); cx.arc(p.x,p.y,p.r,0,6.28); cx.fill() }); cx.globalAlpha=1 }
 var tP=0; function loop(t){ var dt=Math.min(.033,(t-(tP||t))/1000); tP=t; step(dt); draw(); requestAnimationFrame(loop) }
 function rel(e){ var r=cv.getBoundingClientRect(); return {x:e.clientX-r.left,y:e.clientY-r.top} }
-cv.addEventListener('pointerdown',function(e){ e.preventDefault(); aim=rel(e) });
+var down=null; cv.addEventListener('pointerdown',function(e){ e.preventDefault(); aim=rel(e); down=aim });
 cv.addEventListener('pointermove',function(e){ if(aim) aim=rel(e) });
-cv.addEventListener('pointerup',function(e){ var p=rel(e); aim=null; shoot(p.x,p.y) });
+cv.addEventListener('pointerup',function(e){ var p=rel(e), drag=down&&Math.hypot(p.x-down.x,p.y-down.y)>14; aim=null; down=null; shoot(p.x,p.y,drag) }); /* נגיעה = הבועה שנגעו בה; גרירה = הכיוון קובע */
 var START='יוֹרִים עַל אוֹתָהּ אוֹת', DONE='כָּל הַכָּבוֹד! פּוֹצַצְתֶּם אֶת כָּל הַבּוּעוֹת!';
 function intro(){ state='intro'; ov.classList.remove('hidden'); card.innerHTML='<h2>'+START+'</h2><div class="row"><button class="btn soft" id="e">בועות גדולות</button><button class="btn" id="h">בועות קטנות</button></div>';
   document.getElementById('e').onclick=function(){ easy=true; begin() }; document.getElementById('h').onclick=function(){ easy=false; begin() } }
