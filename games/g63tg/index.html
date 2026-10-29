@@ -316,17 +316,27 @@ function renderLayers(s, t){ __sh = slideShift(s);
         if (t !== token) return; ev.preventDefault();
         const shown = e.style.opacity === '1';
         if (l.show === 2 && shown && l.tog){ e.style.opacity = 0; return; }
-        if (l.show === 2 && !shown){ popSticker(e, l); cheer(); }
+        if (l.show === 2 && !shown){ popSticker(e, l); cheer(); if (typeof stkHook === 'function') stkHook(l, e); }
         if (l.snd) say(l.snd);
       });
     }
     stage.appendChild(e);
   });
 }
+let stkHook = null;
 function renderR(s, t){
+  stkHook = null;
   if (s.layers) renderLayers(s, t); else img(s);
   const a = s.acts[0];
-  say(introOf(a), () => finishStep(t, a.intro ? 700 : 3000));   // שקף בלי פעילות: בסוף ההקלטה עוברים לבד (חן, 11.10.26)
+  const stk = (s.layers || []).filter(l => l.show === 2);
+  if (!stk.length){ say(introOf(a), () => finishStep(t, a.intro ? 700 : 3000)); return; }   // שקף בלי פעילות: בסוף ההקלטה עוברים לבד (חן, 11.10.26)
+  /*__STKWAIT: שקף עם מדבקות שלוחצים עליהן לא עובר לבד אחרי ההוראה; ממשיכים רק אחרי שנלחצו כולן (חן, 29.10.26) */
+  const seen = new Set();
+  stkHook = (l, e) => { if (t !== token) return; if (e.__hint){ try { e.__hint.cancel(); } catch (x) {} e.__hint = null; } seen.add(l); if (seen.size >= stk.length) setTimeout(() => finishStep(t, 700), 2600); };
+  say(introOf(a), () => { if (t !== token) return;
+    setTimeout(() => { if (t !== token) return; [...stage.querySelectorAll('img')].forEach(e => { if (e.style.opacity === '0' && e.style.cursor === 'pointer' && !e.__hint) e.__hint = e.animate([{ opacity: 0 }, { opacity: .38 }, { opacity: 0 }], { duration: 1600, iterations: Infinity, easing: 'ease-in-out' }); }); }, 3000);
+    setTimeout(() => { if (t === token) pulseNext(true); }, 15000);
+  });
 }
 
 /* ---------- תפריט בחירת אות (עיצוב חדש) ---------- */
