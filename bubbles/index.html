@@ -45,6 +45,7 @@ html,body{margin:0;height:100%;background:#FEF6F5;font-family:Rubik,Arial,sans-s
 <script>
 (function(){
 var Q=new URLSearchParams(location.search), NUMS=Q.get('n'), SYL=Q.get('s'), SET=SYL?SYL.split(',').map(function(c){return c.trim()}).filter(Boolean):(NUMS||Q.get('l')||'אבגד').split('').filter(function(c){return c.trim()}), BASE='../';
+/* חן, 29.10.26: כל אות בצבע משלה, כך שקבוצה של אותה אות היא באותו צבע */
 var COLS=['#F7A8C0','#9ED8EE','#B5E3A1','#F9D77E','#C9B3EE','#F6B18E','#8FDCC8','#F4A3D8'], CL={}; SET.forEach(function(c,i){ CL[c]=COLS[i%COLS.length] });
 var cv=document.getElementById('cv'), cx=cv.getContext('2d'), stage=document.getElementById('stage'), ov=document.getElementById('ov'), card=document.getElementById('card');
 var W=400,H=600,COLSN=8,R=20,grid=[],shot=null,cur=null,nxt=null,parts=[],falling=[],state='intro',clock=0,muted=false,AC=null,aud=new Audio(),easy=true,aim=null,popped=0;
@@ -64,8 +65,8 @@ function pos(r,c){ return {x:R+(c*2+(r%2))*R, y:R+r*R*1.74} }
 function cols(r){ return COLSN-(r%2) }
 function at(r,c){ return grid[r]&&grid[r][c] }
 function neigh(r,c){ var o=r%2?[[-1,0],[-1,1],[0,-1],[0,1],[1,0],[1,1]]:[[-1,-1],[-1,0],[0,-1],[0,1],[1,-1],[1,0]]; return o.map(function(d){return [r+d[0],c+d[1]]}).filter(function(p){return p[0]>=0&&p[1]>=0&&p[1]<cols(p[0])}) }
-function build(){ COLSN=easy?6:8; fit(); grid=[]; var POOL=SET.slice().sort(function(){return Math.random()-.5}).slice(0,Math.min(4,SET.length)); /* בכל לוח לכל היותר 4 אותיות */ var rows=easy?3:5; for(var r=0;r<rows;r++){ grid[r]=[]; for(var c=0;c<cols(r);c++){ // קבוצות קטנות של אותה אות, כדי שתמיד יהיה במה לפגוע
-      var ch=(c>0&&Math.random()<.3&&grid[r][c-1])?grid[r][c-1].ch:(r>0&&Math.random()<.22&&grid[r-1][c]?grid[r-1][c].ch:POOL[Math.floor(Math.random()*POOL.length)]); grid[r][c]={ch:ch,born:Math.random()*.4,col:COLS[Math.floor(Math.random()*COLS.length)]} } } }
+function build(){ COLSN=easy?6:8; fit(); grid=[]; var POOL=SET.slice().sort(function(){return Math.random()-.5}).slice(0,Math.min(4,SET.length)); POOL.forEach(function(c,i){ CL[c]=COLS[(i*2)%COLS.length] }); /* בכל לוח: צבע שונה לכל אות */ /* בכל לוח לכל היותר 4 אותיות */ var rows=easy?3:5; for(var r=0;r<rows;r++){ grid[r]=[]; for(var c=0;c<cols(r);c++){ // קבוצות קטנות של אותה אות, כדי שתמיד יהיה במה לפגוע
+      var ch=(c>0&&Math.random()<.3&&grid[r][c-1])?grid[r][c-1].ch:(r>0&&Math.random()<.22&&grid[r-1][c]?grid[r-1][c].ch:POOL[Math.floor(Math.random()*POOL.length)]); grid[r][c]={ch:ch,born:Math.random()*.4,col:CL[ch]} } } }
 function present(){ var s={}; grid.forEach(function(row){ row&&row.forEach(function(b){ if(b) s[b.ch]=1 }) }); return Object.keys(s) }
 function newCur(){ var p=present(); if(!p.length) return null; return p[Math.floor(Math.random()*p.length)] }
 function load(){ var pr=present(); cur=(nxt&&pr.indexOf(nxt)>=0)?nxt:newCur(); nxt=newCur(); /* הבועה הבאה תמיד מאות שעוד נמצאת בלוח */ if(!cur) return; document.getElementById('goal').textContent=''; say(nameOf(cur)) }
@@ -83,7 +84,7 @@ function snap(){ /* הבועה נעצרת. עזרה בכיוון לילדים: �
     if(!present().length) return win(); setTimeout(load,350); return }
   /* חן, 29.10.26: "האות שאין לה מקום תדבק למעלה": בועה שלא פגעה באותה אות נדבקת ללוח במקום שבו עצרה */
   var best=null; for(var r=0;r<=grid.length;r++){ for(var c=0;c<cols(r);c++){ if(at(r,c)) continue; var p=pos(r,c), d=Math.hypot(p.x-sx,p.y-sy); var ok=r===0||neigh(r,c).some(function(n){return at(n[0],n[1])}); if(ok&&(!best||d<best.d)) best={r:r,c:c,d:d} } }
-  if(best){ grid[best.r]=grid[best.r]||[]; grid[best.r][best.c]={ch:ch,born:clock,col:COLS[Math.floor(Math.random()*COLS.length)]} }
+  if(best){ grid[best.r]=grid[best.r]||[]; grid[best.r][best.c]={ch:ch,born:clock,col:CL[ch]} }
   tone(320,220,.2,'sine',.08); setTimeout(function(){ if(state==='play') load() },350) }
 function flood(r,c,fn){ var seen={}, st=[[r,c]], out=[]; while(st.length){ var p=st.pop(), k=p[0]+','+p[1]; if(seen[k]) continue; seen[k]=1; var b=at(p[0],p[1]); if(!b||!fn(b)) continue; out.push(p); neigh(p[0],p[1]).forEach(function(n){st.push(n)}) } return out }
 function dropFloating(){ var keep={}; for(var c=0;c<cols(0);c++) if(at(0,c)) flood(0,c,function(){return true}).forEach(function(p){keep[p[0]+','+p[1]]=1});
@@ -105,8 +106,8 @@ function draw(){ var s=cv.height/H; cx.setTransform(s,0,0,s,0,0); var g=cx.creat
   var sx=W/2, sy=H-R*1.6;
   if(aim&&state==='play'&&!shot){ var a=Math.atan2(aim.y-sy,aim.x-sx); cx.strokeStyle='rgba(239,64,110,.45)'; cx.setLineDash([6,8]); cx.lineWidth=3; cx.beginPath(); cx.moveTo(sx,sy); cx.lineTo(sx+Math.cos(a)*H*.5,sy+Math.sin(a)*H*.5); cx.stroke(); cx.setLineDash([]) }
   cx.fillStyle='rgba(239,64,110,.12)'; cx.beginPath(); cx.arc(sx,sy,R*1.5,0,6.28); cx.fill();
-  if(cur&&!shot) bub(sx,sy+Math.sin(clock*4)*2,R*1.12,cur); if(shot) bub(shot.x,shot.y,R,shot.ch);
-  if(nxt) bub(sx+R*3.2,sy+R*.4,R*.7,nxt,.8);
+  if(cur&&!shot) bub(sx,sy+Math.sin(clock*4)*2,R*1.12,cur,1,CL[cur]); if(shot) bub(shot.x,shot.y,R,shot.ch,1,CL[shot.ch]);
+  if(nxt) bub(sx+R*3.2,sy+R*.4,R*.7,nxt,.8,CL[nxt]);
   parts.forEach(function(p){ cx.globalAlpha=Math.max(0,Math.min(1,p.l*2)); cx.fillStyle=p.c; cx.beginPath(); cx.arc(p.x,p.y,p.r,0,6.28); cx.fill() }); cx.globalAlpha=1 }
 var tP=0; function loop(t){ var dt=Math.min(.033,(t-(tP||t))/1000); tP=t; step(dt); draw(); requestAnimationFrame(loop) }
 function rel(e){ var r=cv.getBoundingClientRect(); return {x:e.clientX-r.left,y:e.clientY-r.top} }
