@@ -52,7 +52,10 @@ function nameOf(c){ return NUMS?HenVoice.numberName(c):HenVoice.letterName(c) }
 function say(t,cb){ if(muted||!t){cb&&setTimeout(cb,200);return} HenVoice.url(t,BASE+'play/assets/tts/'+key(t)+'.mp3',function(u){ try{aud.pause()}catch(e){} aud=new Audio(u); aud.onended=function(){cb&&cb()}; aud.onerror=function(){cb&&cb()}; aud.play().catch(function(){cb&&cb()}) }) }
 function ac(){ try{ AC=AC||new (window.AudioContext||window.webkitAudioContext)(); if(AC.state==='suspended') AC.resume() }catch(e){} return AC }
 function tone(f1,f2,d,type,vol){ if(muted||!ac())return; var o=AC.createOscillator(),g=AC.createGain(),t=AC.currentTime; o.type=type||'sine'; o.frequency.setValueAtTime(f1,t); o.frequency.exponentialRampToValueAtTime(f2,t+d); g.gain.setValueAtTime(vol||.12,t); g.gain.exponentialRampToValueAtTime(.001,t+d); o.connect(g); g.connect(AC.destination); o.start(t); o.stop(t+d+.02) }
-function popSnd(){ if(muted||!ac()) return; var n=AC.sampleRate*.14, b=AC.createBuffer(1,n,AC.sampleRate), d=b.getChannelData(0); for(var i=0;i<n;i++) d[i]=(Math.random()*2-1)*Math.pow(1-i/n,3); var s=AC.createBufferSource(),f=AC.createBiquadFilter(),g=AC.createGain(); s.buffer=b; f.type='bandpass'; f.frequency.value=1600; g.gain.value=.8; s.connect(f); f.connect(g); g.connect(AC.destination); s.start() }
+function popSnd(){ /* חן, 29.10.26: צליל נעים של בועה, לא פיצוץ */ if(muted||!ac()) return; var t=AC.currentTime, f0=380+Math.random()*160;
+  [[1,.16],[2,.05]].forEach(function(h){ var o=AC.createOscillator(), g=AC.createGain(); o.type='sine'; o.frequency.setValueAtTime(f0*h[0],t); o.frequency.exponentialRampToValueAtTime(f0*h[0]*2.4,t+.09);
+    g.gain.setValueAtTime(.0001,t); g.gain.exponentialRampToValueAtTime(h[1],t+.012); g.gain.exponentialRampToValueAtTime(.0001,t+.16); o.connect(g); g.connect(AC.destination); o.start(t); o.stop(t+.18) }) }
+function chime(i){ if(muted||!ac()) return; var f=[523,659,784,988,1047,1319,1568][i%7]; tone(f,f*1.003,.5,'sine',.07) }
 /* ---------- לוח משושה ---------- */
 function fit(){ var r=stage.getBoundingClientRect(); var dpr=Math.min(2,devicePixelRatio||1); cv.width=Math.round(r.width*dpr); cv.height=Math.round(r.height*dpr); W=r.width; H=r.height; R=W/(COLSN*2+1) }
 addEventListener('resize',function(){ fit() });
@@ -108,7 +111,7 @@ var START='יוֹרִים עַל אוֹתָהּ אוֹת', DONE='כָּל הַכ
 function intro(){ state='intro'; ov.classList.remove('hidden'); card.innerHTML='<h2>'+START+'</h2><div class="row"><button class="btn soft" id="e">בועות גדולות</button><button class="btn" id="h">בועות קטנות</button></div>';
   document.getElementById('e').onclick=function(){ easy=true; begin() }; document.getElementById('h').onclick=function(){ easy=false; begin() } }
 function begin(){ ac(); ov.classList.add('hidden'); build(); popped=0; state='play'; nxt=null; say(START,load) }
-function win(){ state='win'; for(var i=0;i<7;i++) setTimeout(function(){ burst(rnd(W*.15,W*.85),rnd(H*.15,H*.6),COLS[Math.floor(Math.random()*COLS.length)]); popSnd() },i*140);
+function win(){ state='win'; for(var i=0;i<7;i++) (function(i){ setTimeout(function(){ burst(rnd(W*.15,W*.85),rnd(H*.15,H*.6),COLS[Math.floor(Math.random()*COLS.length)]); chime(i) },i*140) })(i);
   setTimeout(function(){ ov.classList.remove('hidden'); card.innerHTML='<h2>'+DONE+'</h2><button class="btn" id="go">מְשַׂחֲקִים שׁוּב</button>'; document.getElementById('go').onclick=function(){ intro() }; say(DONE); try{ window.WGEnd&&(WGEnd.replay=function(){ intro() },WGEnd()) }catch(e){} },1200) }
 document.getElementById('again').onclick=function(){ if(cur&&state==='play') say(nameOf(cur)) };
 document.getElementById('mute').onclick=function(){ muted=!muted; document.getElementById('muteX').style.display=muted?'':'none'; if(muted) try{aud.pause()}catch(e){} };

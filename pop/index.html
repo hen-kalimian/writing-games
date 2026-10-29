@@ -101,7 +101,7 @@ var tP=0; function loop(t){ var dt=Math.min(.033,(t-(tP||t))/1000); tP=t; step(d
 var START='מוּכָנִים לְמִשְׂחַק פִּיצוּץ הַבָּלוֹנִים?', FASTER='זֶה הוֹלֵךְ וְנִהְיֶה מָהִיר יוֹתֵר!', DONE='כָּל הַכָּבוֹד! פּוֹצַצְתֶּם אֶת כָּל הַבָּלוֹנִים!';
 function intro(){ state='intro'; ov.classList.remove('hidden'); card.innerHTML='<h2>'+START+'</h2><button class="btn" id="go">הַתְחִילוּ</button>'; document.getElementById('go').onclick=function(){ ac(); ov.classList.add('hidden'); start() } }
 function start(){ saidF=0; score=0; balls=[]; dots(); state='play'; nextT=0; target=SET[0]; fill(); say(START,pick) }
-function win(){ state='win'; for(var i=0;i<8;i++) setTimeout(function(){ burst(rnd(W*.15,W*.85),rnd(H*.15,H*.6),COLS[Math.floor(Math.random()*6)]); popSnd() },i*140);
+function win(){ state='win'; for(var i=0;i<8;i++) (function(i){ setTimeout(function(){ burst(rnd(W*.15,W*.85),rnd(H*.15,H*.6),COLS[Math.floor(Math.random()*6)]); var f=[523,659,784,988,1047,1319,1568,2093][i]; tone(f,f*1.003,.5,'sine',.07) },i*140) })(i); /* חן, 29.10.26: בסיום צלצולים נעימים, לא פיצוצים */
   setTimeout(function(){ ov.classList.remove('hidden'); card.innerHTML='<h2>'+DONE+'</h2><button class="btn" id="go">מְשַׂחֲקִים שׁוּב</button>'; document.getElementById('go').onclick=function(){ ov.classList.add('hidden'); start() }; say(DONE); try{window.WGEnd&&(WGEnd.replay=function(){var g=document.getElementById('go');g&&g.click()},WGEnd());}catch(e){} },1300) }
 document.getElementById('again').onclick=function(){ if(target&&state==='play') say(nameOf(target)) };
 document.getElementById('mute').onclick=function(){ muted=!muted; document.getElementById('muteX').style.display=muted?'':'none'; if(muted) try{aud.pause()}catch(e){} };
