@@ -77,7 +77,7 @@ function build(){
  /* never put two identical cards next to each other at the start of a row */
  cards.forEach(function(p){var b=document.createElement('button');b.type='button';b.className='card';b.dataset.k=p[0]+'|'+p[1];b.dataset.s=p[0];b.innerHTML=faceSvg(p[0],p[1]);G.appendChild(b)});
  left=cards.length;layout();
- try{loadBuf(instrUrl());R.pairs.forEach(function(p){loadBuf(symUrl(p[0]))})}catch(x){}
+ try{loadBuf(instrUrl());(window.HenVoice?HenVoice.load:function(f){f()})(function(){R.pairs.forEach(function(p){loadBuf(symUrl(p[0]))})})}catch(x){}
 }
 G.addEventListener('click',function(e){var c=e.target.closest('.card');if(!c||busy||c.classList.contains('gone')||c.classList.contains('ok'))return;
  if(!sel){sel=c;c.classList.add('sel');pick();return}
