@@ -1,0 +1,20 @@
+{
+ "title": "מֵרוֹץ בַּשָּׂדֶה הַפּוֹרֵחַ",
+ "goal": "תִּפְסוּ עֶשֶׂר אוֹתִיּוֹת ח",
+ "show": ["ח"],
+ "good": ["ח"],
+ "bad": ["ה", "ת"],
+ "names": true,
+ "need": 10,
+ "time": 60,
+ "sky": ["#CDEBFA", "#FDF3F6"],
+ "grass": ["#B9E3A0", "#A9DA8F"],
+ "road": ["#C9C1C6", "#C1B8BE"],
+ "bubble": "#FBC5D6",
+ "props": ["tree-green", "flower-pot", "mushroom", "tree-yellow", "butterfly", "tree-orange"],
+ "obstacle": "cone",
+ "cars": [{"color": "#EF406E"}, {"color": "#7FCFD9"}, {"color": "#9BD97A"}],
+ "winTitle": "וָאוּ! סִיַּמְתֶּם אֶת הַמַּסְלוּל!",
+ "winSay": "תְּפַסְתֶּם אֶת כָּל הָאוֹתִיּוֹת ח",
+ "finishSay": "הִנֵּה קַו הַסִּיּוּם!"
+}
