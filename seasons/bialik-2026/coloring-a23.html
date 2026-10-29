@@ -273,5 +273,6 @@ var lastC=0;
 function clr(){var n=Date.now();if(n-lastC<400)return;lastC=n;clearAll()}
 document.getElementById('clear').addEventListener('pointerup',clr);document.getElementById('clear').addEventListener('click',clr);
 </script>
-<script>/*__BIGFIT: מסך גדול: מגדילים את המשחק שימלא את המסך (20.10.26)*/(function(){var t=0;function f(){var w=document.querySelector('.wrap');if(!w)return;w.style.zoom='';w.style.height='';var z=Math.min(innerWidth/620,innerHeight/800);if(z>1.12){z=Math.min(z,2.2);w.style.zoom=z.toFixed(3);w.style.height=(innerHeight/z)+'px'}}function q(){clearTimeout(t);t=setTimeout(f,100)}addEventListener('resize',q);if(document.readyState==='complete')q();else addEventListener('load',q)})()</script></body>
+<script>/*__BIGFIT: מסך גדול: מגדילים את המשחק שימלא את המסך (20.10.26)*/(function(){var t=0;function f(){var w=document.querySelector('.wrap');if(!w)return;w.style.zoom='';w.style.height='';var z=Math.min(innerWidth/620,innerHeight/800);if(z>1.12){z=Math.min(z,2.2);w.style.zoom=z.toFixed(3);w.style.height=(innerHeight/z)+'px'}}function q(){clearTimeout(t);t=setTimeout(f,100)}addEventListener('resize',q);if(document.readyState==='complete')q();else addEventListener('load',q)})()</script><script src="../../end-fs.js"></script>
+</body>
 </html>

@@ -229,7 +229,7 @@ function win(){
   var lv=D.levels[L],last=(L===D.levels.length-1);
   $('factPic').innerHTML=D.arts[lv.art];$('factTitle').textContent=last?D.done:D.levelWord+' '+(L+1);$('factText').textContent=lv.fact;$('factSpk').setAttribute('data-say',lv.fact);
   $('nextBtn').textContent=last?D.again:D.next;
-  $('fact').classList.remove('hidden');
+  $('fact').classList.remove('hidden');if(last)window.WGEnd&&WGEnd();
 }
 $('nextBtn').addEventListener('click',function(){$('fact').classList.add('hidden');setLevel((L+1)%D.levels.length)});
 $('go').addEventListener('click',function(){$('intro').classList.add('hidden');setLevel(0)});
@@ -250,5 +250,6 @@ window.addEventListener('mouseup',function(){sw=false});
 window.addEventListener('resize',function(){if(grid){size()}});
 loop();
 </script>
-<script>/*__BIGFIT: מסך גדול: מגדילים את המשחק שימלא את המסך (20.10.26)*/(function(){var t=0;function f(){var w=document.querySelector('.wrap');if(!w)return;w.style.zoom='';w.style.height='';var z=Math.min(innerWidth/620,innerHeight/800);if(z>1.12){z=Math.min(z,2.2);w.style.zoom=z.toFixed(3);w.style.height=(innerHeight/z)+'px'}}function q(){clearTimeout(t);t=setTimeout(f,100)}addEventListener('resize',q);if(document.readyState==='complete')q();else addEventListener('load',q)})()</script></body>
+<script>/*__BIGFIT: מסך גדול: מגדילים את המשחק שימלא את המסך (20.10.26)*/(function(){var t=0;function f(){var w=document.querySelector('.wrap');if(!w)return;w.style.zoom='';w.style.height='';var z=Math.min(innerWidth/620,innerHeight/800);if(z>1.12){z=Math.min(z,2.2);w.style.zoom=z.toFixed(3);w.style.height=(innerHeight/z)+'px'}}function q(){clearTimeout(t);t=setTimeout(f,100)}addEventListener('resize',q);if(document.readyState==='complete')q();else addEventListener('load',q)})()</script><script src="../../end-fs.js"></script>
+</body>
 </html>

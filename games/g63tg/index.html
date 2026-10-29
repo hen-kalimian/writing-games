@@ -807,7 +807,7 @@ function renderFollow(s, t){
 function finish(){
   token++; stopVoice();
   const e = document.createElement('div'); e.className = 'end'; e.innerHTML = '<div><h1>כל הכבוד!</h1><button class="btn" id="again">עוד פעם מההתחלה</button></div>';
-  stage.appendChild(e); confetti(60); ding();
+  stage.appendChild(e); confetti(60); ding(); window.WGEnd&&WGEnd();
   e.querySelector('#again').onclick = () => { done.clear(); go(0); };
 }
 
@@ -889,5 +889,6 @@ function place(){if(A.classList.contains('rot')){back();return}var r=S.getBoundi
   var a=A.getBoundingClientRect(),z=(A.offsetWidth&&a.width/A.offsetWidth)||1,sz=P.offsetWidth||46,g=8,y=r.top+r.height/2-sz*z/2,
   lx=r.left-sz*z-g,rx=r.right+g;if(lx<4)lx=r.left+6;if(rx+sz*z>innerWidth-4)rx=r.right-sz*z-6;
   N.style.left=((lx-a.left)/z)+'px';N.style.top=((y-a.top)/z)+'px';P.style.left=((rx-a.left)/z)+'px';P.style.top=((y-a.top)/z)+'px'}
-addEventListener('resize',function(){setTimeout(place,60)});setInterval(place,400);setTimeout(place,50)})()</script></body>
+addEventListener('resize',function(){setTimeout(place,60)});setInterval(place,400);setTimeout(place,50)})()</script><script src="../../end-fs.js"></script>
+</body>
 </html>

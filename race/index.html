@@ -174,7 +174,7 @@ function show(kind){ ov.classList.remove('hidden'); var h='';
   if(kind==='win'){ /* חן, 29.10.26: "תפסתם את..." הקלטה אחת, ואחריה שם האות או הספרה בקול שלה */
     var nm=W.names==='num'?HenVoice.numberName(W.show[0]):W.names?HenVoice.letterName(W.show[0]):'', CAUGHT='תְּפַסְתֶּם אֶת';
     var line=nm?CAUGHT+' '+(W.names==='num'?'הַסִּפְרָה ':'הָאוֹת ')+W.show[0]:W.winSay;
-    h='<img class="trophy" src="art/'+(W.trophy||'sun')+'.png" alt=""><h2>'+W.winTitle+'</h2><p>'+line+' '+spk(nm?CAUGHT:W.winSay)+'</p><button class="btn" id="go">'+(W.replay||'נוֹסְעִים שׁוּב')+'</button>'; card.innerHTML=h; bind(function(){ show('intro') }); say(W.winTitle,function(){ if(nm) say(CAUGHT,function(){ say(nm) }); else say(W.winSay) }); try{parent.postMessage({wgDone:1},'*')}catch(e){} return }
+    h='<img class="trophy" src="art/'+(W.trophy||'sun')+'.png" alt=""><h2>'+W.winTitle+'</h2><p>'+line+' '+spk(nm?CAUGHT:W.winSay)+'</p><button class="btn" id="go">'+(W.replay||'נוֹסְעִים שׁוּב')+'</button>'; card.innerHTML=h; bind(function(){ show('intro') }); say(W.winTitle,function(){ if(nm) say(CAUGHT,function(){ say(nm) }); else say(W.winSay) }); try{window.WGEnd&&(WGEnd.replay=function(){var g=document.getElementById('go');g&&g.click()},WGEnd());}catch(e){} return }
   if(kind==='late'){ h='<h2>'+(W.lateTitle||'נִגְמַר הַזְּמַן')+'</h2><p>'+(W.late||'נְנַסֶּה שׁוּב?')+'</p><button class="btn" id="go">'+(W.again||'עוֹד נְסִיעָה')+'</button>'; card.innerHTML=h; bind(start); say(W.late||'נְנַסֶּה שׁוּב?'); return }
 }
 function start(){ buildTrack(); pos=0; speed=0; laneI=1; px=0; got=0; time=W.time||60; finishAt=-1; nextSpawn=SEG*20; last10=-1; slow=0; need=W.need||10; state='play'; renderHud(); document.getElementById('goal').textContent=W.goal; say(W.goalSay||W.goal) }
@@ -194,5 +194,6 @@ fetch('worlds/'+(Q.get('w')||'spring')+'.json?v=1').then(function(r){return r.js
 });
 })();
 </script>
+<script src="../end-fs.js"></script>
 </body>
 </html>

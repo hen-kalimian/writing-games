@@ -204,7 +204,7 @@ function show(kind){
   if(kind==='intro'){ h='<img class="hero" src="art/'+W.hero+'.png" alt=""><h2>'+W.title+'</h2><p>'+W.intro+' '+spkBtn(W.intro)+'</p><button class="btn" id="go">'+(W.start||'יוֹצְאִים לַדֶּרֶךְ')+'</button>'; card.innerHTML=h; bindCard(function(){ show('level') }); say(W.intro); return }
   if(kind==='level'){ L=W.levels[li]; h='<h2>'+(W.levelWord||'שלב')+' '+(li+1)+'</h2><p>'+L.goal+' '+spkBtn(L.goal)+'</p><div class="big">'+L.show.map(function(t){return '<span data-say="'+t+'">'+t+'</span>'}).join('')+'</div><button class="btn" id="go">'+(W.go||'מַתְחִילִים')+'</button>'; card.innerHTML=h; bindCard(start); say(L.goal); return }
   if(kind==='over'){ h='<img class="hero" src="art/'+W.hero+'.png" alt=""><h2>'+(W.again||'נְנַסֶּה שׁוּב')+'</h2><button class="btn" id="go">'+(W.go||'מַתְחִילִים')+'</button>'; card.innerHTML=h; bindCard(start); say(W.again||'נְנַסֶּה שׁוּב'); return }
-  if(kind==='trophy'){ h='<img class="trophy" src="art/'+(W.trophy||W.hero)+'.png" alt=""><h2>'+W.done+'</h2><button class="btn" id="go">'+(W.replay||'מְשַׂחֲקִים שׁוּב')+'</button>'; card.innerHTML=h; bindCard(function(){ li=0; lives=5; renderHearts(); show('level') }); say(W.done); confetti(); try{parent.postMessage({wgDone:1},'*')}catch(e){} return }
+  if(kind==='trophy'){ h='<img class="trophy" src="art/'+(W.trophy||W.hero)+'.png" alt=""><h2>'+W.done+'</h2><button class="btn" id="go">'+(W.replay||'מְשַׂחֲקִים שׁוּב')+'</button>'; card.innerHTML=h; bindCard(function(){ li=0; lives=5; renderHearts(); show('level') }); say(W.done); confetti(); window.WGEnd&&(WGEnd.replay=function(){var g=document.getElementById('go');g&&g.click()},WGEnd()); return }
 }
 function bindCard(fn){ card.querySelectorAll('[data-say]').forEach(function(b){ b.onclick=function(e){e.stopPropagation();say(b.getAttribute('data-say'))} }); document.getElementById('go').onclick=function(){ ov.classList.add('hidden'); fn() } }
 window.__T=function(lv){ L=lv; build(lv); state="play" };
@@ -225,5 +225,6 @@ fetch('worlds/'+(Q.get('w')||'dagesh')+'.json?v=1').then(function(r){return r.js
 });
 })();
 </script>
+<script src="../end-fs.js"></script>
 </body>
 </html>

@@ -91,7 +91,7 @@ function done(){busy=true;var R=ROUNDS[ri],cel=document.getElementById('cel'),bi
  if(R.sym){big.className='big';big.textContent=R.sym}else{big.className='big t';big.textContent='כל הכבוד!'}
  cel.style.display='flex';win();applause();if(R.sym)setTimeout(function(){playUrl(symUrl(R.sym))},350);
  setTimeout(function(){confetti()},250);setTimeout(function(){confetti()},900);
- setTimeout(function(){ri++;if(ri>=ROUNDS.length){document.getElementById('dots').querySelectorAll('i').forEach(function(i){i.className='on'});document.getElementById('again').style.display='block'}else build()},3400)}
+ setTimeout(function(){ri++;if(ri>=ROUNDS.length){document.getElementById('dots').querySelectorAll('i').forEach(function(i){i.className='on'});document.getElementById('again').style.display='block';window.WGEnd&&WGEnd()}else build()},3400)}
 document.getElementById('again').onclick=function(){this.style.display='none';ri=0;build()};
 /* confetti */
 var cf=document.getElementById('cf'),cx=cf.getContext('2d'),parts=[];
@@ -103,4 +103,5 @@ var fb=document.getElementById('fs');fb.onclick=function(){var d=document.docume
 document.addEventListener('touchmove',function(e){e.preventDefault()},{passive:false});document.addEventListener('contextmenu',function(e){e.preventDefault()});
 window.__match={rounds:ROUNDS.length,left:function(){return left},ri:function(){return ri}};
 (document.fonts&&document.fonts.ready?document.fonts.ready:Promise.resolve()).then(function(){build()});setTimeout(function(){if(!G.children.length)build()},1500);
-</script></body></html>
+</script><script src="../end-fs.js"></script>
+</body></html>

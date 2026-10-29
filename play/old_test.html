@@ -87,7 +87,7 @@ function confetti(){fxc.width=innerWidth;fxc.height=innerHeight;fxStop=false;var
   var t0=performance.now();(function f(t){if(fxStop)return;fx.clearRect(0,0,fxc.width,fxc.height);var any=false;P.forEach(function(p){p.x+=p.vx;p.y+=p.vy;p.r+=p.vr;if(p.y<fxc.height+30)any=true;fx.save();fx.translate(p.x,p.y);fx.rotate(p.r);fx.fillStyle=p.c;
     if(p.st){fx.beginPath();for(var k=0;k<8;k++){var rr=k%2?3:8,an=k*Math.PI/4;fx.lineTo(Math.cos(an)*rr,Math.sin(an)*rr)}fx.closePath();fx.fill()}else{fx.globalAlpha=.92;fx.fillRect(-p.w/2,-p.h/2,p.w,p.h)}fx.restore()});
     if(any&&t-t0<5500)requestAnimationFrame(f);else fx.clearRect(0,0,fxc.width,fxc.height)})(t0)}
-function finish(msg){win();confetti();$('endp').textContent=msg||'';after(function(){$('end').style.display='flex'},650)}
+function finish(msg){win();confetti();$('endp').textContent=msg||'';after(function(){$('end').style.display='flex';window.WGEnd&&WGEnd()},650)}
 /* ===== מנועים ===== */
 var E={};
 /* חידון */

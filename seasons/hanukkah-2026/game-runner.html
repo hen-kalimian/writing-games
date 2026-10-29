@@ -200,7 +200,7 @@ function showPop(o){
 }
 function levelDone(){
   if(state!=='play')return;state='won';window.SFX.win();window.confetti(90);
-  var last=L===D.levels.length-1;showLevel(false,last);
+  var last=L===D.levels.length-1;showLevel(false,last);if(last)window.WGEnd&&WGEnd();
 }
 function showLevel(failed,last){
   var tg=lvl.targets[0];
@@ -246,5 +246,6 @@ $('go').addEventListener('click',function(){$('intro').classList.add('hidden');b
 document.addEventListener('keydown',function(e){if(e.code==='Space'||e.key==='ArrowUp'){e.preventDefault();jump()}});
 reset();loop();
 </script>
-<script>/*__BIGFIT: מסך גדול: מגדילים את המשחק שימלא את המסך (20.10.26)*/(function(){var t=0;function f(){var w=document.querySelector('.wrap');if(!w)return;w.style.zoom='';w.style.height='';var z=Math.min(innerWidth/620,innerHeight/800);if(z>1.12){z=Math.min(z,2.2);w.style.zoom=z.toFixed(3);w.style.height=(innerHeight/z)+'px'}}function q(){clearTimeout(t);t=setTimeout(f,100)}addEventListener('resize',q);if(document.readyState==='complete')q();else addEventListener('load',q)})()</script></body>
+<script>/*__BIGFIT: מסך גדול: מגדילים את המשחק שימלא את המסך (20.10.26)*/(function(){var t=0;function f(){var w=document.querySelector('.wrap');if(!w)return;w.style.zoom='';w.style.height='';var z=Math.min(innerWidth/620,innerHeight/800);if(z>1.12){z=Math.min(z,2.2);w.style.zoom=z.toFixed(3);w.style.height=(innerHeight/z)+'px'}}function q(){clearTimeout(t);t=setTimeout(f,100)}addEventListener('resize',q);if(document.readyState==='complete')q();else addEventListener('load',q)})()</script><script src="../../end-fs.js"></script>
+</body>
 </html>

@@ -102,7 +102,7 @@ var START='מוּכָנִים לְמִשְׂחַק פִּיצוּץ הַבָּל
 function intro(){ state='intro'; ov.classList.remove('hidden'); card.innerHTML='<h2>'+START+'</h2><button class="btn" id="go">הַתְחִילוּ</button>'; document.getElementById('go').onclick=function(){ ac(); ov.classList.add('hidden'); start() } }
 function start(){ saidF=0; score=0; balls=[]; dots(); state='play'; nextT=0; target=SET[0]; fill(); say(START,pick) }
 function win(){ state='win'; for(var i=0;i<8;i++) setTimeout(function(){ burst(rnd(W*.15,W*.85),rnd(H*.15,H*.6),COLS[Math.floor(Math.random()*6)]); popSnd() },i*140);
-  setTimeout(function(){ ov.classList.remove('hidden'); card.innerHTML='<h2>'+DONE+'</h2><button class="btn" id="go">מְשַׂחֲקִים שׁוּב</button>'; document.getElementById('go').onclick=function(){ ov.classList.add('hidden'); start() }; say(DONE); try{parent.postMessage({wgDone:1},'*')}catch(e){} },1300) }
+  setTimeout(function(){ ov.classList.remove('hidden'); card.innerHTML='<h2>'+DONE+'</h2><button class="btn" id="go">מְשַׂחֲקִים שׁוּב</button>'; document.getElementById('go').onclick=function(){ ov.classList.add('hidden'); start() }; say(DONE); try{window.WGEnd&&(WGEnd.replay=function(){var g=document.getElementById('go');g&&g.click()},WGEnd());}catch(e){} },1300) }
 document.getElementById('again').onclick=function(){ if(target&&state==='play') say(nameOf(target)) };
 document.getElementById('mute').onclick=function(){ muted=!muted; document.getElementById('muteX').style.display=muted?'':'none'; if(muted) try{aud.pause()}catch(e){} };
 document.getElementById('fs').onclick=function(){ var d=document.documentElement; if(document.fullscreenElement) document.exitFullscreen(); else (d.requestFullscreen||d.webkitRequestFullscreen||function(){}).call(d) };
@@ -110,5 +110,6 @@ window.__P=function(){ return {state:state,score:score,target:target,balls:balls
 fit(); dots(); intro(); requestAnimationFrame(loop);
 })();
 </script>
+<script src="../end-fs.js"></script>
 </body>
 </html>
