@@ -61,7 +61,7 @@ function cols(r){ return COLSN-(r%2) }
 function at(r,c){ return grid[r]&&grid[r][c] }
 function neigh(r,c){ var o=r%2?[[-1,0],[-1,1],[0,-1],[0,1],[1,0],[1,1]]:[[-1,-1],[-1,0],[0,-1],[0,1],[1,-1],[1,0]]; return o.map(function(d){return [r+d[0],c+d[1]]}).filter(function(p){return p[0]>=0&&p[1]>=0&&p[1]<cols(p[0])}) }
 function build(){ COLSN=easy?6:8; fit(); grid=[]; var POOL=SET.slice().sort(function(){return Math.random()-.5}).slice(0,Math.min(4,SET.length)); /* בכל לוח לכל היותר 4 אותיות */ var rows=easy?3:5; for(var r=0;r<rows;r++){ grid[r]=[]; for(var c=0;c<cols(r);c++){ // קבוצות קטנות של אותה אות, כדי שתמיד יהיה במה לפגוע
-      var ch=(c>0&&Math.random()<.5&&grid[r][c-1])?grid[r][c-1].ch:(r>0&&Math.random()<.4&&grid[r-1][c]?grid[r-1][c].ch:POOL[Math.floor(Math.random()*POOL.length)]); grid[r][c]={ch:ch,born:Math.random()*.4,col:COLS[Math.floor(Math.random()*COLS.length)]} } } }
+      var ch=(c>0&&Math.random()<.3&&grid[r][c-1])?grid[r][c-1].ch:(r>0&&Math.random()<.22&&grid[r-1][c]?grid[r-1][c].ch:POOL[Math.floor(Math.random()*POOL.length)]); grid[r][c]={ch:ch,born:Math.random()*.4,col:COLS[Math.floor(Math.random()*COLS.length)]} } } }
 function present(){ var s={}; grid.forEach(function(row){ row&&row.forEach(function(b){ if(b) s[b.ch]=1 }) }); return Object.keys(s) }
 function newCur(){ var p=present(); if(!p.length) return null; return p[Math.floor(Math.random()*p.length)] }
 function load(){ var pr=present(); cur=(nxt&&pr.indexOf(nxt)>=0)?nxt:newCur(); nxt=newCur(); /* הבועה הבאה תמיד מאות שעוד נמצאת בלוח */ if(!cur) return; document.getElementById('goal').textContent=''; say(nameOf(cur)) }
