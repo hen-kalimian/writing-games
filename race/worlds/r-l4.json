@@ -1,0 +1,62 @@
+{
+ "title": "מֵרוֹץ בַּיַּעַר הַקָּסוּם",
+ "goal": "אִסְפוּ 10 אוֹתִיּוֹת ק",
+ "goalSay": [
+  "אִסְפוּ אֶת הָאוֹת",
+  "קוֹף",
+  "עֶשֶׂר פְּעָמִים לִפְנֵי שֶׁנִּגְמַר הַזְּמַן"
+ ],
+ "show": [
+  "ק"
+ ],
+ "good": [
+  "ק"
+ ],
+ "bad": [
+  "ס",
+  "ע",
+  "פ",
+  "צ"
+ ],
+ "names": true,
+ "need": 10,
+ "time": 60,
+ "sky": [
+  "#5B4A8B",
+  "#E9B8D0"
+ ],
+ "grass": [
+  "#8FB98A",
+  "#84AE80"
+ ],
+ "road": [
+  "#B7AEC0",
+  "#AFA6B8"
+ ],
+ "bubble": "#FBC5D6",
+ "props": [
+  "tree-green",
+  "mushroom",
+  "tree-red",
+  "sapling",
+  "pumpkin",
+  "mushroom"
+ ],
+ "obstacle": "cone",
+ "cars": [
+  {
+   "color": "#B79BE6"
+  },
+  {
+   "color": "#EF406E"
+  },
+  {
+   "color": "#7FCFD9"
+  }
+ ],
+ "winTitle": "וָאוּ! אֵיזוֹ נְסִיעָה מְהִירָה!",
+ "winSay": "תְּפַסְתֶּם אֶת",
+ "finishSay": "הִנֵּה קַו הַסִּיּוּם!",
+ "night": true,
+ "sun": false
+}

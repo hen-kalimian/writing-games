@@ -1,0 +1,59 @@
+{
+ "title": "מֵרוֹץ בַּגֶּשֶׁם",
+ "goal": "אִסְפוּ 5 צְלִילִים סֶ",
+ "goalSay": [
+  "אִסְפוּ אֶת הַצְּלִיל",
+  "סֶ",
+  "חָמֵשׁ פְּעָמִים לִפְנֵי שֶׁנִּגְמַר הַזְּמַן"
+ ],
+ "show": [
+  "סֶ"
+ ],
+ "good": [
+  "סֶ"
+ ],
+ "bad": [
+  "רוֹ",
+  "רִ",
+  "סוֹ",
+  "סִ"
+ ],
+ "names": "syl",
+ "need": 5,
+ "time": 60,
+ "sky": [
+  "#CBD8E6",
+  "#EEF2F7"
+ ],
+ "grass": [
+  "#BFDCC8",
+  "#B2D3BD"
+ ],
+ "road": [
+  "#B9B6C0",
+  "#B0ADB8"
+ ],
+ "bubble": "#FBC5D6",
+ "props": [
+  "umbrella-blue",
+  "tree-green",
+  "umbrella-pink",
+  "sapling",
+  "umbrella-red"
+ ],
+ "obstacle": "cone",
+ "cars": [
+  {
+   "color": "#F2C94C"
+  },
+  {
+   "color": "#EF406E"
+  },
+  {
+   "color": "#7FCFD9"
+  }
+ ],
+ "winTitle": "וָאוּ! סִיַּמְתֶּם אֶת הַמַּסְלוּל!",
+ "winSay": "תְּפַסְתֶּם אֶת",
+ "finishSay": "הִנֵּה קַו הַסִּיּוּם!"
+}

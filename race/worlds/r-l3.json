@@ -1,0 +1,60 @@
+{
+ "title": "מֵרוֹץ בִּכְבִישׁ הַחוֹף",
+ "goal": "אִסְפוּ 10 אוֹתִיּוֹת ע",
+ "goalSay": [
+  "אִסְפוּ אֶת הָאוֹת",
+  "עַיִן",
+  "עֶשֶׂר פְּעָמִים לִפְנֵי שֶׁנִּגְמַר הַזְּמַן"
+ ],
+ "show": [
+  "ע"
+ ],
+ "good": [
+  "ע"
+ ],
+ "bad": [
+  "ל",
+  "מ",
+  "נ",
+  "ס"
+ ],
+ "names": true,
+ "need": 10,
+ "time": 60,
+ "sky": [
+  "#BFE6F7",
+  "#FFF6EC"
+ ],
+ "grass": [
+  "#F6E3B8",
+  "#F1DCAA"
+ ],
+ "road": [
+  "#CFC6CB",
+  "#C7BEC4"
+ ],
+ "bubble": "#FBC5D6",
+ "props": [
+  "umbrella-pink",
+  "umbrella-blue",
+  "stork",
+  "umbrella-red",
+  "olive-branch"
+ ],
+ "obstacle": "cone",
+ "cars": [
+  {
+   "color": "#7FCFD9"
+  },
+  {
+   "color": "#F2C94C"
+  },
+  {
+   "color": "#EF406E"
+  }
+ ],
+ "winTitle": "וָאוּ! סִיַּמְתֶּם אֶת הַמַּסְלוּל!",
+ "winSay": "תְּפַסְתֶּם אֶת",
+ "finishSay": "הִנֵּה קַו הַסִּיּוּם!",
+ "sea": true
+}

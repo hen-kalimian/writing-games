@@ -1,0 +1,59 @@
+{
+ "title": "מֵרוֹץ בְּשַׁלֶּכֶת",
+ "goal": "אִסְפוּ 10 אוֹתִיּוֹת ק",
+ "goalSay": [
+  "אִסְפוּ אֶת הָאוֹת",
+  "קוֹף",
+  "עֶשֶׂר פְּעָמִים לִפְנֵי שֶׁנִּגְמַר הַזְּמַן"
+ ],
+ "show": [
+  "ק"
+ ],
+ "good": [
+  "ק"
+ ],
+ "bad": [
+  "צ",
+  "ר",
+  "ש",
+  "ת"
+ ],
+ "names": true,
+ "need": 10,
+ "time": 60,
+ "sky": [
+  "#FCE3CF",
+  "#FFF6EC"
+ ],
+ "grass": [
+  "#F0C98F",
+  "#E9BE80"
+ ],
+ "road": [
+  "#CDBFB6",
+  "#C4B6AD"
+ ],
+ "bubble": "#FBC5D6",
+ "props": [
+  "tree-orange",
+  "tree-red",
+  "pumpkin",
+  "tree-yellow",
+  "mushroom"
+ ],
+ "obstacle": "cone",
+ "cars": [
+  {
+   "color": "#F6B18E"
+  },
+  {
+   "color": "#EF406E"
+  },
+  {
+   "color": "#F2C94C"
+  }
+ ],
+ "winTitle": "וָאוּ! סִיַּמְתֶּם אֶת הַמַּסְלוּל!",
+ "winSay": "תְּפַסְתֶּם אֶת",
+ "finishSay": "הִנֵּה קַו הַסִּיּוּם!"
+}

@@ -1,0 +1,59 @@
+{
+ "title": "מֵרוֹץ בָּאָחוּ",
+ "goal": "אִסְפוּ 10 סְפָרוֹת 9",
+ "goalSay": [
+  "אִסְפוּ אֶת הַסִּפְרָה",
+  "תֵּשַׁע",
+  "עֶשֶׂר פְּעָמִים לִפְנֵי שֶׁנִּגְמַר הַזְּמַן"
+ ],
+ "show": [
+  "9"
+ ],
+ "good": [
+  "9"
+ ],
+ "bad": [
+  "5",
+  "6",
+  "7",
+  "8"
+ ],
+ "names": "num",
+ "need": 10,
+ "time": 60,
+ "sky": [
+  "#E3F6F0",
+  "#FDF3F6"
+ ],
+ "grass": [
+  "#CDEFC0",
+  "#BFE8B0"
+ ],
+ "road": [
+  "#CBC3C8",
+  "#C3BAC0"
+ ],
+ "bubble": "#FBC5D6",
+ "props": [
+  "flower-pot",
+  "butterfly",
+  "tree-green",
+  "apple-red",
+  "flower-pot"
+ ],
+ "obstacle": "cone",
+ "cars": [
+  {
+   "color": "#7FCFD9"
+  },
+  {
+   "color": "#9BD97A"
+  },
+  {
+   "color": "#F7A8C0"
+  }
+ ],
+ "winTitle": "וָאוּ! סִיַּמְתֶּם אֶת הַמַּסְלוּל!",
+ "winSay": "תְּפַסְתֶּם אֶת",
+ "finishSay": "הִנֵּה קַו הַסִּיּוּם!"
+}
