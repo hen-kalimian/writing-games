@@ -53,7 +53,7 @@ html,body{margin:0;height:100%;background:#FEF6F5;font-family:Rubik,Arial,sans-s
 var Q=new URLSearchParams(location.search), NUMS=Q.get('n'), SET=(NUMS||Q.get('l')||'אבגד').split('').filter(function(c){return c.trim()}), GOAL=10, BASE='../';
 var cv=document.getElementById('cv'), cx=cv.getContext('2d'), stage=document.getElementById('stage'), ov=document.getElementById('ov'), card=document.getElementById('card');
 var COLS=['#F7A8C0','#9ED8EE','#B5E3A1','#F9D77E','#C9B3EE','#F6B18E'];
-var muted=false, AC=null, aud=new Audio(), W=600, H=400, DPR=1, balls=[], parts=[], score=0, target=null, state='intro', clock=0, beat=0;
+var saidF=0, muted=false, AC=null, aud=new Audio(), W=600, H=400, DPR=1, balls=[], parts=[], score=0, target=null, state='intro', clock=0, beat=0;
 function key(t){t=String(t||'').replace(/\s+/g,' ').trim();var h=2166136261;for(var i=0;i<t.length;i++){h^=t.charCodeAt(i);h=Math.imul(h,16777619)>>>0}return('0000000'+h.toString(16)).slice(-8)}
 function nameOf(c){ return NUMS?HenVoice.numberName(c):HenVoice.letterName(c) }
 function say(t,cb){ if(muted||!t){cb&&setTimeout(cb,200);return} HenVoice.url(t,BASE+'play/assets/tts/'+key(t)+'.mp3',function(u){ try{aud.pause()}catch(e){} aud=new Audio(u); aud.onended=function(){cb&&cb()}; aud.onerror=function(){cb&&cb()}; aud.play().catch(function(){cb&&cb()}) }) }
@@ -68,10 +68,10 @@ function fit(){ var r=stage.getBoundingClientRect(); DPR=Math.min(2,devicePixelR
 addEventListener('resize',fit);
 function rnd(a,b){return a+Math.random()*(b-a)}
 function level(){ return Math.min(1,score/GOAL) }
-function radius(){ var base=Math.min(W,H)*(W<500?.13:.11); return base*(1-.38*level()) }
-function speedNow(){ return Math.min(W,H)*(.10+.32*level()) }
+function radius(){ var base=Math.min(W,H)*(W<500?.19:.16); return base*(1-.55*level()) } // בהתחלה גדולים מאוד, בסוף בערך חצי
+function speedNow(){ return Math.min(W,H)*(.045+.36*level()) } // בהתחלה איטיים מאוד
 function newBall(ch){ var r=radius(), a=rnd(0,6.28), sp=speedNow()*rnd(.7,1.2); return {ch:ch,x:rnd(r,W-r),y:rnd(r,H-r*1.6),vx:Math.cos(a)*sp,vy:Math.sin(a)*sp,r:r,c:COLS[Math.floor(Math.random()*COLS.length)],ph:rnd(0,6),sh:0,born:clock} }
-function fill(){ var n=W<500?7:9; while(balls.length<n){ var ch=SET[Math.floor(Math.random()*SET.length)]; balls.push(newBall(ch)) }
+function fill(){ var n=W<500?5+Math.round(2*level()):7+Math.round(2*level()); while(balls.length<n){ var ch=SET[Math.floor(Math.random()*SET.length)]; balls.push(newBall(ch)) }
   // תמיד יש לפחות שני בלונים עם האות שמבקשים, ולפחות שני בלונים אחרים
   var has=balls.filter(function(b){return b.ch===target}).length; for(var i=0;has<2&&i<balls.length;i++) if(balls[i].ch!==target){ balls[i].ch=target; has++ }
   if(SET.length>1){ var other=balls.filter(function(b){return b.ch!==target}).length; for(var j=0;other<2&&j<balls.length;j++) if(balls[j].ch===target&&balls.filter(function(b){return b.ch===target}).length>2){ balls[j].ch=SET.filter(function(c){return c!==target})[0]; other++ } } }
@@ -79,7 +79,7 @@ function pick(){ var prev=target, opts=SET.length>1?SET.filter(function(c){retur
 function dots(){ var h=''; for(var i=0;i<GOAL;i++) h+='<i class="'+(i<score?'on':'')+'"></i>'; document.getElementById('dots').innerHTML=h }
 function hit(px,py){ if(state!=='play') return; var best=null; balls.forEach(function(b){ var d=Math.hypot(px-b.x,py-b.y); if(d<b.r*1.12&&(!best||d<best.d)) best={b:b,d:d} }); if(!best) return; var b=best.b;
   if(b.ch===target){ popSnd(); burst(b.x,b.y,b.c); balls.splice(balls.indexOf(b),1); score++; dots();
-    if(score>=GOAL) return win(); balls.forEach(function(o){ var r=radius(); o.r+=(r-o.r)*.5; var sp=Math.hypot(o.vx,o.vy)||1, ns=speedNow()*rnd(.8,1.15); o.vx*=ns/sp; o.vy*=ns/sp }); setTimeout(pick,550) }
+    if(score>=GOAL) return win(); var faster=score===6&&!saidF; if(faster) saidF=1; balls.forEach(function(o){ var r=radius(); o.r+=(r-o.r)*.5; var sp=Math.hypot(o.vx,o.vy)||1, ns=speedNow()*rnd(.8,1.15); o.vx*=ns/sp; o.vy*=ns/sp }); setTimeout(function(){ if(faster) say(FASTER,pick); else pick() },550) }
   else { b.sh=.45; tone(300,180,.25,'sine',.1); if(score>0){ score--; dots(); var m=document.createElement('div'); m.className='minus'; m.textContent='-1'; m.style.left=(b.x-12)+'px'; m.style.top=(b.y-b.r)+'px'; stage.appendChild(m); setTimeout(function(){m.remove()},900) } setTimeout(function(){ say(nameOf(target)) },350) } }
 function burst(x,y,c){ for(var i=0;i<22;i++){ var a=i/22*6.28; parts.push({x:x,y:y,vx:Math.cos(a)*rnd(120,320),vy:Math.sin(a)*rnd(120,320),l:rnd(.4,.8),c:i%3?c:'#fff',r:rnd(3,7)}) } }
 cv.addEventListener('pointerdown',function(e){ e.preventDefault(); var r=cv.getBoundingClientRect(); hit(e.clientX-r.left,e.clientY-r.top) });
@@ -98,9 +98,9 @@ function draw(){ var s=cv.height/H; cx.setTransform(s,0,0,s,0,0); var g=cx.creat
     cx.fillStyle='#4A2C3A'; cx.font='800 '+Math.round(r*1.05)+'px Rubik,Arial'; cx.textAlign='center'; cx.textBaseline='middle'; cx.fillText(b.ch,0,r*.08); cx.restore() });
   parts.forEach(function(p){ cx.globalAlpha=Math.max(0,Math.min(1,p.l*2)); cx.fillStyle=p.c; cx.beginPath(); cx.arc(p.x,p.y,p.r,0,6.28); cx.fill() }); cx.globalAlpha=1 }
 var tP=0; function loop(t){ var dt=Math.min(.033,(t-(tP||t))/1000); tP=t; step(dt); draw(); requestAnimationFrame(loop) }
-var START='לוֹחֲצִים עַל הַתְחִילוּ וְשׁוֹמְעִים', DONE=NUMS?'כָּל הַכָּבוֹד! פּוֹצַצְתֶּם עֶשֶׂר בָּלוֹנִים':'כָּל הַכָּבוֹד! פּוֹצַצְתֶּם עֶשֶׂר בָּלוֹנִים';
-function intro(){ state='intro'; ov.classList.remove('hidden'); card.innerHTML='<h2>מְפוֹצְצִים בָּלוֹנִים</h2><p>'+START+'</p><button class="btn" id="go">הַתְחִילוּ</button>'; document.getElementById('go').onclick=function(){ ac(); ov.classList.add('hidden'); start() } }
-function start(){ score=0; balls=[]; dots(); state='play'; nextT=0; target=SET[0]; pick() }
+var START='מוּכָנִים לְמִשְׂחַק פִּיצוּץ הַבָּלוֹנִים?', FASTER='זֶה הוֹלֵךְ וְנִהְיֶה מָהִיר יוֹתֵר!', DONE='כָּל הַכָּבוֹד! פּוֹצַצְתֶּם אֶת כָּל הַבָּלוֹנִים!';
+function intro(){ state='intro'; ov.classList.remove('hidden'); card.innerHTML='<h2>'+START+'</h2><button class="btn" id="go">הַתְחִילוּ</button>'; document.getElementById('go').onclick=function(){ ac(); ov.classList.add('hidden'); start() } }
+function start(){ saidF=0; score=0; balls=[]; dots(); state='play'; nextT=0; target=SET[0]; fill(); say(START,pick) }
 function win(){ state='win'; for(var i=0;i<8;i++) setTimeout(function(){ burst(rnd(W*.15,W*.85),rnd(H*.15,H*.6),COLS[Math.floor(Math.random()*6)]); popSnd() },i*140);
   setTimeout(function(){ ov.classList.remove('hidden'); card.innerHTML='<h2>'+DONE+'</h2><button class="btn" id="go">מְשַׂחֲקִים שׁוּב</button>'; document.getElementById('go').onclick=function(){ ov.classList.add('hidden'); start() }; say(DONE); try{parent.postMessage({wgDone:1},'*')}catch(e){} },1300) }
 document.getElementById('again').onclick=function(){ if(target&&state==='play') say(nameOf(target)) };
