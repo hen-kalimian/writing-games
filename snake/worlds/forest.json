@@ -1,3 +1,27 @@
-{"title":"הַשַּׁבְּלוּל הָרָעֵב","intro":"אִסְפוּ אֶת הָאוֹת שֶׁשּׁוֹמְעִים","hero":"snail","heroFacesRight":true,
- "ground":["#F3EBDD","#EADFCB"],"body":["#C9A27A","#D9B793","#E8CBA8"],"bubbles":["#B5E3A1","#FBC5D6","#F9D77E","#9ED8EE"],
- "decor":["mushroom","tree-orange","pumpkin","mushroom","tree-yellow"],"done":"כָּל הַכָּבוֹד! הַשַּׁבְּלוּל אָכַל הַכֹּל"}
+{
+ "title": "הַזַּחַל בַּיַּעַר",
+ "intro": "אִסְפוּ אֶת הָאוֹת שֶׁשּׁוֹמְעִים",
+ "ground": [
+  "#F3EBDD",
+  "#EADFCB"
+ ],
+ "body": [
+  "#F7A8C0",
+  "#F9B6CB"
+ ],
+ "bubbles": [
+  "#B5E3A1",
+  "#FBC5D6",
+  "#F9D77E",
+  "#9ED8EE"
+ ],
+ "decor": [
+  "mushroom",
+  "tree-orange",
+  "pumpkin",
+  "mushroom",
+  "tree-yellow"
+ ],
+ "done": "כָּל הַכָּבוֹד! הַזַּחַל אָכַל הַכֹּל",
+ "head": "#EF406E"
+}

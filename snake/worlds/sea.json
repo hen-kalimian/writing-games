@@ -1,3 +1,26 @@
-{"title":"הַדָּג הָרָעֵב","intro":"אִסְפוּ אֶת הָאוֹת שֶׁשּׁוֹמְעִים","hero":"fish","heroFacesRight":false,
- "ground":["#DDF1FB","#CDEAF7"],"body":["#F6B18E","#F9C9A8","#F7A8C0"],"bubbles":["#FFFFFF","#FDE1EA","#CFEFE3","#FBE3A0"],
- "decor":["drop","drop","cloud","drop"],"done":"כָּל הַכָּבוֹד! הַדָּג אָכַל הַכֹּל"}
+{
+ "title": "הַנָּחָשׁ בַּיָּם",
+ "intro": "אִסְפוּ אֶת הָאוֹת שֶׁשּׁוֹמְעִים",
+ "ground": [
+  "#DDF1FB",
+  "#CDEAF7"
+ ],
+ "body": [
+  "#7FC8E6",
+  "#8ED0EA"
+ ],
+ "bubbles": [
+  "#FFFFFF",
+  "#FDE1EA",
+  "#CFEFE3",
+  "#FBE3A0"
+ ],
+ "decor": [
+  "drop",
+  "drop",
+  "cloud",
+  "drop"
+ ],
+ "done": "כָּל הַכָּבוֹד! הַנָּחָשׁ אָכַל הַכֹּל",
+ "head": "#5FB3D9"
+}
