@@ -22,7 +22,7 @@
 #cel .big{width:min(62vw,52vh);height:min(62vw,52vh);border-radius:50%;background:#FDE1EA;border:8px solid #F8B9B6;display:flex;align-items:center;justify-content:center;font:800 min(40vw,34vh) Rubik;color:#B8236B;line-height:1}
 #cel .big.t{font-size:min(11vw,9vh);text-align:center;padding:0 14px}
 canvas#cf{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:6}
-</style><style>/*__BTNSVG: אייקונים בכפתורים לא מתפרשים על כל המסך (21.10.26)*/button svg{position:static!important;inset:auto!important;width:18px!important;height:18px!important;touch-action:manipulation!important}.card svg{width:100%!important;height:100%!important}</style></head><body>
+</style><style>/*__BTNSVG: אייקונים בכפתורים לא מתפרשים על כל המסך (21.10.26)*/button svg{position:static!important;inset:auto!important;width:18px!important;height:18px!important;touch-action:manipulation!important}.card svg{width:100%!important;height:100%!important}</style><script src="../hen-voice.js"></script></head><body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
 <linearGradient id="gC" gradientUnits="userSpaceOnUse" x1="10" y1="18" x2="92" y2="96"><stop offset="0" stop-color="#EF406E"/><stop offset=".3" stop-color="#F4A261"/><stop offset=".55" stop-color="#F2CC4A"/><stop offset=".78" stop-color="#4FB38C"/><stop offset="1" stop-color="#5F8DB5"/></linearGradient>
 <pattern id="pS" width="13" height="13" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="13" height="13" fill="#fff"/><rect width="6.5" height="13" fill="#EF406E"/></pattern>
@@ -54,7 +54,7 @@ var AC=null;function ac(){if(!AC){try{AC=new(window.AudioContext||window.webkitA
 function tone(f,d,ty,v,at){var a=ac();if(!a)return;var t=a.currentTime+(at||0),o=a.createOscillator(),g=a.createGain();o.type=ty||'sine';o.frequency.value=f;g.gain.setValueAtTime(0.0001,t);g.gain.exponentialRampToValueAtTime(v||.12,t+.015);g.gain.exponentialRampToValueAtTime(.0001,t+d);o.connect(g);g.connect(a.destination);o.start(t);o.stop(t+d+.02)}
 var BUFS={};function loadBuf(u){if(BUFS[u])return BUFS[u];return BUFS[u]=fetch(u).then(function(r){return r.arrayBuffer()}).then(function(b){var a=ac();return new Promise(function(res,rej){a.decodeAudioData(b,res,rej)})}).catch(function(){BUFS[u]=null;return null})}
 function playUrl(u){var a=ac();if(!a)return;loadBuf(u).then(function(buf){if(!buf)return;if(a.state==='suspended')a.resume();var s=a.createBufferSource();s.buffer=buf;var g=a.createGain();g.gain.value=1;s.connect(g);g.connect(a.destination);s.start()})}
-function symUrl(s){return '../drive/audio/'+(/[0-9]/.test(s)?'d':'l')+('0000'+s.charCodeAt(0).toString(16)).slice(-4)+'.mp3'}
+function symUrl(s){/*__HENMATCH: שם האות או הספרה בקול של חן כשהקליטה (29.10.26)*/var fb='../drive/audio/'+(/[0-9]/.test(s)?'d':'l')+('0000'+s.charCodeAt(0).toString(16)).slice(-4)+'.mp3';if(!window.HenVoice)return fb;var n=/[0-9]/.test(s)?HenVoice.numberName(s):HenVoice.letterName(s);return n?HenVoice.urlSync(n,fb):fb}
 var HINT=DIG?'מצאו שתי ספרות זהות':'מצאו שתי אותיות זהות',HENX={};
 fetch('../play/assets/hen/index.json?v='+Math.floor(Date.now()/3e5)).then(function(r){return r.ok?r.json():{}}).then(function(j){HENX=j}).catch(function(){});
 function hk(t){t=(t||'').replace(/\s+/g,' ').trim();var h=2166136261;for(var i=0;i<t.length;i++){h^=t.charCodeAt(i);h=Math.imul(h,16777619)>>>0}return ('0000000'+h.toString(16)).slice(-8)}
