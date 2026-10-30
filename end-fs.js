@@ -92,7 +92,7 @@
    הלחיצה על הקאבר היא הנגיעה הראשונה: המשחק משמיע את ההנחיה ומתחיל. משחקים שיש להם מסך פתיחה עם כפתור משלהם לא מקבלים קאבר */
 (function(){
   if(window.WG_NO_COVER) return;
-  function hasStart(){ var o=document.getElementById('ov'); return !!(o&&!o.classList.contains('hidden')&&getComputedStyle(o).display!=='none') }
+  function hasStart(){ var o=document.getElementById('ov'); if(o&&!o.classList.contains('hidden')&&getComputedStyle(o).display!=='none') return true; /*טייני טפ: יש כבר כפתור התחלה משלו, בלי פליי כפול (31.10.26)*/ var t=document.querySelector('[aria-label="התחלה"]'); return !!(t&&t.offsetParent!==null) }
   function add(){
     if(hasStart()||document.getElementById('wgcover')) return;
     var st=document.createElement('style'); st.textContent='#wgcover{position:fixed;inset:0;z-index:2147482000;display:flex;align-items:center;justify-content:center;background:rgba(74,44,58,.08);cursor:pointer;touch-action:manipulation;transition:opacity .25s}'+
