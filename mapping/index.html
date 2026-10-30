@@ -196,6 +196,24 @@ canvas.dc{width:100%;display:block;border:1.5px dashed var(--pink-strong);border
 .wni.cur{background:var(--pink);border-color:var(--pink-strong);font-weight:700}
 .wni.quiet{color:var(--muted)} .wni.sumbtn{border-style:dashed}
 @media(max-width:760px){.wzlayout{grid-template-columns:1fr}.wznav{position:static;padding:8px}.wnl{flex-direction:row;overflow-x:auto;padding-bottom:4px}.wni{flex:0 0 auto;white-space:nowrap}.wnh{display:none}}
+/* מצגת במסך מלא */
+.wzlayout{position:fixed;inset:0;z-index:50;display:flex;flex-direction:column;align-items:stretch;background:linear-gradient(180deg,#fff 0%,var(--pink) 160%);gap:0}
+.wztop{flex:none;display:flex;align-items:center;gap:10px;padding:8px 12px;background:#fff;border-bottom:1.5px solid var(--line)}
+.wztt{flex:1;min-width:0;position:relative;display:flex;flex-direction:column;align-items:center;padding-bottom:6px}
+.wztt b{font-family:var(--head);color:var(--pink-deep);font-size:1.05rem;text-align:center}
+.wztt span{font-size:.75rem;color:var(--muted)}
+.wztt i{position:absolute;bottom:0;right:0;height:4px;border-radius:4px;background:var(--mint-ink);transition:width .3s}
+.wzbody{flex:1;min-height:0;overflow-y:auto;overflow-x:hidden;display:block;padding:14px 12px 24px}
+.wzmain{max-width:880px;margin:0 auto;display:flex;flex-direction:column;gap:14px}
+.wzlayout .wznav{position:fixed;top:56px;bottom:0;right:0;width:min(300px,86vw);z-index:60;border-radius:0 0 0 20px;overflow-y:auto;transform:translateX(105%);transition:transform .25s;box-shadow:-6px 0 24px rgba(0,0,0,.12)}
+.wzlayout .wznav.open{transform:none}
+.wzlayout .wnl{flex-direction:column;overflow:visible}
+.wzlayout .wni{white-space:normal;flex:none}
+.wzlayout .wnh{display:block}
+.wzmain:not(.show) .note,.wzmain:not(.show) .hint{display:none}
+.wzmain:not(.show) .vaultcard .note,.wzmain:not(.show) .vaultintro .vq{display:block}
+.wzmain>.card{padding:18px}
+.wzctl{position:sticky;bottom:-24px;z-index:5;padding:10px 14px;gap:8px;box-shadow:0 -4px 14px rgba(0,0,0,.06)}
 .vaultintro,.vaultcard{align-items:center;text-align:center}
 .vpic{width:min(240px,70%);height:auto;font-size:5rem;line-height:1;display:block}
 .vpic.emo{font-size:6rem}
@@ -268,6 +286,9 @@ canvas.dc{width:100%;display:block;border:1.5px dashed var(--pink-strong);border
 .sheet.fixed .ruled{min-height:70px}
 .sheet.fixed .grid2{align-items:start}
 @media print{
+  .wzlayout{position:static!important;display:block!important;overflow:visible!important;height:auto!important;background:#fff!important}
+  .wzbody{display:block!important;overflow:visible!important}
+  .wzmain{max-width:none!important;padding:0!important}
   @page{size:A4;margin:7mm}
   body{background:#fff;padding:0}
   .noprint,.tools,.noexp{display:none!important}
@@ -633,11 +654,12 @@ const GROUPS = [['א', 'ב', 'ג', 'ד'], ['ה', 'ו', 'ז', 'ח'], ['ט', 'י',
 const gname = (g, i) => i === 6 ? 'האותיות הסופיות' : 'קבוצה ' + (i + 1);
 const it = (pre, arr) => arr.map((l, i) => [pre + i, l]);
 const STAGES = [
-  { id: 'num', title: 'מספרים', sub: 'שלב 1', blocks: [{ t: 'מספרים וכמויות', items: it('n', ['סופר/ת בעל פה עד 10', 'סופר/ת בעל פה עד 20', 'מתאים/ה כמות למספר (1-5)', 'מתאים/ה כמות למספר (6-10)', 'מכיר/ה את הספרות 0-5', 'מכיר/ה את הספרות 6-10', 'כותב/ת ספרות', 'מבין/ה יותר, פחות ושווה', 'מבין/ה מה בא לפני ואחרי', 'מפרק/ת מספר לשני חלקים (עד 10)', 'חיבור בדוגמאות עד 10', 'חיסור בדוגמאות עד 10', 'מכיר/ה את המספרים 11-20']) }] },
+  { id: 'num', title: 'מספרים', sub: 'שלב 1', blocks: [{ t: 'השיעורים הדיגיטליים ב"מספרים בקלות", לפי הסדר', items: it('nl', ['הסבר לפני שמתחילים', 'מנייה והתאמת כמות למספר', 'הכרת הספרות 2, 3, 4, 5, 6', 'הכרת הספרות 0, 1, 7, 8, 9', 'תרגול כל הספרות יחד', 'תומכי הזיכרון', 'הרצף המספרי', 'פתרון בעיות חשבוניות: חיבור', 'חיסור', 'הכרת מספרי עשרה: תבנית העשר', 'חיבור וחיסור מעל 10', 'משחקים לסיכום מוכנות חשבונית לכיתה א׳']) }] },
   { id: 'let', title: 'אותיות ומודעות פונולוגית', sub: 'שלב 2, במקביל', blocks: [
     { t: 'מכיר/ה את האותיות: שם, צליל וצורה', lg: 'lr' }, { t: 'כותב/ת את האותיות', lg: 'lw' },
     { t: 'חזרה ומבדק', items: [['lrev', 'חזרה על כל האותיות'], ['ltest', 'מבדק האותיות הדיגיטלי']] },
-    { t: 'מודעות פונולוגית', items: it('p', ['משחק היכרות וחריזה', 'מחלק/ת מילה להברות', 'מחבר/ת הברות למילה', 'מזהה צליל פותח', 'מזהה צליל סוגר', 'מזהה צליל באמצע המילה', 'מחלק/ת מילים לצלילים', 'מחבר/ת צלילים למילה', 'קשר אות-צליל', 'שיר צלילי האותיות', 'משמיט/ה או מחליף/ה צליל במילה']) }] },
+    { t: 'מודעות פונולוגית: השיעורים הדיגיטליים, לפי הסדר', items: it('pl', ['משחק היכרות', 'שיעור 3: חלוקת מילים לצלילים', 'שיעור 4: צליל פותח', 'שיעור 5: צליל סוגר', 'שיעור 6: קשר אות-צליל', 'השיר: צלילי האותיות']) },
+    { t: 'העשרת שפה', items: it('sl', ['שיעור 9: שפה, מיון והכללה', 'שיעור 10: הגדרה והשוואה', 'שיעור 11: להבין סיפורים', 'שיעור 12: לספר סיפורים']) }] },
   { id: 'wr', title: 'כתיב פונטי', sub: 'שלב 3', blocks: [{ t: 'כתיבה לפי הצלילים', items: it('w', ['כותב/ת את הצליל הפותח של מילה', 'כותב/ת צליל פותח וצליל סוגר', 'כותב/ת מילה בת 2-3 צלילים', 'כותב/ת מילה בת 4 צלילים ויותר', 'כותב/ת מילה עם אותיות סופיות', 'כותב/ת הברות עם ניקוד', 'כותב/ת מילה עם ניקוד', 'כותב/ת משפט קצר בהכתבה', 'מזהה ומתקן/ת שגיאה בכתיבה של עצמו/ה']) }] },
   { id: 'rd', title: 'קוראים בקלות', sub: 'שלב 4, כל סימן ניקוד', matrix: true,
     signs: [['קמץ ופתח', 'אַ אָ'], ['שין שמאלית ודגש', 'שׂ ּ'], ['שווא', 'אְ'], ['חיריק', 'אִ'], ['חולם', 'אֹ'], ['צירה וסגול', 'אֵ אֶ'], ['שורוק וקובוץ', 'אוּ אֻ']], cols: [['syl', 'הברות'], ['wrd', 'מילים'], ['sen', 'משפטים']] },
@@ -874,9 +896,9 @@ document.addEventListener('click', async e => {
 });
 
 /* ===================== מיפוי מודרך: שקופיות, תפריט צד, כספת ===================== */
-const GSLIDES = [['intro', 'הכספת'], ['parents', 'שיחת הורים'], ['t4', 'משימה 1: חומר חדש'], ['t1', 'משימה 2: כתיבת שם'], ['t2', 'משימה 3: כתיבה פונטית'], ['t3', 'משימה 4: חשבון'], ['lw', 'אותיות: כתיבה'], ['ln', 'אותיות: איזו אות?'], ['lp', 'אותיות: הצבעה'], ['vault', 'פתיחת הכספת'], ['fin', 'סיכום ומסקנות']];
+const GSLIDES = [['parents', 'שיחת הורים'], ['intro', 'הכספת'], ['t1', 'משימה 1: כתיבת שם'], ['t2', 'משימה 2: כתיבה פונטית'], ['t3', 'משימה 3: חשבון'], ['lw', 'אותיות: כתיבה'], ['ln', 'אותיות: איזו אות?'], ['lp', 'אותיות: הצבעה'], ['t4', 'משימה 4: למידת מושג חדש'], ['vault', 'פתיחת הכספת'], ['fin', 'סיכום ומסקנות']];
 const KSLIDES = [['parents', 'שיחת הורים'], ['kp', 'כתיב פונטי'], ['knw', 'קריאת מילות תפל'], ['ksy', 'קריאת הברות'], ['kbd', 'כתיבה עם ניקוד'], ['kr', 'קריאה בקול'], ['kl', 'אותיות'], ['kn', 'ניקוד: סימון כללי'], ['fin', 'סיכום ומסקנות']];
-const TASKKEYS = ['t4', 't1', 't2', 't3'];   /* כל משימה נותנת ספרה אחת לכספת, לפי הסדר */
+const TASKKEYS = ['t1', 't2', 't3', 't4'];   /* כל משימה נותנת ספרה אחת לכספת, לפי הסדר */
 const ST = m => (m.kind === 'kb' ? KSLIDES : GSLIDES);
 const IDX = (m, k) => ST(m).findIndex(x => x[0] === k);
 const MKS = [[1, '✓', 'כתב/ה נכון'], [2, '◐', 'בעזרה'], [3, '✗', 'לא הצליח/ה']];
@@ -946,7 +968,7 @@ function wizNav(m) {
   const w = m.wz, done = w.done || {}, sl = ST(m);
   let vault = '';
   if (m.kind !== 'kb') { const v = ensureVault(m); vault = `<div class="wnv">קוד הכספת: <b>${TASKKEYS.map((k, i) => (done[k] ? v.code[i] : '_')).join(' ')}</b></div>`; }
-  return `<nav class="wznav noprint" aria-label="שקופיות"><div class="wnh">${esc(m.name || 'מיפוי')}</div>${vault}<div class="wnl">${sl.map((s, i) => `<button type="button" class="wni${i === w.step && !w.phase ? ' cur' : ''}${done[s[0]] ? ' done' : ''}" data-act="wzGoto" data-i="${i}"><span class="wnk">${done[s[0]] ? '✓' : i + 1}</span><span class="wnt">${esc(s[1])}</span></button>`).join('')}
+  return `<nav class="wznav noprint${WZ_NAV ? ' open' : ''}" aria-label="שקופיות"><div class="wnh">${esc(m.name || 'מיפוי')}</div>${vault}<div class="wnl">${sl.map((s, i) => `<button type="button" class="wni${i === w.step && !w.phase ? ' cur' : ''}${done[s[0]] ? ' done' : ''}" data-act="wzGoto" data-i="${i}"><span class="wnk">${done[s[0]] ? '✓' : i + 1}</span><span class="wnt">${esc(s[1])}</span></button>`).join('')}
     <button type="button" class="wni sumbtn${w.phase === 'sum' ? ' cur' : ''}" data-act="wzShow"><span class="wnk">★</span><span class="wnt">דף סיכום להדפסה</span></button>
     <button type="button" class="wni quiet" data-act="wzPause"><span class="wnk">←</span><span class="wnt">יציאה ושמירה</span></button></div></nav>`;
 }
@@ -954,12 +976,18 @@ function wizControls(m, opts) {
   opts = opts || {};
   const key = ST(m)[m.wz.step][0], isTask = m.kind !== 'kb' && TASKKEYS.includes(key);
   return `<div class="card noprint wzctl"><div class="row"><button class="btn" type="button" data-act="${opts.back || 'wzBack'}">חזרה</button>${opts.noNext ? '' : `<button class="btn solid" type="button" data-act="${opts.next || (isTask ? 'wzTask' : 'wzNext')}">${opts.nextLabel || (isTask ? 'סיימנו, קבלת ספרה לכספת' : 'סיימתי, המשך')}</button>`}</div>
-    <div class="row"><button class="btn quiet" type="button" data-act="wzPause">שמירה ויציאה, להמשיך בפעם הבאה</button><button class="btn danger" type="button" data-act="wzStop">הילד/ה מתקשה, עצרי ועברי לסיכום</button></div></div>`;
+    <div class="row"><button class="btn sm quiet" type="button" data-act="wzPause">שמירה ויציאה</button><button class="btn sm danger" type="button" data-act="wzStop">הילד/ה מתקשה, עצרי ועברי לסיכום</button></div></div>`;
 }
 function mkRow(cur, act, attrs) {
   return `<div class="mkrow">${MKS.map(x => `<button type="button" class="mk${cur === x[0] ? ' on v' + x[0] : ''}" data-act="${act}" data-v="${x[0]}" ${attrs}>${x[1]} <small>${x[2]}</small></button>`).join('')}</div>`;
 }
-function wrapLayout(m, inner) { return `<div class="wzlayout">${wizNav(m)}<div class="wzmain">${inner}</div></div>`; }
+let WZ_NAV = false, WZ_HINT = false;
+function wrapLayout(m, inner) {
+  const sl = ST(m), w = m.wz, sum = w.phase === 'sum' || w.phase === 'think', pct = Math.round(Object.keys(w.done || {}).length / sl.length * 100);
+  const title = sum ? 'דף סיכום' : sl[w.step][1];
+  return `<div class="wzlayout"><div class="wztop noprint"><button type="button" class="btn sm" data-act="wzMenu">☰ שקופיות</button><div class="wztt"><b>${esc(title)}</b><span>${sum ? '' : (w.step + 1) + ' מתוך ' + sl.length}</span><i style="width:${pct}%"></i></div><button type="button" class="btn sm${WZ_HINT ? ' solid' : ''}" data-act="wzHints">הנחיות לבוחנת</button></div>
+    <div class="wzbody">${wizNav(m)}<div class="wzmain${WZ_HINT || sum ? ' show' : ''}">${inner}</div></div></div>`;
+}
 
 /* ===== כספת ===== */
 function vaultPic() { return emo('img/vault.png', 'vpic', '🔐'); }
@@ -1227,7 +1255,9 @@ function wzAct(a, b, m) {
   else if (a === 'wzNext') { markDone(); wzGo(m, m.wz.step + 1); }
   else if (a === 'wzTask') { markDone(); const k = cur(), d = ensureVault(m).code[TASKKEYS.indexOf(k)]; touch(m, 'map:' + m.id); renderMap(); showDigit(d, () => wzGo(m, m.wz.step + 1)); }
   else if (a === 'wzBack') wzGo(m, m.wz.step - 1);
-  else if (a === 'wzGoto') wzGo(m, +b.dataset.i);
+  else if (a === 'wzGoto') { WZ_NAV = false; wzGo(m, +b.dataset.i); }
+  else if (a === 'wzMenu') { WZ_NAV = !WZ_NAV; const n = document.querySelector('.wznav'); if (n) n.classList.toggle('open', WZ_NAV); }
+  else if (a === 'wzHints') { WZ_HINT = !WZ_HINT; const mm = document.querySelector('.wzmain'); if (mm) mm.classList.toggle('show', WZ_HINT); b.classList.toggle('solid', WZ_HINT); }
   else if (a === 'wzPause') { m.wz.on = false; touch(m, 'map:' + m.id); renderMap(); window.scrollTo(0, 0); toast('המיפוי נשמר. אפשר להמשיך, לערוך ולהדפיס שוב מהרשימה במסך "מיפוי חדש"'); }
   else if (a === 'wzStop') { m.wz.stopped = cur(); wzGo(m, IDX(m, 'fin')); toast('עברנו לסיכום. מלאי את ההערות ולחצי "דף סיכום להדפסה"'); }
   else if (a === 'wzSay') { sayAsk(b.dataset.kind, b.dataset.l || null); }
