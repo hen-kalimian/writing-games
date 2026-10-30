@@ -62,6 +62,21 @@ input[type=date]::-webkit-date-and-time-value{text-align:start;min-height:1.3em}
 .num{flex:none;width:30px;height:30px;border-radius:50%;display:grid;place-items:center;color:#fff;font-family:var(--head);font-weight:800}
 .n1{background:var(--pink-strong)} .n2{background:#3aa57a} .n3{background:#4a90c2} .n4{background:#d9a21b}
 .panel .field,.sum .field,.meta .field{flex:0 0 auto}
+.wblock{display:flex;flex-direction:column;gap:6px;border-top:1px dashed var(--line);padding-top:8px}
+.wtop{display:flex;gap:12px;align-items:center}
+.panel .field.wbig{flex:1 1 0;min-width:0}
+.lvl{min-width:0}
+.lvl .pics{flex-wrap:wrap;justify-content:center}
+@media(max-width:480px){.pic.big{width:96px;height:96px}.pic.sm{width:46px;height:46px}.wbig input{font-size:1.35rem}}
+.wbig input{font-size:1.6rem;font-family:var(--head);font-weight:800;text-align:center;height:64px;min-height:64px}
+.pic.big{width:120px;height:120px;object-fit:contain;flex:none;border-radius:16px;background:#fff;border:1.5px solid var(--line)}
+.pic.sm{width:54px;height:54px;object-fit:contain;border-radius:12px;background:#fff;border:1.5px solid var(--line)}
+.pic.nopic{display:grid;place-items:center;color:var(--muted);font-size:.74rem;text-align:center}
+.lvls{display:flex;flex-wrap:wrap;gap:8px}
+.lvl{flex:1 1 150px;border:1.5px solid var(--line);background:#fff;border-radius:16px;padding:8px;display:flex;flex-direction:column;align-items:center;gap:6px}
+.lvl.on{background:var(--pink);border-color:var(--pink-strong)}
+.lvl b{font-family:var(--head);color:var(--pink-deep)}
+.pics{display:flex;gap:6px}
 .wrow{display:flex;gap:8px;align-items:flex-end}
 .wrow .field{width:92px;flex:none}
 .wrow .pad{flex:1;min-width:0}
@@ -95,6 +110,13 @@ canvas.dc{width:100%;display:block;border:1.5px dashed var(--pink-strong);border
 .sum h3{font-size:.95rem;color:var(--pink-deep)}
 .actions{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
 .mapbar{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.nwgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px}
+.nwc{border:1.5px solid var(--line);border-radius:14px;padding:8px;display:flex;flex-direction:column;align-items:center;gap:6px;min-width:0}
+.nww{font-family:Arial,'Noto Sans Hebrew','Open Sans',sans-serif;font-weight:700;font-size:1.9rem;line-height:1.5;direction:rtl}
+.nwc .cell{width:56px}
+.nwc input{text-align:center;font-size:.9rem}
+.sheet.fixed .nwgrid{grid-template-columns:repeat(6,1fr)}
+.sheet.fixed .nww{font-size:1.5rem}
 .rights{text-align:center;font-size:.72rem;color:var(--muted);line-height:1.6;padding-top:4px}
 .sheet .rights{font-size:.7rem;padding-top:0}
 .sheet .lt{width:40px;font-size:1.15rem;padding:3px 0;border-radius:11px}
@@ -180,13 +202,13 @@ canvas.dc{width:100%;display:block;border:1.5px dashed var(--pink-strong);border
   <header class="top noprint">
     <div>
       <h1>מיפוי בזמן אמת ומעקב התקדמות</h1>
-      <div class="note">שיעור 9, מיפוי בשיטת קוראים בקלות</div>
+      <div class="note">מיפוי בשיטת קוראים בקלות: לילדי גן חובה ולילדי כיתות א׳-ב׳</div>
     </div>
     <div class="acct" id="acct"></div>
   </header>
   <nav class="tabs noprint" role="tablist">
-    <button type="button" class="tab" role="tab" id="tabMap" data-tab="map">מיפוי שיעור 9</button>
-    <button type="button" class="tab" role="tab" id="tabKb" data-tab="kb">מיפוי קוראים בקלות</button>
+    <button type="button" class="tab" role="tab" id="tabMap" data-tab="map">מיפוי גן חובה</button>
+    <button type="button" class="tab" role="tab" id="tabKb" data-tab="kb">מיפוי כיתות א׳-ב׳</button>
     <button type="button" class="tab" role="tab" id="tabKids" data-tab="kids">מעקב התקדמות</button>
   </nav>
   <main id="main" class="wrap" style="gap:16px"></main>
@@ -231,7 +253,7 @@ function touch(item, key) { item.u = Date.now(); dirty.add(key); persist(); sche
 function newMap(pre, kind) {
   const z = (n) => Array(n).fill(0);
   if (kind === 'kb') return { id: uid(), u: Date.now(), kind: 'kb', name: (pre && pre.name) || '', age: (pre && pre.age) || '', date: today(), school: '', marks: {},
-    dict: { w: ['', '', ''], d: [[], [], []] }, read: { c: z(4), what: '', errs: '', note: '' },
+    dict: { w: ['', '', ''], d: [[], [], []] }, read: { c: z(4), what: '', errs: '', note: '', nwnote: '' }, nw: ['', '', '', '', '', ''],
     s: { strong: '', hard: '', goals: '', recs: '', r: z(5), note: '' } };
   return { id: uid(), u: Date.now(), name: (pre && pre.name) || '', age: (pre && pre.age) || '', date: today(), school: '', parents: '',
     t1: { c: z(4), ask: '', note: '', draw: [] },
@@ -248,7 +270,8 @@ const T1 = ['מזהה אותיות בשם', 'משיים אותיות בשם', '�
 const T3 = ['ספירה', 'מנייה', 'כתיבת מספרים', 'התאמת כמות למספר', 'פותר תרגילי חיבור ללא המחשה', 'פותר בעיות מילוליות ללא המחשה'];
 const T4 = ['יכולת למידה', 'תגובה לתיווך', 'זיכרון', 'גמישות', 'קשב', 'יכולת הכללה', 'מוטיבציה', 'תסכול / הימנעות', 'מוכן להתנסות', 'מגלה רצון לנסות שוב'];
 const SR = ['קבוצה', 'פרטני', 'מעקב', 'ריפוי בעיסוק', 'הפניה נוספת'];
-const EASY = ['פרח', 'דגל', 'פנס'], HARD = ['חולצה', 'מסרק', 'מסמר'];
+const LVL = { easy: { t: 'רמה קלה', w: [['פרח', 'prach'], ['דגל', 'degel'], ['פנס', 'panas']] }, hard: { t: 'רמה קשה', w: [['חולצה', 'cholca'], ['מסרק', 'masrek'], ['מסמר', 'masmer']] } };
+const picImg = (k, cls, word) => `<img class="${cls}" src="img/${k}.png" alt="" onerror="this.outerHTML='<span class=&quot;${cls} nopic&quot;>${word}</span>'">`;
 const CHECK = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l5 5L19 7"/></svg>';
 const cb = (p, t, m) => `<label class="cb"><input type="checkbox" data-p="${p}"${getP(m, p) ? ' checked' : ''}><span class="bx">${CHECK}</span><span>${esc(t)}</span></label>`;
 const tx = (p, m, ph) => `<input type="text" data-p="${p}" value="${esc(getP(m, p))}"${ph ? ` placeholder="${esc(ph)}"` : ''}>`;
@@ -291,10 +314,15 @@ function kbMatrix(m) {
   const st = STAGES.find(x => x.id === 'rd');
   return `<table class="matrix"><thead><tr><th></th>${st.cols.map(x => `<th>${x[1]}</th>`).join('')}</tr></thead><tbody>${st.signs.map(s => `<tr><td class="sign"><span>${s[1]}</span>${s[0]}</td>${st.cols.map(x => { const k = 'rd.' + s[0] + '.' + x[0], v = mk(m, k); return `<td><button type="button" class="cell s${v}" data-act="kbmark" data-k="${esc(k)}" aria-label="${esc('סימן ' + s[0] + ': ' + x[1] + ': ' + STATES[v])}">${SYM[v] || '○'}</button></td>`; }).join('')}</tr>`).join('')}</tbody></table>`;
 }
+const NONSENSE = ['דִּינֶל', 'מִשֶּׂרִיחַ', 'פְרוֹנִיק', 'סִיגוֹדוֹ', 'עָמְצוּ', 'פֵּרְשׁוּק'];
+function nwHtml(m) {
+  return `<div class="nwgrid">${NONSENSE.map((w, i) => { const v = mk(m, 'nw' + i); return `<div class="nwc"><div class="nww">${w}</div><button type="button" class="cell s${v}" data-act="kbmark" data-k="nw${i}" aria-label="${esc('מילת תפל ' + w + ': ' + STATES[v])}">${SYM[v] || '○'}</button><input type="text" data-p="nw.${i}" value="${esc(m.nw && m.nw[i])}" placeholder="איך נקראה"></div>`; }).join('')}</div>`;
+}
 function kbSheetHtml(m) {
+  if (!m.nw) m.nw = ['', '', '', '', '', ''];
   return `<div class="sheet" id="sheet">
-  <div class="title">מיפוי בשיטת קוראים בקלות</div>
-  <div class="sub">חן קלימיאן, לדבר עם ילדים</div>
+  <div class="title">מיפוי לילדי כיתות א׳-ב׳</div>
+  <div class="sub">בשיטת קוראים בקלות · חן קלימיאן, לדבר עם ילדים</div>
   <div class="meta">
     <div class="field"><label>שם הילד/ה</label>${tx('name', m)}</div>
     <div class="field"><label>גיל</label>${tx('age', m)}</div>
@@ -316,6 +344,11 @@ function kbSheetHtml(m) {
       <div class="field"><label>הערות</label>${ta('read.note', m, false)}</div>
     </div>
   </div>
+  <div class="panel"><h3><span class="num n1">5</span>קריאת מילות תפל</h3>
+    <div class="note">הילד/ה קורא/ת בקול מילים שאינן קיימות בשפה. כך בודקים קריאה לפי הצלילים והניקוד, בלי ניחוש. לחצי על המשבצת: ✓ נקראה נכון, ◐ נקראה בעזרה או בתיקון עצמי. ליד כל מילה אפשר לכתוב איך נקראה.</div>
+    ${nwHtml(m)}
+    <div class="field"><label>הערות על קריאת מילות התפל</label>${ta('read.nwnote', m, false)}</div>
+  </div>
   ${sumHtml(m)}
   <div class="rights">כל הזכויות שמורות לחן קלימיאן</div>
 </div>`;
@@ -324,7 +357,7 @@ function kbSheetHtml(m) {
 function sheetHtml(m) {
   return `<div class="sheet" id="sheet">
   <div class="title">דף מלווה מיפוי – הכנה לכיתה א׳</div>
-  <div class="sub">שיעור 9 בהכשרה המקצועית · חן קלימיאן, לדבר עם ילדים</div>
+  <div class="sub">מיפוי לילדי גן חובה · שיעור 9 בהכשרה המקצועית · חן קלימיאן, לדבר עם ילדים</div>
   <div class="meta">
     <div class="field"><label>שם הילד/ה</label>${tx('name', m)}</div>
     <div class="field"><label>גיל</label>${tx('age', m)}</div>
@@ -342,9 +375,9 @@ function sheetHtml(m) {
       <div class="field"><label>הערות</label>${ta('t1.note', m, false)}</div>
     </div>
     <div class="panel"><h3><span class="num n2">2</span>משימה 2 – כתיבה פונטית</h3>
-      <div class="note">הוראה: כתוב/כתבי את המילים הבאות. בחרו 2-3 מילים מהאופציות:</div>
-      <div class="wordchips noexp"><span class="lbl">רמה קלה:</span>${EASY.map(w => `<button type="button" class="wc" data-act="word" data-w="${w}">${w}</button>`).join('')}<span class="lbl">רמה קשה:</span>${HARD.map(w => `<button type="button" class="wc hard" data-act="word" data-w="${w}">${w}</button>`).join('')}</div>
-      ${[0, 1, 2].map(i => `<div class="wrow"><div class="field"><label>מילה ${i + 1}</label>${tx('t2.w.' + i, m)}</div>${pad('t2.d.' + i, 230, 'הילד/ה כותב/ת כאן')}</div>`).join('')}
+      <div class="note noexp">הוראה: כתוב/כתבי את המילים לפי האיורים. בוחרים רמה, ואז נפתחים האיורים והמשטחים לכתיבה. הילד/ה רואה רק איורים.</div>
+      <div class="lvls noexp noprint">${['easy', 'hard'].map(k => `<button type="button" class="lvl${m.t2.lv === k ? ' on' : ''}" data-act="lvl" data-lv="${k}"><b>${LVL[k].t}</b><span class="pics">${LVL[k].w.map(x => picImg(x[1], 'pic sm', x[0])).join('')}</span></button>`).join('')}</div>
+      ${(m.t2.lv || m.t2.w.some(Boolean)) ? [0, 1, 2].map(i => { const lv = m.t2.lv && LVL[m.t2.lv], pk = lv ? lv.w[i][1] : ''; return `<div class="wblock"><div class="wtop">${pk ? picImg(pk, 'pic big', lv.w[i][0]) : ''}<div class="field wbig"><label>מילה ${i + 1}</label>${tx('t2.w.' + i, m)}</div></div>${pad('t2.d.' + i, 230, 'הילד/ה כותב/ת כאן')}</div>`; }).join('') : '<div class="note noexp">עוד לא נבחרה רמה</div>'}
       <div class="field"><label>הערות</label>${ta('t2.note', m, false)}</div>
     </div>
     <div class="panel"><h3><span class="num n3">3</span>משימה 3 – חשבון</h3>
@@ -374,7 +407,7 @@ function renderMap() {
   let h = `<div class="card noprint"><div class="mapbar">${list.map(x => `<button type="button" class="chip${x.id === curId ? ' on' : ''}" data-act="pickMap" data-id="${x.id}">${esc(x.name || 'ילד/ה ללא שם')} · ${fmt(x.date)}</button>`).join('')}<button type="button" class="chip add" data-act="newMap" data-kind="${kind}">+ מיפוי חדש</button></div>`;
   h += `<p class="note">כל מיפוי נשמר אוטומטית בזמן שאת כותבת. אפשר לעבור בין מיפויים של ילדים שונים בלי לאבד כלום.</p></div>`;
   if (!m) {
-    h += `<div class="card noprint"><h2>עוד אין מיפוי</h2><p class="note">${kind === 'kb' ? 'לחצי על "מיפוי חדש" כדי לפתוח את המיפוי בשיטת קוראים בקלות: אותיות, ניקוד, כתיבה בהכתבה, קריאה בקול וסיכום.' : 'לחצי על "מיפוי חדש" כדי לפתוח את הדף. הוא בנוי לפי קובץ המיפוי של שיעור 9: שיחת הורים, ארבע משימות וסיכום.'}</p><div><button class="btn solid" type="button" data-act="newMap" data-kind="${kind}">מיפוי חדש</button></div></div>`;
+    h += `<div class="card noprint"><h2>עוד אין מיפוי</h2><p class="note">${kind === 'kb' ? 'לחצי על "מיפוי חדש" כדי לפתוח את המיפוי לילדי כיתות א׳-ב׳: אותיות, ניקוד, כתיבה בהכתבה, קריאה בקול, קריאת מילות תפל וסיכום.' : 'לחצי על "מיפוי חדש" כדי לפתוח את הדף. הוא מיפוי לילדי גן חובה לפי קובץ המיפוי של שיעור 9: שיחת הורים, ארבע משימות וסיכום.'}</p><div><button class="btn solid" type="button" data-act="newMap" data-kind="${kind}">מיפוי חדש</button></div></div>`;
   } else {
     h += kind === 'kb' ? kbSheetHtml(m) : sheetHtml(m);
     h += `<div class="card noprint"><h2>שמירה והדפסה</h2><div class="actions">
@@ -437,7 +470,7 @@ async function exportPng() {
     const A = document.createElement('canvas'); A.width = 1588; A.height = 2246;
     const g = A.getContext('2d'); g.fillStyle = '#fff'; g.fillRect(0, 0, A.width, A.height);
     const k = Math.min(A.width / c.width, A.height / c.height); g.drawImage(c, (A.width - c.width * k) / 2, 0, c.width * k, c.height * k);
-    A.toBlob(b => { const a = document.createElement('a'); a.href = URL.createObjectURL(b); a.download = (m.kind === 'kb' ? 'מיפוי קוראים בקלות ' : 'מיפוי ') + name + ' ' + fmt(m.date) + '.png'; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 4000); toast('התמונה נשמרה'); }, 'image/png');
+    A.toBlob(b => { const a = document.createElement('a'); a.href = URL.createObjectURL(b); a.download = (m.kind === 'kb' ? 'מיפוי כיתות א-ב ' : 'מיפוי גן חובה ') + name + ' ' + fmt(m.date) + '.png'; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 4000); toast('התמונה נשמרה'); }, 'image/png');
   } catch (e) { sh.classList.remove('fixed'); toast('לא הצלחתי לשמור תמונה. אפשר להדפיס ולשמור כ-PDF'); }
 }
 
@@ -494,7 +527,7 @@ function renderKids() {
   h += `<div class="card"><div class="row"><div class="field"><label for="fName">שם</label><input type="text" id="fName" data-k="name" value="${esc(c.name)}" maxlength="40"></div><div class="field" style="flex-basis:90px"><label for="fAge">גיל</label><input type="text" id="fAge" data-k="age" value="${esc(c.age)}" maxlength="8"></div><div class="field"><label for="fStart">התחלנו לעבוד ב</label><input type="date" id="fStart" data-k="start" value="${esc(c.start)}"></div></div>
     <div class="now">${info ? `<span class="note">איפה הוא/היא עכשיו</span><b>${info.started ? esc(info.st.sub + ': ' + info.st.title) : 'עוד לא התחלנו, מתחילים משלב 1: מספרים'}</b><span>${info.started ? 'הבא לתרגול' : 'הפריט הראשון'}: ${esc(info.next)}</span>` : '<b>סיימנו את כל השלבים. קריאה שוטפת!</b>'}</div>
     <div class="bars">${STAGES.map(st => { const s = stats(c, st); return `<div class="bar${s.mast === s.total ? ' done' : ''}"><span><b>${esc(st.title)}</b> · ${s.mast} מתוך ${s.total}</span><div class="track"><div class="fill" style="width:${s.pct}%"></div></div></div>`; }).join('')}</div>
-    <div class="row"><button class="btn mint" type="button" data-act="mapFor">פתחי מיפוי שיעור 9 לילד/ה הזה</button><button class="btn mint" type="button" data-act="kbFor">פתחי מיפוי קוראים בקלות לילד/ה הזה</button></div></div>`;
+    <div class="row"><button class="btn mint" type="button" data-act="mapFor">פתחי מיפוי גן חובה לילד/ה הזה</button><button class="btn mint" type="button" data-act="kbFor">פתחי מיפוי כיתות א׳-ב׳ לילד/ה הזה</button></div></div>`;
   const st = STAGES.find(x => x.id === S.stage) || STAGES[0];
   h += `<div class="card"><div class="stabs" role="tablist">${STAGES.map(x => `<button type="button" role="tab" class="stab${x.id === st.id ? ' on' : ''}" data-act="stage" data-id="${x.id}">${esc(x.title)}<small>${esc(x.sub)}</small></button>`).join('')}</div>
     <div class="legend"><span>לחצי על פריט כדי לשנות מצב:</span><span><i class="dot"></i>עוד לא התחלנו</span><span><i class="dot" style="background:#ffe9b8"></i>בתהליך</span><span><i class="dot" style="background:var(--mint)"></i>שולט/ת</span></div>`;
@@ -552,6 +585,7 @@ document.addEventListener('click', e => {
   else if (a === 'png') { exportPng(); }
   else if (a === 'undo') { const s = strokes(b.dataset.d); if (s.length) { s.pop(); touch(m, 'map:' + m.id); drawCanvas(document.querySelector('canvas[data-d="' + b.dataset.d + '"]')); } }
   else if (a === 'clr') { sure(b, 'בטוחה? לחצי שוב כדי לנקות', () => { setP(m, b.dataset.d, []); touch(m, 'map:' + m.id); drawCanvas(document.querySelector('canvas[data-d="' + b.dataset.d + '"]')); }); }
+  else if (a === 'lvl') { const k = b.dataset.lv; m.t2.lv = k; m.t2.w = LVL[k].w.map(x => x[0]); touch(m, 'map:' + m.id); const y = scrollY; renderMap(); scrollTo(0, y); }
   else if (a === 'word') { const w = b.dataset.w; const i = [0, 1, 2].find(k => !m.t2.w[k]); if (i == null) { toast('כבר נבחרו שלוש מילים'); return; } m.t2.w[i] = w; touch(m, 'map:' + m.id); document.querySelector('[data-p="t2.w.' + i + '"]').value = w; }
   else if (a === 'q') { m.t4.q = (m.t4.q ? m.t4.q + ', ' : '') + b.dataset.w; touch(m, 'map:' + m.id); document.querySelector('[data-p="t4.q"]').value = m.t4.q; }
   else if (a === 'delMap') { sure(b, 'בטוחה? לחצי שוב כדי למחוק את המיפוי של ' + (m.name || 'הילד/ה'), () => { m.del = true; touch(m, 'map:' + m.id); S.mapId = null; render(); toast('המיפוי נמחק'); }); }
