@@ -102,6 +102,7 @@ function draw(){ var s=cv.height/H; cx.setTransform(s,0,0,s,0,0); var g=cx.creat
 var tP=0; function loop(t){ var dt=Math.min(.033,(t-(tP||t))/1000); tP=t; step(dt); draw(); requestAnimationFrame(loop) }
 var START='מוּכָנִים לְמִשְׂחַק פִּיצוּץ הַבָּלוֹנִים?', FASTER='זֶה הוֹלֵךְ וְנִהְיֶה מָהִיר יוֹתֵר!', DONE='כָּל הַכָּבוֹד! פּוֹצַצְתֶּם אֶת כָּל הַבָּלוֹנִים!';
 var WARN=SYL?'שִׂימוּ לֵב: אִם תֶּאֶסְפוּ אֶת הַצְּלִיל הַלֹּא נָכוֹן, יֵרְדוּ לָכֶם נְקוּדוֹת!':NUMS?'שִׂימוּ לֵב: אִם תֶּאֶסְפוּ אֶת הַסִּפְרָה הַלֹּא נְכוֹנָה, יֵרְדוּ לָכֶם נְקוּדוֹת!':'שִׂימוּ לֵב: אִם תֶּאֶסְפוּ אֶת הָאוֹת הַלֹּא נְכוֹנָה, יֵרְדוּ לָכֶם נְקוּדוֹת!'; /* חן, 30.10.26: הנחיית אזהרה, 3 הקלטות */
+/* חן, 30.10.26: בנגיעה הראשונה (לא על כפתור) נשמעת הפתיחה */ window.WG_FIRST_INS=function(){ if(state==='intro') say(START) };
 function intro(){ state='intro'; ov.classList.remove('hidden'); card.innerHTML='<h2>'+START+'</h2>'+'<p style="margin:4px 0 14px;font-size:clamp(15px,4.2vw,20px);font-weight:700;color:#B8236B;line-height:1.5">'+WARN+'</p>'+'<button class="btn" id="go">הַתְחִילוּ</button>'; document.getElementById('go').onclick=function(){ var g=this; if(g.disabled) return; g.disabled=true; ac(); say(WARN,function(){ ov.classList.add('hidden'); start() }) } }
 function start(){ saidF=0; score=0; balls=[]; dots(); state='play'; nextT=0; target=SET[0]; fill(); say(START,pick) }
 function win(){ state='win'; for(var i=0;i<8;i++) (function(i){ setTimeout(function(){ burst(rnd(W*.15,W*.85),rnd(H*.15,H*.6),COLS[Math.floor(Math.random()*6)]); var f=[523,659,784,988,1047,1319,1568,2093][i]; tone(f,f*1.003,.5,'sine',.07) },i*140) })(i); /* חן, 29.10.26: בסיום צלצולים נעימים, לא פיצוצים */
@@ -113,6 +114,6 @@ window.__P=function(){ return {state:state,score:score,target:target,balls:balls
 fit(); dots(); intro(); requestAnimationFrame(loop);
 })();
 </script>
-<script src="../end-fs.js"></script>
+<script src="../end-fs.js"></script><script src="../first-ins.js"></script>
 </body>
 </html>

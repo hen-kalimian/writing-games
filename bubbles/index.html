@@ -116,6 +116,7 @@ var down=null; cv.addEventListener('pointerdown',function(e){ e.preventDefault()
 cv.addEventListener('pointermove',function(e){ if(aim) aim=rel(e) });
 cv.addEventListener('pointerup',function(e){ var p=rel(e), drag=down&&Math.hypot(p.x-down.x,p.y-down.y)>14; aim=null; down=null; shoot(p.x,p.y,drag) }); /* נגיעה = הבועה שנגעו בה; גרירה = הכיוון קובע */
 var START='יוֹרִים עַל אוֹתָהּ אוֹת', DONE='כָּל הַכָּבוֹד! פּוֹצַצְתֶּם אֶת כָּל הַבּוּעוֹת!';
+/* חן, 30.10.26: בנגיעה הראשונה (לא על כפתור) נשמעת הפתיחה */ window.WG_FIRST_INS=function(){ if(state==='intro') say(START) };
 function intro(){ state='intro'; ov.classList.remove('hidden'); card.innerHTML='<h2>'+START+'</h2><div class="row"><button class="btn soft" id="e">בועות גדולות</button><button class="btn" id="h">בועות קטנות</button></div>';
   document.getElementById('e').onclick=function(){ easy=true; begin() }; document.getElementById('h').onclick=function(){ easy=false; begin() } }
 function begin(){ ac(); ov.classList.add('hidden'); build(); popped=0; state='play'; nxt=null; say(START,load) }
@@ -128,6 +129,6 @@ window.__B=function(){ var g=[]; grid.forEach(function(row,r){ row&&row.forEach(
 fit(); intro(); requestAnimationFrame(loop);
 })();
 </script>
-<script src="../end-fs.js"></script>
+<script src="../end-fs.js"></script><script src="../first-ins.js"></script>
 </body>
 </html>

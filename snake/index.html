@@ -122,6 +122,7 @@ addEventListener('keydown',function(e){ var m={ArrowLeft:[-1,0],ArrowRight:[1,0]
 /* ---------- מסכים ---------- */
 var WARN=SYL?'שִׂימוּ לֵב: אִם תֶּאֶסְפוּ אֶת הַצְּלִיל הַלֹּא נָכוֹן, יֵרְדוּ לָכֶם נְקוּדוֹת!':NUMS?'שִׂימוּ לֵב: אִם תֶּאֶסְפוּ אֶת הַסִּפְרָה הַלֹּא נְכוֹנָה, יֵרְדוּ לָכֶם נְקוּדוֹת!':'שִׂימוּ לֵב: אִם תֶּאֶסְפוּ אֶת הָאוֹת הַלֹּא נְכוֹנָה, יֵרְדוּ לָכֶם נְקוּדוֹת!'; /* חן, 30.10.26: הנחיית אזהרה, 3 הקלטות */
 function fixIntro(){ if(W&&W.intro&&!W.__fx){ W.__fx=1; W.intro=W.intro.replace('הָאוֹת',NUMS?'הַסִּפְרָה':SYL?'הַצְּלִיל':'הָאוֹת') } } /* חן: ספרות = "הספרה", צלילים = "הצליל" */
+/* חן, 30.10.26: בנגיעה הראשונה (לא על כפתור) נשמעת הפתיחה */ window.WG_FIRST_INS=function(){ if(state==='intro'&&W) say(W.intro) };
 function intro(){ fixIntro(); state='intro'; ov.classList.remove('hidden'); card.innerHTML=(W.hero?'<img src="../jump/art/'+W.hero+'.png" alt="">':'')+'<h2>'+W.intro+'</h2>'+'<p style="margin:4px 0 14px;font-size:clamp(15px,4.2vw,20px);font-weight:700;color:#B8236B;line-height:1.5">'+WARN+'</p>'+'<button class="btn" id="go">'+(W.start||'מַתְחִילִים')+'</button>';
   document.getElementById('go').onclick=function(){ var g=this; if(g.disabled) return; g.disabled=true; ac(); say(WARN,function(){ ov.classList.add('hidden'); start() }) } }
 function start(){ fit(); var cy=Math.floor(CH/2); snake=[[3,cy],[2,cy],[1,cy]]; dir=[1,0]; nextDir=null; items=[]; score=0; grow=0; dots(); state='play'; stepT=0; target=SET[Math.floor(Math.random()*SET.length)]; refill(); say(W.intro,function(){ say(nameOf(target)) }) }
@@ -136,6 +137,6 @@ fetch('worlds/'+(Q.get('w')||'meadow')+'.json?v=1').then(function(r){return r.js
   var ks=(W.hero?[W.hero]:[]).concat(W.decor||[]), n=0; ks.forEach(function(k){ var im=new Image(); im.onload=im.onerror=function(){ if(++n>=ks.length){ fit(); snake=[[3,4],[2,4],[1,4]]; dots(); intro(); requestAnimationFrame(loop) } }; im.src='../jump/art/'+k+'.png'; IMG[k]=im }) });
 })();
 </script>
-<script src="../end-fs.js"></script>
+<script src="../end-fs.js"></script><script src="../first-ins.js"></script>
 </body>
 </html>
