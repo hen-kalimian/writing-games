@@ -468,6 +468,6 @@ function play(list){var i=0;function nx(){if(i>=list.length)return;au.src=list[i
 function go(e){if(e){e.preventDefault();e.stopImmediatePropagation()}fetch(HB+'index.json?v='+Math.floor(Date.now()/3e5)).then(function(r){return r.ok?r.json():{}}).catch(function(){return {}}).then(function(h){
   if(h[G]&&h[N])play([HB+G+'.mp3?v='+h[G],HB+N+'.mp3?v='+h[N]]);else play([FB])})}
 function bind(){[].forEach.call(document.querySelectorAll('.sspk'),function(b){b.removeAttribute('onclick');b.onclick=go})}
-if(document.readyState!=='loading')bind();else document.addEventListener('DOMContentLoaded',bind)})()</script><script src="../end-fs.js"></script>
+if(document.readyState!=='loading')bind();else document.addEventListener('DOMContentLoaded',bind)})()</script><script src="../end-fs.js"></script><script src="../first-ins.js"></script>
 </body>
 </html>

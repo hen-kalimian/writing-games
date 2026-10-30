@@ -67,7 +67,10 @@
 (function(){
   var cl=null;
   function fsOn(){ return !!(document.fullscreenElement||document.webkitFullscreenElement) }
-  function tick(){
+  /* חן, 30.10.26: "אין צורך שהמלל מסך מלא יהיה גדול כל כך": אייקון קטן בלבד (בלשונית מסך מלא נשאר "סגירה") */
+  function slim(){ [].forEach.call(document.querySelectorAll('[data-fsb]'),function(b){ if(b.getAttribute('aria-label')!=='מסך מלא') return; var sp=b.querySelector('span'); if(sp) sp.remove();
+    if(b.style.width!=='38px'){ b.style.setProperty('width','38px','important'); b.style.setProperty('min-width','38px','important'); b.style.setProperty('padding','0','important'); b.style.setProperty('border-radius','50%','important') } }) }
+  function tick(){ slim();
     var b=document.querySelector('#fs,[data-fsb]'); if(!b||fsOn()){ if(cl) cl.style.display='none'; return }
     var r=b.getBoundingClientRect(), cs=getComputedStyle(b);
     if(!r.width||cs.display==='none'||cs.visibility==='hidden'){ if(cl) cl.style.display='none'; return }
