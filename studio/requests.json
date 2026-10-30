@@ -1244,5 +1244,159 @@
   "game": "../play/index.html?g=9fbab70c6c004c8eb5576a3f23cc6d85&t=8&m=deck",
   "title": "כתיבת מילים בלוח מחיק",
   "when": "הנחיה במשחק כתיבת המילים"
+ },
+ {
+  "text": "בַּקְבּוּק",
+  "nik": "בַּקְבּוּק",
+  "game": "../play/index.html?g=ldeck_end_letters",
+  "title": "לוטו אות סוגרת",
+  "when": "מילה או שם אות בלוטו האות הסוגרת"
+ },
+ {
+  "text": "קוּף",
+  "nik": "קוּף",
+  "game": "../play/index.html?g=ldeck_end_letters",
+  "title": "לוטו אות סוגרת",
+  "when": "מילה או שם אות בלוטו האות הסוגרת"
+ },
+ {
+  "text": "שִׁין",
+  "nik": "שִׁין",
+  "game": "../play/index.html?g=ldeck_end_letters",
+  "title": "לוטו אות סוגרת",
+  "when": "מילה או שם אות בלוטו האות הסוגרת"
+ },
+ {
+  "text": "בֹּרֶג",
+  "nik": "בֹּרֶג",
+  "game": "../play/index.html?g=ldeck_end_letters",
+  "title": "לוטו אות סוגרת",
+  "when": "מילה או שם אות בלוטו האות הסוגרת"
+ },
+ {
+  "text": "גִּימֶל",
+  "nik": "גִּימֶל",
+  "game": "../play/index.html?g=ldeck_end_letters",
+  "title": "לוטו אות סוגרת",
+  "when": "מילה או שם אות בלוטו האות הסוגרת"
+ },
+ {
+  "text": "פֶּרַח",
+  "nik": "פֶּרַח",
+  "game": "../play/index.html?g=ldeck_end_letters",
+  "title": "לוטו אות סוגרת",
+  "when": "מילה או שם אות בלוטו האות הסוגרת"
+ },
+ {
+  "text": "סוּס",
+  "nik": "סוּס",
+  "game": "../play/index.html?g=ldeck_end_letters",
+  "title": "לוטו אות סוגרת",
+  "when": "מילה או שם אות בלוטו האות הסוגרת"
+ },
+ {
+  "text": "סָמֶךְ",
+  "nik": "סָמֶךְ",
+  "game": "../play/index.html?g=ldeck_end_letters",
+  "title": "לוטו אות סוגרת",
+  "when": "מילה או שם אות בלוטו האות הסוגרת"
+ },
+ {
+  "text": "מַחֲבַת",
+  "nik": "מַחֲבַת",
+  "game": "../play/index.html?g=ldeck_end_letters",
+  "title": "לוטו אות סוגרת",
+  "when": "מילה או שם אות בלוטו האות הסוגרת"
+ },
+ {
+  "text": "תָּו",
+  "nik": "תָּו",
+  "game": "../play/index.html?g=ldeck_end_letters",
+  "title": "לוטו אות סוגרת",
+  "when": "מילה או שם אות בלוטו האות הסוגרת"
+ },
+ {
+  "text": "מַנְעוּל",
+  "nik": "מַנְעוּל",
+  "game": "../play/index.html?g=ldeck_end_letters",
+  "title": "לוטו אות סוגרת",
+  "when": "מילה או שם אות בלוטו האות הסוגרת"
+ },
+ {
+  "text": "לָמֶד",
+  "nik": "לָמֶד",
+  "game": "../play/index.html?g=ldeck_end_letters",
+  "title": "לוטו אות סוגרת",
+  "when": "מילה או שם אות בלוטו האות הסוגרת"
+ },
+ {
+  "text": "עֵז",
+  "nik": "עֵז",
+  "game": "../play/index.html?g=ldeck_end_letters",
+  "title": "לוטו אות סוגרת",
+  "when": "מילה או שם אות בלוטו האות הסוגרת"
+ },
+ {
+  "text": "זַיִן",
+  "nik": "זַיִן",
+  "game": "../play/index.html?g=ldeck_end_letters",
+  "title": "לוטו אות סוגרת",
+  "when": "מילה או שם אות בלוטו האות הסוגרת"
+ },
+ {
+  "text": "וֶרֶד",
+  "nik": "וֶרֶד",
+  "game": "../play/index.html?g=ldeck_end_letters",
+  "title": "לוטו אות סוגרת",
+  "when": "מילה או שם אות בלוטו האות הסוגרת"
+ },
+ {
+  "text": "דָּלֶת",
+  "nik": "דָּלֶת",
+  "game": "../play/index.html?g=ldeck_end_letters",
+  "title": "לוטו אות סוגרת",
+  "when": "מילה או שם אות בלוטו האות הסוגרת"
+ },
+ {
+  "text": "רַמְזוֹר",
+  "nik": "רַמְזוֹר",
+  "game": "../play/index.html?g=ldeck_end_letters",
+  "title": "לוטו אות סוגרת",
+  "when": "מילה או שם אות בלוטו האות הסוגרת"
+ },
+ {
+  "text": "רֵישׁ",
+  "nik": "רֵישׁ",
+  "game": "../play/index.html?g=ldeck_end_letters",
+  "title": "לוטו אות סוגרת",
+  "when": "מילה או שם אות בלוטו האות הסוגרת"
+ },
+ {
+  "text": "בֵּית",
+  "nik": "בֵּית",
+  "game": "../play/index.html?g=ldeck_end_letters",
+  "title": "לוטו אות סוגרת",
+  "when": "מילה או שם אות בלוטו האות הסוגרת"
+ },
+ {
+  "text": "מִשְׁקָפַיִים",
+  "nik": "מִשְׁקָפַיִים",
+  "game": "../play/index.html?g=ldeck_end_letters",
+  "title": "לוטו אות סוגרת",
+  "when": "מילה או שם אות בלוטו האות הסוגרת"
+ },
+ {
+  "text": "מֵם סוֹפִית",
+  "nik": "מֵם סוֹפִית",
+  "game": "../play/index.html?g=ldeck_end_letters",
+  "title": "לוטו אות סוגרת",
+  "when": "מילה או שם אות בלוטו האות הסוגרת"
+ },
+ {
+  "text": "הפכו קלף והניחו על התמונה",
+  "nik": "הפכו קלף והניחו על התמונה",
+  "game": "../play/index.html?g=ldeck_tsere_segol",
+  "title": "לוטו חפיסת קלפים",
+  "when": "הנחיה בכל משחקי הלוטו"
  }
 ]
