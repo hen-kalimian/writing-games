@@ -1,0 +1,273 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>אולפן ההקלטות של חן</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* אולפן ההקלטות (חן, 21.10.26): חן מקליטה בקול שלה הנחיות, מילים ועידוד, וההקלטות נכנסות למשחקים במקום הקול הממוחשב */
+:root{--mint:#CDEFE2;--mint-deep:#7CC9B0;--mint-wash:#EEF9F5;--sky:#BFE3F4;--sky-deep:#6FAFD2;--sky-wash:#EFF8FD;--pink:#F9D4DF;--pink-deep:#E98FAB;--pink-wash:#FDF0F4;--rose:#B8236B;--ink:#4B5B69;--muted:#7A8995;--bg:#FBFDFE}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink);font-family:Rubik,Arial,sans-serif}
+body{padding:0 16px 60px}
+header{max-width:760px;margin:0 auto;padding:22px 0 8px;text-align:center}
+h1{margin:0;font-size:26px;color:var(--rose)}
+.sub{margin:6px 0 0;color:var(--muted);font-size:15px;line-height:1.5}
+.bar{height:12px;border-radius:8px;background:var(--pink-wash);border:1.5px solid var(--pink);overflow:hidden;margin:14px auto 4px;max-width:420px}
+.bar i{display:block;height:100%;background:var(--pink-deep);width:0;transition:width .4s}
+.cnt{font-size:14px;color:var(--muted)}
+.tabs{display:flex;gap:8px;justify-content:center;margin:16px auto 6px;flex-wrap:wrap}
+.tabs button{font:600 15px Rubik,Arial;border:2px solid var(--pink);background:#fff;color:var(--ink);border-radius:22px;padding:9px 16px;cursor:pointer}
+.tabs button.on{background:var(--pink);border-color:var(--pink-deep);color:var(--rose)}
+main{max-width:760px;margin:0 auto}
+.secnote{text-align:center;color:var(--muted);font-size:14px;margin:4px 0 14px;line-height:1.5}
+.item{background:#fff;border:2px solid var(--pink);border-radius:20px;padding:16px;margin:0 0 14px;box-shadow:0 3px 10px rgba(233,143,171,.12)}
+.item.done{border-color:var(--mint-deep);background:linear-gradient(#fff,var(--mint-wash))}
+.item.sent{border-color:var(--sky-deep)}
+.nik{font-size:30px;line-height:1.55;font-weight:500;text-align:center;margin:2px 0 8px;color:#3b4855}
+.when{font-size:14px;color:var(--muted);text-align:center;margin:0 0 10px;line-height:1.5}
+.games{display:flex;gap:8px;overflow-x:auto;padding:4px 2px 8px;scrollbar-width:thin}
+.g{flex:0 0 auto;width:96px;border:1.5px solid var(--sky);border-radius:12px;background:var(--sky-wash);padding:4px;cursor:pointer;font:500 11px Rubik,Arial;color:var(--ink);text-align:center}
+.g img{display:block;width:100%;height:120px;object-fit:cover;object-position:top;border-radius:8px;background:#fff}
+.g span{display:block;margin-top:3px;line-height:1.25;max-height:2.5em;overflow:hidden}
+.row{display:flex;gap:10px;justify-content:center;align-items:center;flex-wrap:wrap;margin-top:10px}
+.btn{font:600 16px Rubik,Arial;border-radius:26px;padding:11px 18px;border:2px solid var(--pink-deep);background:#fff;color:var(--rose);cursor:pointer;display:inline-flex;align-items:center;gap:8px;min-height:46px}
+.btn.rec{background:var(--pink-deep);color:#fff}
+.btn.rec.live{background:#d9486f;border-color:#d9486f;animation:pulse 1s infinite}
+.btn.save{background:var(--mint-deep);border-color:var(--mint-deep);color:#fff}
+.btn.soft{border-color:var(--sky-deep);color:#2f6f93}
+.btn[disabled]{opacity:.45;cursor:default}
+@keyframes pulse{50%{box-shadow:0 0 0 8px rgba(217,72,111,.18)}}
+.dot{width:12px;height:12px;border-radius:50%;background:currentColor;display:inline-block}
+.st{text-align:center;font-size:14px;margin-top:8px;min-height:20px;color:var(--muted)}
+.st.ok{color:#2f8f6f;font-weight:600}.st.err{color:#c0392b;font-weight:600}
+.lock{max-width:520px;margin:40px auto;text-align:center;background:#fff;border:2px solid var(--pink);border-radius:20px;padding:24px;font-size:17px;line-height:1.6}
+#modal{position:fixed;inset:0;background:rgba(40,50,60,.55);display:none;align-items:center;justify-content:center;z-index:20;padding:12px}
+#modal.on{display:flex}
+#modal .box{background:#fff;border-radius:20px;width:min(560px,100%);height:min(86vh,820px);display:flex;flex-direction:column;overflow:hidden;border:2px solid var(--pink)}
+#modal .top{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:8px 12px;border-bottom:1.5px solid var(--pink);font-weight:600;font-size:15px}
+#modal iframe{flex:1;border:0;width:100%}
+#modal .x{font:600 15px Rubik,Arial;border:2px solid var(--pink-deep);background:#fff;color:var(--rose);border-radius:20px;padding:6px 14px;cursor:pointer}
+.grp{background:#fff;border:2px solid var(--pink);border-radius:20px;padding:12px 12px 4px;margin:0 0 16px}
+.grp h3{margin:2px 0 6px;text-align:center;font-size:30px;color:var(--rose);letter-spacing:6px}
+.item.srow{border:1.5px solid var(--pink);border-radius:14px;padding:10px;margin:0 0 8px;box-shadow:none}
+.srow .nik{font-size:32px;margin:0;letter-spacing:2px}
+.srow .hint{text-align:center;font-size:13px;color:var(--muted);direction:ltr}
+.srow .row{margin-top:6px;gap:6px}.srow .btn{font-size:14px;padding:8px 12px;min-height:40px}
+.item.mini{display:flex;align-items:center;gap:8px;padding:7px 12px;margin:0 0 6px;border:1.5px solid var(--mint-deep);border-radius:12px;background:var(--mint-wash);box-shadow:none;cursor:pointer;font-size:15px;line-height:1.4}
+.item.mini .v{flex:none;width:20px;height:20px;border-radius:50%;background:var(--mint-deep);color:#fff;display:inline-flex;align-items:center;justify-content:center}
+.item.mini .v svg{width:13px;height:13px}
+.item.mini .mt{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.item.mini .mx{flex:none;font-size:12px;color:var(--muted)}
+.mini-game{width:100%;height:420px;border:2px solid var(--sky);border-radius:14px;background:#fff;display:block;margin:0 0 10px}
+.srow .pimg{display:block;margin:0 auto 4px;height:84px;max-width:140px;object-fit:contain;border-radius:10px;background:#fff}
+.grp .gname{text-align:center;font-weight:700;color:var(--rose);margin:0 0 6px}
+.item.mini .pl{flex:none;width:30px;height:30px;border-radius:50%;border:2px solid var(--mint-deep);background:#fff;color:#2f8f6f;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;padding:0}
+.tip{max-width:760px;margin:0 auto 12px;background:var(--sky-wash);border:1.5px solid var(--sky);border-radius:14px;padding:10px 14px;font-size:14px;line-height:1.55}
+
+/* 28.10.26: ריבועים זה ליד זה, הכפתור נשאר במקום, קבוצות של 10 */
+.tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px;margin:0 0 10px}
+.tile{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:space-between;gap:4px;min-height:150px;padding:8px 8px 6px;margin:0;border:2px solid var(--pink);border-radius:16px;background:#fff;box-shadow:none}
+.tile.wide{grid-column:span 2;min-height:150px}
+.tile.done{border-color:var(--mint-deep);background:linear-gradient(#fff,var(--mint-wash))}
+.tile.sent{border-color:var(--sky-deep)}
+.tile .nik{font-size:19px;line-height:1.4;margin:0;flex:1;display:flex;align-items:center;justify-content:center;max-height:7.2em;overflow:hidden;letter-spacing:0}
+.tile.wide .nik{font-size:17px}
+.tile .pimg{height:64px;margin:0 auto}
+.tile .st{min-height:26px;margin:0;font-size:12px;line-height:1.25;display:flex;align-items:center;justify-content:center}
+.tile .trow{display:flex;flex-direction:column;gap:5px;width:100%}
+.tile .trow .btn{width:100%;justify-content:center;font-size:14px;padding:4px 8px;min-height:34px;border-radius:20px}
+.tile .trow .btn.rec{min-height:42px;font-size:16px}
+.tile .trow .two{display:flex;gap:5px}.tile .trow .two .btn{flex:1;padding:6px 4px}
+.tile .gi{position:absolute;top:6px;left:6px;min-width:26px;height:26px;border-radius:13px;border:1.5px solid var(--sky-deep);background:var(--sky-wash);color:#2f6f93;font:600 12px Rubik,Arial;cursor:pointer;padding:0 6px}
+.tile .v{position:absolute;top:6px;right:6px;width:20px;height:20px;border-radius:50%;background:var(--mint-deep);color:#fff;display:inline-flex;align-items:center;justify-content:center}
+.tile .v svg{width:13px;height:13px}
+.batch{margin:0 0 6px}
+.bhead{font-size:13px;color:var(--muted);margin:10px 4px 6px;display:flex;align-items:center;gap:8px}
+.bhead:after{content:"";flex:1;border-top:2px dashed var(--pink)}
+.bmini{display:flex;align-items:center;gap:8px;padding:9px 12px;margin:8px 0;border:1.5px solid var(--mint-deep);border-radius:12px;background:var(--mint-wash);cursor:pointer;font-size:15px}
+.bmini .v{flex:none;width:20px;height:20px;border-radius:50%;background:var(--mint-deep);color:#fff;display:inline-flex;align-items:center;justify-content:center}
+.bmini .v svg{width:13px;height:13px}
+.bmini .mx{margin-inline-start:auto;font-size:12px;color:var(--muted)}
+#glm{position:fixed;inset:0;background:rgba(40,50,60,.55);display:none;align-items:center;justify-content:center;z-index:21;padding:12px}
+#glm.on{display:flex}
+#glm .box{background:#fff;border-radius:20px;width:min(560px,100%);max-height:86vh;display:flex;flex-direction:column;overflow:hidden;border:2px solid var(--pink)}
+#glm .top{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:8px 12px;border-bottom:1.5px solid var(--pink);font-weight:600;font-size:15px}
+#glm .x{font:600 15px Rubik,Arial;border:2px solid var(--pink-deep);background:#fff;color:var(--rose);border-radius:20px;padding:6px 14px;cursor:pointer}
+#glm .glist{display:flex;flex-wrap:wrap;gap:8px;padding:12px;overflow:auto;justify-content:center}
+#glm .g span{max-height:none}
+.grp.pk h3{font-size:20px;letter-spacing:0}
+.tabs{gap:6px;margin:10px auto 4px}.tabs button{font-size:13px;padding:6px 11px;border-width:1.5px}
+.sub{font-size:14px;margin:4px 0 0}.tip{font-size:13px;padding:7px 12px;margin-bottom:8px}header{padding:14px 0 4px}h1{font-size:22px}
+.tile .gi{position:static;min-width:0;height:auto;border-radius:14px;padding:3px 10px;font:600 12px Rubik,Arial;border:1.5px solid var(--sky-deep);background:var(--sky-wash);color:#2f6f93;cursor:pointer;margin:0}
+.tile .st.ok:before,.tile .st.sv:before{content:"✓ ";font-weight:800}
+.tile .st.sv{color:#2f6f93}
+.tile{min-height:170px}.tile.wide{min-height:170px}
+.bhead .bclose{font:600 12px Rubik,Arial;border:1.5px solid var(--mint-deep);background:var(--mint-wash);color:#2f8f6f;border-radius:14px;padding:3px 12px;cursor:pointer}
+.bhead .bclose[hidden]{display:none}
+.g.pk img{display:block;width:100%;height:120px;object-fit:cover;object-position:top}
+</style>
+</head>
+<body>
+<header>
+  <h1>אולפן ההקלטות של חן</h1>
+  <p class="sub">לחצי "הקלטה", קראי את השורה ולחצי "עצירה". ההקלטה נשמרת לבד אחרי 3 שניות ונכנסת למשחקים, ושום דבר לא זז ולא נסגר. רוצה לנסות שוב? לחצי "מחדש". כל 10 ריבועים שהוקלטו נסגרים יחד לשורה אחת. המספר בפינת הריבוע הוא בכמה משחקים זה נשמע, ולחיצה עליו מראה אותם.</p>
+  <div class="bar"><i id="bar"></i></div>
+  <div class="cnt" id="cnt"></div>
+</header>
+<div class="tip" id="tip">טיפ להקלטה נקייה: חדר שקט, הטלפון במרחק כף יד מהפה, ושנייה של שקט לפני ואחרי שמדברים (אני חותכת את השקט לבד).</div>
+<nav class="tabs" id="tabs"></nav>
+<main id="main"></main>
+<div id="modal"><div class="box"><div class="top"><span id="mt"></span><span><button class="x" id="mo" type="button">פתיחה בלשונית</button> <button class="x" id="mx" type="button">סגירה</button></span></div><iframe id="mf" allow="autoplay; fullscreen"></iframe></div></div>
+<div id="glm"><div class="box"><div class="top"><span id="glt"></span><button class="x" id="glx" type="button">סגירה</button></div><div class="glist" id="glb"></div></div></div>
+<script type="module">
+const $ = id => document.getElementById(id);
+const CLIENT_ID = '058da38e-a911-4b84-876e-e5efedfa9ae9', COL = 'StudioRecordings';
+const SENT = 'hen-studio-sent', KEYS = 'hen-studio-k';
+const store = { get(k, d) { try { return JSON.parse(localStorage.getItem(k)) ?? d } catch (e) { return d } }, set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)) } catch (e) {} } };
+// הקישור של חן נושא מפתח אישי, כך שרק ההקלטות שלה נכנסות למשחקים
+let secret = (location.hash.match(/k=([\w-]+)/) || [])[1] || store.get(KEYS, '');
+if (secret) { store.set(KEYS, secret); if (location.hash) history.replaceState(null, '', location.pathname + location.search); }
+if (!secret) { $('main').innerHTML = '<div class="lock">האולפן נפתח רק מהקישור האישי ששלחתי לך.</div>'; $('tabs').remove(); $('tip').remove(); throw 0; }
+
+const SECS = [{ id: 'new', name: 'חדש להקלטה', note: 'מילים והנחיות שמשחקים חדשים צריכים. עד שתקליטי, נשמע קול ממוחשב, ואחרי ההקלטה הקול שלך נכנס לבד.' },
+  { id: 'packgen', name: 'משפטים כלליים לכל החבילות', note: 'משפטים שחוזרים בכמה חבילות תוכן (מתחילים, לשלב הבא, אספו את הכול). מקליטים פעם אחת, וההקלטה נכנסת לכל החבילות, גם לחבילות הבאות.' },
+  { id: 'packs', name: 'משחקי חבילות התוכן', note: 'כל מה שנשמע במשחקים של חבילות התוכן, לפי תאריך החבילה: מהפורסמות ועד העתידיות (חבילה חדשה נכנסת לכאן אוטומטית כשהיא נבנית). כל קבוצה היא חבילה אחת.' },
+  { id: 'kb', name: 'הנחיות במשחקים', note: 'כל ההנחיות הקצרות במשחקים, קוראים בקלות קודם. כל הנחיה נכנסת לכל המשחקים שמופיעים מתחתיה (גם למשחקים נוספים עם אותה הנחיה). לחיצה על משחק פותחת אותו.' },
+  { id: 'syl', name: 'הברות לפי ניקוד', note: 'הקלטה אחת לכל צליל. כל מה שבשורה נשמע אותו דבר (קָמָץ ופַּתָּח, כּ ו-ק), ולכן מספיקה הקלטה אחת לכולם. במשחקים, לחיצה על אריח עם ההברה משמיעה את הקול שלך. המשחקים שבהם יש הברות של האות מופיעים מתחת לאות.' },
+  { id: 'words', name: 'מילים מהשאלות', note: 'המילים שמופיעות בשאלות של קוראים בקלות. ליד תמונה יופיע רמקול שמשמיע את המילה בקול שלך. מילה שהילד צריך לקרוא בעצמו נשמעת רק אחרי שענה נכון, כדי שלא יגלה את התשובה לפני שקרא.' },
+  { id: 'qs', name: 'שאלות במשחקים', note: 'השאלה הגדולה שמופיעה בראש המשחק, למשל "איפה החיות?". כל שאלה נכנסת לכל המשחקים שמתחתיה. לחיצה על משחק פותחת אותו.' },
+  { id: 'pics', name: 'מילים של תמונות', note: 'מילים שמופיעות במשחקים רק כתמונה. ליד כל מילה רואים את התמונה, ובראש כל קבוצה יש את המשחק עצמו בקטן, אפשר לשחק בו. במשחקי ספירת הצלילים יש גם שורה של המילה מחולקת להברות, למשל פָּ - רָה.' },
+  { id: 'answers', name: 'מילים בתשובות', note: 'המילים שבאפשרויות התשובה, מסודרות לפי משחק. כל מילה נשמעת בקול שלך אחרי שהילד בחר בה נכון. אפשר להקליט בהדרגה.' },
+  { id: 'names', name: 'שמות האותיות והמספרים', note: 'שם האות נשמע במשחק "מתחו קו אל האות הזהה" בכל נגיעה ובכל התאמה. עד שתקליטי, נשמע קול ממוחשב.' },
+  { id: 'more', name: 'הנחיות בכתיבה, צביעה, כביש וטייני טפ', note: 'ההנחיות הקצרות של משחקי הכתיבה, הצביעה, הכביש, הפאזלים וטייני טפ. בכתיבה ובצביעה שם האות או המספר נשמע אחרי ההנחיה, מהלשונית שמות האותיות והמספרים.' },
+  { id: 'all', name: 'עידוד וצלילים', note: 'מילים וצלילים שנשמעים בכל המשחקים. כל הכבוד, נסו שוב, סיום משחק וגרירת פריטים. עד שתקליטי, המשחקים נשארים כמו היום.' }];
+let D, HEN = {}, sent = store.get(SENT, {}), sec = store.get('hen-studio-sec', 'packs');
+const [d, h] = await Promise.all([fetch('items.json?v=' + Date.now()).then(r => r.json()), fetch('../play/assets/hen/index.json?v=' + Date.now()).then(r => r.ok ? r.json() : {}).catch(() => ({}))]);
+D = d; HEN = h;
+const G = Object.fromEntries(D.games.map(g => [g.n, g]));
+
+function status(it) { return HEN[it.k] && (!sent[it.id] || HEN[it.k] >= sent[it.id]) ? 'done' : sent[it.id] ? 'sent' : ''; }
+function progress() { const n = D.items.filter(i => status(i)).length; $('bar').style.width = (100 * n / D.items.length) + '%'; $('cnt').textContent = 'הוקלטו ' + n + ' מתוך ' + D.items.length; }
+function tabs() { $('tabs').innerHTML = SECS.map(s => { const all = D.items.filter(i => i.sec === s.id), n = all.filter(i => status(i)).length; return '<button type="button" data-s="' + s.id + '" class="' + (s.id === sec ? 'on' : '') + '">' + s.name + ' (' + n + '/' + all.length + ')</button>' }).join(''); }
+const esc = t => String(t).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const opened = {}, saved = {};
+const canPlay = it => !!((takes && takes[it.id]) || saved[it.id] || HEN[it.k]);
+const CHECK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l5 5L19 7"/></svg>';
+const PLAY = '<svg viewBox="0 0 24 24" width="13" height="13"><path d="M7 5l12 7-12 7z" fill="currentColor"/></svg>';
+function tile(it) {
+  const st = status(it), gs = (it.games || []).filter(n => G[n]), long = (it.nik || '').length > 34;
+  const txt = st === 'done' ? 'בקול שלך במשחקים' : st === 'sent' ? 'נשמר, ייכנס בעוד כמה דקות' : '';
+  return '<section class="item tile ' + st + (long ? ' wide' : '') + '" id="' + it.id + '">' +
+    (it.img ? '<img class="pimg" loading="lazy" src="../play/assets/' + it.img + '" alt="">' : '') +
+    '<div class="nik">' + esc(it.nik) + '</div>' +
+    (gs.length ? '<button type="button" class="gi" data-gl="' + it.id + '">איפה זה נשמע? (' + gs.length + ')</button>' : '') +
+    '<div class="st ' + (st === 'done' ? 'ok' : st === 'sent' ? 'sv' : '') + '">' + txt + '</div>' +
+    '<div class="trow"><button type="button" class="btn rec" data-a="rec"><span class="dot"></span><span>' + (st ? 'מחדש' : 'הקלטה') + '</span></button>' +
+    '<div class="two"><button type="button" class="btn soft" data-a="play"' + (canPlay(it) ? '' : ' disabled') + '>' + PLAY + '<span>שמעי</span></button>' +
+    (it.sec === 'kb' && !st ? '<button type="button" class="btn soft" data-a="tts" title="הקול הממוחשב שיש היום">ממוחשב</button>' : '') + '</div></div></section>';
+}
+const BATCH = {}, openedB = {}, BN = 10;
+function batchHtml(bid) {
+  const B = BATCH[bid], its = B.ids.map(id => D.items.find(i => i.id === id)), all = its.every(i => status(i));
+  if (all && !openedB[bid]) return '<div class="batch" id="' + bid + '" data-b="' + bid + '"><div class="bmini" data-bopen="' + bid + '" title="לחיצה פותחת את הקבוצה"><span class="v">' + CHECK + '</span><span>' + esc(B.label) + ': ' + its.length + ' מתוך ' + its.length + ' הוקלטו</span><span class="mx">לחיצה פותחת</span></div></div>';
+  return '<div class="batch" id="' + bid + '" data-b="' + bid + '"><div class="bhead"><span>' + esc(B.label) + ' · <b class="bcnt">' + its.filter(i => status(i)).length + ' מתוך ' + its.length + ' הוקלטו</b>' + (all ? '' : ' · נסגרת לבד כשכולן מוקלטות') + '</span><button type="button" class="bclose" data-bclose="' + bid + '"' + (all ? '' : ' hidden') + '>סגירת הקבוצה</button></div><div class="tiles">' + its.map(tile).join('') + '</div></div>';
+}
+function batches(key, items) {
+  let h = '';
+  for (let i = 0; i < items.length; i += BN) {
+    const bid = 'b_' + key.replace(/\W/g, '') + '_' + (i / BN), l = items.slice(i, i + BN);
+    BATCH[bid] = { ids: l.map(x => x.id), label: 'קבוצה ' + (i / BN + 1) + ' (' + (i + 1) + '-' + (i + l.length) + ')' };
+    h += batchHtml(bid);
+  }
+  return h;
+}
+function gamesRow(l) { const gs = [...new Set(l.flatMap(i => i.games || []))].map(n => G[n]).filter(Boolean); return gs.length ? '<div class="when">מופיע ב-' + gs.length + ' משחקים</div><div class="games">' + gs.map(g => '<button type="button" class="g" data-g="' + g.n + '"><img loading="lazy" src="' + (g.th || 'th2/' + g.n + '.jpg') + '" alt=""><span>' + esc(g.title) + '</span></button>').join('') + '</div>' : ''; }
+function groupBy(sec, keyf) { const by = new Map(); D.items.filter(i => i.sec === sec).forEach(i => { const k = keyf(i); if (!by.has(k)) by.set(k, []); by.get(k).push(i); }); return [...by.entries()]; }
+function sylHtml() { return groupBy('syl', i => i.grp).map(([k, l]) => '<div class="grp"><h3>' + esc(l[0].grpName) + '</h3>' + gamesRow(l) + batches('syl' + k, l) + '</div>').join(''); }
+function packsHtml() { return groupBy('packs', i => i.grp).map(([k, l]) => '<div class="grp pk"><h3>' + esc(l[0].grpName) + '</h3>' + gamesRow(l) + batches('pk' + k, l) + '</div>').join(''); }
+function groupHtml(sec) {
+  return groupBy(sec, i => (i.games || [])[0]).map(([n, l]) => { const g = G[n]; const gu = g && (g.u || '../play/index.html?' + g.q); return '<div class="grp">' + (g ? '<div class="gname">' + esc(g.title) + '</div><iframe class="mini-game" loading="lazy" src="' + gu + '" title="' + esc(g.title) + '"></iframe>' : '') + batches(sec + n, l) + '</div>'; }).join('');
+}
+function render() { tabs(); progress(); const s = SECS.find(x => x.id === sec) || SECS[0]; $('main').innerHTML = '<p class="secnote">' + s.note + '</p>' + (s.id === 'syl' ? sylHtml() : s.id === 'packs' ? packsHtml() : s.id === 'answers' || s.id === 'pics' ? groupHtml(s.id) : batches(s.id, D.items.filter(i => i.sec === s.id))); }
+function busyBatch(bid) { const el = document.getElementById(bid); return !!(el && el.querySelector('.btn.rec.live')) || BATCH[bid].ids.some(id => auto[id] || takes[id]); }
+// כל כמה שניות: קבוצה שהושלמה נסגרת (אלא אם פתחת אותה בכוונה), ובקבוצה פתוחה שהושלמה מופיע כפתור "סגירת הקבוצה"
+function syncBatches() { Object.keys(BATCH).forEach(bid => { const el = document.getElementById(bid); if (!el) return; const done = BATCH[bid].ids.every(id => status(D.items.find(i => i.id === id))); const cb = el.querySelector('.bclose'); if (cb) cb.hidden = !done; const bc = el.querySelector('.bcnt'); if (bc) bc.textContent = BATCH[bid].ids.filter(id => status(D.items.find(i => i.id === id))).length + ' מתוך ' + BATCH[bid].ids.length + ' הוקלטו'; if (done && !openedB[bid] && !busyBatch(bid)) collapseBatch(bid); }); }
+// סוגרים קבוצה שהושלמה בלי להזיז את מה שמתחתיה: מחשבים מחדש את המיקום כדי שכפתור ההקלטה ישאר בדיוק איפה שהוא
+function collapseBatch(bid) {
+  const el = document.getElementById(bid); if (!el || openedB[bid] || !BATCH[bid]) return;
+  if (!BATCH[bid].ids.every(id => status(D.items.find(i => i.id === id)))) return;
+  const live = document.querySelector('.btn.rec.live'), anchor = (live && live.closest('.tile')) || el.nextElementSibling || el.parentElement.nextElementSibling;
+  const y0 = anchor ? anchor.getBoundingClientRect().top : 0;
+  el.outerHTML = batchHtml(bid);
+  if (anchor && anchor.isConnected) scrollBy(0, anchor.getBoundingClientRect().top - y0);
+}
+render();
+
+// ===== הקלטה =====
+var rec = null, chunks = [], recItem = null, takes = {}, stream = null, player = new Audio(), t0 = 0, tmr = 0;
+const MIME = ['audio/mp4', 'audio/webm;codecs=opus', 'audio/webm', 'audio/ogg;codecs=opus'].find(m => window.MediaRecorder && MediaRecorder.isTypeSupported(m)) || '';
+function setSt(id, msg, cls) { const e = document.querySelector('#' + id + ' .st'); if (e) { e.className = 'st ' + (cls || ''); e.textContent = msg; } }
+const auto = {};
+async function startRec(id) {
+  if (rec) { stopRec(); if (recItem === id) return; }
+  if (auto[id]) { clearInterval(auto[id]); delete auto[id]; }
+  try { stream = stream && stream.active ? stream : await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: false, noiseSuppression: true, autoGainControl: true, channelCount: 1 } }); }
+  catch (e) { setSt(id, 'צריך לאשר לדפדפן להשתמש במיקרופון, ואז ללחוץ שוב על הקלטה', 'err'); return; }
+  player.pause(); chunks = []; recItem = id;
+  rec = new MediaRecorder(stream, MIME ? { mimeType: MIME, audioBitsPerSecond: 128000 } : undefined);
+  rec.ondataavailable = e => e.data.size && chunks.push(e.data);
+  rec.onstop = () => { const b = new Blob(chunks, { type: rec.mimeType || MIME || 'audio/mp4' }); takes[id] = b; const s = document.getElementById(id); const pb = s && s.querySelector('[data-a=play]'); if (pb) pb.disabled = false; let left = 3; const msg = n => 'נשמר בעוד ' + n + '... או "מחדש"'; setSt(id, msg(left)); auto[id] = setInterval(() => { left--; if (left > 0) setSt(id, msg(left)); else { clearInterval(auto[id]); delete auto[id]; save(id); } }, 1000); rec = null; };
+  rec.start(); t0 = Date.now();
+  const s = document.getElementById(id), b = s.querySelector('[data-a=rec]'); b.classList.add('live'); b.lastChild.textContent = 'עצירה';
+  clearInterval(tmr); tmr = setInterval(() => { const sec = Math.floor((Date.now() - t0) / 1000); setSt(id, 'מקליטה... ' + sec + ' שניות'); if (sec >= 30) stopRec(); }, 250);
+}
+function stopRec() { clearInterval(tmr); if (!rec) return; const s = document.getElementById(recItem); if (s) { const b = s.querySelector('[data-a=rec]'); b.classList.remove('live'); b.lastChild.textContent = 'מחדש'; } try { rec.stop() } catch (e) {} }
+const b64 = blob => new Promise((ok, no) => { const r = new FileReader(); r.onload = () => ok(String(r.result).split(',')[1]); r.onerror = no; r.readAsDataURL(blob); });
+let wix = null;
+async function client() {
+  if (wix) return wix;
+  const [{ createClient, OAuthStrategy }, { items }] = await Promise.all([import('https://esm.sh/@wix/sdk@1.21.16'), import('https://esm.sh/@wix/data@1.0.525')]);
+  wix = createClient({ auth: OAuthStrategy({ clientId: CLIENT_ID }), modules: { items } }); return wix;
+}
+async function save(id) {
+  const it = D.items.find(i => i.id === id), blob = takes[id]; if (!blob) return; delete takes[id];
+  const el0 = () => document.getElementById(id); setSt(id, 'שומרת...');
+  try {
+    const audio = await b64(blob); if (audio.length > 480000) throw new Error('long');
+    const c = await client();
+    for (let tr = 0; ; tr++) { try { await c.items.insert(COL, { title: secret, itemId: id, k: it.k, text: it.nik, mime: blob.type, audio, synced: false }); break; } catch (er) { if (tr >= 2) throw er; setSt(id, 'מנסה לשמור שוב...'); await new Promise(r => setTimeout(r, 1500)); } }
+    sent[id] = Date.now(); store.set(SENT, sent); saved[id] = blob;
+    tabs(); progress(); const s = el0(); if (s) { const bEl = s.closest('.batch'); s.outerHTML = tile(it); if (bEl) { delete openedB[bEl.id]; setTimeout(syncBatches, 900); } }
+  } catch (e) { takes[id] = blob; setSt(id, e.message === 'long' ? 'ההקלטה ארוכה מדי. נסי שוב קצת יותר קצר' : 'השמירה לא הצליחה. בדקי שיש אינטרנט ולחצי שוב על שמירה', 'err'); console.error(e); }
+}
+function play(src) { player.pause(); player.src = src; player.currentTime = 0; player.play().catch(() => {}); }
+document.addEventListener('click', e => {
+  const bc = e.target.closest('[data-bclose]'); if (bc) { delete openedB[bc.dataset.bclose]; collapseBatch(bc.dataset.bclose); return; }
+  const bo = e.target.closest('[data-bopen]'); if (bo) { const bid = bo.dataset.bopen; openedB[bid] = 1; document.getElementById(bid).outerHTML = batchHtml(bid); return; }
+  const t = e.target.closest('button'); if (!t) return;
+  if (t.dataset.s) { stopRec(); sec = t.dataset.s; store.set('hen-studio-sec', sec); render(); scrollTo(0, 0); return; }
+  if (t.dataset.gl) { const it0 = D.items.find(i => i.id === t.dataset.gl); const g1 = (it0.games || []).filter(n => G[n]); if (g1.length === 1) { const g = G[g1[0]]; $('mt').textContent = g.title; const gu = g.u || '../play/index.html?' + g.q; $('mf').src = gu; $('mo').onclick = () => open(gu, '_blank'); $('modal').classList.add('on'); return; } $('glt').textContent = 'נשמע ב: ' + it0.nik; $('glb').innerHTML = (it0.games || []).map(n => G[n]).filter(Boolean).map(g => '<button type="button" class="g" data-g="' + g.n + '">' + '<img loading="lazy" src="' + (g.th || 'th2/' + g.n + '.jpg') + '" alt="">' + '<span>' + esc(g.title) + '</span></button>').join(''); $('glm').classList.add('on'); return; }
+  if (t.id === 'glx') { $('glm').classList.remove('on'); return; }
+  if (t.dataset.g) { $('glm').classList.remove('on'); const g = G[t.dataset.g]; $('mt').textContent = g.title; const gu = g.u || '../play/index.html?' + g.q; $('mf').src = gu; $('mo').onclick = () => open(gu, '_blank'); $('modal').classList.add('on'); return; }
+  if (t.id === 'mx') { $('modal').classList.remove('on'); $('mf').src = 'about:blank'; return; }
+  const s = t.closest('.item'); if (!s) return; const id = s.id, it = D.items.find(i => i.id === id);
+  if (t.dataset.a === 'rec') startRec(id);
+  else if (t.dataset.a === 'play') { const bl = takes[id] || saved[id]; if (bl) play(URL.createObjectURL(bl)); else if (HEN[it.k]) play('../play/assets/hen/' + it.k + '.mp3?v=' + HEN[it.k]); }
+  else if (t.dataset.a === 'save') { if (auto[id]) { clearInterval(auto[id]); delete auto[id]; } save(id); }
+  else if (t.dataset.a === 'mine') play('../play/assets/hen/' + it.k + '.mp3?v=' + HEN[it.k]);
+  else if (t.dataset.a === 'tts') play('../play/assets/tts/' + it.k + '.mp3');
+});
+setInterval(() => { if (!rec) syncBatches(); }, 3000);
+window.__studio = { openedB, BATCH, syncBatches, busyBatch, status: it => status(it), D };
+setTimeout(() => client().catch(() => {}), 1500); // טעינה מוקדמת, כדי שהשמירה הראשונה תהיה מהירה
+$('glm').addEventListener('click', e => { if (e.target.id === 'glm') $('glx').click(); });
+$('modal').addEventListener('click', e => { if (e.target.id === 'modal') $('mx').click(); });
+// כשההקלטות נכנסות למשחקים, הסטטוס מתעדכן לבד
+setInterval(async () => { if (!Object.keys(sent).some(id => !HEN[(D.items.find(i => i.id === id) || {}).k] || HEN[D.items.find(i => i.id === id).k] < sent[id])) return; try { const n = await fetch('../play/assets/hen/index.json?v=' + Date.now()).then(r => r.ok ? r.json() : null); if (n) { HEN = n; if (!rec) render(); } } catch (e) {} }, 60000);
+</script>
+</body>
+</html>
