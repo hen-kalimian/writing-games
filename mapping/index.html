@@ -374,8 +374,8 @@ function renderMap() {
   } else {
     h += kind === 'kb' ? kbSheetHtml(m) : sheetHtml(m);
     h += `<div class="card noprint"><h2>שמירה והדפסה</h2><div class="actions">
-      <button class="btn solid" type="button" data-act="print">הדפסה או שמירה כ-PDF</button>
-      <button class="btn" type="button" data-act="png">שמירה כתמונה (גודל A4)</button>
+      <button class="btn" type="button" data-act="print">הדפסה או שמירה כ-PDF</button>
+      <button class="btn solid" type="button" data-act="png">שמירה כקובץ תמונה A4 (הכול בעמוד אחד)</button>
       ${kind === 'kb' ? '' : `<a class="btn mint" style="text-decoration:none" href="${DOC_COPY}" target="_blank" rel="noopener">פתיחת תבנית דוח סיכום להורים</a>`}</div>
       <p class="note">בחלון ההדפסה בוחרים "שמירה כ-PDF" כיעד. הדף יוצא על עמוד A4 אחד.${kind === 'kb' ? '' : '<br>התבנית של הדוח להורים נפתחת כעותק משלך ב-Google Docs.'}</p>
       <div class="row"><button class="btn danger sm" type="button" data-act="delMap" id="delMap">מחיקת המיפוי הזה</button></div></div>`;
