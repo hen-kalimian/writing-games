@@ -196,8 +196,8 @@ function say(src, cb){
     if (voiceCb !== mine) return;   // הושמעה כבר הקלטה חדשה יותר: השגיאה שייכת להקלטה הקודמת ואסור שתפעיל את ההמשך של החדשה
     // הדפדפן חסם את ההשמעה (למשל באייפון): מנסים שוב בנגיעה הבאה, כדי שהשאלה לא תידלג בשקט
     if (err && err.name === 'NotAllowedError'){
-      const retry = () => { document.removeEventListener('pointerdown', retry, true); if (voice.src === url && voice.paused) voice.play().catch(() => {}); };
-      document.addEventListener('pointerdown', retry, true);
+      const retry = () => { document.removeEventListener('click', retry, true); if (voice.src === url && voice.paused) voice.play().catch(() => {}); };
+      document.addEventListener('click', retry, true); /* חן, 30.10.26: לא בגלילה, רק בלחיצה */
     }
     if (voiceCb){ const c = voiceCb; voiceCb = null; setTimeout(c, 600); }
   });

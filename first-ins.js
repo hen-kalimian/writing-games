@@ -14,5 +14,6 @@
     var quiet = !!window.WG_FIRST_INS_IFQUIET; /* משחקים שמשמיעים לבד את הקלטת השקופית: רק אם לא נשמע כלום */
     setTimeout(function () { if (quiet && last >= t0) return; var b = insBtn(); if (b) b.click(); else if (typeof window.WG_FIRST_INS === 'function') window.WG_FIRST_INS() }, quiet ? 1200 : 350); /* רק בדפים שלא משמיעים הנחיה לבד */
   }
-  ['pointerdown', 'touchstart', 'keydown'].forEach(function (ev) { document.addEventListener(ev, first, { capture: true, passive: true }) });
+  /* רק לחיצה אמיתית, לא גלילה (חן, 30.10.26) */
+  ['click', 'keydown'].forEach(function (ev) { document.addEventListener(ev, first, { capture: true, passive: true }) });
 })();
