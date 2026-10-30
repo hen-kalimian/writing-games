@@ -110,6 +110,6 @@ window.__W=function(){ return {bi:bi,boards:SET.boards.length,placed:placed,n:pi
 fetch('sets/'+(Q.get('set')||'firstwords')+'.json?v=1').then(function(r){return r.json()}).then(function(s){ SET=s; document.title=s.title; document.getElementById('ins').textContent=s.ins; ov.classList.add('hidden'); build() });
 })();
 </script>
-<script src="../end-fs.js"></script>
+<script src="../end-fs.js"></script><script src="../first-ins.js"></script>
 </body>
 </html>
