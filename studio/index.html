@@ -164,6 +164,8 @@ function tile(it) {
   return '<section class="item tile ' + st + (long ? ' wide' : '') + '" id="' + it.id + '">' +
     (it.img ? '<img class="pimg" loading="lazy" src="../play/assets/' + it.img + '" alt="">' : '') +
     '<div class="nik">' + esc(it.nik) + '</div>' +
+    /* חן, 30.10.26: "יש צלילים ממתינים שכבר הקלטתי". בּ/ב, כּ/כ, פּ/פ נראים כמעט אותו דבר, אז כתוב אם יש דגש */
+    (/^[בכפ][ְ-ּׁׂ]*ו?[ְ-ּ]*$/.test(String(it.nik || '').trim()) ? '<div style="font-weight:800;font-size:15px;margin:2px 0 4px;color:' + (/ּ/.test(it.nik) ? '#B8236B">עם דגש (' + { 'ב': 'b', 'כ': 'k', 'פ': 'p' }[it.nik.trim()[0]] + ')' : '#2E7D6B">בלי דגש (' + { 'ב': 'v', 'כ': 'ch', 'פ': 'f' }[it.nik.trim()[0]] + ')') + '</div>' : '') +
     (gs.length ? '<button type="button" class="gi" data-gl="' + it.id + '">איפה זה נשמע? (' + gs.length + ')</button>' : '') +
     '<div class="st ' + (st === 'done' ? 'ok' : st === 'sent' ? 'sv' : '') + '">' + txt + '</div>' +
     '<div class="trow"><button type="button" class="btn rec" data-a="rec"><span class="dot"></span><span>' + (st ? 'מחדש' : 'הקלטה') + '</span></button>' +
