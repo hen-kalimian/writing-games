@@ -7,7 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Rubik:wght@500;700;800&display=swap" rel="stylesheet">
 <style>
 /* הנחש הרעב (חן, 29.10.26): משחק בסגנון סנייק לילדים. חן אומרת אות, והנחש אוכל רק אותה. נגיעה במסך = הנחש פונה לכיוון הנגיעה
-   (או החלקה, או חצים). בלי פסילות: הקירות מעבירים לצד השני, טעות מקצרת את הנחש ומורידה נקודה (לא פחות מאפס). המטרה 10.
+   (או החלקה, או חצים). בלי פסילות: הקירות מעבירים לצד השני, טעות מקצרת את הנחש ומורידה נקודה (לא פחות מאפס). המטרה 5 (חן, 30.10.26: "מספיק לאסוף 5").
    כתובת: ?w=<עולם>&l=אבגד (או n=0123 לספרות). העולמות ב-snake/worlds. */
 :root{--pink:#FDE1EA;--pink2:#FBC5D6;--fuchsia:#EF406E;--deep:#B8236B}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -58,7 +58,7 @@ html,body{touch-action:none;margin:0;height:100%;background:#FEF6F5;font-family:
 <script src="../hen-voice.js"></script>
 <script>
 (function(){
-var Q=new URLSearchParams(location.search), NUMS=Q.get('n'), SYL=Q.get('s'), SET=SYL?SYL.split(',').map(function(c){return c.trim()}).filter(Boolean):(NUMS||Q.get('l')||'אבגד').split('').filter(function(c){return c.trim()}), GOAL=+Q.get('goal')||10, BASE='../';
+var Q=new URLSearchParams(location.search), NUMS=Q.get('n'), SYL=Q.get('s'), SET=SYL?SYL.split(',').map(function(c){return c.trim()}).filter(Boolean):(NUMS||Q.get('l')||'אבגד').split('').filter(function(c){return c.trim()}), GOAL=+Q.get('goal')||5, BASE='../';
 var cv=document.getElementById('cv'), cx=cv.getContext('2d'), stage=document.getElementById('stage'), ov=document.getElementById('ov'), card=document.getElementById('card');
 var W=null, IMG={}, CW=9, CH=12, S=40, snake=[], dir=[1,0], nextDir=null, items=[], target=null, score=0, state='intro', stepT=0, clock=0, parts=[], muted=false, AC=null, aud=new Audio(), grow=0, wob=0;
 function key(t){t=String(t||'').replace(/\s+/g,' ').trim();var h=2166136261;for(var i=0;i<t.length;i++){h^=t.charCodeAt(i);h=Math.imul(h,16777619)>>>0}return('0000000'+h.toString(16)).slice(-8)}
