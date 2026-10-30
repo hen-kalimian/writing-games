@@ -81,7 +81,7 @@ function render() {
     const chip = s.status === 'approved' ? '<span class="chip" style="background:#D8F0E4;color:#2F7A5F">אושר</span>' : s.status === 'fixing' ? '<span class="chip" style="background:#fff;color:#A33A3A">בתיקון</span>' : s.status === 'deleted' ? '<span class="chip" style="background:#fff;color:#8A7A83">נמחק</span>' : g.isNew ? '<span class="chip new">חדש</span>' : '';
     c.innerHTML = '<div class="top"><b>' + g.label + '</b>' + chip + /* חן: 2 כפתורי מסך מלא. לכל משחק יש כפתור משלו, אז בדף אין */  (s.status !== 'review' ? '<button class="reopen" type="button">פתיחה</button>' : '') + '</div>' +
       (s.status === 'fixing' && s.note ? '<div class="msg" style="display:block;background:#fff;color:#A33A3A;margin:0 14px 10px">' + esc(s.note) + '</div>' : '') +
-      (s.msg && s.status === 'review' ? '<div class="msg">תוקן: ' + esc(s.msg) + '</div>' : '') +
+      (s.msg && s.status === 'review' ? '<div class="msg">' + (/^תוקן/.test(s.msg) ? '' : 'תוקן: ') + esc(s.msg) + '</div>' : '') +
       '<div class="frame"><div class="ph">המשחק נטען כשמגיעים אליו</div></div>' +
       '<div class="acts"><button class="ok" type="button">אישור</button><button class="fix" type="button">תקן</button><button class="del" type="button">מחק משחק</button><button class="idea" type="button">מחק וצור משחק חדש</button></div>' +
       '<div class="box" data-k="fix"><textarea placeholder="מה לתקן במשחק הזה?"></textarea><button class="send" type="button">שליחה לתיקון</button></div>' +
