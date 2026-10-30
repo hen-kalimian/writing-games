@@ -153,6 +153,11 @@ var TTSM=null,TTSW=[],HENM={},PICW={};/*__HENVOICE: הקול של חן מהאו�
 function sayText(t){t=(t||'').replace(/\s+/g,' ').trim();if(!t)return;ttsMan(function(m){var k=ttsKey(t);if(HENM[k]){say('hen/'+k+'.mp3?v='+HENM[k])}else if(m[k]){say('tts/'+k+'.mp3')}else if(window.speechSynthesis){try{speechSynthesis.cancel();var u=new SpeechSynthesisUtterance(t);u.lang='he-IL';u.rate=.9;speechSynthesis.speak(u)}catch(e){}}})}
 function isInstr(t){t=(t||'').replace(/[֑-ׇ]/g,'').trim();return /^(מצאו|איפה|מה |כמה|לחצו|בחרו|סמנו|הקריאו|אמרו|ספרו|התאימו|גררו|מי |באיזו|באיזה|האם|הקשיבו|חברו|מתחו|השלימו|סדרו|פתרו)/.test(t)||/\?\s*$/.test(t)}/* רמקול בכרטיס רק להנחיה או שאלה, לא למילה שהילד צריך לקרוא בעצמו */
 function spkBtn(t){var b=el('button','ib spk',SPK_ICON);b.type='button';b.setAttribute('aria-label','השמעת ההנחיה');b.onclick=function(e){e.stopPropagation();sayText(t)};return b}
+/*__AUTOINS (חן, 30.10.26: "לא שומעים הנחיה בכל שלב שמתחלף, רק אם לוחצים... במגע הראשון ההנחיה תישמע, אבל שלא ישמעו לפני"):
+  כל הנחיה חדשה נשמעת לבד, אחרי שהקול הקודם (משוב, מילה) נגמר. לפני הנגיעה הראשונה שקט, ובנגיעה הראשונה נשמעת ההנחיה הנוכחית */
+var AUTOI={last:null,tm:0,first:false};window.__AUTOI=AUTOI;function autoIns(t,b){AUTOI.last={t:t,b:b};if(!window.__touched)return;clearTimeout(AUTOI.tm);AUTOI.tm=setTimeout(function w(){if(b&&!b.isConnected)return;if(AUTOI.last&&AUTOI.last.b!==b)return;if(cur&&!cur.paused&&!cur.ended){AUTOI.tm=setTimeout(w,250);return}sayText(t)},650)}
+(function(){var o=spkBtn;spkBtn=function(t){var b=o(t);autoIns(t,b);return b}})();
+['pointerdown','touchstart','keydown'].forEach(function(ev){document.addEventListener(ev,function(e){if(AUTOI.first)return;AUTOI.first=true;var tg=e.target&&e.target.closest&&e.target.closest('.spk,#insspk,#fs,#mute,[data-fsb]');if(tg)return;setTimeout(function(){var L=AUTOI.last;if(L&&(!L.b||L.b.isConnected))sayText(L.t);else{var i=document.getElementById('ins');if(i&&i.textContent.trim())sayText(i.textContent)}},350)},{capture:true,passive:true})});
 (function(){var b=document.getElementById('insspk'),i=document.getElementById('ins');if(!b||!i)return;b.innerHTML=SPK_ICON;b.onclick=function(e){e.stopPropagation();sayText(i.textContent)};
   function upd(){b.hidden=!(i.textContent||'').trim()}upd();new MutationObserver(upd).observe(i,{childList:true,characterData:true,subtree:true})})();
 

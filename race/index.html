@@ -10,7 +10,7 @@
    תופס 5 או 10 צלילים בדקה אחת, נזהר מהמשלוחים (מאטים), ואחרי התפיסה האחרונה מגיע לקו הסיום, גביע וקונפטי. */
 :root{--pink:#FDE1EA;--pink2:#FBC5D6;--fuchsia:#EF406E;--deep:#B8236B}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-html,body{margin:0;height:100%;background:#FEF6F5;font-family:Rubik,Arial,sans-serif;overflow:hidden;overscroll-behavior:none}
+html,body{touch-action:none;-webkit-user-select:none;user-select:none;margin:0;height:100%;background:#FEF6F5;font-family:Rubik,Arial,sans-serif;overflow:hidden;overscroll-behavior:none}
 .wrap{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;padding:8px;gap:6px}
 .hud{width:100%;max-width:1100px;display:flex;align-items:center;justify-content:space-between;gap:8px;font-weight:800;color:var(--deep)}
 @media (max-width:600px){.hud{flex-wrap:wrap;row-gap:4px}.goal{order:9;flex:1 0 100%}}
@@ -24,6 +24,10 @@ html,body{margin:0;height:100%;background:#FEF6F5;font-family:Rubik,Arial,sans-s
 .tbar{width:100%;max-width:1100px;height:14px;border-radius:99px;background:#F3E6EA;overflow:hidden;box-shadow:inset 0 1px 3px rgba(0,0,0,.08)}
 .tbar i{display:block;height:100%;width:100%;border-radius:99px;background:#7CC46A;transition:width .25s linear,background .6s}
 .big10{position:absolute;top:18%;left:50%;transform:translateX(-50%);font-size:min(22vw,150px);font-weight:800;color:#fff;text-shadow:0 0 0 #000,0 6px 0 #EF406E,0 0 30px rgba(239,64,110,.6);pointer-events:none;display:none}
+.steer{position:absolute;bottom:22%;width:64px;height:64px;border-radius:50%;border:0;background:rgba(255,255,255,.82);box-shadow:0 0 0 3px var(--pink2),0 4px 0 #F2A7B8;z-index:6;touch-action:none;cursor:pointer;padding:0}
+.steer::after{content:'';position:absolute;left:50%;top:50%;border:15px solid transparent;transform:translate(-50%,-50%)}
+.steer.l{left:10px}.steer.l::after{border-right:22px solid #EF406E;border-left:0;margin-left:-4px}.steer.r{right:10px}.steer.r::after{border-left:22px solid #EF406E;border-right:0;margin-left:4px}
+.steer.on{background:var(--pink);transform:translateY(3px)}
 .hint{position:absolute;bottom:12px;left:50%;transform:translateX(-50%);background:rgba(255,255,255,.88);border-radius:16px;padding:6px 14px;font-weight:700;color:var(--deep);font-size:15px;pointer-events:none;box-shadow:0 0 0 2px var(--pink2);transition:opacity .6s;white-space:nowrap}
 .hint.gone{opacity:0}
 .overlay{position:fixed;inset:0;background:rgba(253,225,234,.72);backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;z-index:20;padding:16px}
@@ -55,7 +59,7 @@ html,body{margin:0;height:100%;background:#FEF6F5;font-family:Rubik,Arial,sans-s
   <button class="fs" id="fs" type="button" aria-label="מסך מלא"><svg viewBox="0 0 24 24" fill="none" stroke="#EF406E" stroke-width="2.2" stroke-linecap="round"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg></button>
  </div>
  <div class="tbar" id="tbar"><i id="tbarI"></i></div>
- <div id="stage"><canvas id="cv"></canvas><div class="big10" id="big10"></div><div class="hint" id="hint"></div></div>
+ <div id="stage"><canvas id="cv"></canvas><div class="big10" id="big10"></div><div class="hint" id="hint"></div><button class="steer l" data-d="-1" type="button" aria-label="שמאלה"></button><button class="steer r" data-d="1" type="button" aria-label="ימינה"></button></div>
 </div>
 <div class="overlay" id="ov"><div class="card" id="card"></div></div>
 <script src="../ios-audio.js"></script>
@@ -174,10 +178,11 @@ var ENG=null, engT=0; function engine(dt){ engT-=dt; if(engT>0) return; engT=.1;
 var tPrev=0; function loop(t){ var dt=Math.min(.033,(t-(tPrev||t))/1000); tPrev=t; if(state!=='pause') step(dt); engine(state==='pause'?0:dt); if(state==='pause'&&ENG) try{ENG.g.gain.setTargetAtTime(0,AC.currentTime,.05)}catch(e){} if(W&&segs.length) draw(); requestAnimationFrame(loop) }
 /* ---------- שליטה: ימינה ושמאלה בלבד ---------- */
 function move(d){ if(state!=='play'&&state!=='finish') return; laneI=Math.max(0,Math.min(2,laneI+d)); hideHint() }
-var tp=null;
-cv.addEventListener('pointerdown',function(e){ e.preventDefault(); tp={x:e.clientX,t:performance.now(),done:0} });
-cv.addEventListener('pointermove',function(e){ if(!tp||tp.done) return; var dx=e.clientX-tp.x; if(Math.abs(dx)>30){ move(dx>0?1:-1); tp.done=1 } });
-cv.addEventListener('pointerup',function(e){ if(!tp) return; if(!tp.done){ var r=cv.getBoundingClientRect(); move(e.clientX>r.left+r.width/2?1:-1) } tp=null });
+/* חן, 30.10.26: "כשמזיזים את המכונית עם האצבע זה עובר לאפליקציה אחרת ויוצא מהדפדפן". בלי החלקה בכלל:
+   נגיעה מימין או משמאל (או בחצים) מזיזה נתיב מיד, וגרירה על המסך לא עושה כלום */
+cv.addEventListener('pointerdown',function(e){ e.preventDefault(); var r=cv.getBoundingClientRect(); move(e.clientX>r.left+r.width/2?1:-1) });
+document.querySelectorAll('.steer').forEach(function(b){ b.addEventListener('pointerdown',function(e){ e.preventDefault(); e.stopPropagation(); move(+b.getAttribute('data-d')); b.classList.add('on'); setTimeout(function(){b.classList.remove('on')},150) }) });
+document.addEventListener('touchmove',function(e){ e.preventDefault() },{passive:false});
 addEventListener('keydown',function(e){ if(e.key==='ArrowRight'){move(1);e.preventDefault()} if(e.key==='ArrowLeft'){move(-1);e.preventDefault()} if(e.key==='Enter'&&!ov.classList.contains('hidden')){var b=ov.querySelector('.btn');b&&b.click()} });
 /* ---------- מסכים ---------- */
 function renderHud(){ /* חן, 29.10.26: סרגל זמן שאוזל, ירוק > צהוב > כתום > אדום */ var fr=Math.max(0,Math.min(1,time/(W.time||60))), tb=document.getElementById('tbarI'); if(tb){ tb.style.width=(fr*100)+'%'; tb.style.background=fr>.6?'#7CC46A':fr>.35?'#F2C94C':fr>.15?'#F29B38':'#E0584F' } document.getElementById('count').textContent=Math.min(got,need)+' / '+need; var s=Math.max(0,Math.ceil(time)); document.getElementById('clock').textContent=Math.floor(s/60)+':'+('0'+s%60).slice(-2) }

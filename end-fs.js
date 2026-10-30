@@ -62,3 +62,24 @@
   function fsc() { if (!(d.fullscreenElement || d.webkitFullscreenElement) && !(FSM && top)) { var o = d.getElementById('wgend'); if (o) o.remove() } }
   d.addEventListener('fullscreenchange', fsc); d.addEventListener('webkitfullscreenchange', fsc);
 })();
+/* כפתור מסך מלא תמיד לחיץ (חן, 30.10.26: "בהטמעה אין לי מסך מלא"): כשמסך הפתיחה מכסה את הכפתור,
+   מוצג עותק קטן שלו באותו מקום מעל מסך הפתיחה, ולחיצה עליו לוחצת על הכפתור המקורי */
+(function(){
+  var cl=null;
+  function fsOn(){ return !!(document.fullscreenElement||document.webkitFullscreenElement) }
+  function tick(){
+    var b=document.querySelector('#fs,[data-fsb]'); if(!b||fsOn()){ if(cl) cl.style.display='none'; return }
+    var r=b.getBoundingClientRect(), cs=getComputedStyle(b);
+    if(!r.width||cs.display==='none'||cs.visibility==='hidden'){ if(cl) cl.style.display='none'; return }
+    var x=r.left+r.width/2, y=r.top+r.height/2, top=document.elementFromPoint(x,y);
+    if(cl&&cl.style.display!=='none'){ cl.style.pointerEvents='none'; top=document.elementFromPoint(x,y); cl.style.pointerEvents='' } var covered=top&&top!==b&&!b.contains(top)&&top!==cl&&!(cl&&cl.contains(top));
+    if(!covered){ if(cl) cl.style.display='none'; return }
+    if(!cl){ cl=document.createElement('button'); cl.type='button'; cl.id='wgfs2'; cl.setAttribute('aria-label','מסך מלא');
+      cl.style.cssText='position:fixed;z-index:2147483000;border-radius:50%;border:2.5px solid #FBC5D6;background:#FDE1EA;color:#B8236B;display:flex;align-items:center;justify-content:center;padding:0;cursor:pointer;touch-action:manipulation';
+      cl.innerHTML='<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" style="position:static;width:18px;height:18px"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg>';
+      cl.addEventListener('click',function(e){ e.stopPropagation(); e.preventDefault(); var o=document.querySelector('#fs,[data-fsb]'); if(o) o.click() });
+      document.body.appendChild(cl) }
+    var s=Math.max(36,Math.min(44,r.height)); cl.style.width=cl.style.height=s+'px'; cl.style.left=(x-s/2)+'px'; cl.style.top=(y-s/2)+'px'; cl.style.display='flex' }
+  function start(){ tick(); setInterval(tick,400); addEventListener('resize',tick) }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',start); else start();
+})();
