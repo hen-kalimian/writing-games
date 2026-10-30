@@ -156,7 +156,7 @@ async function cloudLoad() {
     const c = await sdk();
     const r = await c.items.query(COLLECTION).find();
     keepTokens();
-    cloudItem = r.items[0] || null;
+    cloudItem = r.items.find(x => x.title === 'progress') || null;   // בטבלה יש גם פריטים של דף המיפוי, לכן מזהים לפי כותרת
     cloud = true;
     if (cloudItem) { const s = JSON.parse(cloudItem.data || '{}'); store.checks = s.checks || {}; }
     else cloudSave(true);   // הפעם הראשונה בחשבון: מעבירים לשם את מה שכבר סומן
@@ -306,6 +306,7 @@ document.addEventListener('click', async e => {
 (async () => {
   cloudStatus('', false);
   const returned = await finishLoginIfReturned();
+  if (returned) { let back = null; try { back = localStorage.getItem('hen-return'); localStorage.removeItem('hen-return'); } catch (e) {} if (back && back.indexOf('/writing-games/mapping/') === 0) { location.replace(back); return; } }   // חזרה לדף המיפוי אחרי התחברות
   if (returned || localStorage.getItem(TOK)) { $('acct').firstChild && ($('acct').firstChild.textContent = 'מתחברת...'); await cloudLoad(); }
 })();
 </script>
