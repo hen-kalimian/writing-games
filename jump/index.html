@@ -78,16 +78,18 @@ var VH=360, VW=640, DPR=1;
 function fit(){ stage.style.maxHeight=''; var r0=stage.getBoundingClientRect(); if(r0.height>r0.width*1.15){ stage.style.maxHeight=Math.round(r0.width*1.15)+'px'; stage.style.margin='auto 0' } else stage.style.margin=''; var r=stage.getBoundingClientRect(); DPR=Math.min(2,window.devicePixelRatio||1); cv.width=Math.round(r.width*DPR); cv.height=Math.round(r.height*DPR); VH=360; VW=VH*r.width/Math.max(1,r.height); if(VW<360){VW=360;VH=360*r.height/r.width} GY=VH-72 }
 addEventListener('resize',fit);
 /* ---------- שלב ---------- */
-var L=null, hero=null, cam=0, lives=5, li=0, items=[], tiles=[], pits=[], decor=[], door=null, parts=[], need=0, got=0, state='intro', tPrev=0, clock=0, shake=0;
+var L=null, hero=null, cam=0, lives=5, li=0, items=[], tiles=[], pits=[], plats=[], hurd=[], decor=[], door=null, parts=[], need=0, got=0, state='intro', tPrev=0, clock=0, shake=0;
 var G=1800, JV=820, SPD=150, GY=290; // כוח משיכה, מהירות קפיצה, מהירות הליכה, גובה הקרקע
 function rnd(a,b){return a+Math.random()*(b-a)}
 function shuffle(a){for(var i=a.length-1;i>0;i--){var j=Math.random()*(i+1)|0,t=a[i];a[i]=a[j];a[j]=t}return a}
 function build(lv){
   // מסלול (חן, 29.10.26: הדמות רצה לבד, הילד רק מקפיץ): מדרגות למעלה ולמטה, בורות אש/מים, צלילים נכונים (רבים באוויר, תופסים בקפיצה)
   // וצלילים אחרים שקופצים מעליהם. צליל נכון שפוספס חוזר שוב לפני הדלת, בלי עונש.
-  tiles=[];pits=[];items=[];decor=[];parts=[];
+  tiles=[];pits=[];plats=[];hurd=[];items=[];decor=[];parts=[];
+  /* חן, 30.10.26: "תגוון במכשולים... קוביה צפה באוויר שעליה אפשר לעלות": קוביות צפות עם צליל נכון למעלה, מכשולים על הקרקע ובורות ברוחב משתנה */
   var good=lv.good, bad=lv.bad, seq=[], n=lv.count||6, i, hard=li>=3;
-  for(i=0;i<n;i++) seq.push({g:1,t:good[i%good.length]});
+  var nbk=lv.blocks!=null?lv.blocks:2; for(i=0;i<n;i++) seq.push({g:1,t:good[i%good.length],blk:i<nbk});
+  for(i=0;i<(lv.hurdles!=null?lv.hurdles:2);i++) seq.push({hd:1});
   var nb=lv.bads!=null?lv.bads:Math.max(3,n-1); for(i=0;i<nb;i++) seq.push({g:0,t:bad[i%bad.length]});
   for(i=0;i<(lv.pits!=null?lv.pits:2);i++) seq.push({pit:1});
   for(i=0;i<(lv.stairs!=null?lv.stairs:2);i++) seq.push({st:1});
@@ -95,7 +97,9 @@ function build(lv){
   var x=VW*.5+340, sx=0, cur=GY;
   function setH(at,h){ tiles.push({x:sx,w:at-sx,y:cur}); sx=at; cur=h }
   seq.forEach(function(e){
-    if(e.pit){ var w=rnd(80,100); tiles.push({x:sx,w:x-sx,y:cur}); pits.push({x:x,w:w}); sx=x+w; x=sx+rnd(170,210); return }
+    if(e.hd){ var HK=['pumpkin','mushroom','flower-pot','acorn'].filter(function(k){return IMG[k]}); hurd.push({x:x,y:cur,k:HK.length?HK[(Math.random()*HK.length)|0]:null}); x+=rnd(180,230); return }
+    if(e.blk){ var py2=cur-rnd(88,104); plats.push({x:x,w:118,y:py2}); items.push({x:x+59,y:py2-34,t:e.t,g:1,ph:rnd(0,6),dead:0,hi:false,pl:1}); x+=rnd(240,280); return }
+    if(e.pit){ var w=rnd(70,125); tiles.push({x:sx,w:x-sx,y:cur}); pits.push({x:x,w:w,k:Math.random()<.5?'water':'fire'}); sx=x+w; x=sx+rnd(170,210); return }
     if(e.st){ var upw=cur>GY-60?1:cur<GY-40?-1:(Math.random()<.5?1:-1); for(var k=0;k<3;k++){ setH(x,cur-upw*26); x+=46 } x+=rnd(150,190); return }
     var high=e.g?Math.random()<.6:(hard&&Math.random()<.3);
     items.push({x:x,y:cur-(high?128:34),t:e.t,g:e.g,ph:rnd(0,6),dead:0,hi:high});
@@ -108,7 +112,7 @@ function build(lv){
   cam=0;
 }
 function tileAt(x){ for(var i=0;i<tiles.length;i++){var t=tiles[i]; if(t.w>0&&x>=t.x&&x<=t.x+t.w) return t} return null }
-function hAt(x){ for(var i=0;i<tiles.length;i++){var t=tiles[i]; if(t.w>0&&x>=t.x-4&&x<=t.x+t.w+4) return t.y} return null }
+function hAt(x,py){ var g=null; for(var i=0;i<tiles.length;i++){var t=tiles[i]; if(t.w>0&&x>=t.x-4&&x<=t.x+t.w+4){g=t.y;break}} if(py!=null) plats.forEach(function(p){ if(x>=p.x-6&&x<=p.x+p.w+6&&py<=p.y+8&&(g==null||p.y<g)) g=p.y }); return g }
 /* ---------- שליטה: נגיעה בכל מקום על המסך = קפיצה (גם רווח או חץ למעלה) ---------- */
 function jump(){ if(state!=='play')return; hideHint(); if(hero.on){ hero.vy=-JV; hero.on=0; hero.sq=.7; SFX.jump(); puff(hero.x,hero.y,6) } }
 cv.addEventListener('pointerdown',function(e){ e.preventDefault(); jump() });
@@ -127,7 +131,7 @@ function step(dt){
   var nx=hero.x+vx*dt, ft=tileAt(nx+14);
   if(ft&&ft.y<hero.y-4&&nx+14>ft.x){ nx=Math.min(hero.x,ft.x-14); hero.blk=1 } else hero.blk=0; // מדרגה: נעצרים, צריך לקפוץ
   hero.x=nx; hero.vy+=G*dt; hero.y+=hero.vy*dt;
-  var g=hAt(hero.x);
+  var g=hAt(hero.x,py);
   if(g!=null){
     if(hero.vy>=0&&hero.y>=g&&py<=g+8){ if(!hero.on){hero.sq=1.3;puff(hero.x,g,5)} hero.y=g; hero.vy=0; hero.on=1 }
     else if(hero.y<g-2) hero.on=0;
@@ -135,13 +139,14 @@ function step(dt){
   if(hero.x<cam+22) return lose();                                             // המסך השאיר את הדמות מאחור
   hero.sq+=(1-hero.sq)*Math.min(1,dt*10); if(hero.on&&!hero.blk){ hero.run+=dt*12; if(Math.random()<dt*8) puff(hero.x-14,hero.y,1,'rgba(160,120,90,.35)') }
   if(hero.y>GY+60) return lose();
+  for(var hi2=0;hi2<hurd.length;hi2++){ var hh=hurd[hi2]; if(Math.abs(hero.x-hh.x)<20&&hero.y>hh.y-34) return lose() }
   items.forEach(function(o){ if(o.dead||state!=='play') return; var oy=o.y+Math.sin(clock*3+o.ph)*5;
     var near=Math.abs(hero.x-o.x), dyy=Math.abs((hero.y-30)-oy);
     if(o.g?(near<34&&dyy<44):(near<24&&dyy<30)){ // תפיסת צליל נכון סלחנית, פגיעה בצליל אחר רק בנגיעה ממשית
       if(o.g){ o.dead=1; got++; SFX.good(); sparkle(o.x,oy); say(W.names==='num'?(HenVoice.numberName(o.t)||o.t):W.names?(HenVoice.letterName(o.t)||o.t):o.t); if(got===need){door.open=1; setTimeout(SFX.door,350)} renderGoal() }
       else lose(o) }
     else if(o.g&&hero.x>o.x+70){
-      var lt=tiles[tiles.length-1]; o.x=door.x+30; o.y=lt.y-(o.hi?128:34); door.x+=230; lt.w=door.x+500-lt.x } });
+      var lt=tiles[tiles.length-1]; o.x=door.x+30; o.y=lt.y-(o.hi?128:34); o.pl=0; door.x+=230; lt.w=door.x+500-lt.x } });
   if(state!=='play') return;
   if(hero.x>door.x+20&&door.open) return win();
 }
@@ -170,12 +175,15 @@ function draw(){
   decor.forEach(function(d){ if(d.far) return; var x=d.x+130; if(x-cam<-200||x-cam>VW+200) return; var z=110*d.s*(DSIZE[d.k]||1); dImg(d.k,x,GY-z+8,z,z,Math.sin(clock*1.5+d.x)*.02) });
   // בורות: אש או מים
   pits.forEach(function(p){
-    if(W.hazard==='water'){ var wg=cx.createLinearGradient(0,GY,0,VH); wg.addColorStop(0,'#9ED8EE'); wg.addColorStop(1,'#5FB3D9'); cx.fillStyle=wg; cx.fillRect(p.x,GY+14,p.w,VH);
+    if((p.k||W.hazard)==='water'){ var wg=cx.createLinearGradient(0,GY,0,VH); wg.addColorStop(0,'#9ED8EE'); wg.addColorStop(1,'#5FB3D9'); cx.fillStyle=wg; cx.fillRect(p.x,GY+14,p.w,VH);
       cx.strokeStyle='#fff'; cx.lineWidth=3; cx.beginPath(); for(var x=0;x<=p.w;x+=4) cx.lineTo(p.x+x,GY+18+Math.sin(x*.12+clock*4)*3); cx.stroke() }
     else { cx.fillStyle='#FCE3C4'; cx.fillRect(p.x,GY+30,p.w,VH); for(var k=0;k<Math.max(1,Math.round(p.w/48));k++){ var fx=p.x+8+k*(p.w-16)/Math.max(1,Math.round(p.w/48)), fl=1+Math.sin(clock*9+k*2)*.08; dImg('flame',fx,GY-6-14*(fl-1)*4,44,56*fl) } } });
   // קרקע ומדרגות
   tiles.forEach(function(gr){ if(gr.w<=0) return; cx.fillStyle=W.ground[1]; rr(gr.x,gr.y,gr.w,VH-gr.y+20,12); cx.fill(); cx.fillStyle=W.ground[0]; rr(gr.x,gr.y,gr.w,16,9); cx.fill();
     cx.fillStyle='rgba(255,255,255,.35)'; for(var x=gr.x+20;x<gr.x+gr.w-10;x+=46){ cx.beginPath(); cx.arc(x,gr.y+40+(x%3)*12,4,0,6.28); cx.fill() } });
+  // קוביות צפות ומכשולים
+  plats.forEach(function(p){ if(p.x-cam>VW+60||p.x+p.w-cam<-60) return; cx.fillStyle='rgba(0,0,0,.08)'; cx.beginPath(); cx.ellipse(p.x+p.w/2,GY+8,p.w*.4,7,0,0,6.28); cx.fill(); cx.fillStyle=W.ground[1]; rr(p.x,p.y,p.w,30,10); cx.fill(); cx.fillStyle=W.ground[0]; rr(p.x,p.y,p.w,12,8); cx.fill(); cx.fillStyle='rgba(255,255,255,.4)'; cx.beginPath(); cx.arc(p.x+24,p.y+20,4,0,6.28); cx.arc(p.x+p.w-24,p.y+20,4,0,6.28); cx.fill() });
+  hurd.forEach(function(h){ if(h.x-cam>VW+60||h.x-cam<-60) return; if(h.k) dImg(h.k,h.x-24,h.y-46,48,48); else { cx.fillStyle='#C9A27E'; rr(h.x-20,h.y-34,40,34,8); cx.fill() } });
   var DY=tiles.length?tiles[tiles.length-1].y:GY;
   // דלת
   var dw=70, dh=112; if(door.open){ cx.save(); cx.globalAlpha=.35+Math.sin(clock*5)*.15; var rg=cx.createRadialGradient(door.x+dw/2,DY-dh/2,10,door.x+dw/2,DY-dh/2,110); rg.addColorStop(0,'#FFF3B0'); rg.addColorStop(1,'rgba(255,243,176,0)'); cx.fillStyle=rg; cx.fillRect(door.x-80,DY-dh-80,dw+160,dh+120); cx.restore() }
@@ -228,7 +236,7 @@ function show(kind){
 }
 function bindCard(fn){ card.querySelectorAll('[data-say]').forEach(function(b){ b.onclick=function(e){e.stopPropagation();var t=b.getAttribute('data-say'); if(t===L&&L.goal&&L.goalSay) speak(L.goalSay); else if(L&&t===L.goal&&L.goalSay) speak(L.goalSay); else say(t)} }); document.getElementById('go').onclick=function(){ ov.classList.add('hidden'); fn() } }
 window.__T=function(lv){ L=lv; build(lv); state="play" };
-window.__J=function(){return {cam:cam,VW:VW,hero:hero,items:items,pits:pits,tiles:tiles,door:door,state:state,li:li,lives:lives,got:got,need:need}};
+window.__J=function(){return {cam:cam,VW:VW,hero:hero,items:items,pits:pits,tiles:tiles,door:door,plats:plats,hurd:hurd,state:state,li:li,lives:lives,got:got,need:need}};
 function start(){ build(L); state='play'; renderGoal(); renderHearts() }
 function confetti(){ for(var i=0;i<70;i++) setTimeout(function(){ sparkle(cam+rnd(40,VW-40),rnd(20,140)) },i*30) }
 var hintT=0; function hideHint(){ if(hintT) return; hintT=1; setTimeout(function(){document.getElementById('hint').classList.add('gone')},4000) }
@@ -239,7 +247,7 @@ document.getElementById('fs').onclick=function(){ var d=document.documentElement
 /* ---------- טעינה ---------- */
 fetch('worlds/'+(Q.get('w')||'dagesh')+'.json?v=1').then(function(r){return r.json()}).then(function(w){
   W=w; document.title=W.title; document.getElementById('hintUp').textContent=W.hintUp||'נוֹגְעִים בַּמָּסָךְ כְּדֵי לִקְפֹּץ';
-  var ks=['door','flame','cloud','sun',W.hero].concat(W.clouds?[W.clouds]:[]).concat(W.weather==='leaves'?['leaf-orange','leaf-yellow','leaf-red','leaf-brown']:[]).concat(W.trophy?[W.trophy]:[]).concat(W.decor), n=0;
+  var ks=['door','flame','cloud','sun','pumpkin','mushroom','flower-pot','acorn',W.hero].concat(W.clouds?[W.clouds]:[]).concat(W.weather==='leaves'?['leaf-orange','leaf-yellow','leaf-red','leaf-brown']:[]).concat(W.trophy?[W.trophy]:[]).concat(W.decor), n=0;
   ks.forEach(function(k){ var im=new Image(); im.onload=im.onerror=function(){ if(++n===ks.length){ fit(); show('intro'); requestAnimationFrame(loop) } }; im.src='art/'+k+'.png'; IMG[k]=im });
   renderHearts();
 });
