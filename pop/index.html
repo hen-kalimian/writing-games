@@ -75,11 +75,19 @@ function speedNow(){ return Math.min(W,H)*(.045+.36*level()) } // בהתחלה �
 function newBall(ch){ var r=radius(), a=rnd(0,6.28), sp=speedNow()*rnd(.7,1.2); return {ch:ch,x:rnd(r,W-r),y:rnd(r,H-r*1.6),vx:Math.cos(a)*sp,vy:Math.sin(a)*sp,r:r,c:COLS[Math.floor(Math.random()*COLS.length)],ph:rnd(0,6),sh:0,born:clock} }
 function fill(){ var n=W<500?5+Math.round(2*level()):7+Math.round(2*level()); while(balls.length<n){ var ch=SET[Math.floor(Math.random()*SET.length)]; balls.push(newBall(ch)) }
   // תמיד יש לפחות שני בלונים עם האות שמבקשים, ולפחות שני בלונים אחרים
-  var has=balls.filter(function(b){return b.ch===target}).length; for(var i=0;has<2&&i<balls.length;i++) if(balls[i].ch!==target){ balls[i].ch=target; has++ }
-  if(SET.length>1){ var other=balls.filter(function(b){return b.ch!==target}).length; for(var j=0;other<2&&j<balls.length;j++) if(balls[j].ch===target&&balls.filter(function(b){return b.ch===target}).length>2){ balls[j].ch=SET.filter(function(c){return c!==target})[0]; other++ } } }
+  /* לא מחליפים אות של בלון שכבר על המסך (חן: הבלון 'השתנה' מתחת ליד), מוסיפים בלון חדש */
+  var has=balls.filter(function(b){return b.ch===target}).length; while(has<2){ balls.push(newBall(target)); has++ }
+  if(SET.length>1){ var other=balls.filter(function(b){return b.ch!==target}).length; while(other<2){ var oc=SET.filter(function(c){return c!==target}); balls.push(newBall(oc[Math.floor(Math.random()*oc.length)])); other++ } } }
 function pick(){ var prev=target, opts=SET.length>1?SET.filter(function(c){return c!==prev}):SET; target=opts[Math.floor(Math.random()*opts.length)]; fill(); document.getElementById('goal').textContent=''; say(nameOf(target)) }
 function dots(){ var h=''; for(var i=0;i<GOAL;i++) h+='<i class="'+(i<score?'on':'')+'"></i>'; document.getElementById('dots').innerHTML=h }
-function hit(px,py){ if(state!=='play') return; var best=null; balls.forEach(function(b){ var d=Math.hypot(px-b.x,py-b.y); if(d<b.r*1.12&&(!best||d<best.d)) best={b:b,d:d} }); if(!best) return; var b=best.b;
+window.__POP=function(){ return {setT:function(t){target=t;state='play';score=0}, put:function(arr){ balls=arr.map(function(o){ var b=newBall(o.ch); b.x=o.x;b.y=o.y;b.r=o.r;b.vx=0;b.vy=0; return b }) }, hit:function(x,y){hit(x,y)}, st:function(){return {score:score,left:balls.map(function(b){return b.ch}).join('')}} } };
+function hit(px,py){ if(state!=='play') return;
+  /* חן, 30.10.26: "אמרתי ד ולחצתי על ד אבל זה לא זוהה". הלחיצה שייכת לבלון שבאמת נגעו בו (בתוך צורת הבלון),
+     ואם נגעו בכמה בלונים חופפים ואחד מהם הנכון, הוא נבחר */
+  var inside=[], best=null; balls.forEach(function(b){ var dx=(px-b.x)/(b.r*.9*1.15), dy=(py-b.y)/(b.r*1.15), e=dx*dx+dy*dy; if(e<=1) inside.push({b:b,e:e}); var d=Math.hypot(px-b.x,py-b.y); if(d<b.r*1.25&&(!best||d<best.d)) best={b:b,d:d} });
+  var pickB=null, ok=inside.filter(function(o){return o.b.ch===target});
+  if(ok.length) pickB=ok.sort(function(x,y){return x.e-y.e})[0].b; else if(inside.length) pickB=inside[inside.length-1].b; else if(best) pickB=best.b;
+  if(!pickB) return; var b=pickB;
   if(b.ch===target){ popSnd(); burst(b.x,b.y,b.c); balls.splice(balls.indexOf(b),1); score++; dots();
     if(score>=GOAL) return win(); var faster=score===6&&!saidF; if(faster) saidF=1; balls.forEach(function(o){ var r=radius(); o.r+=(r-o.r)*.5; var sp=Math.hypot(o.vx,o.vy)||1, ns=speedNow()*rnd(.8,1.15); o.vx*=ns/sp; o.vy*=ns/sp }); setTimeout(function(){ if(faster) say(FASTER,pick); else pick() },550) }
   else { b.sh=.45; tone(300,180,.25,'sine',.1); if(score>0){ score--; dots(); var m=document.createElement('div'); m.className='minus'; m.textContent='-1'; m.style.left=(b.x-12)+'px'; m.style.top=(b.y-b.r)+'px'; stage.appendChild(m); setTimeout(function(){m.remove()},900) } setTimeout(function(){ say(nameOf(target)) },350) } }
