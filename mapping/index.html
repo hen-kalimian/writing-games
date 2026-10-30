@@ -46,13 +46,17 @@ button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-vis
 .field>label,.lbl{font-size:.8rem;color:var(--muted);font-weight:600}
 input[type=text],input[type=date],input[type=number],textarea,select{font:inherit;color:var(--ink);background:#fff;border:1.5px solid var(--line);border-radius:11px;padding:8px 10px;width:100%;min-width:0}
 textarea{resize:vertical;min-height:64px}
+input[type=date]{-webkit-appearance:none;appearance:none;display:block;width:100%;max-width:100%;min-width:0;text-align:start;direction:rtl}
+input[type=date]::-webkit-date-and-time-value{text-align:start;min-height:1.3em}
+.meta input{height:44px;min-height:44px}
 .ruled{background-image:repeating-linear-gradient(transparent,transparent 27px,#e7c3d1 28px);line-height:28px;padding:0 8px;background-color:#fff;min-height:84px}
 
 /* ===== דף המיפוי ===== */
 .sheet{background:#fff;border:2px solid var(--pink2);border-radius:22px;padding:16px;display:flex;flex-direction:column;gap:12px}
 .sheet .title{text-align:center;font-family:var(--head);font-weight:800;font-size:1.35rem;color:var(--pink-deep)}
 .sheet .sub{text-align:center;font-size:.82rem;color:var(--muted);margin-top:-8px}
-.meta{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px}
+.meta{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(150px,100%),1fr));gap:8px}
+.meta>*{min-width:0}
 .panel{border:1.5px solid var(--line);border-radius:16px;padding:12px;display:flex;flex-direction:column;gap:8px;min-width:0;background:#fff}
 .panel>h3{display:flex;align-items:center;gap:9px;font-size:1rem}
 .num{flex:none;width:30px;height:30px;border-radius:50%;display:grid;place-items:center;color:#fff;font-family:var(--head);font-weight:800}
