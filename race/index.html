@@ -58,6 +58,7 @@ html,body{margin:0;height:100%;background:#FEF6F5;font-family:Rubik,Arial,sans-s
  <div id="stage"><canvas id="cv"></canvas><div class="big10" id="big10"></div><div class="hint" id="hint"></div></div>
 </div>
 <div class="overlay" id="ov"><div class="card" id="card"></div></div>
+<script src="../ios-audio.js"></script>
 <script src="../hen-voice.js"></script>
 <script>
 (function(){
@@ -66,7 +67,7 @@ var cv=document.getElementById('cv'), cx=cv.getContext('2d'), stage=document.get
 function key(t){t=String(t||'').replace(/\s+/g,' ').trim();var h=2166136261;for(var i=0;i<t.length;i++){h^=t.charCodeAt(i);h=Math.imul(h,16777619)>>>0}return('0000000'+h.toString(16)).slice(-8)}
 var aud=new Audio();
 function say(t,cb){ if(muted||!t){cb&&setTimeout(cb,300);return}
-  HenVoice.url(t,BASE+'play/assets/tts/'+key(t)+'.mp3',function(u){ try{aud.pause()}catch(e){} aud=new Audio(u); aud.onended=function(){cb&&cb()}; aud.onerror=function(){cb&&cb()}; aud.play().catch(function(){cb&&cb()}) }) }
+  HenVoice.url(t,BASE+'play/assets/tts/'+key(t)+'.mp3',function(u){ try{aud.pause()}catch(e){} aud=WGAudio.play(u); aud.onended=function(){cb&&cb()}; aud.onerror=function(){cb&&cb()}; aud.play().catch(function(){cb&&cb()}) }) }
 function speak(x,cb){ /* הנחיה מחלקים: ["אִסְפוּ רַק אֶת הָאוֹת","חֵית"] = כמה הקלטות של חן ברצף */ if(Array.isArray(x)){ var i=0; (function n(){ if(i>=x.length) return cb&&cb(); say(x[i++],n) })() } else say(x,cb) }
 function tone(f1,f2,d,type,vol){ if(muted)return; try{ AC=AC||new (window.AudioContext||window.webkitAudioContext)(); var o=AC.createOscillator(),g=AC.createGain(),t=AC.currentTime; o.type=type||'sine'; o.frequency.setValueAtTime(f1,t); o.frequency.exponentialRampToValueAtTime(f2,t+d); g.gain.setValueAtTime(vol||.15,t); g.gain.exponentialRampToValueAtTime(.001,t+d); o.connect(g); g.connect(AC.destination); o.start(t); o.stop(t+d) }catch(e){} }
 var SFX={good:function(){tone(660,990,.12,'triangle',.14);setTimeout(function(){tone(880,1320,.14,'triangle',.12)},90)},bump:function(){tone(220,90,.35,'sawtooth',.08)},tick:function(){tone(900,900,.06,'square',.05)},
@@ -166,7 +167,11 @@ function weather(){ var t=W.weather; if(!t) return; if(!WX){ WX=[]; for(var i=0;
     else if(t==='snow'){ y=(w.y*VH+tt*40*w.s)%VH; x=((x+Math.sin(tt+w.p)*18)%VW+VW)%VW; cx.fillStyle='rgba(255,255,255,.95)'; cx.beginPath(); cx.arc(x,y,2+w.s*2,0,6.28); cx.fill() }
     else if(t==='petals'){ y=(w.y*VH+tt*30*w.s)%VH; x=((x+Math.sin(tt*1.2+w.p)*26)%VW+VW)%VW; cx.save(); cx.translate(x,y); cx.rotate(tt+w.p); cx.fillStyle=['#F7A8C0','#FBC5D6','#FFFFFF','#E4C6F2'][w.k]; cx.beginPath(); cx.ellipse(0,0,5*w.s,3*w.s,0,0,6.28); cx.fill(); cx.restore() } }); cx.globalAlpha=1 }
 function dImg(k,x,y,w,h,al){ var im=IMG[k]; if(!im) return; var a=im.width/im.height; if(a>w/h){h=w/a}else{w=h*a} cx.save(); if(al!=null) cx.globalAlpha=al; cx.drawImage(im,x,y,w,h); cx.restore() }
-var tPrev=0; function loop(t){ var dt=Math.min(.033,(t-(tPrev||t))/1000); tPrev=t; if(state!=='pause') step(dt); if(W&&segs.length) draw(); requestAnimationFrame(loop) }
+/* קול נסיעה (חן, 30.10.26: "בלי קול נסיעה"): זמזום מנוע רך שעולה עם המהירות, רק בזמן הנסיעה */
+var ENG=null, engT=0; function engine(dt){ engT-=dt; if(engT>0) return; engT=.1; var on=!muted&&(state==='play'||state==='finish');
+  try{ if(!ENG){ if(!on) return; AC=AC||new (window.AudioContext||window.webkitAudioContext)(); var o=AC.createOscillator(), o2=AC.createOscillator(), f=AC.createBiquadFilter(), g=AC.createGain(); o.type='sawtooth'; o2.type='triangle'; f.type='lowpass'; f.frequency.value=420; g.gain.value=0; o.connect(f); o2.connect(f); f.connect(g); g.connect(AC.destination); o.start(); o2.start(); ENG={o:o,o2:o2,g:g} }
+    var r=Math.min(1,speed/MAXS), t=AC.currentTime; ENG.o.frequency.setTargetAtTime(48+70*r,t,.15); ENG.o2.frequency.setTargetAtTime(96+140*r,t,.15); ENG.g.gain.setTargetAtTime(on?.03+.035*r:0,t,.12) }catch(e){} }
+var tPrev=0; function loop(t){ var dt=Math.min(.033,(t-(tPrev||t))/1000); tPrev=t; if(state!=='pause') step(dt); engine(state==='pause'?0:dt); if(state==='pause'&&ENG) try{ENG.g.gain.setTargetAtTime(0,AC.currentTime,.05)}catch(e){} if(W&&segs.length) draw(); requestAnimationFrame(loop) }
 /* ---------- שליטה: ימינה ושמאלה בלבד ---------- */
 function move(d){ if(state!=='play'&&state!=='finish') return; laneI=Math.max(0,Math.min(2,laneI+d)); hideHint() }
 var tp=null;
@@ -179,14 +184,14 @@ function renderHud(){ /* חן, 29.10.26: סרגל זמן שאוזל, ירוק > 
 setInterval(function(){ if(W) renderHud() },250);
 function big10(n){ var b=document.getElementById('big10'); b.textContent=n; b.style.display='block'; b.animate([{transform:'translateX(-50%) scale(1.4)',opacity:0},{transform:'translateX(-50%) scale(1)',opacity:1},{opacity:.0}],{duration:950}); setTimeout(function(){b.style.display='none'},900) }
 function spk(t){ return '<button class="spk" type="button" data-say="'+t+'" aria-label="להשמיע"><svg viewBox="0 0 24 24" fill="#EF406E"><path d="M4 9v6h4l5 4V5L8 9H4z"/><path d="M16 8.5a5 5 0 0 1 0 7" stroke="#EF406E" stroke-width="2" fill="none" stroke-linecap="round"/></svg></button>' }
-function bind(fn){ card.querySelectorAll('[data-say]').forEach(function(b){ b.onclick=function(e){e.stopPropagation();var t=b.getAttribute('data-say'); if(t==='__goal') speak(W.goalSay||W.goal); else say(t)} }); var g=document.getElementById('go'); if(g) g.onclick=function(){ ov.classList.add('hidden'); fn() } }
+function bind(fn){ card.querySelectorAll('[data-say]').forEach(function(b){ b.onclick=function(e){e.stopPropagation();var t=b.getAttribute('data-say'); if(t==='__goal') speak(W.goalSay||W.goal); else if(t==='__win') say('תְּפַסְתֶּם אֶת',function(){ say(W.names==='num'?HenVoice.numberName(W.show[0]):W.names==='syl'?W.show[0]:HenVoice.letterName(W.show[0])) }); else say(t)} }); var g=document.getElementById('go'); if(g) g.onclick=function(){ ov.classList.add('hidden'); fn() } }
 function show(kind){ ov.classList.remove('hidden'); var h='';
   if(kind==='intro'){ var cars=W.cars||[]; h='<h2>'+W.title+'</h2><p>'+W.goal+' '+spk('__goal')+'</p><div class="big">'+W.show.map(function(t){return '<span>'+t+'</span>'}).join('')+'</div>'+(cars.length?'<p>'+(W.pick||'בַּחֲרוּ מְכוֹנִית')+'</p><div class="cars">'+cars.map(function(c,i){return '<button type="button" data-car="'+i+'"'+'><img src="art/'+(c.img||'car-'+String(c.color).slice(1).toLowerCase())+'.png" alt="">'+'</button>'}).join('')+'</div>':'<button class="btn" id="go">'+(W.start||'נוֹסְעִים')+'</button>');
     card.innerHTML=h; bind(start); card.querySelectorAll('[data-car]').forEach(function(b){ b.onclick=function(){ var c=cars[+b.getAttribute('data-car')]; car=c.img?c.img.replace(/^car_/,''):null; carCol=c.color||carCol; ov.classList.add('hidden'); start() } }); state='card'; return }
   if(kind==='win'){ /* חן, 29.10.26: "תפסתם את..." הקלטה אחת, ואחריה שם האות או הספרה בקול שלה */
     var nm=W.names==='num'?HenVoice.numberName(W.show[0]):W.names==='syl'?W.show[0]:W.names?HenVoice.letterName(W.show[0]):'', CAUGHT='תְּפַסְתֶּם אֶת';
     var line=nm?CAUGHT+' '+(W.names==='num'?'הַסִּפְרָה ':W.names==='syl'?'הַצְּלִיל ':'הָאוֹת ')+W.show[0]:W.winSay;
-    h='<img class="trophy" src="art/'+(W.trophy||'sun')+'.png" alt=""><h2>'+W.winTitle+'</h2><p>'+line+' '+spk(nm?CAUGHT:W.winSay)+'</p><button class="btn" id="go">'+(W.replay||'נוֹסְעִים שׁוּב')+'</button>'; card.innerHTML=h; bind(function(){ show('intro') }); say(W.winTitle,function(){ if(nm) say(CAUGHT,function(){ say(nm) }); else say(W.winSay) }); try{window.WGEnd&&(WGEnd.replay=function(){var g=document.getElementById('go');g&&g.click()},WGEnd());}catch(e){} return }
+    h='<img class="trophy" src="art/'+(W.trophy||'sun')+'.png" alt=""><h2>'+W.winTitle+'</h2><p>'+line+' '+spk(nm?'__win':W.winSay)+'</p><button class="btn" id="go">'+(W.replay||'נוֹסְעִים שׁוּב')+'</button>'; card.innerHTML=h; bind(function(){ show('intro') }); say(W.winTitle,function(){ if(nm) say(CAUGHT,function(){ say(nm) }); else say(W.winSay) }); try{window.WGEnd&&(WGEnd.replay=function(){var g=document.getElementById('go');g&&g.click()},WGEnd());}catch(e){} return }
   if(kind==='late'){ h='<h2>'+(W.lateTitle||'נִגְמַר הַזְּמַן')+'</h2><p>'+(W.late||'נְנַסֶּה שׁוּב?')+'</p><button class="btn" id="go">'+(W.again||'עוֹד נְסִיעָה')+'</button>'; card.innerHTML=h; bind(start); say(W.late||'נְנַסֶּה שׁוּב?'); return }
 }
 function start(){ buildTrack(); pos=0; speed=0; laneI=1; px=0; got=0; time=W.time||60; finishAt=-1; nextSpawn=SEG*20; last10=-1; slow=0; need=W.need||10; state='play'; renderHud(); document.getElementById('goal').textContent=W.goal; speak(W.goalSay||W.goal) }

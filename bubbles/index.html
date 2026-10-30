@@ -41,6 +41,7 @@ html,body{margin:0;height:100%;background:#FEF6F5;font-family:Rubik,Arial,sans-s
  <div id="stage"><canvas id="cv"></canvas></div>
 </div>
 <div class="overlay" id="ov"><div class="card" id="card"></div></div>
+<script src="../ios-audio.js"></script>
 <script src="../hen-voice.js"></script>
 <script>
 (function(){
@@ -51,7 +52,7 @@ var cv=document.getElementById('cv'), cx=cv.getContext('2d'), stage=document.get
 var W=400,H=600,COLSN=8,R=20,grid=[],shot=null,cur=null,nxt=null,parts=[],falling=[],state='intro',clock=0,muted=false,AC=null,aud=new Audio(),easy=true,aim=null,popped=0;
 function key(t){t=String(t||'').replace(/\s+/g,' ').trim();var h=2166136261;for(var i=0;i<t.length;i++){h^=t.charCodeAt(i);h=Math.imul(h,16777619)>>>0}return('0000000'+h.toString(16)).slice(-8)}
 function nameOf(c){ return SYL?c:NUMS?HenVoice.numberName(c):HenVoice.letterName(c) } /* הברה או מילה נאמרת כמו שהיא */
-function say(t,cb){ if(muted||!t){cb&&setTimeout(cb,200);return} HenVoice.url(t,BASE+'play/assets/tts/'+key(t)+'.mp3',function(u){ try{aud.pause()}catch(e){} aud=new Audio(u); aud.onended=function(){cb&&cb()}; aud.onerror=function(){cb&&cb()}; aud.play().catch(function(){cb&&cb()}) }) }
+function say(t,cb){ if(muted||!t){cb&&setTimeout(cb,200);return} HenVoice.url(t,BASE+'play/assets/tts/'+key(t)+'.mp3',function(u){ try{aud.pause()}catch(e){} aud=WGAudio.play(u); aud.onended=function(){cb&&cb()}; aud.onerror=function(){cb&&cb()}; aud.play().catch(function(){cb&&cb()}) }) }
 function ac(){ try{ AC=AC||new (window.AudioContext||window.webkitAudioContext)(); if(AC.state==='suspended') AC.resume() }catch(e){} return AC }
 function tone(f1,f2,d,type,vol){ if(muted||!ac())return; var o=AC.createOscillator(),g=AC.createGain(),t=AC.currentTime; o.type=type||'sine'; o.frequency.setValueAtTime(f1,t); o.frequency.exponentialRampToValueAtTime(f2,t+d); g.gain.setValueAtTime(vol||.12,t); g.gain.exponentialRampToValueAtTime(.001,t+d); o.connect(g); g.connect(AC.destination); o.start(t); o.stop(t+d+.02) }
 function popSnd(){ /* חן, 29.10.26: צליל נעים של בועה, לא פיצוץ */ if(muted||!ac()) return; var t=AC.currentTime, f0=380+Math.random()*160;

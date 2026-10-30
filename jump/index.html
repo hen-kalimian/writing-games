@@ -57,6 +57,7 @@ html,body{margin:0;height:100%;background:#FEF6F5;font-family:Rubik,Arial,sans-s
  </div>
 </div>
 <div class="overlay" id="ov"><div class="card" id="card"></div></div>
+<script src="../ios-audio.js"></script>
 <script src="../hen-voice.js"></script>
 <script>
 (function(){
@@ -67,7 +68,7 @@ function key(t){t=String(t||'').replace(/\s+/g,' ').trim();var h=2166136261;for(
 /* ---------- קול: קודם הקלטה של חן, אחרת קול ג ---------- */
 var aud=new Audio();
 function say(t,cb){ if(muted||!t){cb&&setTimeout(cb,300);return}
-  HenVoice.url(t,BASE+'play/assets/tts/'+key(t)+'.mp3',function(u){ try{aud.pause()}catch(e){} aud=new Audio(u); aud.onended=function(){cb&&cb()}; aud.onerror=function(){cb&&cb()}; aud.play().catch(function(){cb&&cb()}) }) }
+  HenVoice.url(t,BASE+'play/assets/tts/'+key(t)+'.mp3',function(u){ try{aud.pause()}catch(e){} aud=WGAudio.play(u); aud.onended=function(){cb&&cb()}; aud.onerror=function(){cb&&cb()}; aud.play().catch(function(){cb&&cb()}) }) }
 function speak(x,cb){ /* הנחיה מחלקים: ["אִסְפוּ רַק אֶת הָאוֹת","חֵית"] = כמה הקלטות של חן ברצף */ if(Array.isArray(x)){ var i=0; (function n(){ if(i>=x.length) return cb&&cb(); say(x[i++],n) })() } else say(x,cb) }
 function tone(f1,f2,d,type,vol){ if(muted)return; try{ AC=AC||new (window.AudioContext||window.webkitAudioContext)(); var o=AC.createOscillator(),g=AC.createGain(),t=AC.currentTime; o.type=type||'sine'; o.frequency.setValueAtTime(f1,t); o.frequency.exponentialRampToValueAtTime(f2,t+d); g.gain.setValueAtTime(vol||.15,t); g.gain.exponentialRampToValueAtTime(.001,t+d); o.connect(g); g.connect(AC.destination); o.start(t); o.stop(t+d) }catch(e){} }
 var SFX={jump:function(){tone(420,760,.16,'sine',.09)},good:function(){tone(660,990,.12,'triangle',.14);setTimeout(function(){tone(880,1320,.14,'triangle',.12)},90)},

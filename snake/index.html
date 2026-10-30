@@ -55,6 +55,7 @@ html,body{touch-action:none;margin:0;height:100%;background:#FEF6F5;font-family:
  <div class="joy" id="joy"><button data-d="0,-1" class="up" type="button" aria-label="למעלה"></button><button data-d="1,0" class="rt" type="button" aria-label="ימינה"></button><button data-d="0,1" class="dn" type="button" aria-label="למטה"></button><button data-d="-1,0" class="lt" type="button" aria-label="שמאלה"></button></div>
 </div>
 <div class="overlay" id="ov"><div class="card" id="card"></div></div>
+<script src="../ios-audio.js"></script>
 <script src="../hen-voice.js"></script>
 <script>
 (function(){
@@ -63,7 +64,7 @@ var cv=document.getElementById('cv'), cx=cv.getContext('2d'), stage=document.get
 var W=null, IMG={}, CW=9, CH=12, S=40, snake=[], dir=[1,0], nextDir=null, items=[], target=null, score=0, state='intro', stepT=0, clock=0, parts=[], muted=false, AC=null, aud=new Audio(), grow=0, wob=0;
 function key(t){t=String(t||'').replace(/\s+/g,' ').trim();var h=2166136261;for(var i=0;i<t.length;i++){h^=t.charCodeAt(i);h=Math.imul(h,16777619)>>>0}return('0000000'+h.toString(16)).slice(-8)}
 function nameOf(c){ return SYL?c:NUMS?HenVoice.numberName(c):HenVoice.letterName(c) } /* הברה או מילה נאמרת כמו שהיא */
-function say(t,cb){ if(muted||!t){cb&&setTimeout(cb,200);return} HenVoice.url(t,BASE+'play/assets/tts/'+key(t)+'.mp3',function(u){ try{aud.pause()}catch(e){} aud=new Audio(u); aud.onended=function(){cb&&cb()}; aud.onerror=function(){cb&&cb()}; aud.play().catch(function(){cb&&cb()}) }) }
+function say(t,cb){ if(muted||!t){cb&&setTimeout(cb,200);return} HenVoice.url(t,BASE+'play/assets/tts/'+key(t)+'.mp3',function(u){ try{aud.pause()}catch(e){} aud=WGAudio.play(u); aud.onended=function(){cb&&cb()}; aud.onerror=function(){cb&&cb()}; aud.play().catch(function(){cb&&cb()}) }) }
 function ac(){ try{ AC=AC||new (window.AudioContext||window.webkitAudioContext)(); if(AC.state==='suspended') AC.resume() }catch(e){} return AC }
 function tone(f1,f2,d,type,vol){ if(muted||!ac())return; var o=AC.createOscillator(),g=AC.createGain(),t=AC.currentTime; o.type=type||'sine'; o.frequency.setValueAtTime(f1,t); o.frequency.exponentialRampToValueAtTime(f2,t+d); g.gain.setValueAtTime(.0001,t); g.gain.exponentialRampToValueAtTime(vol||.1,t+.015); g.gain.exponentialRampToValueAtTime(.0001,t+d); o.connect(g); g.connect(AC.destination); o.start(t); o.stop(t+d+.02) }
 function yum(){ tone(520,780,.12,'sine',.12); setTimeout(function(){ tone(780,1040,.14,'sine',.1) },90) }
@@ -119,8 +120,10 @@ document.querySelectorAll('#joy button').forEach(function(bt){ bt.addEventListen
 document.addEventListener('touchmove',function(e){ e.preventDefault() },{passive:false}); /* החלקה לא גוללת את הדף */
 addEventListener('keydown',function(e){ var m={ArrowLeft:[-1,0],ArrowRight:[1,0],ArrowUp:[0,-1],ArrowDown:[0,1]}[e.key]; if(m){ turn(m); e.preventDefault() } if(e.key==='Enter'&&!ov.classList.contains('hidden')){ var b=ov.querySelector('.btn'); b&&b.click() } });
 /* ---------- מסכים ---------- */
-function intro(){ state='intro'; ov.classList.remove('hidden'); card.innerHTML=(W.hero?'<img src="../jump/art/'+W.hero+'.png" alt="">':'')+'<h2>'+W.intro+'</h2><button class="btn" id="go">'+(W.start||'מַתְחִילִים')+'</button>';
-  document.getElementById('go').onclick=function(){ ac(); ov.classList.add('hidden'); start() } }
+var WARN=SYL?'שִׂימוּ לֵב: אִם תֶּאֶסְפוּ אֶת הַצְּלִיל הַלֹּא נָכוֹן, יֵרְדוּ לָכֶם נְקוּדוֹת!':NUMS?'שִׂימוּ לֵב: אִם תֶּאֶסְפוּ אֶת הַסִּפְרָה הַלֹּא נְכוֹנָה, יֵרְדוּ לָכֶם נְקוּדוֹת!':'שִׂימוּ לֵב: אִם תֶּאֶסְפוּ אֶת הָאוֹת הַלֹּא נְכוֹנָה, יֵרְדוּ לָכֶם נְקוּדוֹת!'; /* חן, 30.10.26: הנחיית אזהרה, 3 הקלטות */
+function fixIntro(){ if(W&&W.intro&&!W.__fx){ W.__fx=1; W.intro=W.intro.replace('הָאוֹת',NUMS?'הַסִּפְרָה':SYL?'הַצְּלִיל':'הָאוֹת') } } /* חן: ספרות = "הספרה", צלילים = "הצליל" */
+function intro(){ fixIntro(); state='intro'; ov.classList.remove('hidden'); card.innerHTML=(W.hero?'<img src="../jump/art/'+W.hero+'.png" alt="">':'')+'<h2>'+W.intro+'</h2>'+'<p style="margin:4px 0 14px;font-size:clamp(15px,4.2vw,20px);font-weight:700;color:#B8236B;line-height:1.5">'+WARN+'</p>'+'<button class="btn" id="go">'+(W.start||'מַתְחִילִים')+'</button>';
+  document.getElementById('go').onclick=function(){ var g=this; if(g.disabled) return; g.disabled=true; ac(); say(WARN,function(){ ov.classList.add('hidden'); start() }) } }
 function start(){ fit(); var cy=Math.floor(CH/2); snake=[[3,cy],[2,cy],[1,cy]]; dir=[1,0]; nextDir=null; items=[]; score=0; grow=0; dots(); state='play'; stepT=0; target=SET[Math.floor(Math.random()*SET.length)]; refill(); say(W.intro,function(){ say(nameOf(target)) }) }
 function win(){ state='win'; [523,659,784,988,1047,1319].forEach(function(f,i){ setTimeout(function(){ tone(f,f*1.003,.5,'sine',.07); burst(rnd(S,S*(CW-1)),rnd(S,S*(CH-1)),W.bubbles[i%W.bubbles.length]) },i*150) });
   setTimeout(function(){ ov.classList.remove('hidden'); card.innerHTML=(W.hero?'<img src="../jump/art/'+W.hero+'.png" alt="">':'')+'<h2>'+W.done+'</h2><button class="btn" id="go">מְשַׂחֲקִים שׁוּב</button>'; document.getElementById('go').onclick=function(){ ov.classList.add('hidden'); start() }; say(W.done); try{ window.WGEnd&&(WGEnd.replay=function(){ document.getElementById('go').click() },WGEnd()) }catch(e){} },1200) }

@@ -48,6 +48,7 @@ html,body{margin:0;height:100%;background:#FEF6F5;font-family:Rubik,Arial,sans-s
  <div id="stage"><canvas id="cv"></canvas></div>
 </div>
 <div class="overlay" id="ov"><div class="card" id="card"></div></div>
+<script src="../ios-audio.js"></script>
 <script src="../hen-voice.js"></script>
 <script>
 (function(){
@@ -57,7 +58,7 @@ var COLS=['#F7A8C0','#9ED8EE','#B5E3A1','#F9D77E','#C9B3EE','#F6B18E'];
 var saidF=0, muted=false, AC=null, aud=new Audio(), W=600, H=400, DPR=1, balls=[], parts=[], score=0, target=null, state='intro', clock=0, beat=0;
 function key(t){t=String(t||'').replace(/\s+/g,' ').trim();var h=2166136261;for(var i=0;i<t.length;i++){h^=t.charCodeAt(i);h=Math.imul(h,16777619)>>>0}return('0000000'+h.toString(16)).slice(-8)}
 function nameOf(c){ return SYL?c:NUMS?HenVoice.numberName(c):HenVoice.letterName(c) } /* הברה או מילה נאמרת כמו שהיא */
-function say(t,cb){ if(muted||!t){cb&&setTimeout(cb,200);return} HenVoice.url(t,BASE+'play/assets/tts/'+key(t)+'.mp3',function(u){ try{aud.pause()}catch(e){} aud=new Audio(u); aud.onended=function(){cb&&cb()}; aud.onerror=function(){cb&&cb()}; aud.play().catch(function(){cb&&cb()}) }) }
+function say(t,cb){ if(muted||!t){cb&&setTimeout(cb,200);return} HenVoice.url(t,BASE+'play/assets/tts/'+key(t)+'.mp3',function(u){ try{aud.pause()}catch(e){} aud=WGAudio.play(u); aud.onended=function(){cb&&cb()}; aud.onerror=function(){cb&&cb()}; aud.play().catch(function(){cb&&cb()}) }) }
 function ac(){ try{ AC=AC||new (window.AudioContext||window.webkitAudioContext)(); if(AC.state==='suspended') AC.resume() }catch(e){} return AC }
 function tone(f1,f2,d,type,vol,when){ if(muted||!ac())return; var o=AC.createOscillator(),g=AC.createGain(),t=when||AC.currentTime; o.type=type||'sine'; o.frequency.setValueAtTime(f1,t); o.frequency.exponentialRampToValueAtTime(f2,t+d); g.gain.setValueAtTime(vol||.12,t); g.gain.exponentialRampToValueAtTime(.001,t+d); o.connect(g); g.connect(AC.destination); o.start(t); o.stop(t+d+.02) }
 function popSnd(){ if(muted||!ac()) return; var n=AC.sampleRate*.18, b=AC.createBuffer(1,n,AC.sampleRate), d=b.getChannelData(0); for(var i=0;i<n;i++) d[i]=(Math.random()*2-1)*Math.pow(1-i/n,3);
@@ -100,7 +101,8 @@ function draw(){ var s=cv.height/H; cx.setTransform(s,0,0,s,0,0); var g=cx.creat
   parts.forEach(function(p){ cx.globalAlpha=Math.max(0,Math.min(1,p.l*2)); cx.fillStyle=p.c; cx.beginPath(); cx.arc(p.x,p.y,p.r,0,6.28); cx.fill() }); cx.globalAlpha=1 }
 var tP=0; function loop(t){ var dt=Math.min(.033,(t-(tP||t))/1000); tP=t; step(dt); draw(); requestAnimationFrame(loop) }
 var START='מוּכָנִים לְמִשְׂחַק פִּיצוּץ הַבָּלוֹנִים?', FASTER='זֶה הוֹלֵךְ וְנִהְיֶה מָהִיר יוֹתֵר!', DONE='כָּל הַכָּבוֹד! פּוֹצַצְתֶּם אֶת כָּל הַבָּלוֹנִים!';
-function intro(){ state='intro'; ov.classList.remove('hidden'); card.innerHTML='<h2>'+START+'</h2><button class="btn" id="go">הַתְחִילוּ</button>'; document.getElementById('go').onclick=function(){ ac(); ov.classList.add('hidden'); start() } }
+var WARN=SYL?'שִׂימוּ לֵב: אִם תֶּאֶסְפוּ אֶת הַצְּלִיל הַלֹּא נָכוֹן, יֵרְדוּ לָכֶם נְקוּדוֹת!':NUMS?'שִׂימוּ לֵב: אִם תֶּאֶסְפוּ אֶת הַסִּפְרָה הַלֹּא נְכוֹנָה, יֵרְדוּ לָכֶם נְקוּדוֹת!':'שִׂימוּ לֵב: אִם תֶּאֶסְפוּ אֶת הָאוֹת הַלֹּא נְכוֹנָה, יֵרְדוּ לָכֶם נְקוּדוֹת!'; /* חן, 30.10.26: הנחיית אזהרה, 3 הקלטות */
+function intro(){ state='intro'; ov.classList.remove('hidden'); card.innerHTML='<h2>'+START+'</h2>'+'<p style="margin:4px 0 14px;font-size:clamp(15px,4.2vw,20px);font-weight:700;color:#B8236B;line-height:1.5">'+WARN+'</p>'+'<button class="btn" id="go">הַתְחִילוּ</button>'; document.getElementById('go').onclick=function(){ var g=this; if(g.disabled) return; g.disabled=true; ac(); say(WARN,function(){ ov.classList.add('hidden'); start() }) } }
 function start(){ saidF=0; score=0; balls=[]; dots(); state='play'; nextT=0; target=SET[0]; fill(); say(START,pick) }
 function win(){ state='win'; for(var i=0;i<8;i++) (function(i){ setTimeout(function(){ burst(rnd(W*.15,W*.85),rnd(H*.15,H*.6),COLS[Math.floor(Math.random()*6)]); var f=[523,659,784,988,1047,1319,1568,2093][i]; tone(f,f*1.003,.5,'sine',.07) },i*140) })(i); /* חן, 29.10.26: בסיום צלצולים נעימים, לא פיצוצים */
   setTimeout(function(){ ov.classList.remove('hidden'); card.innerHTML='<h2>'+DONE+'</h2><button class="btn" id="go">מְשַׂחֲקִים שׁוּב</button>'; document.getElementById('go').onclick=function(){ ov.classList.add('hidden'); start() }; say(DONE); try{window.WGEnd&&(WGEnd.replay=function(){var g=document.getElementById('go');g&&g.click()},WGEnd());}catch(e){} },1300) }
