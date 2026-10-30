@@ -120,5 +120,6 @@
  {"text": "דְּבוֹרָה", "nik": "דְּבוֹרָה", "game": "../wood/index.html?set=firstwords", "title": "פאזל עץ לפעוטות", "when": "כשמניחים חלק בפאזל העץ"},
  {"text": "שַׁבְּלוּל", "nik": "שַׁבְּלוּל", "game": "../wood/index.html?set=firstwords", "title": "פאזל עץ לפעוטות", "when": "כשמניחים חלק בפאזל העץ"},
  {"text": "קִפּוֹד", "nik": "קִפּוֹד", "game": "../wood/index.html?set=firstwords", "title": "פאזל עץ לפעוטות", "when": "כשמניחים חלק בפאזל העץ"},
- {"text": "חֲסִידָה", "nik": "חֲסִידָה", "game": "../wood/index.html?set=firstwords", "title": "פאזל עץ לפעוטות", "when": "כשמניחים חלק בפאזל העץ"}
+ {"text": "חֲסִידָה", "nik": "חֲסִידָה", "game": "../wood/index.html?set=firstwords", "title": "פאזל עץ לפעוטות", "when": "כשמניחים חלק בפאזל העץ"},
+ {"text": "אֵיפֹה יֵשׁ", "nik": "אֵיפֹה יֵשׁ", "game": "../play/index.html?g=ls_count_apples_fly&m=fly&k=1", "title": "איפה יש (ואחריו המספר)", "when": "לפני מספר, למשל \"איפה יש\" + \"שלוש\""}
 ]
