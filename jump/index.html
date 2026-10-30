@@ -79,7 +79,7 @@ function fit(){ stage.style.maxHeight=''; var r0=stage.getBoundingClientRect(); 
 addEventListener('resize',fit);
 /* ---------- שלב ---------- */
 var L=null, hero=null, cam=0, lives=5, li=0, items=[], tiles=[], pits=[], decor=[], door=null, parts=[], need=0, got=0, state='intro', tPrev=0, clock=0, shake=0;
-var G=1900, JV=760, SPD=150, GY=290; // כוח משיכה, מהירות קפיצה, מהירות הליכה, גובה הקרקע
+var G=1800, JV=820, SPD=150, GY=290; // כוח משיכה, מהירות קפיצה, מהירות הליכה, גובה הקרקע
 function rnd(a,b){return a+Math.random()*(b-a)}
 function shuffle(a){for(var i=a.length-1;i>0;i--){var j=Math.random()*(i+1)|0,t=a[i];a[i]=a[j];a[j]=t}return a}
 function build(lv){
@@ -190,7 +190,7 @@ function draw(){
   // דמות
   var hw=64, hh=64, bob=hero.on&&!(hero.wait>0)?Math.abs(Math.sin(hero.run))*5:0;
   if(state!=='ouch'||Math.floor(clock*12)%2){
-    cx.save(); cx.translate(hero.x,hero.y-bob); cx.scale((W.heroFlip?-1:1)*(2-hero.sq),hero.sq); cx.rotate(hero.on?0:-hero.face*.12);
+    cx.save(); cx.translate(hero.x,hero.y-bob); cx.scale(((/^(bee|hedgehog)$/.test(W.hero))?-1:1)*(2-hero.sq),hero.sq) /* חן, 30.10.26: הדמות תמיד מסתכלת ימינה (דבורה וקיפוד מצוירים שמאלה) */; cx.rotate(hero.on?0:-hero.face*.12);
     if(state==='ouch') cx.globalAlpha=.6; var hi=img(W.hero); if(hi) cx.drawImage(hi,-hw/2,-hh,hw,hh); cx.restore() }
   weather();
   // חלקיקים
