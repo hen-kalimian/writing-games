@@ -60,13 +60,13 @@ function popSnd(){ /* חן, 29.10.26: צליל נעים של בועה, לא פי
     g.gain.setValueAtTime(.0001,t); g.gain.exponentialRampToValueAtTime(h[1],t+.012); g.gain.exponentialRampToValueAtTime(.0001,t+.16); o.connect(g); g.connect(AC.destination); o.start(t); o.stop(t+.18) }) }
 function chime(i){ if(muted||!ac()) return; var f=[523,659,784,988,1047,1319,1568][i%7]; tone(f,f*1.003,.5,'sine',.07) }
 /* ---------- לוח משושה ---------- */
-function fit(){ var r=stage.getBoundingClientRect(); var dpr=Math.min(2,devicePixelRatio||1); cv.width=Math.round(r.width*dpr); cv.height=Math.round(r.height*dpr); W=r.width; H=r.height; R=W/(COLSN*2+1) }
+function fit(){ /* חן, 30.10.26: "ארוך ולכן נחתך ולא רואים למטה את האות": הלוח לא גבוה מפי 1.35 מהרוחב */ stage.style.flex=''; stage.style.height=''; var r0=stage.getBoundingClientRect(); if(r0.height>r0.width*1.35){ stage.style.flex='none'; stage.style.height=Math.round(r0.width*1.35)+'px' } var r=stage.getBoundingClientRect(); var dpr=Math.min(2,devicePixelRatio||1); cv.width=Math.round(r.width*dpr); cv.height=Math.round(r.height*dpr); W=r.width; H=r.height; R=W/(COLSN*2+1) }
 addEventListener('resize',function(){ fit() });
 function pos(r,c){ return {x:R+(c*2+(r%2))*R, y:R+r*R*1.74} }
 function cols(r){ return COLSN-(r%2) }
 function at(r,c){ return grid[r]&&grid[r][c] }
 function neigh(r,c){ var o=r%2?[[-1,0],[-1,1],[0,-1],[0,1],[1,0],[1,1]]:[[-1,-1],[-1,0],[0,-1],[0,1],[1,-1],[1,0]]; return o.map(function(d){return [r+d[0],c+d[1]]}).filter(function(p){return p[0]>=0&&p[1]>=0&&p[1]<cols(p[0])}) }
-function build(){ COLSN=easy?6:8; fit(); grid=[]; var POOL=SET.slice().sort(function(){return Math.random()-.5}).slice(0,Math.min(4,SET.length)); POOL.forEach(function(c,i){ CL[c]=COLS[(i*2)%COLS.length] }); /* בכל לוח: צבע שונה לכל אות */ /* בכל לוח לכל היותר 4 אותיות */ var rows=easy?3:5; for(var r=0;r<rows;r++){ grid[r]=[]; for(var c=0;c<cols(r);c++){ // קבוצות קטנות של אותה אות, כדי שתמיד יהיה במה לפגוע
+function build(){ COLSN=easy?6:8; fit(); grid=[]; var POOL=SET.slice().sort(function(){return Math.random()-.5}).slice(0,Math.min(4,SET.length)); POOL.forEach(function(c,i){ CL[c]=COLS[(i*2)%COLS.length] }); /* בכל לוח: צבע שונה לכל אות */ /* בכל לוח לכל היותר 4 אותיות */ var rows=Math.max(easy?3:4,Math.min(12,Math.floor(H*.5/(R*1.75)))); /* חן: "חצי עמוד בועות" */ for(var r=0;r<rows;r++){ grid[r]=[]; for(var c=0;c<cols(r);c++){ // קבוצות קטנות של אותה אות, כדי שתמיד יהיה במה לפגוע
       var ch=(c>0&&Math.random()<.3&&grid[r][c-1])?grid[r][c-1].ch:(r>0&&Math.random()<.22&&grid[r-1][c]?grid[r-1][c].ch:POOL[Math.floor(Math.random()*POOL.length)]); grid[r][c]={ch:ch,born:Math.random()*.4,col:CL[ch]} } } }
 function present(){ var s={}; grid.forEach(function(row){ row&&row.forEach(function(b){ if(b) s[b.ch]=1 }) }); return Object.keys(s) }
 function newCur(){ var p=present(); if(!p.length) return null; return p[Math.floor(Math.random()*p.length)] }
