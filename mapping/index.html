@@ -8,6 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&family=Rubik:wght@500;700;800&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="../hen-voice.js"></script>
 <style>
 :root{
   --bg:#fff8fa; --card:#ffffff; --ink:#2b3138; --muted:#6b6f78; --line:#f3d3de;
@@ -117,6 +118,55 @@ canvas.dc{width:100%;display:block;border:1.5px dashed var(--pink-strong);border
 .nwc input{text-align:center;font-size:.9rem}
 .sheet.fixed .nwgrid{grid-template-columns:repeat(6,1fr)}
 .sheet.fixed .nww{font-size:1.5rem}
+.wzentry p{margin:0}
+.wprog{display:flex;gap:6px;flex-wrap:wrap}
+.wd{width:26px;height:8px;border-radius:99px;background:var(--line)}
+.wd.ok{background:var(--pink2)} .wd.on{background:var(--pink-strong)}
+.frame{border-radius:18px;padding:10px}
+.frame.f0{border:3px dashed var(--pink-strong);background:#fff8fa}
+.frame.f1{border:3px solid #3aa57a;background:#f2fbf6;border-radius:30px}
+.frame.f2{border:3px dotted #4a90c2;background:#f1f8fd}
+.frame.f3{border:5px double #d9a21b;background:#fffaf0;border-radius:10px}
+.frame canvas.dc{border:0;background:transparent}
+.mkrow{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
+.mk{border:1.5px solid var(--line);background:#fff;border-radius:14px;padding:8px 14px;font-weight:800;font-size:1.05rem}
+.mk small{font-weight:600;font-size:.78rem;color:var(--muted)}
+.mk.on.v1{background:var(--mint);border-color:var(--mint-ink);color:var(--mint-ink)}
+.mk.on.v2{background:#ffe9b8;border-color:#8a5a00;color:#8a5a00}
+.mk.on.v3{background:#fde0e0;border-color:#c0392b;color:#c0392b}
+.lngrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
+.lnc{border:1.5px solid var(--line);border-radius:16px;padding:10px;display:flex;flex-direction:column;align-items:center;gap:8px;min-width:0}
+.lbig2{font-family:var(--head);font-weight:800;font-size:3.4rem;line-height:1.1;color:var(--pink-deep)}
+.lnc .mk{padding:5px 8px;font-size:.9rem}
+.tile{font-family:var(--head);font-weight:800;font-size:3rem;border:2px solid var(--line);background:#fff;color:var(--pink-deep);border-radius:20px;min-height:96px}
+.tile.good{background:var(--mint);border-color:var(--mint-ink);color:var(--mint-ink)}
+.tile.bad{background:#fde0e0;border-color:#c0392b;color:#c0392b}
+.presult{display:flex;flex-wrap:wrap;gap:8px}
+.pr{border-radius:999px;padding:4px 12px;font-weight:700;border:1.5px solid var(--line)}
+.pr.good{background:var(--mint);color:var(--mint-ink)} .pr.bad{background:#fde0e0;color:#c0392b}
+.think{align-items:center;text-align:center;padding:40px 16px}
+.thinkface{font-size:4.5rem;animation:bob 1s ease-in-out infinite}
+.dots{display:flex;gap:8px}.dots i{width:12px;height:12px;border-radius:50%;background:var(--pink-strong);animation:dot 1s infinite}
+.dots i:nth-child(2){animation-delay:.2s}.dots i:nth-child(3){animation-delay:.4s}
+@keyframes bob{50%{transform:translateY(-10px) rotate(6deg)}}
+@keyframes dot{0%,100%{opacity:.25}50%{opacity:1}}
+.sdet{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:4px 12px;font-size:.92rem}
+.stopnote{background:#fff3cd;border:1.5px solid #d9a21b;border-radius:12px;padding:8px 12px;font-size:.88rem}
+.sgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.sec.good{color:var(--mint-ink)} .sec.hard{color:#8a5a00}
+.sgrid ul{margin:2px 0 0;padding-inline-start:18px;font-size:.85rem}
+.sgrid ul.ok li::marker{color:var(--mint-ink);content:'✓ '} .sgrid ul.no li::marker{color:#8a5a00;content:'• '}
+.sline{font-size:.88rem;line-height:1.5}
+.sNote{white-space:pre-wrap;font-size:.88rem;line-height:1.5}
+.sImg{max-width:100%;height:auto;border:1px solid var(--line);border-radius:8px;display:block}
+.sPad{display:flex;flex-direction:column;gap:2px}
+.lsum{display:grid;grid-template-columns:repeat(auto-fit,minmax(112px,1fr));gap:8px}
+.lres{border:1.5px solid var(--line);border-radius:12px;padding:6px;display:flex;flex-direction:column;align-items:center;gap:3px;font-size:.78rem}
+.lbig{font-family:var(--head);font-weight:800;font-size:1.8rem;color:var(--pink-deep);line-height:1.1}
+.lline{display:flex;gap:6px;align-items:center}
+.lline b{min-width:18px;text-align:center}.lline b.g{color:var(--mint-ink)}.lline b.h{color:#8a5a00}.lline b.x{color:#c0392b}
+.sumsheet.fixed{font-size:12.5px}
+.sumsheet.fixed .lsum{grid-template-columns:repeat(8,1fr)}
 .rights{text-align:center;font-size:.72rem;color:var(--muted);line-height:1.6;padding-top:4px}
 .sheet .rights{font-size:.7rem;padding-top:0}
 .sheet .lt{width:40px;font-size:1.15rem;padding:3px 0;border-radius:11px}
@@ -354,47 +404,58 @@ function kbSheetHtml(m) {
 </div>`;
 }
 
-function sheetHtml(m) {
-  return `<div class="sheet" id="sheet">
-  <div class="title">דף מלווה מיפוי – הכנה לכיתה א׳</div>
-  <div class="sub">מיפוי לילדי גן חובה · שיעור 9 בהכשרה המקצועית · חן קלימיאן, לדבר עם ילדים</div>
-  <div class="meta">
+function lp(m) {
+  return {
+    meta: `<div class="meta">
     <div class="field"><label>שם הילד/ה</label>${tx('name', m)}</div>
     <div class="field"><label>גיל</label>${tx('age', m)}</div>
     <div class="field"><label>תאריך</label><input type="date" data-p="date" value="${esc(m.date)}"></div>
     <div class="field"><label>מסגרת חינוכית</label>${tx('school', m)}</div>
-  </div>
-  <div class="panel"><h3>תובנות משיחת ההורים</h3>${ta('parents', m, true)}</div>
-  <div class="grid2">
-    <div class="panel"><h3><span class="num n1">1</span>משימה 1 – כתיבת שם</h3>
+  </div>`,
+    parents: `<div class="panel"><h3>תובנות משיחת ההורים</h3>${ta('parents', m, true)}</div>`,
+    t1: `<div class="panel"><h3><span class="num n1">1</span>משימה 1 – כתיבת שם</h3>
       <div class="note">הוראה: כתוב/כתבי לי את השם שלך. הילד/ה כותב/ת כאן באצבע או בעט מגע.</div>
       ${pad('t1.draw', 380, 'כאן הילד/ה כותב/ת את השם')}
       <div class="sec">מה הילד/ה מצליח/ה ללא קושי?</div>
       <div class="cbs">${T1.map((t, i) => cb('t1.c.' + i, t, m)).join('')}</div>
       <div class="field"><label>שאלה נלווית: אילו אותיות יש לך בשם?</label>${tx('t1.ask', m)}</div>
       <div class="field"><label>הערות</label>${ta('t1.note', m, false)}</div>
-    </div>
-    <div class="panel"><h3><span class="num n2">2</span>משימה 2 – כתיבה פונטית</h3>
+    </div>`,
+    t2: `<div class="panel"><h3><span class="num n2">2</span>משימה 2 – כתיבה פונטית</h3>
       <div class="note noexp">הוראה: כתוב/כתבי את המילים לפי האיורים. בוחרים רמה, ואז נפתחים האיורים והמשטחים לכתיבה. הילד/ה רואה רק איורים.</div>
       <div class="lvls noexp noprint">${['easy', 'hard'].map(k => `<button type="button" class="lvl${m.t2.lv === k ? ' on' : ''}" data-act="lvl" data-lv="${k}"><b>${LVL[k].t}</b><span class="pics">${LVL[k].w.map(x => picImg(x[1], 'pic sm', x[0])).join('')}</span></button>`).join('')}</div>
       ${(m.t2.lv || m.t2.w.some(Boolean)) ? [0, 1, 2].map(i => { const lv = m.t2.lv && LVL[m.t2.lv], pk = lv ? lv.w[i][1] : ''; return `<div class="wblock"><div class="wtop">${pk ? picImg(pk, 'pic big', lv.w[i][0]) : ''}<div class="field wbig"><label>מילה ${i + 1}</label>${tx('t2.w.' + i, m)}</div></div>${pad('t2.d.' + i, 230, 'הילד/ה כותב/ת כאן')}</div>`; }).join('') : '<div class="note noexp">עוד לא נבחרה רמה</div>'}
       <div class="field"><label>הערות</label>${ta('t2.note', m, false)}</div>
-    </div>
-    <div class="panel"><h3><span class="num n3">3</span>משימה 3 – חשבון</h3>
+    </div>`,
+    t3: `<div class="panel"><h3><span class="num n3">3</span>משימה 3 – חשבון</h3>
       <div class="sec">מה הילד/ה מצליח/ה ללא קושי?</div>
       <div class="cbs">${T3.map((t, i) => cb('t3.c.' + i, t, m)).join('')}</div>
       ${ex('t3.e1', m, 'פתרון תרגיל חיבור עד 10')}
       ${ex('t3.e2', m, 'תרגיל חשבון עד 5')}
       <div class="field"><label>הערות</label>${ta('t3.note', m, false)}</div>
-    </div>
-    <div class="panel"><h3><span class="num n4">4</span>משימה 4 – למידה חדשה בזמן אמת</h3>
+    </div>`,
+    t4: `<div class="panel"><h3><span class="num n4">4</span>משימה 4 – למידה חדשה בזמן אמת</h3>
       <div class="sec">דוגמאות לשאלות למידה:</div>
       <div class="chips noexp">${['פתח', 'קמץ', 'אות חדשה', 'אחר'].map(q => `<button type="button" class="wc" data-act="q" data-w="${q}">${q}</button>`).join('')}</div>
       <div class="field"><label>מה לימדנו?</label>${tx('t4.q', m)}</div>
       <div class="sec">מה בודקים?</div>
       <div class="cbs two">${T4.map((t, i) => cb('t4.c.' + i, t, m)).join('')}</div>
       <div class="field"><label>איך הילד/ה הגיב/ה?</label>${ta('t4.how', m, true)}</div>
-    </div>
+    </div>`
+  };
+}
+function sheetHtml(m) {
+  const P = lp(m);
+  return `<div class="sheet" id="sheet">
+  <div class="title">דף מלווה מיפוי – הכנה לכיתה א׳</div>
+  <div class="sub">מיפוי לילדי גן חובה · שיעור 9 בהכשרה המקצועית · חן קלימיאן, לדבר עם ילדים</div>
+  ${P.meta}
+  ${P.parents}
+  <div class="grid2">
+    ${P.t1}
+    ${P.t2}
+    ${P.t3}
+    ${P.t4}
   </div>
   ${sumHtml(m)}
   <div class="rights">כל הזכויות שמורות לחן קלימיאן</div>
@@ -409,6 +470,8 @@ function renderMap() {
   if (!m) {
     h += `<div class="card noprint"><h2>עוד אין מיפוי</h2><p class="note">${kind === 'kb' ? 'לחצי על "מיפוי חדש" כדי לפתוח את המיפוי לילדי כיתות א׳-ב׳: אותיות, ניקוד, כתיבה בהכתבה, קריאה בקול, קריאת מילות תפל וסיכום.' : 'לחצי על "מיפוי חדש" כדי לפתוח את הדף. הוא מיפוי לילדי גן חובה לפי קובץ המיפוי של שיעור 9: שיחת הורים, ארבע משימות וסיכום.'}</p><div><button class="btn solid" type="button" data-act="newMap" data-kind="${kind}">מיפוי חדש</button></div></div>`;
   } else {
+    if (kind === 'l9' && m.wz && m.wz.on) h += wizScreen(m); else {
+    if (kind === 'l9') h += wizEntry(m);
     h += kind === 'kb' ? kbSheetHtml(m) : sheetHtml(m);
     h += `<div class="card noprint"><h2>שמירה והדפסה</h2><div class="actions">
       <button class="btn" type="button" data-act="print">הדפסה או שמירה כ-PDF</button>
@@ -416,6 +479,7 @@ function renderMap() {
       ${kind === 'kb' ? '' : `<a class="btn mint" style="text-decoration:none" href="${DOC_COPY}" target="_blank" rel="noopener">פתיחת תבנית דוח סיכום להורים</a>`}</div>
       <p class="note">בחלון ההדפסה בוחרים "שמירה כ-PDF" כיעד. הדף יוצא על עמוד A4 אחד.${kind === 'kb' ? '' : '<br>התבנית של הדוח להורים נפתחת כעותק משלך ב-Google Docs.'}</p>
       <div class="row"><button class="btn danger sm" type="button" data-act="delMap" id="delMap">מחיקת המיפוי הזה</button></div></div>`;
+    }
   }
   $('main').innerHTML = h;
   initCanvases();
@@ -581,6 +645,7 @@ document.addEventListener('click', e => {
   else if (a === 'padmode') { const d = b.dataset.d; if (!m.pm) m.pm = {}; m.pm[d] = Object.assign(m.pm[d] || {}, { mode: b.dataset.mode }); touch(m, 'map:' + m.id); const y = scrollY; renderMap(); scrollTo(0, y); }
   else if (a === 'padcam' || a === 'padgal') { pickPhoto(b.dataset.d, a === 'padcam'); }
   else if (a === 'padrm') { const d = b.dataset.d; if (m.pm && m.pm[d]) { m.pm[d].img = ''; touch(m, 'map:' + m.id); const y = scrollY; renderMap(); scrollTo(0, y); } }
+  else if (a.indexOf('wz') === 0) { wzAct(a, b, m); }
   else if (a === 'print') { window.print(); }
   else if (a === 'png') { exportPng(); }
   else if (a === 'undo') { const s = strokes(b.dataset.d); if (s.length) { s.pop(); touch(m, 'map:' + m.id); drawCanvas(document.querySelector('canvas[data-d="' + b.dataset.d + '"]')); } }
@@ -620,6 +685,7 @@ function pickPhoto(path, camera) {
 }
 document.addEventListener('input', e => {
   const el = e.target, p = el.dataset.p;
+  if (el.dataset.wn) { const m = curMap(); if (!m) return; if (!m.wn) m.wn = {}; m.wn[el.dataset.wn] = el.value; touch(m, 'map:' + m.id); return; }
   if (el.dataset.pn) { const m = curMap(); if (!m) return; if (!m.pm) m.pm = {}; m.pm[el.dataset.pn] = Object.assign(m.pm[el.dataset.pn] || { mode: 'note' }, { note: el.value }); touch(m, 'map:' + m.id); return; }
   if (p) { const m = curMap(); if (!m) return; setP(m, p, el.type === 'checkbox' ? (el.checked ? 1 : 0) : el.value); touch(m, 'map:' + m.id); if (p === 'name') { const chip = document.querySelector('.chip.on'); if (chip) chip.textContent = (el.value || 'ילד/ה ללא שם') + ' · ' + fmt(m.date); } return; }
   const k = el.dataset.k; if (k) { const c = curKid(); if (!c) return; c[k] = el.value; touch(c, 'children'); if (k === 'name') { const chip = document.querySelector('.chip.on'); if (chip) chip.textContent = el.value || 'ילד/ה'; } }
@@ -713,6 +779,190 @@ document.addEventListener('click', async e => {
     S = { maps: [], children: [], tab: S.tab, mapId: null, kbId: null, childId: null, stage: 'num' }; mem = null; render(); toast('התנתקת, והנתונים הוסרו מהמכשיר הזה (הם שמורים בחשבון)');
   }
 });
+
+/* ===================== מיפוי מודרך לגן חובה (מסך אחר מסך) ===================== */
+const WSTEPS = [['meta', 'פרטי הילד/ה'], ['parents', 'שיחת הורים'], ['t1', 'משימה 1: כתיבת שם'], ['t2', 'משימה 2: כתיבה פונטית'], ['t3', 'משימה 3: חשבון'], ['t4', 'משימה 4: למידה חדשה'], ['lw', 'כתיבת אותיות בהכתבה'], ['ln', 'איזו אות זו?'], ['lp', 'הצבעה על אות'], ['fin', 'סיום ושם הבוחנת']];
+const WIDX = k => WSTEPS.findIndex(x => x[0] === k);
+const MKS = [[1, '✓', 'כתב/ה נכון'], [2, '◐', 'בעזרה'], [3, '✗', 'לא הצליח/ה']];
+const SYMX = { 1: '✓', 2: '◐', 3: '✗' };
+const FINALS = { 'ך': 'כ', 'ם': 'מ', 'ן': 'נ', 'ף': 'פ', 'ץ': 'צ' };
+const ALLL = 'אבגדהוזחטיכלמנסעפצקרשת'.split('');
+const stripNik = t => String(t).replace(/[֑-ׇ]/g, '');
+function shuf(a) { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); const t = a[i]; a[i] = a[j]; a[j] = t; } return a; }
+/* 8 אותיות באקראי, רק כאלה שלא הופיעו במילים של משימה 2 (כתיב פונטי) */
+function pickLetters(m) {
+  const lv = m.t2 && m.t2.lv ? LVL[m.t2.lv] : null, used = new Set();
+  (lv ? lv.w : []).forEach(x => x[0].split('').forEach(c => used.add(FINALS[c] || c)));
+  const pool = ALLL.filter(l => !used.has(l));
+  return shuf(pool.length >= 8 ? pool : ALLL).slice(0, 8);
+}
+function ensureLt(m) {
+  if (!m.lt) { const L = pickLetters(m); m.lt = { L, i: 0, wr: {}, nm: {}, pt: {}, pc: {}, order: shuf(L), grid: shuf(L), pi: 0, d: {} }; L.forEach(l => { m.lt.d[l] = []; }); }
+  return m.lt;
+}
+
+/* ===== קול: ההקלטות של חן קודם, אחר כך הקול המכני, ובסוף קול הדפדפן ===== */
+let curAudio = null;
+function playUrl(u) { return new Promise(res => { try { if (curAudio) curAudio.pause(); const a = new Audio(u); curAudio = a; a.onended = () => res(true); a.onerror = () => res(false); const pr = a.play(); if (pr && pr.catch) pr.catch(() => res(false)); } catch (e) { res(false); } }); }
+function speakHe(t) { return new Promise(res => { try { if (!window.speechSynthesis) return res(); speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(t); u.lang = 'he-IL'; u.onend = res; u.onerror = res; speechSynthesis.speak(u); } catch (e) { res(); } }); }
+function sayText(text, plain, fb) {
+  return new Promise(res => {
+    const done = async u => { const ok = u ? await playUrl(u) : false; if (!ok) await speakHe(plain || stripNik(text)); res(); };
+    if (window.HenVoice) HenVoice.url(text, fb || null, done); else done(null);
+  });
+}
+async function sayLetter(l) {
+  const nm = window.HenVoice ? HenVoice.letterName(l) : '';
+  const fb = nm ? '../play/assets/tts/' + HenVoice.key(nm) + '.mp3' : null;
+  await sayText(nm || l, stripNik(nm || l), fb);
+}
+const ASK = { w: 'כתבו את האות', p: 'איפה האות', n: 'אילו אותיות אתם רואים כאן' };
+async function sayAsk(kind, l) { await sayText(ASK[kind]); if (l) await sayLetter(l); }
+
+/* ===== מסכים ===== */
+const FRAMES = ['f0', 'f1', 'f2', 'f3'];
+function wizEntry(m) {
+  const w = m.wz, resume = w && w.step > 0;
+  return `<div class="card noprint wzentry"><h2>מיפוי מודרך, מסך אחר מסך</h2>
+    <p class="note">${resume ? 'המיפוי נעצר במסך ' + (w.step + 1) + ' מתוך ' + WSTEPS.length + ' (' + esc(WSTEPS[w.step][1]) + '). אפשר להמשיך מהמקום שעצרת.' : 'עוברים עם הילד/ה משימה אחרי משימה, כולל כתיבת אותיות בהכתבה, זיהוי והצבעה. בסוף נבנה דף סיכום להדפסה. אפשר לעצור בכל רגע ולהמשיך בפעם הבאה.'}</p>
+    <div class="row"><button class="btn solid" type="button" data-act="wzStart">${resume ? 'המשך מיפוי מודרך' : 'התחלת מיפוי מודרך'}</button></div></div>`;
+}
+function wizProg(m) {
+  const i = m.wz.step;
+  return `<div class="card noprint wzhead"><div class="wprog">${WSTEPS.map((s, j) => `<span class="wd${j === i ? ' on' : j < i ? ' ok' : ''}" title="${esc(s[1])}"></span>`).join('')}</div><div class="note">מסך ${i + 1} מתוך ${WSTEPS.length}: ${esc(WSTEPS[i][1])}</div></div>`;
+}
+function wnField(m, key, label) {
+  return `<div class="card noprint"><div class="field"><label>${label || 'הערות תוך כדי. אם הילד/ה מתקשה, אפשר לעצור'}</label><textarea data-wn="${key}">${esc((m.wn || {})[key] || '')}</textarea></div></div>`;
+}
+function wizControls(m, opts) {
+  opts = opts || {};
+  return `<div class="card noprint wzctl"><div class="row"><button class="btn" type="button" data-act="${opts.back || 'wzBack'}">חזרה</button>${opts.noNext ? '' : `<button class="btn solid" type="button" data-act="${opts.next || 'wzNext'}">${opts.nextLabel || 'המשך'}</button>`}</div>
+    <div class="row"><button class="btn quiet" type="button" data-act="wzPause">שמירה ויציאה, להמשיך בפעם הבאה</button><button class="btn danger" type="button" data-act="wzStop">הילד/ה מתקשה, עצרי ועברי לסיכום</button></div></div>`;
+}
+function mkRow(cur, act, attrs) {
+  return `<div class="mkrow">${MKS.map(x => `<button type="button" class="mk${cur === x[0] ? ' on v' + x[0] : ''}" data-act="${act}" data-v="${x[0]}" ${attrs}>${x[1]} <small>${x[2]}</small></button>`).join('')}</div>`;
+}
+function wizScreen(m) {
+  const w = m.wz;
+  if (w.phase === 'think' && !window.__thinkT) w.phase = 'sum';
+  if (w.phase === 'think') return `<div class="card think"><div class="thinkface">🤔</div><h2>מכינה את דף הסיכום...</h2><div class="dots"><i></i><i></i><i></i></div></div>`;
+  if (w.phase === 'sum') {
+    return summaryHtml(m) + `<div class="card noprint"><h2>שמירה והדפסה</h2><div class="actions"><button class="btn solid" type="button" data-act="png">שמירה כקובץ תמונה A4 (הכול בעמוד אחד)</button><button class="btn" type="button" data-act="print">הדפסה או שמירה כ-PDF</button></div>
+      <div class="row"><button class="btn quiet" type="button" data-act="wzEdit">חזרה לעריכה</button><button class="btn quiet" type="button" data-act="wzDone">סיום ויציאה לדף המיפוי</button></div></div>`;
+  }
+  const i = w.step, key = WSTEPS[i][0], P = lp(m);
+  let body = '', ctl = wizControls(m);
+  if (key === 'meta') body = `<div class="card"><h2>פרטי הילד/ה</h2>${P.meta}</div>`;
+  else if (key === 'parents') body = `<div class="card">${P.parents}</div>`;
+  else if (key === 't1' || key === 't2' || key === 't3' || key === 't4') body = `<div class="card">${P[key]}</div>`;
+  else if (key === 'lw') {
+    const lt = ensureLt(m), n = lt.i, l = lt.L[n], cur = lt.wr[l] || 0;
+    body = `<div class="card"><div class="panel"><h3><span class="num n1">${n + 1}</span>כתיבת אות ${n + 1} מתוך ${lt.L.length}</h3>
+      <div class="note">לחצי על "השמעה" כדי להשמיע לילד/ה "כתבו את האות...". הילד/ה כותב/ת במסגרת למטה, ואחר כך מסמנים. האות שנשמעת: <b>${l}</b> (${esc(stripNik(window.HenVoice ? HenVoice.letterName(l) : l))})</div>
+      <div class="row"><button class="btn mint" type="button" data-act="wzSay" data-kind="w" data-l="${l}">השמעה שוב: כתבו את האות</button></div>
+      <div class="frame ${FRAMES[n % 4]}">${pad('lt.d.' + l, 320, '')}</div>
+      ${mkRow(cur, 'wzMark', 'data-l="' + l + '"')}</div></div>` + wnField(m, 'lw' + n);
+    ctl = wizControls(m, { back: 'wzLback', next: 'wzLnext', nextLabel: n < lt.L.length - 1 ? 'האות הבאה' : 'לשלב הבא' });
+  } else if (key === 'ln') {
+    const lt = ensureLt(m);
+    body = `<div class="card"><div class="panel"><h3><span class="num n2">8</span>אילו אותיות אתה רואה כאן?</h3>
+      <div class="note">מראים לילד/ה את המסך ושואלים: "אילו אותיות אתה רואה כאן?". לכל אות מסמנים אם נקראה בשמה.</div>
+      <div class="row"><button class="btn mint" type="button" data-act="wzSay" data-kind="n" data-l="">השמעת השאלה</button></div>
+      <div class="lngrid">${lt.L.map(l => `<div class="lnc"><div class="lbig2">${l}</div>${mkRow(lt.nm[l] || 0, 'wzNm', 'data-l="' + l + '"')}</div>`).join('')}</div></div></div>` + wnField(m, 'ln');
+  } else if (key === 'lp') {
+    const lt = ensureLt(m), done = lt.pi >= lt.order.length, target = lt.order[lt.pi];
+    body = `<div class="card"><div class="panel"><h3><span class="num n3">9</span>הצבעה על אות</h3>
+      <div class="note">${done ? 'הילד/ה סיים/ה. אלה התוצאות:' : 'השמעה: "איפה האות...". הילד/ה לוחץ/ת על האות במסך. המערכת מסמנת לבד נכון או לא נכון. האות המבוקשת כעת: <b>' + target + '</b> (' + (lt.pi + 1) + ' מתוך ' + lt.order.length + ')'}</div>
+      ${done ? '' : `<div class="row"><button class="btn mint" type="button" data-act="wzSay" data-kind="p" data-l="${target}">השמעה שוב: איפה האות</button></div>`}
+      <div class="lngrid">${lt.grid.map(l => { const r = lt.pt[l], picked = Object.keys(lt.pc).filter(k => lt.pc[k] === l).length; return `<button type="button" class="tile${r === 1 ? ' good' : ''}${r === 3 ? ' bad' : ''}" data-act="wzPick" data-l="${l}"${done ? ' disabled' : ''}>${l}</button>`; }).join('')}</div>
+      ${done ? `<div class="presult">${lt.order.map(l => `<span class="pr ${lt.pt[l] === 1 ? 'good' : 'bad'}">${l} ${lt.pt[l] === 1 ? '✓' : '✗ (הצביע/ה על ' + (lt.pc[l] || '?') + ')'}</span>`).join('')}</div><div class="row"><button class="btn quiet" type="button" data-act="wzPreset">לחזור על ההצבעה מההתחלה</button></div>` : ''}</div></div>` + wnField(m, 'lp');
+  } else if (key === 'fin') {
+    body = `<div class="card"><h2>סיום המיפוי</h2><p class="note">מלאי את הסיכום, המלצות להמשך ושם הבוחנת. אחר כך לחצי על "הצג סיכום".</p>${sumHtml(m)}<div class="field"><label>שם הבוחנת</label>${tx('examiner', m)}</div></div>`;
+    ctl = wizControls(m, { next: 'wzShow', nextLabel: 'הצג סיכום' });
+  }
+  return wizProg(m) + body + ctl;
+}
+
+/* ===== דף הסיכום ===== */
+function strokeImg(st, W, H) {
+  if (!st || !st.length) return '';
+  const c = document.createElement('canvas'); c.width = W; c.height = H;
+  const g = c.getContext('2d'); g.fillStyle = '#fff'; g.fillRect(0, 0, W, H);
+  g.strokeStyle = '#2b3138'; g.lineWidth = Math.max(2, W / 110); g.lineCap = 'round'; g.lineJoin = 'round';
+  st.forEach(s => { g.beginPath(); s.forEach((pt, i) => { const x = pt[0] / 1000 * W, y = pt[1] / 1000 * H; if (i) g.lineTo(x, y); else g.moveTo(x, y); }); if (s.length === 1) g.lineTo(s[0][0] / 1000 * W + 0.1, s[0][1] / 1000 * H); g.stroke(); });
+  return `<img class="sImg" src="${c.toDataURL('image/png')}" alt="">`;
+}
+function padOut(m, path, h, label) {
+  const pm = (m.pm && m.pm[path]) || {}, mode = pm.mode || 'draw';
+  let c = '';
+  if (mode === 'photo') c = pm.img ? `<img class="sImg" src="${pm.img}" alt="">` : '';
+  else if (mode === 'note') c = pm.note ? `<div class="sNote">${esc(pm.note)}</div>` : '';
+  else c = strokeImg(getP(m, path), 300, Math.round(300 * h / 1000));
+  return c ? `<div class="sPad">${label ? `<span class="lbl">${esc(label)}</span>` : ''}${c}</div>` : '';
+}
+function checks(arr, prefix, m) { const ok = [], no = []; arr.forEach((t, i) => (getP(m, prefix + '.' + i) ? ok : no).push(t)); return [ok, no]; }
+function summaryHtml(m) {
+  const w = m.wz || {}, lt = m.lt, t2 = m.t2 || { w: [] };
+  const [a1, b1] = checks(T1, 't1.c', m), [a3, b3] = checks(T3, 't3.c', m), [a4, b4] = checks(T4, 't4.c', m);
+  const li = (arr, cls) => arr.length ? `<ul class="${cls}">${arr.map(x => `<li>${esc(x)}</li>`).join('')}</ul>` : '<div class="note">אין</div>';
+  const two = (ok, no) => `<div class="sgrid"><div><div class="sec good">הצלחות</div>${li(ok, 'ok')}</div><div><div class="sec hard">לא סומן כהצלחה</div>${li(no, 'no')}</div></div>`;
+  const txt = (label, v) => v ? `<div class="sline"><b>${esc(label)}:</b> ${esc(v)}</div>` : '';
+  const stCls = v => v === 1 ? 'g' : v === 2 ? 'h' : v === 3 ? 'x' : '';
+  const notes = Object.keys(m.wn || {}).filter(k => (m.wn[k] || '').trim()).map(k => { const nm = k.indexOf('lw') === 0 ? 'אות ' + (+k.slice(2) + 1) : (WSTEPS[WIDX(k)] || [k, k])[1]; return `<div class="sline"><b>${esc(nm)}:</b> ${esc(m.wn[k])}</div>`; }).join('');
+  const recs = (m.s && m.s.r ? SR.filter((x, i) => m.s.r[i]) : []);
+  const lres = lt ? `<div class="lsum">${lt.L.map(l => `<div class="lres"><div class="lbig">${l}</div><div class="lline">כתיבה <b class="${stCls(lt.wr[l])}">${SYMX[lt.wr[l]] || '○'}</b></div><div class="lline">שם האות <b class="${stCls(lt.nm[l])}">${SYMX[lt.nm[l]] || '○'}</b></div><div class="lline">הצבעה <b class="${lt.pt[l] === 1 ? 'g' : lt.pt[l] === 3 ? 'x' : ''}">${lt.pt[l] === 1 ? '✓' : lt.pt[l] === 3 ? '✗' : '○'}</b></div>${strokeImg(lt.d[l], 110, 70)}</div>`).join('')}</div>` : '<div class="note">לא בוצע שלב אותיות</div>';
+  return `<div class="sheet sumsheet" id="sheet">
+  <div class="title">סיכום מיפוי: הכנה לכיתה א׳</div>
+  <div class="sub">מיפוי לילדי גן חובה · חן קלימיאן, לדבר עם ילדים</div>
+  <div class="sdet"><div><b>שם:</b> ${esc(m.name)}</div><div><b>גיל:</b> ${esc(m.age)}</div><div><b>תאריך:</b> ${fmt(m.date)}</div><div><b>מסגרת:</b> ${esc(m.school)}</div><div><b>הבוחנת:</b> ${esc(m.examiner)}</div></div>
+  ${w.stopped ? `<div class="stopnote">המיפוי הופסק במסך "${esc((WSTEPS[WIDX(w.stopped)] || ['', w.stopped])[1])}" כי הילד/ה התקשה. הנתונים כוללים את מה שבוצע עד אז.</div>` : ''}
+  ${m.parents ? `<div class="panel"><h3>תובנות משיחת ההורים</h3><div class="sNote">${esc(m.parents)}</div></div>` : ''}
+  <div class="grid2">
+    <div class="panel"><h3><span class="num n1">1</span>כתיבת שם</h3>${padOut(m, 't1.draw', 380)}${two(a1, b1)}${txt('אותיות בשם', m.t1 && m.t1.ask)}${txt('הערות', m.t1 && m.t1.note)}</div>
+    <div class="panel"><h3><span class="num n2">2</span>כתיבה פונטית${t2.lv ? ' · ' + LVL[t2.lv].t : ''}</h3>${[0, 1, 2].map(i => t2.w[i] ? `<div class="sline"><b>${esc(t2.w[i])}</b></div>${padOut(m, 't2.d.' + i, 230)}` : '').join('')}${txt('הערות', t2.note)}</div>
+    <div class="panel"><h3><span class="num n3">3</span>חשבון</h3>${two(a3, b3)}${txt('הערות', m.t3 && m.t3.note)}</div>
+    <div class="panel"><h3><span class="num n4">4</span>למידה חדשה בזמן אמת</h3>${txt('מה לימדנו', m.t4 && m.t4.q)}${two(a4, b4)}${txt('איך הגיב/ה', m.t4 && m.t4.how)}</div>
+  </div>
+  <div class="panel"><h3>אותיות: כתיבה בהכתבה, שם האות והצבעה</h3>${lres}</div>
+  ${notes ? `<div class="panel"><h3>הערות שנכתבו תוך כדי</h3>${notes}</div>` : ''}
+  <div class="panel"><h3>סיכום ומסקנות</h3>${txt('נקודות חוזק', m.s && m.s.strong)}${txt('מוקדי קושי', m.s && m.s.hard)}${txt('מטרות ראשוניות', m.s && m.s.goals)}${txt('המלצות להורים', m.s && m.s.recs)}${recs.length ? `<div class="sline"><b>המלצות להמשך:</b> ${recs.map(esc).join(', ')}</div>` : ''}${txt('הערות', m.s && m.s.note)}</div>
+  <div class="rights">כל הזכויות שמורות לחן קלימיאן</div>
+</div>`;
+}
+
+/* ===== פעולות ===== */
+function wzGo(m, step) {
+  m.wz.step = Math.max(0, Math.min(WSTEPS.length - 1, step)); m.wz.phase = null;
+  const key = WSTEPS[m.wz.step][0];
+  if (key === 'lw' || key === 'ln' || key === 'lp') ensureLt(m);
+  touch(m, 'map:' + m.id); renderMap(); window.scrollTo(0, 0);
+  if (key === 'lw') sayAsk('w', m.lt.L[m.lt.i]);
+  else if (key === 'lp' && m.lt.pi < m.lt.order.length) sayAsk('p', m.lt.order[m.lt.pi]);
+}
+function wzAct(a, b, m) {
+  if (!m) return;
+  const keep = fn => { const y = scrollY; fn(); touch(m, 'map:' + m.id); renderMap(); scrollTo(0, y); };
+  if (a === 'wzStart') { if (!m.wz) m.wz = { step: 0 }; m.wz.on = true; m.wz.phase = null; wzGo(m, m.wz.step); }
+  else if (a === 'wzNext') wzGo(m, m.wz.step + 1);
+  else if (a === 'wzBack') wzGo(m, m.wz.step - 1);
+  else if (a === 'wzPause') { m.wz.on = false; touch(m, 'map:' + m.id); renderMap(); window.scrollTo(0, 0); toast('המיפוי נשמר. אפשר להמשיך בכל זמן מהלחצן "המשך מיפוי מודרך"'); }
+  else if (a === 'wzStop') { m.wz.stopped = WSTEPS[m.wz.step][0]; wzGo(m, WIDX('fin')); toast('עברנו לסיום. מלאי את הסיכום ולחצי "הצג סיכום"'); }
+  else if (a === 'wzSay') { sayAsk(b.dataset.kind, b.dataset.l || null); }
+  else if (a === 'wzMark') { const l = b.dataset.l, v = +b.dataset.v; keep(() => { if (m.lt.wr[l] === v) delete m.lt.wr[l]; else m.lt.wr[l] = v; }); }
+  else if (a === 'wzNm') { const l = b.dataset.l, v = +b.dataset.v; keep(() => { if (m.lt.nm[l] === v) delete m.lt.nm[l]; else m.lt.nm[l] = v; }); }
+  else if (a === 'wzLnext') { const lt = m.lt; if (lt.i < lt.L.length - 1) { lt.i++; touch(m, 'map:' + m.id); renderMap(); window.scrollTo(0, 0); sayAsk('w', lt.L[lt.i]); } else wzGo(m, m.wz.step + 1); }
+  else if (a === 'wzLback') { const lt = m.lt; if (lt.i > 0) { lt.i--; touch(m, 'map:' + m.id); renderMap(); window.scrollTo(0, 0); } else wzGo(m, m.wz.step - 1); }
+  else if (a === 'wzPick') {
+    const lt = m.lt; if (lt.pi >= lt.order.length) return;
+    const target = lt.order[lt.pi], l = b.dataset.l; lt.pc[target] = l; lt.pt[target] = l === target ? 1 : 3; lt.pi++;
+    touch(m, 'map:' + m.id); renderMap();
+    if (lt.pi < lt.order.length) setTimeout(() => sayAsk('p', lt.order[lt.pi]), 500);
+  }
+  else if (a === 'wzPreset') { keep(() => { m.lt.pi = 0; m.lt.pt = {}; m.lt.pc = {}; m.lt.order = shuf(m.lt.L); m.lt.grid = shuf(m.lt.L); }); sayAsk('p', m.lt.order[0]); }
+  else if (a === 'wzShow') { window.__thinkT = true; m.wz.phase = 'think'; touch(m, 'map:' + m.id); renderMap(); window.scrollTo(0, 0); setTimeout(() => { window.__thinkT = false; if (curMap() === m && m.wz.phase === 'think') { m.wz.phase = 'sum'; touch(m, 'map:' + m.id); renderMap(); window.scrollTo(0, 0); } }, 2300); }
+  else if (a === 'wzEdit') { m.wz.phase = null; m.wz.step = WIDX('fin'); touch(m, 'map:' + m.id); renderMap(); window.scrollTo(0, 0); }
+  else if (a === 'wzDone') { m.wz.on = false; m.wz.phase = null; touch(m, 'map:' + m.id); renderMap(); window.scrollTo(0, 0); }
+}
 
 /* ===================== פתיחה ===================== */
 load();
