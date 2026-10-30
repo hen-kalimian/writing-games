@@ -74,7 +74,12 @@ textarea{resize:vertical;min-height:64px}
 .cbs.two{display:grid;grid-template-columns:1fr 1fr;gap:5px 10px}
 .sec{font-weight:700;font-size:.85rem;color:var(--pink-deep)}
 .pad{display:flex;flex-direction:column;gap:4px}
-canvas.dc{width:100%;display:block;border:1.5px dashed var(--pink-strong);border-radius:12px;background:#fffdfd;touch-action:none;cursor:crosshair}
+canvas.dc{width:100%;display:block;border:1.5px dashed var(--pink-strong);border-radius:12px;background:#fffdfd;touch-action:none;cursor:crosshair;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;overscroll-behavior:contain}
+.modes{display:flex;flex-wrap:wrap;gap:5px}
+.mdb{border:1.5px solid var(--line);background:#fff;border-radius:999px;padding:2px 10px;font-size:.78rem;font-weight:600;color:var(--muted)}
+.mdb.on{background:var(--pink);border-color:var(--pink-strong);color:var(--pink-deep)}
+.pimg{width:100%;max-height:340px;object-fit:contain;border:1.5px dashed var(--pink-strong);border-radius:12px;background:#fffdfd;display:block}
+.pimg.empty{padding:26px 0;text-align:center;color:var(--muted);font-size:.85rem}
 .tools{display:flex;gap:6px}
 .wordchips{display:flex;flex-wrap:wrap;gap:6px}
 .wc{border:1.5px solid var(--line);background:var(--sky);color:var(--sky-ink);border-radius:999px;padding:3px 12px;font-weight:700;font-size:.88rem}
@@ -244,7 +249,15 @@ const CHECK = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l5 5L
 const cb = (p, t, m) => `<label class="cb"><input type="checkbox" data-p="${p}"${getP(m, p) ? ' checked' : ''}><span class="bx">${CHECK}</span><span>${esc(t)}</span></label>`;
 const tx = (p, m, ph) => `<input type="text" data-p="${p}" value="${esc(getP(m, p))}"${ph ? ` placeholder="${esc(ph)}"` : ''}>`;
 const ta = (p, m, ruled, ph) => `<textarea data-p="${p}" class="${ruled ? 'ruled' : ''}"${ph ? ` placeholder="${esc(ph)}"` : ''}>${esc(getP(m, p))}</textarea>`;
-const pad = (p, h, label) => `<div class="pad">${label ? `<span class="lbl">${esc(label)}</span>` : ''}<canvas class="dc" data-d="${p}" data-h="${h}" width="1000" height="${h}"></canvas><div class="tools noprint"><button type="button" class="btn sm quiet" data-act="undo" data-d="${p}">בטלי קו אחרון</button><button type="button" class="btn sm quiet" data-act="clr" data-d="${p}">נקי הכול</button></div></div>`;
+const PM = [['draw', 'כתיבה על המסך'], ['photo', 'צילום או תמונה'], ['note', 'הערה בלבד']];
+function pad(p, h, label) {
+  const m = curMap(), pm = (m && m.pm && m.pm[p]) || { mode: 'draw' }, mode = pm.mode || 'draw';
+  const lb = label ? `<span class="lbl">${esc(label)}</span>` : '';
+  const modes = `<div class="modes noprint noexp">${PM.map(x => `<button type="button" class="mdb${x[0] === mode ? ' on' : ''}" data-act="padmode" data-d="${p}" data-mode="${x[0]}">${x[1]}</button>`).join('')}</div>`;
+  if (mode === 'photo') return `<div class="pad">${lb}${modes}${pm.img ? `<img class="pimg" alt="תמונה של מה שהילד/ה כתב/ה" src="${pm.img}">` : '<div class="pimg empty">עוד אין תמונה</div>'}<div class="tools noprint"><button type="button" class="btn sm" data-act="padcam" data-d="${p}">פתיחת מצלמה</button><button type="button" class="btn sm quiet" data-act="padgal" data-d="${p}">בחירת תמונה מהגלריה</button>${pm.img ? `<button type="button" class="btn sm quiet" data-act="padrm" data-d="${p}">הסרת התמונה</button>` : ''}</div></div>`;
+  if (mode === 'note') return `<div class="pad">${lb}${modes}<textarea class="ruled" data-pn="${p}" placeholder="כתבי כאן מה הילד/ה כתב/ה ואיך הוא/היא כתב/ה">${esc(pm.note || '')}</textarea></div>`;
+  return `<div class="pad">${lb}${modes}<canvas class="dc" data-d="${p}" data-h="${h}" width="1000" height="${h}"></canvas><div class="tools noprint"><button type="button" class="btn sm quiet" data-act="undo" data-d="${p}">בטלי קו אחרון</button><button type="button" class="btn sm quiet" data-act="clr" data-d="${p}">נקי הכול</button></div></div>`;
+}
 const ex = (p, m, title) => `<div class="panel" style="gap:6px"><b style="font-size:.9rem">${title}</b><div class="ex">${tx(p + '.0', m)}<span>+</span>${tx(p + '.1', m)}<span>=</span>${tx(p + '.2', m)}</div><div class="field"><label>פתרון מלא:</label>${tx(p + '.3', m)}</div></div>`;
 
 function sumHtml(m) {
@@ -402,6 +415,9 @@ document.addEventListener('pointermove', e => {
   cur.pts.push([x, y]); drawCanvas(cur.cv);
 });
 function endStroke() { if (!cur) return; const m = curMap(); cur = null; if (m) touch(m, 'map:' + m.id); }
+const stopScroll = e => { if (cur || (e.target.closest && e.target.closest('canvas.dc'))) e.preventDefault(); };
+document.addEventListener('touchstart', stopScroll, { passive: false });
+document.addEventListener('touchmove', stopScroll, { passive: false });
 document.addEventListener('pointerup', endStroke); document.addEventListener('pointercancel', endStroke);
 
 /* ===== ייצוא ===== */
@@ -525,6 +541,9 @@ document.addEventListener('click', e => {
   else if (a === 'pickMap') { S[S.tab === 'kb' ? 'kbId' : 'mapId'] = b.dataset.id; persist(); render(); }
   else if (a === 'kbmark') { const k = b.dataset.k; if (!m.marks) m.marks = {}; const v = ((m.marks[k] || 0) + 1) % 3; if (v) m.marks[k] = v; else delete m.marks[k]; touch(m, 'map:' + m.id); const y = scrollY; renderMap(); scrollTo(0, y); }
   else if (a === 'kbgrp') { const g = GROUPS[+b.dataset.i]; if (!m.marks) m.marks = {}; const all = g.every(l => mk(m, 'lr' + l) === 2); g.forEach(l => { if (all) delete m.marks['lr' + l]; else m.marks['lr' + l] = 2; }); touch(m, 'map:' + m.id); const y = scrollY; renderMap(); scrollTo(0, y); toast(all ? 'הסימון בוטל' : 'הקבוצה סומנה כשהסתיימה'); }
+  else if (a === 'padmode') { const d = b.dataset.d; if (!m.pm) m.pm = {}; m.pm[d] = Object.assign(m.pm[d] || {}, { mode: b.dataset.mode }); touch(m, 'map:' + m.id); const y = scrollY; renderMap(); scrollTo(0, y); }
+  else if (a === 'padcam' || a === 'padgal') { pickPhoto(b.dataset.d, a === 'padcam'); }
+  else if (a === 'padrm') { const d = b.dataset.d; if (m.pm && m.pm[d]) { m.pm[d].img = ''; touch(m, 'map:' + m.id); const y = scrollY; renderMap(); scrollTo(0, y); } }
   else if (a === 'print') { window.print(); }
   else if (a === 'png') { exportPng(); }
   else if (a === 'undo') { const s = strokes(b.dataset.d); if (s.length) { s.pop(); touch(m, 'map:' + m.id); drawCanvas(document.querySelector('canvas[data-d="' + b.dataset.d + '"]')); } }
@@ -545,8 +564,25 @@ document.addEventListener('click', e => {
   else if (a === 'kbFor') { const x = newMap({ name: c.name, age: c.age }, 'kb'); S.maps.push(x); S.kbId = x.id; touch(x, 'map:' + x.id); setTab('kb'); window.scrollTo(0, 0); }
   else if (a === 'mapFor') { const x = newMap({ name: c.name, age: c.age }); S.maps.push(x); S.mapId = x.id; touch(x, 'map:' + x.id); setTab('map'); window.scrollTo(0, 0); }
 });
+function pickPhoto(path, camera) {
+  const inp = document.createElement('input'); inp.type = 'file'; inp.accept = 'image/*'; if (camera) inp.setAttribute('capture', 'environment');
+  inp.onchange = () => {
+    const file = inp.files && inp.files[0]; if (!file) return;
+    const img = new Image(), url = URL.createObjectURL(file);
+    img.onload = () => {
+      const k = Math.min(1, 800 / Math.max(img.width, img.height)), c = document.createElement('canvas'); c.width = Math.round(img.width * k); c.height = Math.round(img.height * k);
+      const g = c.getContext('2d'); g.fillStyle = '#fff'; g.fillRect(0, 0, c.width, c.height); g.drawImage(img, 0, 0, c.width, c.height); URL.revokeObjectURL(url);
+      const m = curMap(); if (!m) return; if (!m.pm) m.pm = {}; m.pm[path] = Object.assign(m.pm[path] || {}, { mode: 'photo', img: c.toDataURL('image/jpeg', 0.6) });
+      touch(m, 'map:' + m.id); const y = scrollY; renderMap(); scrollTo(0, y); toast('התמונה נשמרה');
+    };
+    img.onerror = () => toast('לא הצלחתי לקרוא את התמונה');
+    img.src = url;
+  };
+  inp.click();
+}
 document.addEventListener('input', e => {
   const el = e.target, p = el.dataset.p;
+  if (el.dataset.pn) { const m = curMap(); if (!m) return; if (!m.pm) m.pm = {}; m.pm[el.dataset.pn] = Object.assign(m.pm[el.dataset.pn] || { mode: 'note' }, { note: el.value }); touch(m, 'map:' + m.id); return; }
   if (p) { const m = curMap(); if (!m) return; setP(m, p, el.type === 'checkbox' ? (el.checked ? 1 : 0) : el.value); touch(m, 'map:' + m.id); if (p === 'name') { const chip = document.querySelector('.chip.on'); if (chip) chip.textContent = (el.value || 'ילד/ה ללא שם') + ' · ' + fmt(m.date); } return; }
   const k = el.dataset.k; if (k) { const c = curKid(); if (!c) return; c[k] = el.value; touch(c, 'children'); if (k === 'name') { const chip = document.querySelector('.chip.on'); if (chip) chip.textContent = el.value || 'ילד/ה'; } }
 });
