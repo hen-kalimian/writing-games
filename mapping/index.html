@@ -489,7 +489,7 @@ const T3 = ['ספירה', 'מנייה', 'כתיבת מספרים', 'התאמת �
 const T4 = ['יכולת למידה', 'תגובה לתיווך', 'זיכרון', 'גמישות', 'קשב', 'יכולת הכללה', 'מוטיבציה', 'תסכול / הימנעות', 'מוכן להתנסות', 'מגלה רצון לנסות שוב'];
 const SR = ['קבוצה', 'פרטני', 'מעקב', 'ריפוי בעיסוק', 'הפניה נוספת'];
 const LVL = { easy: { t: 'רמה קלה', w: [['פרח', 'prach'], ['דגל', 'degel'], ['פנס', 'panas']] }, hard: { t: 'רמה קשה', w: [['חולצה', 'cholca'], ['מסרק', 'masrek'], ['מסמר', 'masmer']] } };
-const picImg = (k, cls, word) => `<img class="${cls}" src="img/${k}.png" alt="" onerror="this.outerHTML='<span class=&quot;${cls} nopic&quot;>${word}</span>'">`;
+const picImg = (k, cls, word) => `<img class="${cls}" src="img/${k}.png" alt="" onerror="this.outerHTML='<span class=&quot;${cls} nopic&quot;>🖼️</span>'">`;
 const CHECK = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l5 5L19 7"/></svg>';
 const cb = (p, t, m) => `<label class="cb"><input type="checkbox" data-p="${p}"${getP(m, p) ? ' checked' : ''}><span class="bx">${CHECK}</span><span>${esc(t)}</span></label>`;
 const tx = (p, m, ph) => `<input type="text" data-p="${p}" value="${esc(getP(m, p))}"${ph ? ` placeholder="${esc(ph)}"` : ''}>`;
@@ -1143,14 +1143,14 @@ function pwSlide(m) {
       <div class="lvls noprint">${['easy', 'hard'].map(k => `<button type="button" class="lvl" data-act="pwLvl" data-lv="${k}"><b>${LVL[k].t}</b><span class="pics">${LVL[k].w.map(x => picImg(x[1], 'pic sm', x[0])).join('')}</span></button>`).join('')}</div></div>`;
   } else {
     const left = [0, 1, 2].filter(i => !t2.order.includes(i));
-    const done = fin.length ? `<div class="pwdone noprint">${fin.map(i => `<button type="button" class="pwth" data-act="pwOpen" data-i="${i}">${pic(i, 'pic sm')}<small>לבוחנת: ${esc(lv.w[i][0])} · לחצי לפתיחה</small></button>`).join('')}</div>` : '';
+    const done = fin.length ? `<div class="pwdone noprint">${fin.map(i => `<button type="button" class="pwth" data-act="pwOpen" data-i="${i}">${pic(i, 'pic sm')}</button>`).join('')}</div>` : '';
     if (left.length) h = `<div class="card pwpick"><h2>${fin.length ? 'איזו מילה תבחר/י עכשיו?' : 'איזו מילה תבחר/י לכתוב?'}</h2>
-      <div class="pwpics">${left.map(i => `<button type="button" class="pwp" data-act="pwPick" data-i="${i}" aria-label="איור ${i + 1}">${pic(i, 'pic huge')}<small class="pwlbl noexp noprint">לבוחנת: ${esc(lv.w[i][0])}</small></button>`).join('')}</div>${done}</div>`;
+      <div class="pwpics">${left.map(i => `<button type="button" class="pwp" data-act="pwPick" data-i="${i}" aria-label="איור ${i + 1}">${pic(i, 'pic huge')}</button>`).join('')}</div>${done}</div>`;
     else h = `<div class="card"><h2>כל הכבוד! סיימנו לכתוב שלוש מילים</h2>${done}</div>`;
     h += `<div class="card"><div class="field"><label>הערות</label>${ta('t2.note', m, false)}</div></div>`;
     if (t2.cur != null) {
       const i = t2.cur, last = fin.length >= 2;
-      h += `<div class="pwfull noprint"><div class="pwside">${pic(i, 'pic big')}<small class="pwlbl">לבוחנת: ${esc(lv.w[i][0])}</small></div>
+      h += `<div class="pwfull noprint"><div class="pwside">${pic(i, 'pic big')}</div>
         <div class="pwboard">${pad('t2.d.' + i, 320, '')}<div class="pwbtns"><button type="button" class="btn solid" data-act="pwDone">${last ? 'סיימתי' : 'סיימתי, למילה הבאה'}</button><button type="button" class="btn sm quiet" data-act="pwBack">חזרה לבחירת מילה</button></div></div></div>`;
     }
   }
@@ -1259,7 +1259,7 @@ function summaryHtml(m) {
   <div class="grid2">
     <div class="panel"><h3><span class="num n4">1</span>חומר חדש בזמן אמת</h3>${txt('מה לימדנו', m.t4 && m.t4.q)}${two(a4, b4)}${txt('איך הגיב/ה', m.t4 && m.t4.how)}</div>
     <div class="panel"><h3><span class="num n1">2</span>כתיבת שם</h3>${padOut(m, 't1.draw', 380)}${two(a1, b1)}${txt('אותיות בשם', m.t1 && m.t1.ask)}${txt('הערות', m.t1 && m.t1.note)}</div>
-    <div class="panel"><h3><span class="num n2">3</span>כתיבה פונטית${t2.lv ? ' · ' + LVL[t2.lv].t : ''}</h3>${(t2.order && t2.order.length ? t2.order : [0, 1, 2]).map(i => t2.w[i] ? `<div class="sline"><b>${esc(t2.w[i])}</b></div>${padOut(m, 't2.d.' + i, 230)}` : '').join('')}${txt('הערות', t2.note)}</div>
+    <div class="panel"><h3><span class="num n2">3</span>כתיבה פונטית${t2.lv ? ' · ' + LVL[t2.lv].t : ''}</h3>${(t2.order && t2.order.length ? t2.order : [0, 1, 2]).map(i => t2.w[i] ? `<div class="sline">${t2.lv ? picImg(LVL[t2.lv].w[i][1], "pic sm", "") : ""}</div>${padOut(m, 't2.d.' + i, 230)}` : '').join('')}${txt('הערות', t2.note)}</div>
     <div class="panel"><h3><span class="num n3">4</span>חשבון</h3>${two(a3, b3)}${txt('הערות', m.t3 && m.t3.note)}</div>
   </div>
   <div class="panel"><h3>אותיות: כתיבה בהכתבה, שם האות והצבעה</h3>${lres}</div>
@@ -1291,7 +1291,7 @@ function summaryKb(m) {
   ${m.parents ? `<div class="panel"><h3>תובנות משיחת ההורים</h3><div class="sNote">${esc(m.parents)}</div></div>` : ''}
   <div class="panel conc"><h3>מסקנות: זיהוי סימני ניקוד</h3><div class="sline">${esc(an.text)}</div>${smat}</div>
   <div class="grid2">
-    <div class="panel"><h3><span class="num n2">1</span>כתיב פונטי${t2.lv ? ' · ' + LVL[t2.lv].t : ''}</h3>${(t2.order && t2.order.length ? t2.order : [0, 1, 2]).map(i => t2.w[i] ? `<div class="sline"><b>${esc(t2.w[i])}</b></div>${padOut(m, 't2.d.' + i, 230)}` : '').join('')}${txt('הערות', t2.note)}</div>
+    <div class="panel"><h3><span class="num n2">1</span>כתיב פונטי${t2.lv ? ' · ' + LVL[t2.lv].t : ''}</h3>${(t2.order && t2.order.length ? t2.order : [0, 1, 2]).map(i => t2.w[i] ? `<div class="sline">${t2.lv ? picImg(LVL[t2.lv].w[i][1], "pic sm", "") : ""}</div>${padOut(m, 't2.d.' + i, 230)}` : '').join('')}${txt('הערות', t2.note)}</div>
     <div class="panel"><h3><span class="num n1">2</span>קריאת מילות תפל</h3><div class="nwlist one">${nw}</div>${txt('הערות', m.read && m.read.nwnote)}</div>
     <div class="panel"><h3><span class="num n3">3</span>כתיבה עם ניקוד</h3>${bd || '<div class="note">לא בוצע</div>'}</div>
     <div class="panel"><h3><span class="num n4">4</span>קריאה בקול</h3><ul class="rdl">${rd}</ul>${txt('מה קראנו', m.read && m.read.what)}${txt('טעויות שחוזרות', m.read && m.read.errs)}${txt('הערות', m.read && m.read.note)}</div>
