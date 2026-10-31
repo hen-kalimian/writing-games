@@ -1047,7 +1047,7 @@ document.addEventListener('click', async e => {
 });
 
 /* ===================== מיפוי מודרך: שקופיות, תפריט צד, כספת ===================== */
-const GSLIDES = [['parents', 'שיחת הורים'], ['intro', 'הכספת'], ['t1', 'משימה 1: כתיבת שם'], ['t2', 'משימה 2: כתיבה פונטית'], ['t3', 'משימה 3: חשבון'], ['lw', 'אותיות: כתיבה'], ['ln', 'אותיות: איזו אות?'], ['lp', 'אותיות: הצבעה'], ['t4', 'משימה 4: למידת מושג חדש'], ['vault', 'פתיחת הכספת'], ['fin', 'סיכום ומסקנות']];
+const GSLIDES = [['parents', 'שיחת הורים'], ['intro', 'הכספת'], ['t1', 'משימה 1: כתיבת שם'], ['t2', 'משימה 2: כתיבה פונטית'], ['t3', 'משימה 3: חשבון'], ['lw', 'אותיות שלב 1: כתיבה'], ['ln', 'אותיות שלב 2: שיום'], ['lp', 'אותיות שלב 3: זיהוי'], ['t4', 'משימה 4: למידת מושג חדש'], ['vault', 'פתיחת הכספת'], ['fin', 'סיכום ומסקנות']];
 const KSLIDES = [['parents', 'שיחת הורים'], ['kp', 'כתיב פונטי'], ['knw', 'קריאת מילות תפל'], ['ksy', 'קריאת הברות'], ['kbd', 'כתיבה עם ניקוד'], ['kr', 'קריאה בקול'], ['kl', 'אותיות'], ['kn', 'ניקוד: סימון כללי'], ['fin', 'סיכום ומסקנות']];
 const TASKKEYS = ['t1', 't2', 't3', 't4'];   /* כל משימה נותנת ספרה אחת לכספת, לפי הסדר */
 const ST = m => (m.kind === 'kb' ? KSLIDES : GSLIDES);
@@ -1064,6 +1064,14 @@ function pickLetters(m) {
   (lv ? lv.w : []).forEach(x => x[0].split('').forEach(c => used.add(FINALS[c] || c)));
   const pool = ALLL.filter(l => !used.has(l));
   return shuf(pool.length >= 8 ? pool : ALLL).slice(0, 8);
+}
+const lNeedN = lt => lt.all ? lt.L.slice() : lt.L.filter(l => lt.wr[l] !== 1);
+const lNeedP = lt => lt.all ? lt.L.slice() : lNeedN(lt).filter(l => lt.nm[l] !== 1);
+function lpSync(lt) {
+  const sig = JSON.stringify([!!lt.all, lt.L.map(l => [lt.wr[l] === 1, lt.nm[l] === 1])]);
+  if (lt.sig === sig && lt.order) return;
+  const t = lNeedP(lt), ok = lt.all ? [] : lt.L.filter(l => lt.wr[l] === 1 || lt.nm[l] === 1);
+  lt.sig = sig; lt.warm = !!(t.length && ok.length); lt.order = (lt.warm ? [ok[0]] : []).concat(shuf(t)); lt.grid = shuf(lt.L); lt.pi = 0; lt.pt = {}; lt.pc = {};
 }
 function ensureLt(m) {
   if (!m.lt) { const L = pickLetters(m); m.lt = { L, i: 0, wr: {}, nm: {}, pt: {}, pc: {}, order: shuf(L), grid: shuf(L), pi: 0, d: {} }; L.forEach(l => { m.lt.d[l] = []; }); }
@@ -1289,18 +1297,21 @@ function wizScreen(m) {
       ${mkRow(cur, 'wzMark', 'data-l="' + l + '"')}</div></div>` + wnField(m, 'lw' + n);
     ctl = wizControls(m, { back: 'wzLback', next: 'wzLnext', nextLabel: n < lt.L.length - 1 ? 'האות הבאה' : 'לשקופית הבאה' });
   } else if (key === 'ln') {
-    const lt = ensureLt(m);
-    body = `<div class="card"><div class="panel"><h3><span class="num n2">8</span>אילו אותיות אתה רואה כאן?</h3>
-      <div class="note">מראים לילד/ה את המסך ושואלים: "אילו אותיות אתה רואה כאן?". לכל אות מסמנים אם נקראה בשמה.</div>
+    const lt = ensureLt(m), need = lNeedN(lt);
+    body = need.length ? `<div class="card"><div class="panel"><h3><span class="num n2">2</span>שיום: איך קוראים לאות?</h3>
+      <div class="note">${lt.all ? 'כל האותיות.' : 'האותיות שלא הצליח/ה לכתוב.'} מראים לילד/ה את האותיות ושואלים: "אילו אותיות אתה רואה כאן?". לכל אות מסמנים אם נקראה בשמה. אם הכול נקרא נכון, אין צורך בשלב הזיהוי.</div>
       <div class="row"><button class="btn mint" type="button" data-act="wzSay" data-kind="n" data-l="">השמעת השאלה</button></div>
-      <div class="lngrid">${lt.L.map(l => `<div class="lnc"><div class="lbig2">${l}</div>${mkRow(lt.nm[l] || 0, 'wzNm', 'data-l="' + l + '"')}</div>`).join('')}</div></div></div>` + wnField(m, 'ln');
+      <div class="lngrid">${need.map(l => `<div class="lnc"><div class="lbig2">${l}</div>${mkRow(lt.nm[l] || 0, 'wzNm', 'data-l="' + l + '"')}</div>`).join('')}</div></div></div>` + wnField(m, 'ln')
+      : `<div class="card"><div class="panel"><h3><span class="num n2">2</span>שיום</h3><div class="note">הילד/ה כתב/ה את כל האותיות נכון, ולכן אין צורך לבדוק שיום וזיהוי.</div><div class="row"><button class="btn quiet" type="button" data-act="wzLall">בכל זאת לבדוק שיום וזיהוי של כל האותיות</button></div></div></div>`;
   } else if (key === 'lp') {
-    const lt = ensureLt(m), done = lt.pi >= lt.order.length, target = lt.order[lt.pi];
-    body = `<div class="card"><div class="panel"><h3><span class="num n3">9</span>הצבעה על אות</h3>
-      <div class="note">${done ? 'הילד/ה סיים/ה. אלה התוצאות:' : 'השמעה: "איפה האות...". הילד/ה לוחץ/ת על האות במסך. המערכת מסמנת לבד נכון או לא נכון, בלי צליל. האות המבוקשת כעת: <b>' + target + '</b> (' + (lt.pi + 1) + ' מתוך ' + lt.order.length + ')'}</div>
+    const lt = ensureLt(m); lpSync(lt);
+    const none = !lt.order.length, done = !none && lt.pi >= lt.order.length, target = lt.order[lt.pi];
+    body = none ? `<div class="card"><div class="panel"><h3><span class="num n3">3</span>זיהוי</h3><div class="note">אין צורך בזיהוי: הילד/ה כתב/ה או שמ/ה את כל האותיות נכון.</div><div class="row"><button class="btn quiet" type="button" data-act="wzLall">בכל זאת לבדוק שיום וזיהוי של כל האותיות</button></div></div></div>`
+    : `<div class="card"><div class="panel"><h3><span class="num n3">3</span>זיהוי: איפה האות?</h3>
+      <div class="note">${done ? 'הילד/ה סיים/ה. אלה התוצאות:' : 'מראים את כל האותיות ושואלים "איפה האות...". הילד/ה לוחץ/ת על האות במסך, והמערכת מסמנת לבד בלי צליל. ' + (lt.warm && lt.pi === 0 ? 'מתחילים באות שהצליח/ה בה. ' : '') + 'האות המבוקשת כעת: <b>' + target + '</b> (' + (lt.pi + 1) + ' מתוך ' + lt.order.length + ')'}</div>
       ${done ? '' : `<div class="row"><button class="btn mint" type="button" data-act="wzSay" data-kind="p" data-l="${target}">השמעה שוב: איפה האות</button></div>`}
       <div class="lngrid">${lt.grid.map(l => { const r = lt.pt[l]; return `<button type="button" class="tile${r === 1 ? ' good' : ''}${r === 3 ? ' bad' : ''}" data-act="wzPick" data-l="${l}"${done ? ' disabled' : ''}>${l}</button>`; }).join('')}</div>
-      ${done ? `<div class="presult">${lt.order.map(l => `<span class="pr ${lt.pt[l] === 1 ? 'good' : 'bad'}">${l} ${lt.pt[l] === 1 ? '✓' : '✗ (הצביע/ה על ' + (lt.pc[l] || '?') + ')'}</span>`).join('')}</div><div class="row"><button class="btn quiet" type="button" data-act="wzPreset">לחזור על ההצבעה מההתחלה</button></div>` : ''}</div></div>` + wnField(m, 'lp');
+      ${done ? `<div class="presult">${lt.order.map(l => `<span class="pr ${lt.pt[l] === 1 ? 'good' : 'bad'}">${l} ${lt.pt[l] === 1 ? '✓' : '✗ (הצביע/ה על ' + (lt.pc[l] || '?') + ')'}</span>`).join('')}</div><div class="row"><button class="btn quiet" type="button" data-act="wzPreset">לחזור על הזיהוי מההתחלה</button></div>` : ''}</div></div>` + wnField(m, 'lp');
   } else if (key === 'vault') { body = vaultSlide(m); ctl = wizControls(m, { nextLabel: 'סיימנו, לסיכום' }); }
   else if (key === 'kp') body = pwSlide(m);
   else if (key === 'knw') body = `<div class="card">${kbp(m).p5}</div>`;
@@ -1349,7 +1360,7 @@ function summaryHtml(m) {
   const stCls = v => v === 1 ? 'g' : v === 2 ? 'h' : v === 3 ? 'x' : '';
   const recs = (m.s && m.s.r ? SR.filter((x, i) => m.s.r[i]) : []);
   const doneN = TASKKEYS.filter(k => (w.done || {})[k]).length;
-  const lres = lt ? `<div class="lsum">${lt.L.map(l => `<div class="lres"><div class="lbig">${l}</div><div class="lline">כתיבה <b class="${stCls(lt.wr[l])}">${SYMX[lt.wr[l]] || '○'}</b></div><div class="lline">שם האות <b class="${stCls(lt.nm[l])}">${SYMX[lt.nm[l]] || '○'}</b></div><div class="lline">הצבעה <b class="${lt.pt[l] === 1 ? 'g' : lt.pt[l] === 3 ? 'x' : ''}">${lt.pt[l] === 1 ? '✓' : lt.pt[l] === 3 ? '✗' : '○'}</b></div>${strokeImg(lt.d[l], 110, 70)}</div>`).join('')}</div>` : '<div class="note">לא בוצע שלב אותיות</div>';
+  const lres = lt ? `<div class="lsum">${lt.L.map(l => `<div class="lres"><div class="lbig">${l}</div><div class="lline">כתיבה <b class="${stCls(lt.wr[l])}">${SYMX[lt.wr[l]] || '○'}</b></div><div class="lline">שם האות <b class="${stCls(lt.nm[l])}">${lt.wr[l] === 1 && !lt.nm[l] ? '—' : (SYMX[lt.nm[l]] || '○')}</b></div><div class="lline">זיהוי <b class="${lt.pt[l] === 1 ? 'g' : lt.pt[l] === 3 ? 'x' : ''}">${!lt.pt[l] && (lt.wr[l] === 1 || lt.nm[l] === 1) ? '—' : (lt.pt[l] === 1 ? '✓' : lt.pt[l] === 3 ? '✗' : '○')}</b></div>${strokeImg(lt.d[l], 110, 70)}</div>`).join('')}</div>` : '<div class="note">לא בוצע שלב אותיות</div>';
   return `<div class="sheet sumsheet" id="sheet">
   <div class="title">סיכום מיפוי: הכנה לכיתה א׳</div>
   <div class="sub">מיפוי לילדי גן חובה · חן קלימיאן, לדבר עם ילדים</div>
@@ -1444,7 +1455,7 @@ function wzGo(m, step) {
   if (key === 'vault') ensureVault(m);
   touch(m, 'map:' + m.id); renderMap(); window.scrollTo(0, 0);
   if (key === 'lw') sayAsk('w', m.lt.L[m.lt.i]);
-  else if (key === 'lp' && m.lt.pi < m.lt.order.length) sayAsk('p', m.lt.order[m.lt.pi]);
+  else if (key === 'lp') { lpSync(m.lt); if (m.lt.pi < m.lt.order.length) sayAsk('p', m.lt.order[m.lt.pi]); }
 }
 function wzAct(a, b, m) {
   if (!m) return;
@@ -1453,7 +1464,7 @@ function wzAct(a, b, m) {
   const cur = () => ST(m)[m.wz.step][0];
   const markDone = () => { if (!m.wz.done) m.wz.done = {}; m.wz.done[cur()] = true; };
   if (a === 'wzStart') { m.wz.on = true; m.wz.phase = null; wzGo(m, m.wz.step); }
-  else if (a === 'wzNext') { markDone(); wzGo(m, m.wz.step + 1); }
+  else if (a === 'wzNext') { const k0 = cur(); markDone(); let to = m.wz.step + 1; if (k0 === 'ln' && !lNeedP(ensureLt(m)).length) { m.wz.done.lp = true; to++; } wzGo(m, to); }
   else if (a === 'pwLvl') keep(() => { const k = b.dataset.lv; m.t2.lv = k; m.t2.w = LVL[k].w.map(x => x[0]); m.t2.order = []; m.t2.cur = null; m.t2.d = [[], [], []]; });
   else if (a === 'pwPick') keep(() => { const i = +b.dataset.i; if (!m.t2.order) m.t2.order = []; if (!m.t2.order.includes(i)) m.t2.order.push(i); m.t2.cur = i; });
   else if (a === 'pwOpen') keep(() => { m.t2.cur = +b.dataset.i; });
@@ -1474,7 +1485,8 @@ function wzAct(a, b, m) {
   else if (a === 'wzLnext') { const lt = m.lt; if (lt.i < lt.L.length - 1) { lt.i++; touch(m, 'map:' + m.id); renderMap(); window.scrollTo(0, 0); sayAsk('w', lt.L[lt.i]); } else { markDone(); lt.rev = true; keep(() => {}); window.scrollTo(0, 0); } }
   else if (a === 'wzLedit') { keep(() => { m.lt.i = +b.dataset.i; m.lt.rev = false; m.lt.nofs = false; }); }
   else if (a === 'wzLrevBack') { keep(() => { m.lt.i = m.lt.L.length - 1; m.lt.rev = false; }); }
-  else if (a === 'wzLfin') { wzGo(m, m.wz.step + 1); }
+  else if (a === 'wzLfin') { let to = m.wz.step + 1; if (!lNeedN(m.lt).length) { m.wz.done.ln = true; m.wz.done.lp = true; to += 2; } wzGo(m, to); }
+  else if (a === 'wzLall') { keep(() => { m.lt.all = true; m.lt.sig = null; }); }
   else if (a === 'wzLback') { const lt = m.lt; if (lt.i > 0) { lt.i--; touch(m, 'map:' + m.id); renderMap(); window.scrollTo(0, 0); } else wzGo(m, m.wz.step - 1); }
   else if (a === 'wzPick') {
     const lt = m.lt; if (lt.pi >= lt.order.length) return;
@@ -1482,7 +1494,7 @@ function wzAct(a, b, m) {
     touch(m, 'map:' + m.id); renderMap();
     if (lt.pi < lt.order.length) setTimeout(() => sayAsk('p', lt.order[lt.pi]), 500);
   }
-  else if (a === 'wzPreset') { keep(() => { m.lt.pi = 0; m.lt.pt = {}; m.lt.pc = {}; m.lt.order = shuf(m.lt.L); m.lt.grid = shuf(m.lt.L); }); sayAsk('p', m.lt.order[0]); }
+  else if (a === 'wzPreset') { keep(() => { m.lt.sig = null; lpSync(m.lt); }); sayAsk('p', m.lt.order[0]); }
   else if (a === 'wzKey') {
     const v = ensureVault(m), d = b.dataset.d;
     if (d === 'del') v.input = v.input.slice(0, -1);
