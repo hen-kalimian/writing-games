@@ -6,6 +6,7 @@
 .arena.a-quiz.g22{grid-template-columns:repeat(2,minmax(0,1fr))!important;max-width:min(420px,92vw)!important;margin-left:auto;margin-right:auto;gap:12px!important}
 .arena.a-quiz.g22 .card.opt{min-height:clamp(118px,20vh,180px)!important;max-height:none!important}
 .arena.a-quiz.g22 .card.opt img{width:auto!important;height:clamp(96px,17vh,160px)!important;max-width:100%!important;object-fit:contain}
+.a-mole.m2>.hole{height:clamp(170px,27vh,220px)!important}
 .a-mole.msym{display:flex!important;flex-wrap:wrap;justify-content:center;gap:8px;max-width:min(560px,96vw);margin-left:auto;margin-right:auto}
 .a-mole.msym>.hole{flex:0 0 calc((100% - (var(--mc) - 1)*8px)/var(--mc));max-width:calc((100% - (var(--mc) - 1)*8px)/var(--mc))}
 </style>
@@ -428,7 +429,7 @@ function choose(mode){var multiMode=({mole:1,plane:1,fly:1,maze:1,box:1,quiz:1,t
       else if(mode==='fly'){w.className='it flyw fl'+k;w.style.animationDuration=(8+k*1.4)+'s';w.style.animationDelay=(-k*1.9)+'s';w.style.top=((k*16)%80)+'%';w.appendChild(c);w.onclick=function(){hit(o,c)}}
       else if(mode==='maze'){w.className='it tile3';w.appendChild(c);w.onclick=function(){hit(o,c)}}
       else{w.className='it q';w.appendChild(c);w.onclick=function(){hit(o,c)}}
-      ar.appendChild(w)});if(mode==='mole'&&opts.length>=5)ar.classList.add('six');if(mode==='mole'){var hn=opts.length,hc=hn<=4?2:hn<=6?3:hn===9?3:4;ar.classList.add('msym');ar.style.setProperty('--mc',hc)}/*חן 31.10.26: חורים סימטריים, שורה אחרונה ממורכזת*/
+      ar.appendChild(w)});if(mode==='mole'&&opts.length>=5)ar.classList.add('six');if(mode==='mole'){var hn=opts.length,hc=hn<=4?2:hn<=6?3:hn===9?3:4;ar.classList.add('msym');if(hc===2)ar.classList.add('m2');ar.style.setProperty('--mc',hc)}/*חן 31.10.26: חורים סימטריים, שורה אחרונה ממורכזת*/
     if(mode==='plane'){var pl=el('div','planeic');pl.innerHTML='<svg viewBox="0 0 64 40" width="60" height="38"><path d="M4 20 L22 16 L36 2 L42 2 L34 16 L54 14 L62 18 L54 22 L34 24 L42 38 L36 38 L22 24 Z" fill="#B7CDE0" stroke="#5F8DB5" stroke-width="2" stroke-linejoin="round"/></svg>';ar.appendChild(pl)}}
   show()}
 /* פרפרים שמסתובבים בכל הזירה: מהירים, משנים כיוון פתאום ומקפצים מהקצוות, כדי שיהיה אתגר לתפוס */
