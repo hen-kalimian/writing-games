@@ -413,7 +413,7 @@ body.pal .btn:not(.solid):not(.danger){border-color:#fbc5d6}
 .bar .fill{height:100%;background:var(--pink-strong);border-radius:99px}
 .bar.done .fill{background:#3aa57a}
 .sc-num{--c:#d8f3e6;--b:#7fcfb0}.sc-let{--c:#d8ecfa;--b:#8cc3e8}.sc-wr{--c:#fde1ea;--b:#f2a3bf}.sc-rd{--c:#fff3c4;--b:#e8cf6a}.sc-flu{--c:#fbc5d6;--b:#e58aab}
-.stabs{position:absolute;top:-66px;right:0;left:0;height:66px;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:5px;align-items:end;padding:0 6px}
+.stabs{position:absolute;top:-66px;right:0;left:0;height:66px;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;align-items:end;padding:0 6px}
 .stagecard{background:var(--c);border:2.5px solid var(--b);position:relative;margin-top:74px;margin-bottom:26px;border-radius:8px 8px 22px 22px;box-shadow:0 7px 0 -2px #f6bfd2,0 14px 0 -4px #fff0b8,0 21px 0 -6px #c9e4f7}
 body.pal #main>.card.stagecard{border-color:var(--b);background:var(--c);margin-top:74px;margin-bottom:26px;border-radius:8px 8px 22px 22px}
 .stab.sc-num,.stab.sc-let,.stab.sc-wr,.stab.sc-rd,.stab.sc-flu{position:relative;isolation:isolate;border:0;background:none;box-shadow:none;border-radius:0;white-space:normal;text-align:center;padding:9px 9% 7px;height:60px;color:var(--ink);display:flex;flex-direction:column;justify-content:center;gap:1px;line-height:1.15;cursor:pointer}
@@ -785,26 +785,27 @@ const gname = (g, i) => i === 6 ? 'האותיות הסופיות' : 'קבוצה 
 const it = (pre, arr) => arr.map((l, i) => [pre + i, l]);
 const STAGES = [
   { id: 'num', short: 'מספרים', title: 'מספרים', sub: 'שלב 1', blocks: [{ t: 'השיעורים הדיגיטליים ב"מספרים בקלות", לפי הסדר', items: it('nl', ['הסבר לפני שמתחילים', 'מנייה והתאמת כמות למספר', 'הכרת הספרות 2, 3, 4, 5, 6', 'הכרת הספרות 0, 1, 7, 8, 9', 'תרגול כל הספרות יחד', 'תומכי הזיכרון', 'הרצף המספרי', 'פתרון בעיות חשבוניות: חיבור', 'חיסור', 'הכרת מספרי עשרה: תבנית העשר', 'חיבור וחיסור מעל 10', 'משחקים לסיכום מוכנות חשבונית לכיתה א׳']) }] },
-  { id: 'let', short: 'אותיות', title: 'אותיות', sub: 'שלב 2, במקביל', blocks: [
-    { t: 'מכיר/ה את האותיות: שם, צליל וצורה', lg: 'lr' }, { t: 'כותב/ת את האותיות', lg: 'lw' },
-    { t: 'חזרה ומבדק', items: [['lrev', 'חזרה על כל האותיות'], ['ltest', 'מבדק האותיות הדיגיטלי']] }] },
-  { id: 'wr', short: 'מודעות פונולוגית', title: 'מודעות פונולוגית', sub: 'שלב 3', blocks: [
-    { t: 'חלוקה לצלילים', items: [['pl0', 'משחק היכרות'], ['pl1', 'שיעור 3: חלוקת מילים לצלילים']] },
-    { t: 'צליל פותח', items: [['pl2', 'שיעור 4: צליל פותח'], ['w0', 'כותב/ת את הצליל הפותח של מילה']] },
-    { t: 'צליל סוגר', items: [['pl3', 'שיעור 5: צליל סוגר'], ['w1', 'כותב/ת צליל פותח וצליל סוגר']] },
-    { t: 'קשר אות צליל', items: [['pl4', 'שיעור 6: קשר אות-צליל'], ['pl5', 'השיר: צלילי האותיות']] },
-    { t: 'כתיב פונטי', items: [['w2', 'כותב/ת מילה בת 2-3 צלילים'], ['w3', 'כותב/ת מילה בת 4 צלילים ויותר'], ['w4', 'כותב/ת מילה עם אותיות סופיות'], ['w5', 'כותב/ת הברות עם ניקוד'], ['w6', 'כותב/ת מילה עם ניקוד'], ['w7', 'כותב/ת משפט קצר בהכתבה'], ['w8', 'מזהה ומתקן/ת שגיאה בכתיבה של עצמו/ה']] },
-    { t: 'העשרת שפה', items: it('sl', ['שיעור 9: שפה, מיון והכללה', 'שיעור 10: הגדרה והשוואה', 'שיעור 11: להבין סיפורים', 'שיעור 12: לספר סיפורים']) }] },
-  { id: 'rd', short: 'קוראים בקלות', title: 'קוראים בקלות', sub: 'שלב 4, כל סימן ניקוד', matrix: true,
+  { id: 'let', short: 'אותיות ומודעות פונולוגית', title: 'אותיות ומודעות פונולוגית', sub: 'שלב 2, במקביל', blocks: [
+    { t: 'איך מתחילים: משחק ההיכרות', items: [['pl0', 'משחק היכרות']] },
+    { t: 'האותיות א ב ג ד + מבדק דיגיטלי', gi: 0, items: [['ltest', 'מבדק האותיות הדיגיטלי']] },
+    { t: 'האותיות ה ו ז ח + חלוקה לצלילים', gi: 1, items: [['pl1', 'שיעור 3: חלוקת מילים לצלילים']] },
+    { t: 'האותיות ט י כ ל + צליל פותח', gi: 2, items: [['pl2', 'שיעור 4: צליל פותח'], ['w0', 'כותב/ת את הצליל הפותח של מילה']] },
+    { t: 'האותיות מ נ ס ע + צליל סוגר', gi: 3, items: [['pl3', 'שיעור 5: צליל סוגר'], ['w1', 'כותב/ת צליל פותח וצליל סוגר']] },
+    { t: 'האותיות פ צ ק + קשר אות-צליל', gi: 4, items: [['pl4', 'שיעור 6: קשר אות-צליל'], ['pl5', 'השיר: צלילי האותיות']] },
+    { t: 'האותיות ר ש ת', gi: 5, items: [] },
+    { t: 'האותיות הסופיות + כתיב פונטי וקריאה ראשונית', gi: 6, items: [['w2', 'כותב/ת מילה בת 2-3 צלילים'], ['w3', 'כותב/ת מילה בת 4 צלילים ויותר'], ['w4', 'כותב/ת מילה עם אותיות סופיות'], ['w5', 'כותב/ת הברות עם ניקוד'], ['w6', 'כותב/ת מילה עם ניקוד'], ['w7', 'כותב/ת משפט קצר בהכתבה'], ['w8', 'מזהה ומתקן/ת שגיאה בכתיבה של עצמו/ה']] },
+    { t: 'בונוסים: חזרה והעשרת שפה', items: [['lrev', 'חזרה על כל האותיות'], ['sl0', 'שיעור 9: שפה, מיון והכללה'], ['sl1', 'שיעור 10: הגדרה והשוואה'], ['sl2', 'שיעור 11: להבין סיפורים'], ['sl3', 'שיעור 12: לספר סיפורים']] }] },
+  { id: 'rd', short: 'קוראים בקלות', title: 'קוראים בקלות', sub: 'שלב 3, כל סימן ניקוד', matrix: true,
     signs: [['קמץ ופתח', 'אַ אָ'], ['שין שמאלית ודגש', 'שׂ ּ'], ['שווא', 'אְ'], ['חיריק', 'אִ'], ['חולם', 'אֹ'], ['צירה וסגול', 'אֵ אֶ'], ['שורוק וקובוץ', 'אוּ אֻ']], cols: [['syl', 'הברות'], ['wrd', 'מילים'], ['sen', 'משפטים']] },
-  { id: 'flu', short: 'קריאה שוטפת', title: 'קריאה שוטפת', sub: 'שלב 5', blocks: [{ t: 'משפטים, קטעים ושטף', items: it('f', ['קורא/ת משפט שלם בלי לפרק להברות', 'קורא/ת שני משפטים ברצף', 'קורא/ת קטע קצר מנוקד', 'קורא/ת בהטעמה ובהתאם לפיסוק', 'מבין/ה מה קרא/ה ועונה על שאלות', 'קורא/ת קטע מנוקד בשטף', 'קורא/ת אותיות כתב', 'קורא/ת מילים בלי ניקוד', 'קורא/ת קטע בלי ניקוד', 'קורא/ת בקול בביטחון ובהנאה']) }] }
+  { id: 'flu', short: 'קריאה שוטפת', title: 'קריאה שוטפת', sub: 'שלב 4', blocks: [{ t: 'משפטים, קטעים ושטף', items: it('f', ['קורא/ת משפט שלם בלי לפרק להברות', 'קורא/ת שני משפטים ברצף', 'קורא/ת קטע קצר מנוקד', 'קורא/ת בהטעמה ובהתאם לפיסוק', 'מבין/ה מה קרא/ה ועונה על שאלות', 'קורא/ת קטע מנוקד בשטף', 'קורא/ת אותיות כתב', 'קורא/ת מילים בלי ניקוד', 'קורא/ת קטע בלי ניקוד', 'קורא/ת בקול בביטחון ובהנאה']) }] }
 ];
 const KEYLABEL = {};
 function stageKeys(st) {
   const k = [];
   if (st.matrix) st.signs.forEach(s => st.cols.forEach(c => { const key = 'rd.' + s[0] + '.' + c[0]; k.push(key); KEYLABEL[key] = 'סימן ' + s[0] + ': ' + c[1]; }));
   else st.blocks.forEach(b => {
-    if (b.lg) GROUPS.forEach(g => g.forEach(l => { const key = b.lg + l; k.push(key); KEYLABEL[key] = (b.lg === 'lr' ? 'מכיר/ה את האות ' : 'כותב/ת את האות ') + l; }));
+    if (b.gi !== undefined) { ['lr', 'lw'].forEach(pre => GROUPS[b.gi].forEach(l => { const key = pre + l; k.push(key); KEYLABEL[key] = (pre === 'lr' ? 'מכיר/ה את האות ' : 'כותב/ת את האות ') + l; })); b.items.forEach(i => { k.push(i[0]); KEYLABEL[i[0]] = i[1]; }); }
+    else if (b.lg) GROUPS.forEach(g => g.forEach(l => { const key = b.lg + l; k.push(key); KEYLABEL[key] = (b.lg === 'lr' ? 'מכיר/ה את האות ' : 'כותב/ת את האות ') + l; }));
     else b.items.forEach(i => { k.push(i[0]); KEYLABEL[i[0]] = i[1]; });
   });
   return k;
@@ -827,6 +828,12 @@ function lgBlock(c, b) {
     <div class="letters">${g.map(l => { const v = c.marks[b.lg + l] || 0; return `<button type="button" class="lt s${v}" data-act="mark" data-k="${b.lg + l}" aria-label="${KEYLABEL[b.lg + l]}: ${STATES[v]}">${l}</button>`; }).join('')}</div></div>`;
   }).join('');
 }
+function stepBlock(c, b) {
+  const g = GROUPS[b.gi], gl = (pre, lab) => { const all = g.every(l => (c.marks[pre + l] || 0) === 2), any = g.some(l => (c.marks[pre + l] || 0) > 0);
+    return `<div class="lg${all ? ' done' : ''}"><div class="hd"><b>${lab}</b><button type="button" class="gt${all ? ' done' : ''}" data-act="grp" data-pre="${pre}" data-i="${b.gi}">${all ? 'הסתיים ✓' : (any ? 'סמני שהסתיים (בתהליך)' : 'סמני שהסתיים')}</button></div>
+    <div class="letters">${g.map(l => { const v = c.marks[pre + l] || 0; return `<button type="button" class="lt s${v}" data-act="mark" data-k="${pre + l}" aria-label="${KEYLABEL[pre + l]}: ${STATES[v]}">${l}</button>`; }).join('')}</div></div>`; };
+  return `<h3>${esc(b.t)}</h3>` + gl('lr', 'מכיר/ה: שם, צליל וצורה') + gl('lw', 'כותב/ת את האותיות') + (b.items.length ? `<div class="items">${b.items.map(i => { const v = c.marks[i[0]] || 0; return `<button type="button" class="item s${v}" data-act="mark" data-k="${i[0]}"><span class="mark">${SYM[v]}</span><span>${esc(i[1])}</span></button>`; }).join('')}</div>` : '');
+}
 function renderKids() {
   const list = kids(), c = curKid();
   let h = `<div class="card"><div class="chips">${list.map(x => `<button type="button" class="chip${x.id === S.childId ? ' on' : ''}" data-act="pickKid" data-id="${x.id}">${esc(x.name || 'ילד/ה')}</button>`).join('')}<button type="button" class="chip add" data-act="showAdd">+ ילד/ה חדש/ה</button></div>
@@ -844,7 +851,8 @@ function renderKids() {
   if (st.matrix) {
     h += `<div class="scroll"><table class="matrix"><thead><tr><th></th>${st.cols.map(x => `<th>${x[1]}</th>`).join('')}</tr></thead><tbody>${st.signs.map(s => `<tr><td class="sign"><span>${s[1]}</span>${s[0]}</td>${st.cols.map(x => { const k = 'rd.' + s[0] + '.' + x[0], v = c.marks[k] || 0; return `<td><button type="button" class="cell s${v}" data-act="mark" data-k="${esc(k)}" aria-label="${esc(KEYLABEL[k])}: ${STATES[v]}">${SYM[v] || '○'}</button></td>`; }).join('')}</tr>`).join('')}</tbody></table></div>`;
   } else st.blocks.forEach(b => {
-    if (b.lg) h += lgBlock(c, b);
+    if (b.gi !== undefined) h += stepBlock(c, b);
+    else if (b.lg) h += lgBlock(c, b);
     else h += `<h3>${esc(b.t)}</h3><div class="items">${b.items.map(i => { const v = c.marks[i[0]] || 0; return `<button type="button" class="item s${v}" data-act="mark" data-k="${i[0]}"><span class="mark">${SYM[v]}</span><span>${esc(i[1])}</span></button>`; }).join('')}</div>`;
   });
   h += `</div>`;
@@ -1476,7 +1484,7 @@ function wzAct(a, b, m) {
 load();
 { const h = (location.hash || '').slice(1); PROGRESS = (h === 'progress' || h === 'kids');
   S.tab = PROGRESS ? 'kids' : ((h === 'map' || h === 'kb') ? h : 'start');
-  if (PROGRESS) { $('pageTitle').textContent = 'מעקב התקדמות ילדים'; $('pageSub').textContent = 'לפי שלבי התוכנית: מספרים, אותיות, מודעות פונולוגית (עד כתיב פונטי), סימני ניקוד וקריאה שוטפת'; document.querySelector('.tabs').hidden = true; document.title = 'מעקב התקדמות ילדים'; }
+  if (PROGRESS) { $('pageTitle').textContent = 'מעקב התקדמות ילדים'; $('pageSub').textContent = 'לפי שלבי התוכנית: מספרים, אותיות ומודעות פונולוגית (עד כתיב פונטי), סימני ניקוד וקריאה שוטפת'; document.querySelector('.tabs').hidden = true; document.title = 'מעקב התקדמות ילדים'; }
   else $('tabKids').hidden = true; }
 render();
 if (localStorage.getItem(TOK)) { $('acct').firstElementChild && ($('acct').firstElementChild.textContent = 'מתחברת...'); cloudLoad(); }
