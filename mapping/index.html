@@ -257,6 +257,11 @@ canvas.dc{width:100%;display:block;border:1.5px dashed var(--pink-strong);border
 .digitpop{position:fixed;inset:0;background:rgba(255,248,250,.92);display:grid;place-items:center;z-index:80;animation:fadein .25s}
 .dp{text-align:center;position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;gap:14px}
 .digitpop{overflow:hidden}
+.notepop{position:fixed;inset:0;z-index:85;background:rgba(238,250,243,.96);display:grid;place-items:center;padding:14px;overflow:auto}
+.np{background:#fff;border:2.5px solid #cdebdc;border-radius:28px;padding:20px;width:min(560px,100%);display:flex;flex-direction:column;gap:10px;text-align:center;box-shadow:0 10px 30px rgba(31,107,74,.12)}
+.np h2{margin:0;font-size:1.5rem;color:var(--pink-deep)}
+.npt{font-weight:800;color:var(--mint-ink);font-size:1.1rem}
+.np textarea{min-height:140px;font-size:1rem;border:2px solid #cfe8f7;border-radius:16px;padding:10px;font-family:inherit;direction:rtl}
 .confetti{position:absolute;inset:0;pointer-events:none;z-index:1}
 .confetti i{position:absolute;top:-20px;width:10px;height:16px;border-radius:3px;animation:confall linear infinite}
 @keyframes confall{to{top:105%;margin-left:40px}}
@@ -1082,6 +1087,17 @@ function showDigit(d, cb) {
   o.querySelector('.dpgo').addEventListener('click', () => { o.remove(); cb(); });
 }
 
+/* ===== חלון הערות לדוח המסכם בסוף כל משימה ===== */
+const TNOTE = { t1: ['t1.note', 'כתיבת שם'], t2: ['t2.note', 'כתיב פונטי'], t3: ['t3.note', 'חשבון'], t4: ['t4.how', 'למידת מושג חדש'] };
+function showTaskNote(m, key, cb) {
+  const tn = TNOTE[key]; if (!tn) { cb(); return; }
+  const o = document.createElement('div'); o.className = 'notepop noprint';
+  o.innerHTML = `<div class="np"><h2>הערות לדוח המסכם</h2><div class="npt">${esc(tn[1])}</div><p class="note">מה שנכתב כאן יופיע בדוח המסכם תחת המשימה הזאת. אפשר גם להשאיר ריק.</p><textarea data-p="${tn[0]}" placeholder="כתבי כאן הערות על המשימה">${esc(getP(m, tn[0]) || '')}</textarea><button type="button" class="btn solid npgo">שמירה והמשך לשלב הבא</button></div>`;
+  document.body.appendChild(o);
+  const ta = o.querySelector('textarea'); setTimeout(() => { try { ta.focus(); } catch (e) {} }, 100);
+  o.querySelector('.npgo').addEventListener('click', () => { o.remove(); cb(); });
+}
+
 /* ===== כתיבה עם ניקוד: איורים של יום הולדת ===== */
 const BD = [['gift', 'מתנה', '🎁'], ['balloon', 'בלון', '🎈'], ['wreath', 'זר', '💐'], ['boy', 'ילד', '🧒'], ['girl', 'ילדה', '👧'], ['candles', 'נרות', '🕯️'], ['cake', 'עוגה', '🎂']];
 const bdOf = k => BD.find(x => x[0] === k) || BD[0];
@@ -1360,7 +1376,7 @@ function wzAct(a, b, m) {
   else if (a === 'pwDone') keep(() => { m.t2.cur = null; });
   else if (a === 'pwBack') keep(() => { const i = m.t2.cur; if (!((m.t2.d || [])[i] || []).length) m.t2.order = m.t2.order.filter(x => x !== i); m.t2.cur = null; });
   else if (a === 'wzSkip') wzGo(m, m.wz.step + 1);
-  else if (a === 'wzTask' || a === 'wzGive') { if (a === 'wzGive') (m.wz.forced = m.wz.forced || {})[cur()] = true; markDone(); const k = cur(), d = ensureVault(m).code[TASKKEYS.indexOf(k)]; touch(m, 'map:' + m.id); renderMap(); showDigit(d, () => wzGo(m, m.wz.step + 1)); }
+  else if (a === 'wzTask' || a === 'wzGive') { if (a === 'wzGive') (m.wz.forced = m.wz.forced || {})[cur()] = true; markDone(); const k = cur(), d = ensureVault(m).code[TASKKEYS.indexOf(k)]; touch(m, 'map:' + m.id); renderMap(); showDigit(d, () => showTaskNote(m, k, () => wzGo(m, m.wz.step + 1))); }
   else if (a === 'wzBack') wzGo(m, m.wz.step - 1);
   else if (a === 'wzGoto') { WZ_NAV = false; wzGo(m, +b.dataset.i); }
   else if (a === 'wzMenu') { WZ_NAV = !WZ_NAV; const n = document.querySelector('.wznav'); if (n) n.classList.toggle('open', WZ_NAV); }
