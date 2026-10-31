@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="he" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>אולפן צילום | חן קלימיאן</title>
+<!-- חן, 31.10.26: אולפן צילום מהמחשב עם טלפרומפטר לסרטוני ההקנייה של הצבעים. מצלמה + טקסט נגלל + הקלטה + שמירה -->
+<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@500;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--pink:#FBC5D6;--pinkbg:#FDE1EA;--fuchsia:#EF406E;--deep:#B8236B;--mint:#E3F5EC;--ink:#2b3138}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;background:linear-gradient(160deg,#FFF4F7,var(--pinkbg));font-family:Rubik,Arial,sans-serif;color:var(--ink)}
+.wrap{max-width:1100px;margin:0 auto;padding:14px 16px;display:flex;flex-direction:column;gap:12px;min-height:100%}
+h1{margin:0;text-align:center;font-size:24px;color:var(--deep)}
+.tabs{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+.tabs button,.btn{font-family:inherit;font-weight:700;font-size:17px;border:0;border-radius:999px;padding:9px 18px;cursor:pointer;background:#fff;color:var(--deep);box-shadow:0 0 0 2px var(--pink)}
+.tabs button.on{background:var(--fuchsia);color:#fff;box-shadow:none}
+.stage{position:relative;border-radius:24px;overflow:hidden;background:#222;aspect-ratio:16/9;box-shadow:0 0 0 5px var(--pink)}
+video{width:100%;height:100%;object-fit:cover;transform:scaleX(-1);display:block}
+.tp{position:absolute;inset:0 0 auto 0;height:46%;background:linear-gradient(rgba(0,0,0,.62),rgba(0,0,0,.45) 80%,rgba(0,0,0,0));overflow:hidden}
+.tp .txt{position:absolute;right:6%;left:6%;top:100%;color:#fff;font-weight:700;line-height:1.45;text-align:center;white-space:pre-line}
+.tp::after{content:'';position:absolute;right:0;left:0;top:34%;border-top:2px dashed rgba(251,197,214,.7)}
+.rec{position:absolute;top:12px;left:14px;background:var(--fuchsia);color:#fff;font-weight:800;border-radius:999px;padding:5px 14px;display:none}
+.rec.on{display:block;animation:bl 1s infinite}@keyframes bl{50%{opacity:.5}}
+.cd{position:absolute;inset:0;display:none;align-items:center;justify-content:center;font-size:160px;font-weight:800;color:#fff;text-shadow:0 4px 20px rgba(0,0,0,.4)}
+.bar{display:flex;gap:10px;justify-content:center;align-items:center;flex-wrap:wrap}
+.btn.go{background:var(--fuchsia);color:#fff;box-shadow:0 4px 0 #C92E57;font-size:20px;padding:11px 28px}
+.btn.stop{background:var(--deep);color:#fff;box-shadow:none}
+label{display:flex;align-items:center;gap:6px;font-weight:600;color:var(--deep)}
+.out{background:#fff;border-radius:18px;padding:12px;box-shadow:0 0 0 3px var(--pink);display:none;text-align:center}
+.out video{transform:none;max-height:260px;width:auto;max-width:100%;border-radius:12px;margin:0 auto 10px}
+.msg{text-align:center;color:var(--deep);font-weight:600;min-height:1.2em}
+textarea{width:100%;min-height:120px;font:16px/1.5 Rubik,Arial;border-radius:14px;border:2px solid var(--pink);padding:10px;direction:rtl}
+details summary{cursor:pointer;color:var(--deep);font-weight:700;text-align:center}
+</style></head><body><div class="wrap">
+<h1>אולפן הצילום של חן</h1>
+<div class="tabs" id="tabs"></div>
+<div class="stage" id="stage"><video id="cam" autoplay muted playsinline></video><div class="tp" id="tp"><div class="txt" id="txt"></div></div><div class="rec" id="rec">מקליט</div><div class="cd" id="cd"></div></div>
+<div class="msg" id="msg">לוחצים "לאפשר מצלמה ומיקרופון" כשהדפדפן שואל</div>
+<div class="bar">
+ <button class="btn go" id="go" type="button">להתחיל לצלם (3, 2, 1)</button>
+ <button class="btn stop" id="stop" type="button" style="display:none">לסיים את הצילום</button>
+ <button class="btn" id="pause" type="button" style="display:none">לעצור את הטקסט</button>
+ <label>מהירות הטקסט <input type="range" id="spd" min="10" max="80" value="32"></label>
+ <label>גודל הטקסט <input type="range" id="fs" min="26" max="70" value="42"></label>
+</div>
+<div class="out" id="out"><video id="pv" controls playsinline></video><div class="bar"><a class="btn go" id="dl" download>לשמור את הסרטון במחשב</a><button class="btn" id="again" type="button">לצלם שוב</button></div></div>
+<details><summary>לערוך את הטקסט של הסרטון הזה</summary><textarea id="ed"></textarea></details>
+</div>
+<script>
+// הטקסטים לסרטוני ההקנייה של הצבעים (פעוטות). כל צבע קשור לדבר אחד: אדום תות, כחול שמיים, צהוב שמש, ירוק דשא
+var S={
+ red:{name:'אדום',file:'צבעים-אדום-תות',t:'שלום ילדים!\nתראו מה יש לי ביד.\nזה תות!\nהתות אדום.\nאדום כמו תות.\nבואו נגיד יחד: אדום!\nעוד פעם: אדום!\nמה עוד אדום?\nעגבנייה אדומה.\nבלון אדום.\nמכונית אדומה.\nואיפה אצלכם משהו אדום?\nהראו לאמא או לאבא משהו אדום.\nכל הכבוד!\nאדום כמו תות.'},
+ blue:{name:'כחול',file:'צבעים-כחול-שמיים',t:'שלום ילדים!\nבואו נסתכל למעלה.\nמה יש שם?\nשמיים!\nהשמיים כחולים.\nכחול כמו שמיים.\nבואו נגיד יחד: כחול!\nעוד פעם: כחול!\nמה עוד כחול?\nציפור כחולה.\nכדור כחול.\nהים כחול.\nואיפה אצלכם משהו כחול?\nהראו לאמא או לאבא משהו כחול.\nכל הכבוד!\nכחול כמו שמיים.'},
+ yellow:{name:'צהוב',file:'צבעים-צהוב-שמש',t:'שלום ילדים!\nמה מאיר לנו בבוקר?\nהשמש!\nהשמש צהובה.\nצהוב כמו שמש.\nבואו נגיד יחד: צהוב!\nעוד פעם: צהוב!\nמה עוד צהוב?\nבננה צהובה.\nאפרוח צהוב.\nלימון צהוב.\nואיפה אצלכם משהו צהוב?\nהראו לאמא או לאבא משהו צהוב.\nכל הכבוד!\nצהוב כמו שמש.'},
+ green:{name:'ירוק',file:'צבעים-ירוק-דשא',t:'שלום ילדים!\nבואו נצא לגינה.\nעל מה אנחנו דורכים?\nעל דשא!\nהדשא ירוק.\nירוק כמו דשא.\nבואו נגיד יחד: ירוק!\nעוד פעם: ירוק!\nמה עוד ירוק?\nעלה ירוק.\nצפרדע ירוקה.\nמלפפון ירוק.\nואיפה אצלכם משהו ירוק?\nהראו לאמא או לאבא משהו ירוק.\nכל הכבוד!\nירוק כמו דשא.'}};
+// עריכה של חן נשמרת בדפדפן הזה בלבד
+try{var sv=JSON.parse(localStorage.getItem('prompterTexts')||'{}');for(var k in sv)if(S[k])S[k].t=sv[k]}catch(e){}
+var cur=(location.hash.slice(1)in S)?location.hash.slice(1):'red',$=function(i){return document.getElementById(i)},stream=null,rec=null,chunks=[],y=0,run=false,last=0,paused=false;
+function tabs(){$('tabs').innerHTML='';Object.keys(S).forEach(function(k){var b=document.createElement('button');b.type='button';b.textContent=S[k].name;if(k===cur)b.className='on';b.onclick=function(){if(rec)return;cur=k;location.hash=k;tabs();load()};$('tabs').appendChild(b)})}
+function load(){$('txt').textContent=S[cur].t;$('ed').value=S[cur].t;reset()}
+function reset(){y=0;place()}
+function place(){var tp=$('tp'),t=$('txt');t.style.fontSize=$('fs').value+'px';t.style.top=(tp.clientHeight*.38-y)+'px'}
+$('ed').oninput=function(){S[cur].t=this.value;$('txt').textContent=this.value;try{var o={};for(var k in S)o[k]=S[k].t;localStorage.setItem('prompterTexts',JSON.stringify(o))}catch(e){}};
+$('fs').oninput=place;
+function tick(ts){if(!run)return;var dt=last?(ts-last)/1000:0;last=ts;if(!paused)y+=dt*(+$('spd').value);place();requestAnimationFrame(tick)}
+async function cam(){if(stream)return true;try{stream=await navigator.mediaDevices.getUserMedia({video:{width:{ideal:1920},height:{ideal:1080}},audio:{echoCancellation:true,noiseSuppression:true}});$('cam').srcObject=stream;$('msg').textContent='המצלמה מוכנה. מסתכלים על הקו הוורוד ומדברים';return true}catch(e){$('msg').textContent='אין גישה למצלמה. צריך ללחוץ "לאפשר" בחלונית של הדפדפן ולנסות שוב';return false}}
+$('go').onclick=async function(){if(!(await cam()))return;$('out').style.display='none';reset();var n=3,cd=$('cd');cd.style.display='flex';cd.textContent=n;
+ var iv=setInterval(function(){n--;if(n>0){cd.textContent=n;return}clearInterval(iv);cd.style.display='none';start()},1000)};
+function start(){chunks=[];var mt=['video/mp4;codecs=avc1,mp4a','video/webm;codecs=vp9,opus','video/webm'].find(function(m){return window.MediaRecorder&&MediaRecorder.isTypeSupported(m)})||'';
+ rec=new MediaRecorder(stream,mt?{mimeType:mt,videoBitsPerSecond:8000000}:undefined);rec.ondataavailable=function(e){if(e.data.size)chunks.push(e.data)};rec.onstop=done;rec.start(1000);
+ $('rec').classList.add('on');$('go').style.display='none';$('stop').style.display='';$('pause').style.display='';paused=false;$('pause').textContent='לעצור את הטקסט';run=true;last=0;requestAnimationFrame(tick)}
+$('pause').onclick=function(){paused=!paused;this.textContent=paused?'להמשיך את הטקסט':'לעצור את הטקסט'};
+$('stop').onclick=function(){if(rec&&rec.state!=='inactive')rec.stop()};
+function done(){run=false;$('rec').classList.remove('on');$('stop').style.display='none';$('pause').style.display='none';$('go').style.display='';
+ var type=(rec.mimeType||'video/webm').split(';')[0],ext=type.indexOf('mp4')>=0?'mp4':'webm',blob=new Blob(chunks,{type:type}),u=URL.createObjectURL(blob),d=new Date();
+ $('pv').src=u;$('dl').href=u;$('dl').download=S[cur].file+'-'+d.getDate()+'.'+(d.getMonth()+1)+'.'+ext;$('out').style.display='block';rec=null;
+ $('msg').textContent='הסרטון מוכן. לוחצים "לשמור את הסרטון במחשב", והוא נשמר בתיקיית ההורדות'}
+$('again').onclick=function(){$('out').style.display='none';reset()};
+window.addEventListener('resize',place);tabs();load();cam();
+</script></body></html>
