@@ -413,19 +413,19 @@ body.pal .btn:not(.solid):not(.danger){border-color:#fbc5d6}
 .bar .fill{height:100%;background:var(--pink-strong);border-radius:99px}
 .bar.done .fill{background:#3aa57a}
 .sc-num{--c:#d8f3e6;--b:#7fcfb0}.sc-let{--c:#d8ecfa;--b:#8cc3e8}.sc-wr{--c:#fde1ea;--b:#f2a3bf}.sc-rd{--c:#fff3c4;--b:#e8cf6a}.sc-flu{--c:#fbc5d6;--b:#e58aab}
-.stabs{position:absolute;top:-62px;right:0;left:0;height:62px;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:5px;align-items:end;padding:0 6px}
-.stagecard{background:var(--c);border:2.5px solid var(--b);position:relative;margin-top:70px;margin-bottom:26px;border-radius:8px 8px 22px 22px;box-shadow:0 7px 0 -2px #f6bfd2,0 14px 0 -4px #fff0b8,0 21px 0 -6px #c9e4f7}
-body.pal #main>.card.stagecard{border-color:var(--b);background:var(--c);margin-top:70px;margin-bottom:26px;border-radius:8px 8px 22px 22px}
-.stab.sc-num,.stab.sc-let,.stab.sc-wr,.stab.sc-rd,.stab.sc-flu{position:relative;isolation:isolate;border:0;background:none;box-shadow:none;border-radius:0;white-space:normal;text-align:center;padding:7px 2px 6px;height:52px;color:var(--ink);display:flex;flex-direction:column;justify-content:center;gap:1px;line-height:1.15;cursor:pointer}
+.stabs{position:absolute;top:-66px;right:0;left:0;height:66px;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:5px;align-items:end;padding:0 6px}
+.stagecard{background:var(--c);border:2.5px solid var(--b);position:relative;margin-top:74px;margin-bottom:26px;border-radius:8px 8px 22px 22px;box-shadow:0 7px 0 -2px #f6bfd2,0 14px 0 -4px #fff0b8,0 21px 0 -6px #c9e4f7}
+body.pal #main>.card.stagecard{border-color:var(--b);background:var(--c);margin-top:74px;margin-bottom:26px;border-radius:8px 8px 22px 22px}
+.stab.sc-num,.stab.sc-let,.stab.sc-wr,.stab.sc-rd,.stab.sc-flu{position:relative;isolation:isolate;border:0;background:none;box-shadow:none;border-radius:0;white-space:normal;text-align:center;padding:9px 9% 7px;height:60px;color:var(--ink);display:flex;flex-direction:column;justify-content:center;gap:1px;line-height:1.15;cursor:pointer}
 .stab.sc-num::before,.stab.sc-let::before,.stab.sc-wr::before,.stab.sc-rd::before,.stab.sc-flu::before,.stab.sc-num::after,.stab.sc-let::after,.stab.sc-wr::after,.stab.sc-rd::after,.stab.sc-flu::after{content:"";position:absolute;z-index:-1;clip-path:polygon(0 100%,6% 22%,8% 9%,13% 2%,20% 0,80% 0,87% 2%,92% 9%,94% 22%,100% 100%)}
 .stab.sc-num::before,.stab.sc-let::before,.stab.sc-wr::before,.stab.sc-rd::before,.stab.sc-flu::before{inset:0;background:var(--b)}
 .stab.sc-num::after,.stab.sc-let::after,.stab.sc-wr::after,.stab.sc-rd::after,.stab.sc-flu::after{inset:2.5px 2.5px 0;background:color-mix(in srgb,var(--c) 70%,#fff)}
 .stab b{font-family:var(--head);font-size:.92rem}
 .stab small{font-size:.68rem}
-.stab.on.sc-num,.stab.on.sc-let,.stab.on.sc-wr,.stab.on.sc-rd,.stab.on.sc-flu{height:62px;padding-top:10px;padding-bottom:8px;background:none;border:0;z-index:2}
+.stab.on.sc-num,.stab.on.sc-let,.stab.on.sc-wr,.stab.on.sc-rd,.stab.on.sc-flu{height:66px;padding-top:10px;padding-bottom:8px;background:none;border:0;z-index:2}
 .stab.on.sc-num::before,.stab.on.sc-let::before,.stab.on.sc-wr::before,.stab.on.sc-rd::before,.stab.on.sc-flu::before{bottom:-3px}
 .stab.on.sc-num::after,.stab.on.sc-let::after,.stab.on.sc-wr::after,.stab.on.sc-rd::after,.stab.on.sc-flu::after{inset:2.5px 2.5px -3px;background:var(--c)}
-@media(max-width:520px){.stabs{top:-54px;height:54px;gap:3px;padding:0 4px}.stab b{font-size:.7rem}.stab small{display:none}.stab.sc-num,.stab.sc-let,.stab.sc-wr,.stab.sc-rd,.stab.sc-flu{height:44px;padding:6px 0}.stab.on.sc-num,.stab.on.sc-let,.stab.on.sc-wr,.stab.on.sc-rd,.stab.on.sc-flu{height:54px}.stagecard,body.pal #main>.card.stagecard{margin-top:62px}}
+@media(max-width:520px){.stabs{top:-72px;height:72px;gap:3px;padding:0 3px}.stabs .stab b{font-size:.66rem;line-height:1.1}.stabs .stab small{display:none}.stab.sc-num,.stab.sc-let,.stab.sc-wr,.stab.sc-rd,.stab.sc-flu{height:60px;padding:6px 10%}.stab.on.sc-num,.stab.on.sc-let,.stab.on.sc-wr,.stab.on.sc-rd,.stab.on.sc-flu{height:72px;padding:8px 10%}.stagecard,body.pal #main>.card.stagecard{margin-top:80px}}
 .stabs-old{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px}
 .stab{flex:0 0 auto;border:1.5px solid var(--line);background:var(--card);border-radius:14px;padding:8px 14px;font-weight:700;white-space:nowrap}
 .stab.on{background:var(--pink);border-color:var(--pink-strong);color:var(--pink-deep)}
