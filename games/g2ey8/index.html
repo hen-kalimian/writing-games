@@ -108,7 +108,7 @@ body.framed #app .top .brand{display:none}
 #app.side #main{position:absolute;inset:0;flex:none}#app.side .bottom{position:absolute;left:0;right:0;bottom:8px;height:48px;z-index:6;pointer-events:none;justify-content:space-between}#app.side .bottom .bar{display:none}#app.side .bottom .nav{pointer-events:auto}
 .vwrap video{max-width:100%!important;max-height:100%!important;width:100%;height:100%;object-fit:contain;border-radius:0!important;box-shadow:none!important;background:#000}
 </style>
-<style>/*__SPKCSS*/#spk{border-color:var(--pink);color:var(--pink);background:#FDE1EA}#spk[hidden]{display:none}#spk.need{animation:pulse 1.2s infinite}#app.compact #spk{pointer-events:auto}</style><style>/*__NAVSIDE*/.nav::before{content:none!important}.nav.side{position:absolute!important;z-index:15;margin:0!important}</style><script>/*__HENTT: ההנחיה בקול של חן כשהקליטה (25.10.26)*/window.__HENT={};fetch('../../play/assets/hen/index.json?v='+Math.floor(Date.now()/3e5)).then(function(r){return r.ok?r.json():{}}).then(function(j){window.__HENT=j}).catch(function(){});window.__henTT=function(a){if(!a||!a.ttsT)return null;var t=a.ttsT.replace(/\s+/g,' ').trim(),h=2166136261;for(var i=0;i<t.length;i++){h^=t.charCodeAt(i);h=Math.imul(h,16777619)>>>0}var k=('0000000'+h.toString(16)).slice(-8);return window.__HENT[k]?'../../play/assets/hen/'+k+'.mp3?v='+window.__HENT[k]:null}</script></head>
+<style>/*__SPKCSS*/#spk{border-color:var(--pink);color:var(--pink);background:#FDE1EA}#spk[hidden]{display:none}#spk.need{animation:pulse 1.2s infinite}#app.compact #spk{pointer-events:auto}</style><style>/*__NAVSIDE*/.nav::before{content:none!important}.nav.side{position:absolute!important;z-index:15;margin:0!important}.nav.side,#app.compact .bottom .nav,.bottom .nav{width:32px!important;height:32px!important;border-width:2px!important;box-shadow:0 2px 6px rgba(0,0,0,.12)}.nav.side svg,.bottom .nav svg{width:16px!important;height:16px!important}</style><script>/*__HENTT: ההנחיה בקול של חן כשהקליטה (25.10.26)*/window.__HENT={};fetch('../../play/assets/hen/index.json?v='+Math.floor(Date.now()/3e5)).then(function(r){return r.ok?r.json():{}}).then(function(j){window.__HENT=j}).catch(function(){});window.__henTT=function(a){if(!a||!a.ttsT)return null;var t=a.ttsT.replace(/\s+/g,' ').trim(),h=2166136261;for(var i=0;i<t.length;i++){h^=t.charCodeAt(i);h=Math.imul(h,16777619)>>>0}var k=('0000000'+h.toString(16)).slice(-8);return window.__HENT[k]?'../../play/assets/hen/'+k+'.mp3?v='+window.__HENT[k]:null}</script></head>
 <body>
 <div id="app">
   <div class="top">
@@ -894,8 +894,8 @@ scan();try{new MutationObserver(scan).observe(document.documentElement,{childLis
 function back(){if(P.parentNode!==home){home.insertBefore(P,home.firstChild);home.appendChild(N)}P.classList.remove('side');N.classList.remove('side');P.style.left=P.style.top=N.style.left=N.style.top=''}
 function place(){if(A.classList.contains('rot')){back();return}var r=S.getBoundingClientRect();if(r.width<60||r.height<60)return;
   if(P.parentNode!==A){A.appendChild(P);A.appendChild(N)}P.classList.add('side');N.classList.add('side');
-  var a=A.getBoundingClientRect(),z=(A.offsetWidth&&a.width/A.offsetWidth)||1,sz=P.offsetWidth||46,g=8,y=r.top+r.height/2-sz*z/2,
-  lx=r.left-sz*z-g,rx=r.right+g;if(lx<4)lx=r.left+6;if(rx+sz*z>innerWidth-4)rx=r.right-sz*z-6;
+  /*__NAVCORNER (חן, 31.10.26): חצים קטנים בפינות התחתונות של המשחק*/var a=A.getBoundingClientRect(),z=(A.offsetWidth&&a.width/A.offsetWidth)||1,sz=P.offsetWidth||32,y=r.bottom-sz*z-6,
+  lx=r.left+6,rx=r.right-sz*z-6;
   N.style.left=((lx-a.left)/z)+'px';N.style.top=((y-a.top)/z)+'px';P.style.left=((rx-a.left)/z)+'px';P.style.top=((y-a.top)/z)+'px'}
 addEventListener('resize',function(){setTimeout(place,60)});setInterval(place,400);setTimeout(place,50)})()</script><script src="../../end-fs.js"></script><script>window.WG_FIRST_INS_IFQUIET=1</script><script src="../../first-ins.js"></script>
 </body>
