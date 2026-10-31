@@ -38,6 +38,7 @@ h1,h2,.btn,.opt,.chip{font-family:'Rubik','Open Sans',sans-serif}
 .btn:active{transform:translateY(2px);box-shadow:0 2px 0 #c42b57}
 .btn.ghost{background:#fff;color:var(--pink2);border:3px solid var(--blush2);box-shadow:none}
 .btn[disabled]{opacity:.45;cursor:default}
+.fb{display:none;margin-top:12px;background:#FFE9EE;border:2px solid var(--pink);border-radius:16px;padding:12px 14px;font-size:17px;text-align:center}.fb b{color:#1d5c44;display:block;margin-top:4px;font-size:21px;font-family:'Rubik',sans-serif}
 .hint{margin-top:10px;background:var(--cream);border:2px dashed #E9D77A;border-radius:16px;padding:10px 14px;font-size:16px;text-align:center;display:none}
 .next{display:none;justify-content:center;margin-top:14px}
 .center{text-align:center}
@@ -72,7 +73,7 @@ const sOk=()=>{tone(660,.15);setTimeout(()=>tone(880,.22),110)};
 const sBad=()=>tone(200,.3,'triangle',.1);
 const sHint=()=>tone(520,.12);
 function start(list){order=shuffle(list);if(list===Q){[7,16,25,34].forEach((p,k)=>order.splice(Math.min(p,order.length),0,M[k]))}idx=0;score=0;missed=[];streak=0;show()}
-function home(){app.innerHTML=`<div class="card center"><h1>חידון מדעים לעדן</h1><h2>גוף האדם: מערכות, עור, שלד ושרירים</h2><p style="font-size:17px">${Q.length+M.length} שאלות, ובהן ארבעה משחקי חיבור שבהם מותחים קו. בכל שאלה אפשר ללחוץ על רמז אחד: לפעמים הוא מוריד שתי תשובות לא נכונות (50-50), ולפעמים הוא כותב רמז במילים.</p><div class="stack"><button class="btn" id="go">מתחילים</button></div></div>`;
+function home(){app.innerHTML=`<div class="card center"><h1>חידון מדעים לעדן</h1><h2>גוף האדם: מערכות, עור, שלד ושרירים</h2><p style="font-size:17px">${Q.length+M.length} שאלות, כל אחת שווה שתי נקודות, ולכן אפשר להגיע ל-${(Q.length+M.length)*2} (100 וגם בונוס). בחידון יש ארבעה משחקי חיבור שבהם מותחים קו. בכל שאלה אפשר ללחוץ על רמז אחד: לפעמים הוא מוריד שתי תשובות לא נכונות (50-50), ולפעמים הוא כותב רמז במילים.</p><div class="stack"><button class="btn" id="go">מתחילים</button></div></div>`;
 document.getElementById('go').onclick=()=>{tone(600,.1);start(Q)}}
 function hdr(){return `<div class="top"><div class="bar"><i style="width:${idx/order.length*100}%"></i></div><span class="chip">${idx+1} מתוך ${order.length}</span><span class="chip">${score} נק'</span><button class="mute" id="mu" >${muted?'שקט':'צליל'}</button></div>`}
 function show(){
@@ -81,7 +82,7 @@ function show(){
  answered=false;hintUsed=false;
  const q=order[idx];
  const opts=shuffle([{t:q.a,ok:1},...q.w.map(t=>({t,ok:0}))]);
- app.innerHTML=hdr()+`<div class="card"><div class="q">${q.q}</div>${q.i?`<img class="pic" src="${q.i}" alt="">`:''}<div class="opts">${opts.map((o,i)=>`<button class="opt" data-i="${i}">${o.t}</button>`).join('')}</div><div class="hintrow"><button class="btn ghost" id="hb">רמז</button></div><div class="hint" id="ht"></div></div><div class="next" id="nx"><button class="btn" id="nb">${idx==order.length-1?'לסיום':'לשאלה הבאה'}</button></div>`;
+ app.innerHTML=hdr()+`<div class="card"><div class="q">${q.q}</div>${q.i?`<img class="pic" src="${q.i}" alt="">`:''}<div class="opts">${opts.map((o,i)=>`<button class="opt" data-i="${i}">${o.t}</button>`).join('')}</div><div class="hintrow"><button class="btn ghost" id="hb">רמז</button></div><div class="hint" id="ht"></div><div class="fb" id="fb"></div></div><div class="next" id="nx"><button class="btn" id="nb">${idx==order.length-1?'לסיום':'לשאלה הבאה'}</button></div>`;
  document.getElementById('mu').onclick=()=>{muted=!muted;show2()};
  const btns=[...app.querySelectorAll('.opt')];
  btns.forEach(b=>b.onclick=()=>pick(b,opts[+b.dataset.i],btns,opts));
@@ -104,8 +105,9 @@ function pick(b,o,btns,opts){
  if(answered||b.classList.contains('gone'))return;answered=true;
  document.getElementById('hb').disabled=true;
  btns.forEach((x,i)=>{x.disabled=true;if(opts[i].ok)x.classList.add('ok')});
- if(o.ok){score++;streak++;sOk();if(streak%5==0)confetti(40)}else{b.classList.add('bad');sBad();streak=0;missed.push(order[idx])}
+ if(o.ok){score+=2;streak++;sOk();if(streak%5==0)confetti(40)}else{b.classList.add('bad');sBad();streak=0;missed.push(order[idx]);const f=document.getElementById('fb');f.innerHTML='לא נכון. התשובה הנכונה:<b>'+order[idx].a+'</b>';f.style.display='block'}
  document.getElementById('nx').style.display='flex';
+ if(!o.ok)setTimeout(()=>document.getElementById('nx').scrollIntoView({behavior:'smooth',block:'center'}),150);
 }
 function showMatch(q){
  answered=false;hintUsed=false;
@@ -130,7 +132,7 @@ function showMatch(q){
   sv.innerHTML=lines.concat(temp?[temp]:[]).map(l=>{const [x1,y1]=anchor(l.n,1),[x2,y2]=anchor(l.t,0);const c=l.bad?'#EF406E':'#3b9a74';
    return `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${c}" stroke-width="4" stroke-linecap="round"/><circle cx="${x1}" cy="${y1}" r="5" fill="${c}"/>`}).join('')}
  function connect(n,t,auto){n.classList.add('ok');n.disabled=true;t.classList.add('ok');if(t.tagName=='BUTTON')t.disabled=true;lines.push({n,t});left--;draw();
-  if(!left){answered=true;if(mistakes<=1)score++;sOk();confetti(50);document.getElementById('hb').disabled=true;document.getElementById('nx').style.display='flex';top2()}}
+  if(!left){answered=true;score+=mistakes==0?2:mistakes==1?1:0;sOk();confetti(50);document.getElementById('hb').disabled=true;document.getElementById('nx').style.display='flex';top2()}}
  function top2(){const c=app.querySelectorAll('.chip');if(c[1])c[1].textContent=score+" נק'"}
  ns.forEach(n=>n.onclick=()=>{if(n.disabled)return;ns.forEach(x=>x.classList.remove('sel'));n.classList.add('sel');sel=n;tone(520,.06)});
  ts.forEach(t=>t.onclick=()=>{if(!sel||t.classList.contains('ok'))return;
@@ -144,9 +146,9 @@ function showMatch(q){
  const im=mw.querySelector('img');if(im&&!im.complete)im.onload=draw;
 }
 function end(){
- const pct=Math.round(score/order.length*100);
+ const full=order.length===Q.length+M.length,max=order.length*2,pct=Math.round(score/max*100);
  const msg=pct==100?'מושלם! ידעת הכול':pct>=80?'כל הכבוד, כמעט הכול':pct>=60?'יפה מאוד, עוד קצת תרגול':'התחלה טובה, בוא נחזור על מה שפספסנו';
- app.innerHTML=`<div class="card center"><h1>סיימת!</h1><div class="big">${score} / ${order.length}</div><h2>${msg}</h2>${missed.length?`<p style="font-size:16px;margin:6px 0">שאלות שכדאי לחזור עליהן:</p><ul class="miss">${missed.map(m=>`<li>${m.q}<b>${m.a}</b></li>`).join('')}</ul>`:''}<div class="stack">${missed.length?'<button class="btn" id="rm">לחזור רק על הטעויות</button>':''}<button class="btn ghost" id="ra">לשחק הכול מחדש</button></div></div>`;
+ app.innerHTML=`<div class="card center"><h1>סיימת!</h1><div class="big">${full?score:score+" / "+max}</div><p style="margin:0;font-size:17px">${full?"ציון מתוך 100"+(score>100?", כולל בונוס של "+(score-100)+" נקודות":""):"נקודות"}</p><h2>${msg}</h2>${missed.length?`<p style="font-size:16px;margin:6px 0">שאלות שכדאי לחזור עליהן:</p><ul class="miss">${missed.map(m=>`<li>${m.q}<b>${m.a}</b></li>`).join('')}</ul>`:''}<div class="stack">${missed.length?'<button class="btn" id="rm">לחזור רק על הטעויות</button>':''}<button class="btn ghost" id="ra">לשחק הכול מחדש</button></div></div>`;
  if(pct>=80){confetti(120);sOk()}
  const rm=document.getElementById('rm');if(rm)rm.onclick=()=>start(missed);
  document.getElementById('ra').onclick=()=>start(Q);
