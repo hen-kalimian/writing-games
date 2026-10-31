@@ -94,6 +94,14 @@ input[type=date]::-webkit-date-and-time-value{text-align:start;min-height:1.3em}
 .cbs.two{display:grid;grid-template-columns:1fr 1fr;gap:5px 10px}
 .sec{font-weight:700;font-size:.85rem;color:var(--pink-deep)}
 .pad{display:flex;flex-direction:column;gap:4px}
+.pad .fsx{display:none}
+.pad.fs{position:fixed;inset:0;z-index:70;background:#fff;align-items:center;justify-content:center;gap:10px;padding:10px}
+.pad.fs .fsx{display:inline-flex;position:absolute;top:10px;inset-inline-start:10px}
+.pad.fs .modes,.pad.fs .lbl{display:none}
+.pad.fs canvas.dc{width:min(100%,calc((100vh - 110px) * 1000 / var(--h)));height:auto;border-width:2px}
+.pad.fs .tools{justify-content:center}
+.pad.fs .tools [data-act=padfs]{display:none}
+body.padfs{overflow:hidden}
 canvas.dc{width:100%;display:block;border:1.5px dashed var(--pink-strong);border-radius:12px;background:#fffdfd;touch-action:none;cursor:crosshair;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;overscroll-behavior:contain}
 .modes{display:flex;flex-wrap:wrap;gap:5px}
 .mdb{border:1.5px solid var(--line);background:#fff;border-radius:999px;padding:2px 10px;font-size:.78rem;font-weight:600;color:var(--muted)}
@@ -433,7 +441,7 @@ function pad(p, h, label) {
   const modes = `<div class="modes noprint noexp">${PM.map(x => `<button type="button" class="mdb${x[0] === mode ? ' on' : ''}" data-act="padmode" data-d="${p}" data-mode="${x[0]}">${x[1]}</button>`).join('')}</div>`;
   if (mode === 'photo') return `<div class="pad">${lb}${modes}${pm.img ? `<img class="pimg" alt="תמונה של מה שהילד/ה כתב/ה" src="${pm.img}">` : '<div class="pimg empty">עוד אין תמונה</div>'}<div class="tools noprint"><button type="button" class="btn sm" data-act="padcam" data-d="${p}">פתיחת מצלמה</button><button type="button" class="btn sm quiet" data-act="padgal" data-d="${p}">בחירת תמונה מהגלריה</button>${pm.img ? `<button type="button" class="btn sm quiet" data-act="padrm" data-d="${p}">הסרת התמונה</button>` : ''}</div></div>`;
   if (mode === 'note') return `<div class="pad">${lb}${modes}<textarea class="ruled" data-pn="${p}" placeholder="כתבי כאן מה הילד/ה כתב/ה ואיך הוא/היא כתב/ה">${esc(pm.note || '')}</textarea></div>`;
-  return `<div class="pad">${lb}${modes}<canvas class="dc" data-d="${p}" data-h="${h}" width="1000" height="${h}"></canvas><div class="tools noprint"><button type="button" class="btn sm quiet" data-act="undo" data-d="${p}">בטלי קו אחרון</button><button type="button" class="btn sm quiet" data-act="clr" data-d="${p}">נקי הכול</button></div></div>`;
+  return `<div class="pad">${lb}${modes}<button type="button" class="btn sm fsx noprint" data-act="padfsx">סגירה וחזרה</button><canvas class="dc" data-d="${p}" data-h="${h}" style="--h:${h}" width="1000" height="${h}"></canvas><div class="tools noprint"><button type="button" class="btn sm" data-act="padfs" data-d="${p}">מסך מלא לרוחב</button><button type="button" class="btn sm quiet" data-act="undo" data-d="${p}">בטלי קו אחרון</button><button type="button" class="btn sm quiet" data-act="clr" data-d="${p}">נקי הכול</button></div></div>`;
 }
 const ex = (p, m, title) => `<div class="panel" style="gap:6px"><b style="font-size:.9rem">${title}</b><div class="ex">${tx(p + '.0', m)}<span>+</span>${tx(p + '.1', m)}<span>=</span>${tx(p + '.2', m)}</div><div class="field"><label>פתרון מלא:</label>${tx(p + '.3', m)}</div></div>`;
 
@@ -612,6 +620,9 @@ function drawCanvas(cv) {
   });
 }
 function initCanvases() { document.querySelectorAll('canvas.dc').forEach(drawCanvas); }
+function closePadFs() { document.querySelectorAll('.pad.fs').forEach(x => x.classList.remove('fs')); document.body.classList.remove('padfs'); try { if (document.fullscreenElement) document.exitFullscreen(); } catch (e) {} try { screen.orientation.unlock(); } catch (e) {} }
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closePadFs(); });
+document.addEventListener('fullscreenchange', () => { if (!document.fullscreenElement) { document.querySelectorAll('.pad.fs').forEach(x => x.classList.remove('fs')); document.body.classList.remove('padfs'); } });
 let cur = null;
 document.addEventListener('pointerdown', e => {
   const cv = e.target.closest && e.target.closest('canvas.dc'); if (!cv) return;
@@ -755,6 +766,8 @@ document.addEventListener('click', e => {
   else if (a === 'pickMap') { S[S.tab === 'kb' ? 'kbId' : 'mapId'] = b.dataset.id; persist(); render(); }
   else if (a === 'kbmark') { const k = b.dataset.k; if (!m.marks) m.marks = {}; const v = ((m.marks[k] || 0) + 1) % 3; if (v) m.marks[k] = v; else delete m.marks[k]; touch(m, 'map:' + m.id); const y = scrollY; renderMap(); scrollTo(0, y); }
   else if (a === 'kbgrp') { const g = GROUPS[+b.dataset.i]; if (!m.marks) m.marks = {}; const all = g.every(l => mk(m, 'lr' + l) === 2); g.forEach(l => { if (all) delete m.marks['lr' + l]; else m.marks['lr' + l] = 2; }); touch(m, 'map:' + m.id); const y = scrollY; renderMap(); scrollTo(0, y); toast(all ? 'הסימון בוטל' : 'הקבוצה סומנה כשהסתיימה'); }
+  else if (a === 'padfs') { const pd = b.closest('.pad'); pd.classList.add('fs'); document.body.classList.add('padfs'); try { if (pd.requestFullscreen) pd.requestFullscreen().then(() => { try { screen.orientation.lock('landscape').catch(() => {}); } catch (e) {} }).catch(() => {}); } catch (e) {} const cv = pd.querySelector('canvas.dc'); if (cv) drawCanvas(cv); }
+  else if (a === 'padfsx') { closePadFs(); }
   else if (a === 'padmode') { const d = b.dataset.d; if (!m.pm) m.pm = {}; m.pm[d] = Object.assign(m.pm[d] || {}, { mode: b.dataset.mode }); touch(m, 'map:' + m.id); const y = scrollY; renderMap(); scrollTo(0, y); }
   else if (a === 'padcam' || a === 'padgal') { pickPhoto(b.dataset.d, a === 'padcam'); }
   else if (a === 'padrm') { const d = b.dataset.d; if (m.pm && m.pm[d]) { m.pm[d].img = ''; touch(m, 'map:' + m.id); const y = scrollY; renderMap(); scrollTo(0, y); } }
