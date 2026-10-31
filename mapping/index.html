@@ -108,7 +108,7 @@ input[type=date]::-webkit-date-and-time-value{text-align:start;min-height:1.3em}
 .pwside .pic{width:100%;height:auto;max-height:150px;object-fit:contain}
 .pwboard{flex:1;min-width:0;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:10px}
 .pwboard .pad{width:100%;align-items:center}
-.pwboard canvas.dc{width:min(100%,calc((100vh - 150px) * 1000 / var(--h)));height:auto;background:#fff;border:3px solid var(--pink-strong);border-radius:20px;box-shadow:0 4px 16px rgba(0,0,0,.08)}
+.pwboard canvas.dc{width:100%;height:auto;background:#fff;border:3px solid var(--pink-strong);border-radius:20px;box-shadow:0 4px 16px rgba(0,0,0,.08)}
 .pwboard .modes,.pwboard .lbl,.pwboard [data-act=padfs]{display:none}
 .pwbtns{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
 @media(max-width:620px) and (orientation:portrait){.pwfull{flex-direction:column}.pwside{width:100%;flex-direction:row;justify-content:center}.pwside .pic{width:90px}.pwboard canvas.dc{width:100%}}
@@ -544,6 +544,7 @@ const cb = (p, t, m) => `<label class="cb"><input type="checkbox" data-p="${p}"$
 const tx = (p, m, ph) => `<input type="text" data-p="${p}" value="${esc(getP(m, p))}"${ph ? ` placeholder="${esc(ph)}"` : ''}>`;
 const ta = (p, m, ruled, ph) => `<textarea data-p="${p}" class="${ruled ? 'ruled' : ''}"${ph ? ` placeholder="${esc(ph)}"` : ''}>${esc(getP(m, p))}</textarea>`;
 const PM = [['draw', 'כתיבה על המסך'], ['photo', 'צילום או תמונה'], ['note', 'הערה בלבד']];
+function pwH() { const portrait = innerWidth < 620 && innerHeight > innerWidth, w = innerWidth - (portrait ? 30 : 210), hh = innerHeight - (portrait ? 250 : 130); return Math.max(320, Math.min(1700, Math.round(1000 * hh / Math.max(200, w)))); }
 function pad(p, h, label) {
   const m = curMap(), pm = (m && m.pm && m.pm[p]) || { mode: 'draw' }, mode = pm.mode || 'draw';
   const lb = label ? `<span class="lbl">${esc(label)}</span>` : '';
@@ -718,8 +719,17 @@ function strokes(p) { const m = curMap(); return getP(m, p); }
 function drawCanvas(cv) {
   const ctx = cv.getContext('2d'), W = cv.width, H = cv.height;
   ctx.clearRect(0, 0, W, H);
+  if (cv.closest('.pwboard')) {
+    ctx.fillStyle = '#fffef6'; ctx.fillRect(0, 0, W, H);
+    ctx.strokeStyle = '#b9dcf2'; ctx.lineWidth = 2.5;
+    const gap = Math.max(110, Math.round(H / 7));
+    for (let y = gap; y < H - 10; y += gap) { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(W, y); ctx.stroke(); }
+    ctx.strokeStyle = '#f2a3bf'; ctx.lineWidth = 3;
+    ctx.beginPath(); ctx.moveTo(W - 70, 0); ctx.lineTo(W - 70, H); ctx.stroke();
+  } else {
   ctx.strokeStyle = '#f0d9e2'; ctx.lineWidth = 2; ctx.setLineDash([10, 8]);
   ctx.beginPath(); ctx.moveTo(30, H * 0.68); ctx.lineTo(W - 30, H * 0.68); ctx.stroke(); ctx.setLineDash([]);
+  }
   ctx.strokeStyle = '#2b3138'; ctx.lineWidth = 7; ctx.lineCap = 'round'; ctx.lineJoin = 'round';
   (strokes(cv.dataset.d) || []).forEach(st => {
     ctx.beginPath();
@@ -1211,7 +1221,7 @@ function pwSlide(m) {
     if (t2.cur != null) {
       const i = t2.cur, last = fin.length >= 2;
       h += `<div class="pwfull noprint"><div class="pwside">${pic(i, 'pic big')}</div>
-        <div class="pwboard">${pad('t2.d.' + i, 320, '')}<div class="pwbtns"><button type="button" class="btn solid" data-act="pwDone">${last ? 'סיימתי' : 'סיימתי, למילה הבאה'}</button><button type="button" class="btn sm quiet" data-act="pwBack">חזרה לבחירת מילה</button></div></div></div>`;
+        <div class="pwboard">${pad('t2.d.' + i, pwH(), '')}<div class="pwbtns"><button type="button" class="btn solid" data-act="pwDone">${last ? 'סיימתי' : 'סיימתי, למילה הבאה'}</button><button type="button" class="btn sm quiet" data-act="pwBack">חזרה לבחירת מילה</button></div></div></div>`;
     }
   }
   return h;
