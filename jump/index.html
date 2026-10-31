@@ -160,6 +160,7 @@ function win(){ state='win'; sparkle(door.x+30,hero.y-60); setTimeout(function()
 /* גודל טבעי לפריטים קטנים, כדי שתאנה או אצטרובל לא ייראו ענקיים ליד הדמות */
 var DSIZE={fig:.42,acorn:.42,pomegranate:.48,grapes:.5,'date-fruit':.45,'boot-red':.5,jacket:.62,'nest-empty':.5,'nest-eggs':.5,pumpkin:.6,'flower-pot':.62,dove:.6,bird:.45,stork:.85,'umbrella-blue':.85,'umbrella-red':.85,'umbrella-pink':.85,mushroom:.7,'olive-branch':.7,wheat:.8,hatzav:.85,garden:.9};
 function img(k){ return IMG[k] }
+/*חן 31.10.26: "החילזון באוויר": חותכים שוליים שקופים מכל איור כדי שיעמוד על האדמה*/function trimImg(im){ try{ var w=im.naturalWidth,h=im.naturalHeight,cv=document.createElement('canvas');cv.width=w;cv.height=h;var x=cv.getContext('2d');x.drawImage(im,0,0);var d=x.getImageData(0,0,w,h).data,t=h,b=-1,l=w,r=-1;for(var yy=0;yy<h;yy++)for(var xx=0;xx<w;xx++){if(d[(yy*w+xx)*4+3]>16){if(yy<t)t=yy;if(yy>b)b=yy;if(xx<l)l=xx;if(xx>r)r=xx}}if(b<0)return im;var o=document.createElement('canvas');o.width=r-l+1;o.height=b-t+1;o.getContext('2d').drawImage(cv,l,t,o.width,o.height,0,0,o.width,o.height);return o }catch(e){ return im } }
 function draw(){
   var r=DPR*cv.width/(VW*DPR); var s=cv.height/VH; cx.setTransform(s,0,0,s,0,0);
   var sk=shake>0?Math.sin(clock*80)*4:0;
@@ -214,7 +215,7 @@ function draw(){
 }
 var WX=null;
 function weather(){ var t=W.weather; if(!t) return; cx.save();
-  if(!WX){ WX=[]; for(var i=0;i<(t==='rain'?70:t==='fireflies'?26:34);i++) WX.push({x:Math.random()*VW,y:Math.random()*VH,s:.6+Math.random()*.8,p:Math.random()*6,k:Math.floor(Math.random()*4)}) }
+  if(!WX){ WX=[]; for(var i=0;i<(t==='rain'?70:t==='fireflies'?26:t==='leaves'?12:34);i++)/*חן 31.10.26: פחות עלי שלכת*/ WX.push({x:Math.random()*VW,y:Math.random()*VH,s:.6+Math.random()*.8,p:Math.random()*6,k:Math.floor(Math.random()*4)}) }
   cx.translate(cam,0);
   WX.forEach(function(w){ var tt=clock;
     if(t==='leaves'){ var lx=((w.x+Math.sin(tt*.8+w.p)*30-cam*.3)%(VW+40)+VW+40)%(VW+40)-20; var ly=(w.y+tt*28*w.s)%(VH+40)-20; var im=img(['leaf-orange','leaf-yellow','leaf-red','leaf-brown'][w.k]); if(im){ cx.save(); cx.translate(lx,ly); cx.rotate(Math.sin(tt*2+w.p)); cx.globalAlpha=.85; cx.drawImage(im,-11*w.s,-11*w.s,22*w.s,22*w.s); cx.restore() } }
@@ -256,7 +257,7 @@ document.getElementById('fs').onclick=function(){ var d=document.documentElement
 fetch('worlds/'+(Q.get('w')||'dagesh')+'.json?v=1').then(function(r){return r.json()}).then(function(w){
   W=w; document.title=W.title; document.getElementById('hintUp').textContent=W.hintUp||'נוֹגְעִים בַּמָּסָךְ כְּדֵי לִקְפֹּץ';
   var ks=['door','flame','cloud','sun','pumpkin','mushroom','flower-pot','acorn',W.hero].concat(W.clouds?[W.clouds]:[]).concat(W.weather==='leaves'?['leaf-orange','leaf-yellow','leaf-red','leaf-brown']:[]).concat(W.trophy?[W.trophy]:[]).concat(W.decor), n=0;
-  ks.forEach(function(k){ var im=new Image(); im.onload=im.onerror=function(){ if(++n===ks.length){ fit(); show('intro'); requestAnimationFrame(loop) } }; im.src='art/'+k+'.png'; IMG[k]=im });
+  ks.forEach(function(k){ var im=new Image(); im.onload=im.onerror=function(){ if(im.naturalWidth) IMG[k]=trimImg(im); if(++n===ks.length){ fit(); show('intro'); requestAnimationFrame(loop) } }; im.src='art/'+k+'.png'; IMG[k]=im });
   renderHearts();
 });
 })();
