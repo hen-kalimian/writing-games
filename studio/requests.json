@@ -1461,5 +1461,26 @@
   "game": "../play/index.html?g=65d3830f7fc74586979d96fe4768c79e&t=30",
   "title": "מיון מִ ו-מַ",
   "when": "המילה נשמעת לפני כל גרירה"
+ },
+ {
+  "text": "חֶבֶל",
+  "nik": "חֶבֶל",
+  "game": "../play/index.html?g=9fee09a3902d46a4bb53c09c7b835e8c",
+  "title": "חידון צירה וסגול",
+  "when": "המילה בשאלה"
+ },
+ {
+  "text": "פָּרָה",
+  "nik": "פָּרָה",
+  "game": "../play/index.html?g=ldeck_end_letters",
+  "title": "לוטו אות סוגרת",
+  "when": "אחרי הנחת הקלף"
+ },
+ {
+  "text": "הֵא",
+  "nik": "הֵא",
+  "game": "../play/index.html?g=ldeck_end_letters",
+  "title": "לוטו אות סוגרת",
+  "when": "כשהופכים את הקלף"
  }
 ]
