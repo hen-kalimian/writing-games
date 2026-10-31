@@ -237,7 +237,21 @@ canvas.dc{width:100%;display:block;border:1.5px dashed var(--pink-strong);border
 .vk.go{background:var(--pink-strong);border-color:var(--pink-strong);color:#fff;font-size:1rem}
 .vaultcard.open .vpic{font-size:7rem}
 .digitpop{position:fixed;inset:0;background:rgba(255,248,250,.92);display:grid;place-items:center;z-index:80;animation:fadein .25s}
-.dp{text-align:center}
+.dp{text-align:center;position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;gap:14px}
+.digitpop{overflow:hidden}
+.confetti{position:absolute;inset:0;pointer-events:none;z-index:1}
+.confetti i{position:absolute;top:-20px;width:10px;height:16px;border-radius:3px;animation:confall linear infinite}
+@keyframes confall{to{top:105%;margin-left:40px}}
+/* מסך ילדים: יפה וגדול, הטקסט לבוחנת קטן */
+.wzmain .note,.wzmain .sec,.wzmain .field label,.wzmain .cbs,.wzmain .cbs *,.wzmain .lbl,.wzmain .sylmeta,.wzmain .bdlbl{font-size:.74rem!important;color:var(--muted)!important;font-weight:400}
+.wzmain .panel{background:linear-gradient(180deg,#fff 0%,#fff7fa 100%);border:2.5px solid var(--pink);border-radius:28px;padding:16px;box-shadow:0 6px 18px rgba(239,64,110,.08)}
+.wzmain .panel>h3{font-size:clamp(1.15rem,5vw,1.6rem);display:flex;align-items:center;gap:10px;color:var(--pink-deep)}
+.wzmain .panel>h3 .num{width:42px;height:42px;font-size:1.3rem}
+.wzmain canvas.dc{border:3px dashed var(--pink-strong);border-radius:24px;background:#fffdf7}
+.wzmain>.card{border:2.5px solid var(--pink);border-radius:30px;background:linear-gradient(180deg,#fff,#fff9fb)}
+.wzmain>.card>h2{font-size:1.8rem;color:var(--pink-deep);text-align:center}
+.wzmain .tile,.wzmain .lbig2{font-size:2.6rem}
+.wzmain .mk{border-radius:18px}
 .dpn{font-family:var(--head);font-weight:800;font-size:9rem;line-height:1;color:var(--pink-strong);animation:pop .6s}
 .dpt{font-family:var(--head);font-weight:800;font-size:1.6rem;color:var(--pink-deep)}
 @keyframes pop{0%{transform:scale(.3);opacity:0}60%{transform:scale(1.15)}100%{transform:scale(1);opacity:1}}
@@ -1015,8 +1029,11 @@ function vaultSlide(m) {
 }
 function showDigit(d, cb) {
   const o = document.createElement('div'); o.className = 'digitpop';
-  o.innerHTML = `<div class="dp"><div class="dpn">${d}</div><div class="dpt">קיבלת ספרה לכספת!</div></div>`;
-  document.body.appendChild(o); setTimeout(() => { o.remove(); cb(); }, 1900);
+  const cols = ['#EF406E', '#FBC5D6', '#9fe3c8', '#9ad7f5', '#ffd966', '#c9a7f0'];
+  const conf = Array.from({ length: 56 }, () => `<i style="left:${Math.random() * 100}%;background:${cols[Math.floor(Math.random() * cols.length)]};animation-delay:${(Math.random() * 1.2).toFixed(2)}s;animation-duration:${(2.2 + Math.random() * 2).toFixed(2)}s;transform:rotate(${Math.floor(Math.random() * 360)}deg)"></i>`).join('');
+  o.innerHTML = `<div class="confetti" aria-hidden="true">${conf}</div><div class="dp"><div class="dpt">כל הכבוד! קיבלת ספרה לכספת</div><div class="dpn">${d}</div><button type="button" class="btn solid dpgo">לשלב הבא</button></div>`;
+  document.body.appendChild(o);
+  o.querySelector('.dpgo').addEventListener('click', () => { o.remove(); cb(); });
 }
 
 /* ===== כתיבה עם ניקוד: איורים של יום הולדת ===== */
