@@ -376,6 +376,29 @@ canvas.dc{width:100%;display:block;border:1.5px dashed var(--pink-strong);border
 }
 
 /* ===== מעקב ילדים ===== */
+.toplogo{height:72px;width:auto;flex:none;order:-1}
+.top>div:first-child{flex:1 1 220px;min-width:0}
+.top .acct{margin-inline-start:auto}
+@media(max-width:480px){.toplogo{height:52px}}
+/* מעקב התקדמות: הגוונים של חן, מנטה, תכלת, שני ורודים וצהוב בננה בהיר */
+body.progress{background:linear-gradient(180deg,#eefaf3 0%,#fff 38%,#fffbe8 100%) fixed}
+body.progress .card{background:#fff}
+body.progress #main>.card:nth-child(4n+1){border-color:#cfe8f7}
+body.progress #main>.card:nth-child(4n+2){border-color:#cdebdc}
+body.progress #main>.card:nth-child(4n+3){border-color:#fbd5e1}
+body.progress #main>.card:nth-child(4n){border-color:#f1e4a0}
+body.progress .now{background:#e6f7ee}
+body.progress .now b{color:var(--mint-ink)}
+body.progress .bar .track{background:#e3f0f8}
+body.progress .bar .fill{background:#7fcfb0}
+body.progress .bar.done .fill{background:#3aa57a}
+body.progress .stab{border-color:#cfe8f7}
+body.progress .stab.on{background:var(--sky);border-color:#8cc3e8;color:var(--sky-ink)}
+body.progress .item{border-color:#e1eef6}
+body.progress .lg{border-color:#e1eef6}
+body.progress input,body.progress textarea{border-color:#cfe8f7}
+body.progress .gt{background:#fff;border-color:#fbc5d6}
+body.progress .btn:not(.solid):not(.danger){border-color:#fbc5d6}
 .now{background:var(--pink);border-radius:18px;padding:12px 14px;display:flex;flex-direction:column;gap:3px}
 .now b{font-family:var(--head);font-size:1.1rem;color:var(--pink-deep)}
 .bars{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px}
@@ -426,6 +449,7 @@ canvas.dc{width:100%;display:block;border:1.5px dashed var(--pink-strong);border
       <div class="note" id="pageSub">מיפוי בשיטת קוראים בקלות: לילדי גן חובה ולילדי כיתות א׳-ב׳</div>
     </div>
     <div class="acct" id="acct"></div>
+    <img class="toplogo" src="img/logo.png" alt="חן קלימיאן - לדבר עם ילדים">
   </header>
   <nav class="tabs noprint" role="tablist">
     <button type="button" class="tab" role="tab" id="tabStart" data-tab="start">מיפוי חדש</button>
@@ -1418,7 +1442,7 @@ function wzAct(a, b, m) {
 load();
 { const h = (location.hash || '').slice(1); PROGRESS = (h === 'progress' || h === 'kids');
   S.tab = PROGRESS ? 'kids' : ((h === 'map' || h === 'kb') ? h : 'start');
-  if (PROGRESS) { $('pageTitle').textContent = 'מעקב התקדמות ילדים'; $('pageSub').textContent = 'לפי שלבי התוכנית: מספרים, אותיות, מודעות פונולוגית, כתיב פונטי, סימני ניקוד וקריאה שוטפת'; document.querySelector('.tabs').hidden = true; document.title = 'מעקב התקדמות ילדים'; }
+  if (PROGRESS) { document.body.classList.add('progress'); $('pageTitle').textContent = 'מעקב התקדמות ילדים'; $('pageSub').textContent = 'לפי שלבי התוכנית: מספרים, אותיות, מודעות פונולוגית, כתיב פונטי, סימני ניקוד וקריאה שוטפת'; document.querySelector('.tabs').hidden = true; document.title = 'מעקב התקדמות ילדים'; }
   else $('tabKids').hidden = true; }
 render();
 if (localStorage.getItem(TOK)) { $('acct').firstElementChild && ($('acct').firstElementChild.textContent = 'מתחברת...'); cloudLoad(); }
