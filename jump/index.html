@@ -175,7 +175,7 @@ function draw(){
   // נוף רחוק ונוף קרוב
   decor.forEach(function(d){ if(!d.far) return; var x=d.x-cam*.55; if(x<-200||x>VW+200) return; var z=150*d.s*(DSIZE[d.k]||1); dImg(d.k,x,GY-z+10,z,z,0,.55) });
   cx.save(); cx.translate(-cam,0);
-  decor.forEach(function(d){ if(d.far) return; var x=d.x+130; if(x-cam<-200||x-cam>VW+200) return; var z=110*d.s*(DSIZE[d.k]||1); dImg(d.k,x,GY-z+8,z,z,Math.sin(clock*1.5+d.x)*.02) });
+  /*חן 31.10.26: הנוף מאחורי השביל, קטן ושקוף מעט, כדי שלא ייראה כמו מכשול*/decor.forEach(function(d){ if(d.far) return; var x=d.x+130; if(x-cam<-200||x-cam>VW+200) return; var z=80*d.s*(DSIZE[d.k]||1); dImg(d.k,x,GY-z-16,z,z,Math.sin(clock*1.5+d.x)*.02,.6) });
   // בורות: אש או מים
   pits.forEach(function(p){
     if((p.k||W.hazard)==='water'){ var wg=cx.createLinearGradient(0,GY,0,VH); wg.addColorStop(0,'#9ED8EE'); wg.addColorStop(1,'#5FB3D9'); cx.fillStyle=wg; cx.fillRect(p.x,GY+14,p.w,VH);
@@ -186,7 +186,11 @@ function draw(){
     cx.fillStyle='rgba(255,255,255,.35)'; for(var x=gr.x+20;x<gr.x+gr.w-10;x+=46){ cx.beginPath(); cx.arc(x,gr.y+40+(x%3)*12,4,0,6.28); cx.fill() } });
   // קוביות צפות ומכשולים
   plats.forEach(function(p){ if(p.x-cam>VW+60||p.x+p.w-cam<-60) return; cx.fillStyle='rgba(0,0,0,.08)'; cx.beginPath(); cx.ellipse(p.x+p.w/2,GY+8,p.w*.4,7,0,0,6.28); cx.fill(); cx.fillStyle=W.ground[1]; rr(p.x,p.y,p.w,30,10); cx.fill(); cx.fillStyle=W.ground[0]; rr(p.x,p.y,p.w,12,8); cx.fill(); cx.fillStyle='rgba(255,255,255,.4)'; cx.beginPath(); cx.arc(p.x+24,p.y+20,4,0,6.28); cx.arc(p.x+p.w-24,p.y+20,4,0,6.28); cx.fill() });
-  hurd.forEach(function(h){ if(h.x-cam>VW+60||h.x-cam<-60) return; if(h.k) dImg(h.k,h.x-24,h.y-46,48,48); else { cx.fillStyle='#C9A27E'; rr(h.x-20,h.y-34,40,34,8); cx.fill() } });
+  /*חן 31.10.26: מכשול ברור: צל על השביל, טבעת אזהרה פועמת, גדול ומלא צבע*/hurd.forEach(function(h){ if(h.x-cam>VW+60||h.x-cam<-60) return; var pu=1+Math.sin(clock*5+h.x)*.08;
+    cx.fillStyle='rgba(60,30,30,.22)'; cx.beginPath(); cx.ellipse(h.x,h.y+2,30,8,0,0,6.28); cx.fill();
+    cx.save(); cx.globalAlpha=.55; cx.strokeStyle='#EF406E'; cx.lineWidth=4; cx.setLineDash([7,6]); cx.beginPath(); cx.arc(h.x,h.y-27,36*pu,0,6.28); cx.stroke(); cx.setLineDash([]); cx.restore();
+    cx.save(); cx.globalAlpha=.16; cx.fillStyle='#EF406E'; cx.beginPath(); cx.arc(h.x,h.y-27,36*pu,0,6.28); cx.fill(); cx.restore();
+    if(h.k) dImg(h.k,h.x-28,h.y-56,56,56); else { cx.fillStyle='#C9A27E'; rr(h.x-20,h.y-34,40,34,8); cx.fill() } });
   var DY=tiles.length?tiles[tiles.length-1].y:GY;
   // דלת
   var dw=70, dh=112; if(door.open){ cx.save(); cx.globalAlpha=.35+Math.sin(clock*5)*.15; var rg=cx.createRadialGradient(door.x+dw/2,DY-dh/2,10,door.x+dw/2,DY-dh/2,110); rg.addColorStop(0,'#FFF3B0'); rg.addColorStop(1,'rgba(255,243,176,0)'); cx.fillStyle=rg; cx.fillRect(door.x-80,DY-dh-80,dw+160,dh+120); cx.restore() }
