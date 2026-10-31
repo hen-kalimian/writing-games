@@ -231,7 +231,7 @@ canvas.dc{width:100%;display:block;border:1.5px dashed var(--pink-strong);border
 .wztt i{position:absolute;bottom:0;right:0;height:4px;border-radius:4px;background:var(--mint-ink);transition:width .3s}
 .wzbody{flex:1;min-height:0;overflow-y:auto;overflow-x:hidden;display:block;padding:14px 12px 24px}
 .wzmain{max-width:880px;margin:0 auto;display:flex;flex-direction:column;gap:14px}
-.wzlayout .wznav{position:fixed;top:56px;bottom:0;right:0;width:min(300px,86vw);z-index:60;border-radius:0 0 0 20px;overflow-y:auto;transform:translateX(105%);transition:transform .25s;box-shadow:-6px 0 24px rgba(0,0,0,.12)}
+.wzlayout .wznav{position:fixed;top:76px;bottom:0;right:0;width:min(300px,86vw);z-index:60;border-radius:0 0 0 20px;overflow-y:auto;transform:translateX(105%);transition:transform .25s;box-shadow:-6px 0 24px rgba(0,0,0,.12)}
 .wzlayout .wznav.open{transform:none}
 .wzlayout .wnl{flex-direction:column;overflow:visible}
 .wzlayout .wni{white-space:normal;flex:none}
@@ -270,6 +270,34 @@ canvas.dc{width:100%;display:block;border:1.5px dashed var(--pink-strong);border
 .wzmain>.card>h2{font-size:1.8rem;color:var(--pink-deep);text-align:center}
 .wzmain .tile,.wzmain .lbig2{font-size:2.6rem}
 .wzmain .mk{border-radius:18px}
+/* פחות ורוד: רקע בהיר, מסגרות בתכלת ובמנטה, ורוד רק כהדגשה */
+.wzlayout{background:linear-gradient(180deg,#f6fbff 0%,#f1faf5 100%)}
+.wzlayout .wztop{border-bottom-color:#cfe8f7}
+.wzlayout .wzmain>.card{border-color:#cfe8f7;background:linear-gradient(180deg,#fff,#f7fbff)}
+.wzlayout .wzmain .panel{border-color:#cdebdc;background:linear-gradient(180deg,#fff,#f6fcf9);box-shadow:0 6px 18px rgba(31,107,74,.07)}
+.wzlayout .wzmain canvas.dc{border-color:#8cc3e8;background:#fff}
+.wzlayout .pwp{border-color:#bfe6d3;box-shadow:0 6px 16px rgba(31,107,74,.1)}
+.wzlayout .pwfull{background:linear-gradient(180deg,#fff,#f1faf5)}
+.wzlayout .pwboard canvas.dc{border:3px solid #8cc3e8}
+.wzlayout>*{position:relative}
+.wzlogo{height:68px;width:auto;flex:none;margin-block:-4px}
+@media(max-width:480px){.wzlogo{height:40px}}
+/* הגוונים של חן: מנטה בהיר, לבן, שני ורודים, צהוב בננה בהיר מאוד ותכלת בהיר */
+.wzlayout{background:linear-gradient(180deg,#eefaf3 0%,#fff 45%,#fffbe8 100%)}
+.wzlayout .wztop{border-bottom-color:#fbd5e1}
+.wzlayout .wzmain>.card:nth-child(3n+1){border-color:#fbd5e1;background:linear-gradient(180deg,#fff,#fff7fa)}
+.wzlayout .wzmain>.card:nth-child(3n+2){border-color:#cfe8f7;background:linear-gradient(180deg,#fff,#f4fafe)}
+.wzlayout .wzmain>.card:nth-child(3n){border-color:#cdebdc;background:linear-gradient(180deg,#fff,#f3fbf7)}
+.wzlayout .wzmain .panel{border-color:#f1e4a0;background:linear-gradient(180deg,#fff,#fffbe8);box-shadow:0 6px 18px rgba(138,90,0,.07)}
+.wzlayout .pwp:nth-child(2){border-color:#fbc5d6}.wzlayout .pwp:nth-child(3){border-color:#cfe8f7}
+.wzlayout .wzctl{border-color:#fbd5e1}
+.wzlayout .wznav{border-color:#cfe8f7}
+.wzlayout .wni{border-color:#e1eef6}
+.wzlayout .wni.cur{background:var(--sky);border-color:#8cc3e8}
+.wzlayout .wzctl{border-color:#cfe8f7}
+.wzlayout .btn:not(.solid):not(.danger){background:#fff;border-color:#cfe8f7;color:#245e8c}
+.wzlayout .btn.quiet{background:#fff;color:var(--muted)}
+.wzlayout .mdb.on,.wzlayout .lvl.on{background:var(--mint);border-color:var(--mint-ink)}
 .dpn{font-family:var(--head);font-weight:800;font-size:9rem;line-height:1;color:var(--pink-strong);animation:pop .6s}
 .dpt{font-family:var(--head);font-weight:800;font-size:1.6rem;color:var(--pink-deep)}
 @keyframes pop{0%{transform:scale(.3);opacity:0}60%{transform:scale(1.15)}100%{transform:scale(1);opacity:1}}
@@ -1030,8 +1058,8 @@ let WZ_NAV = false, WZ_HINT = false;
 function wrapLayout(m, inner) {
   const sl = ST(m), w = m.wz, sum = w.phase === 'sum' || w.phase === 'think', pct = Math.round(Object.keys(w.done || {}).length / sl.length * 100);
   const title = sum ? 'דף סיכום' : sl[w.step][1];
-  return `<div class="wzlayout"><div class="wztop noprint"><button type="button" class="btn sm" data-act="wzMenu">☰ שקופיות</button><div class="wztt"><b>${esc(title)}</b><span>${sum ? '' : (w.step + 1) + ' מתוך ' + sl.length}</span><i style="width:${pct}%"></i></div><button type="button" class="btn sm${WZ_HINT ? ' solid' : ''}" data-act="wzHints">הנחיות לבוחנת</button></div>
-    <div class="wzbody">${wizNav(m)}<div class="wzmain${WZ_HINT || sum ? ' show' : ''}">${inner}</div></div></div>`;
+  return `<div class="wzlayout"><div class="wztop noprint"><button type="button" class="btn sm" data-act="wzMenu">☰ שקופיות</button><div class="wztt"><b>${esc(title)}</b><span>${sum ? '' : (w.step + 1) + ' מתוך ' + sl.length}</span><i style="width:${pct}%"></i></div><button type="button" class="btn sm${WZ_HINT ? ' solid' : ''}" data-act="wzHints">הנחיות לבוחנת</button><img class="wzlogo" src="img/logo.png" alt="חן קלימיאן - לדבר עם ילדים"></div>
+    <div class="wzbody">${wizNav(m)}<div class="wzmain${WZ_HINT || sum ? ' show' : ''}">${inner}<div class="rights noprint">כל הזכויות שמורות לחן קלימיאן</div></div></div></div>`;
 }
 
 /* ===== כספת ===== */
