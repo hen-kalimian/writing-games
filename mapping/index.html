@@ -400,8 +400,6 @@ body.pal .now b{color:var(--mint-ink)}
 body.pal .bar .track{background:#e3f0f8}
 body.pal .bar .fill{background:#7fcfb0}
 body.pal .bar.done .fill{background:#3aa57a}
-body.pal .stab{border-color:#cfe8f7}
-body.pal .stab.on{background:var(--sky);border-color:#8cc3e8;color:var(--sky-ink)}
 body.pal .item{border-color:#e1eef6}
 body.pal .lg{border-color:#e1eef6}
 body.pal input,body.pal textarea{border-color:#cfe8f7}
@@ -414,7 +412,17 @@ body.pal .btn:not(.solid):not(.danger){border-color:#fbc5d6}
 .bar .track{height:10px;border-radius:99px;background:var(--line);overflow:hidden}
 .bar .fill{height:100%;background:var(--pink-strong);border-radius:99px}
 .bar.done .fill{background:#3aa57a}
-.stabs{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px}
+.sc-num{--c:#d8f3e6;--b:#7fcfb0}.sc-let{--c:#d8ecfa;--b:#8cc3e8}.sc-wr{--c:#fde1ea;--b:#f2a3bf}.sc-rd{--c:#fff3c4;--b:#e8cf6a}.sc-flu{--c:#fbc5d6;--b:#e58aab}
+.stabs{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px;align-items:end}
+.stagecard{background:var(--c);border:2.5px solid var(--b)}
+body.pal #main>.card.stagecard{border-color:var(--b);background:var(--c)}
+body.pal .stab.on.sc-num,body.pal .stab.on.sc-let,body.pal .stab.on.sc-wr,body.pal .stab.on.sc-rd,body.pal .stab.on.sc-flu{border-color:var(--b);color:var(--ink)}
+.stab.sc-num,.stab.sc-let,.stab.sc-wr,.stab.sc-rd,.stab.sc-flu{white-space:normal;text-align:center;padding:10px 4px;min-height:74px;border:2px solid var(--b);border-radius:16px 16px 0 0;background:color-mix(in srgb,var(--c) 55%,#fff);color:var(--ink);display:flex;flex-direction:column;justify-content:center;gap:2px;line-height:1.2}
+.stab b{font-family:var(--head);font-size:.92rem}
+.stab small{font-size:.7rem}
+.stab.on.sc-num,.stab.on.sc-let,.stab.on.sc-wr,.stab.on.sc-rd,.stab.on.sc-flu{background:var(--c);min-height:86px;border-width:3px;margin-bottom:-12px;padding-bottom:20px;position:relative;z-index:2;box-shadow:0 -3px 8px rgba(0,0,0,.05)}
+@media(max-width:520px){.stab b{font-size:.72rem}.stab small{display:none}.stab.sc-num,.stab.sc-let,.stab.sc-wr,.stab.sc-rd,.stab.sc-flu{min-height:64px;padding:8px 2px}.stab.on.sc-num,.stab.on.sc-let,.stab.on.sc-wr,.stab.on.sc-rd,.stab.on.sc-flu{min-height:72px}}
+.stabs-old{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px}
 .stab{flex:0 0 auto;border:1.5px solid var(--line);background:var(--card);border-radius:14px;padding:8px 14px;font-weight:700;white-space:nowrap}
 .stab.on{background:var(--pink);border-color:var(--pink-strong);color:var(--pink-deep)}
 .stab small{display:block;font-weight:400;color:var(--muted);font-size:.74rem}
@@ -762,16 +770,16 @@ const GROUPS = [['א', 'ב', 'ג', 'ד'], ['ה', 'ו', 'ז', 'ח'], ['ט', 'י',
 const gname = (g, i) => i === 6 ? 'האותיות הסופיות' : 'קבוצה ' + (i + 1);
 const it = (pre, arr) => arr.map((l, i) => [pre + i, l]);
 const STAGES = [
-  { id: 'num', title: 'מספרים', sub: 'שלב 1', blocks: [{ t: 'השיעורים הדיגיטליים ב"מספרים בקלות", לפי הסדר', items: it('nl', ['הסבר לפני שמתחילים', 'מנייה והתאמת כמות למספר', 'הכרת הספרות 2, 3, 4, 5, 6', 'הכרת הספרות 0, 1, 7, 8, 9', 'תרגול כל הספרות יחד', 'תומכי הזיכרון', 'הרצף המספרי', 'פתרון בעיות חשבוניות: חיבור', 'חיסור', 'הכרת מספרי עשרה: תבנית העשר', 'חיבור וחיסור מעל 10', 'משחקים לסיכום מוכנות חשבונית לכיתה א׳']) }] },
-  { id: 'let', title: 'אותיות ומודעות פונולוגית', sub: 'שלב 2, במקביל', blocks: [
+  { id: 'num', short: 'מספרים', title: 'מספרים', sub: 'שלב 1', blocks: [{ t: 'השיעורים הדיגיטליים ב"מספרים בקלות", לפי הסדר', items: it('nl', ['הסבר לפני שמתחילים', 'מנייה והתאמת כמות למספר', 'הכרת הספרות 2, 3, 4, 5, 6', 'הכרת הספרות 0, 1, 7, 8, 9', 'תרגול כל הספרות יחד', 'תומכי הזיכרון', 'הרצף המספרי', 'פתרון בעיות חשבוניות: חיבור', 'חיסור', 'הכרת מספרי עשרה: תבנית העשר', 'חיבור וחיסור מעל 10', 'משחקים לסיכום מוכנות חשבונית לכיתה א׳']) }] },
+  { id: 'let', short: 'אותיות ומודעות פונולוגית', title: 'אותיות ומודעות פונולוגית', sub: 'שלב 2, במקביל', blocks: [
     { t: 'מכיר/ה את האותיות: שם, צליל וצורה', lg: 'lr' }, { t: 'כותב/ת את האותיות', lg: 'lw' },
     { t: 'חזרה ומבדק', items: [['lrev', 'חזרה על כל האותיות'], ['ltest', 'מבדק האותיות הדיגיטלי']] },
     { t: 'מודעות פונולוגית: השיעורים הדיגיטליים, לפי הסדר', items: it('pl', ['משחק היכרות', 'שיעור 3: חלוקת מילים לצלילים', 'שיעור 4: צליל פותח', 'שיעור 5: צליל סוגר', 'שיעור 6: קשר אות-צליל', 'השיר: צלילי האותיות']) },
     { t: 'העשרת שפה', items: it('sl', ['שיעור 9: שפה, מיון והכללה', 'שיעור 10: הגדרה והשוואה', 'שיעור 11: להבין סיפורים', 'שיעור 12: לספר סיפורים']) }] },
-  { id: 'wr', title: 'כתיב פונטי', sub: 'שלב 3', blocks: [{ t: 'כתיבה לפי הצלילים', items: it('w', ['כותב/ת את הצליל הפותח של מילה', 'כותב/ת צליל פותח וצליל סוגר', 'כותב/ת מילה בת 2-3 צלילים', 'כותב/ת מילה בת 4 צלילים ויותר', 'כותב/ת מילה עם אותיות סופיות', 'כותב/ת הברות עם ניקוד', 'כותב/ת מילה עם ניקוד', 'כותב/ת משפט קצר בהכתבה', 'מזהה ומתקן/ת שגיאה בכתיבה של עצמו/ה']) }] },
-  { id: 'rd', title: 'קוראים בקלות', sub: 'שלב 4, כל סימן ניקוד', matrix: true,
+  { id: 'wr', short: 'כתיב פונטי', title: 'כתיב פונטי', sub: 'שלב 3', blocks: [{ t: 'כתיבה לפי הצלילים', items: it('w', ['כותב/ת את הצליל הפותח של מילה', 'כותב/ת צליל פותח וצליל סוגר', 'כותב/ת מילה בת 2-3 צלילים', 'כותב/ת מילה בת 4 צלילים ויותר', 'כותב/ת מילה עם אותיות סופיות', 'כותב/ת הברות עם ניקוד', 'כותב/ת מילה עם ניקוד', 'כותב/ת משפט קצר בהכתבה', 'מזהה ומתקן/ת שגיאה בכתיבה של עצמו/ה']) }] },
+  { id: 'rd', short: 'קוראים בקלות', title: 'קוראים בקלות', sub: 'שלב 4, כל סימן ניקוד', matrix: true,
     signs: [['קמץ ופתח', 'אַ אָ'], ['שין שמאלית ודגש', 'שׂ ּ'], ['שווא', 'אְ'], ['חיריק', 'אִ'], ['חולם', 'אֹ'], ['צירה וסגול', 'אֵ אֶ'], ['שורוק וקובוץ', 'אוּ אֻ']], cols: [['syl', 'הברות'], ['wrd', 'מילים'], ['sen', 'משפטים']] },
-  { id: 'flu', title: 'קריאה שוטפת', sub: 'שלב 5', blocks: [{ t: 'משפטים, קטעים ושטף', items: it('f', ['קורא/ת משפט שלם בלי לפרק להברות', 'קורא/ת שני משפטים ברצף', 'קורא/ת קטע קצר מנוקד', 'קורא/ת בהטעמה ובהתאם לפיסוק', 'מבין/ה מה קרא/ה ועונה על שאלות', 'קורא/ת קטע מנוקד בשטף', 'קורא/ת אותיות כתב', 'קורא/ת מילים בלי ניקוד', 'קורא/ת קטע בלי ניקוד', 'קורא/ת בקול בביטחון ובהנאה']) }] }
+  { id: 'flu', short: 'קריאה שוטפת', title: 'קריאה שוטפת', sub: 'שלב 5', blocks: [{ t: 'משפטים, קטעים ושטף', items: it('f', ['קורא/ת משפט שלם בלי לפרק להברות', 'קורא/ת שני משפטים ברצף', 'קורא/ת קטע קצר מנוקד', 'קורא/ת בהטעמה ובהתאם לפיסוק', 'מבין/ה מה קרא/ה ועונה על שאלות', 'קורא/ת קטע מנוקד בשטף', 'קורא/ת אותיות כתב', 'קורא/ת מילים בלי ניקוד', 'קורא/ת קטע בלי ניקוד', 'קורא/ת בקול בביטחון ובהנאה']) }] }
 ];
 const KEYLABEL = {};
 function stageKeys(st) {
@@ -813,7 +821,7 @@ function renderKids() {
     <div class="bars">${STAGES.map(st => { const s = stats(c, st); return `<div class="bar${s.mast === s.total ? ' done' : ''}"><span><b>${esc(st.title)}</b> · ${s.mast} מתוך ${s.total}</span><div class="track"><div class="fill" style="width:${s.pct}%"></div></div></div>`; }).join('')}</div>
     <div class="row"></div></div>`;
   const st = STAGES.find(x => x.id === S.stage) || STAGES[0];
-  h += `<div class="card"><div class="stabs" role="tablist">${STAGES.map(x => `<button type="button" role="tab" class="stab${x.id === st.id ? ' on' : ''}" data-act="stage" data-id="${x.id}">${esc(x.title)}<small>${esc(x.sub)}</small></button>`).join('')}</div>
+  h += `<div class="card stagecard sc-${st.id}"><div class="stabs" role="tablist">${STAGES.map(x => `<button type="button" role="tab" class="stab sc-${x.id}${x.id === st.id ? ' on' : ''}" data-act="stage" data-id="${x.id}"><b>${esc(x.short || x.title)}</b><small>${esc(x.sub.split(',')[0])}</small></button>`).join('')}</div>
     <div class="legend"><span>לחצי על פריט כדי לשנות מצב:</span><span><i class="dot"></i>עוד לא התחלנו</span><span><i class="dot" style="background:#ffe9b8"></i>בתהליך</span><span><i class="dot" style="background:var(--mint)"></i>שולט/ת</span></div>`;
   if (st.matrix) {
     h += `<div class="scroll"><table class="matrix"><thead><tr><th></th>${st.cols.map(x => `<th>${x[1]}</th>`).join('')}</tr></thead><tbody>${st.signs.map(s => `<tr><td class="sign"><span>${s[1]}</span>${s[0]}</td>${st.cols.map(x => { const k = 'rd.' + s[0] + '.' + x[0], v = c.marks[k] || 0; return `<td><button type="button" class="cell s${v}" data-act="mark" data-k="${esc(k)}" aria-label="${esc(KEYLABEL[k])}: ${STATES[v]}">${SYM[v] || '○'}</button></td>`; }).join('')}</tr>`).join('')}</tbody></table></div>`;
