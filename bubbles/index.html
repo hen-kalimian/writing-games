@@ -34,7 +34,7 @@ html,body{margin:0;height:100%;background:#FEF6F5;font-family:Rubik,Arial,sans-s
 <body>
 <div class="wrap">
  <div class="hud">
-  <span class="goal"><span id="insT" class="insT">יוֹרִים עַל אוֹתָהּ אוֹת</span><span id="goal"></span><button class="spk" id="again" type="button" aria-label="לשמוע את האות"><svg viewBox="0 0 24 24" fill="#EF406E"><path d="M4 9v6h4l5 4V5L8 9H4z"/><path d="M16 8.5a5 5 0 0 1 0 7" stroke="#EF406E" stroke-width="2" fill="none" stroke-linecap="round"/></svg></button></span>
+  <span class="goal"><span id="insT" class="insT">עִזְרוּ לִי לְפוֹצֵץ אֶת הַבּוּעָה הַמַּתְאִימָה</span><span id="goal"></span><button class="spk" id="again" type="button" aria-label="לשמוע את האות"><svg viewBox="0 0 24 24" fill="#EF406E"><path d="M4 9v6h4l5 4V5L8 9H4z"/><path d="M16 8.5a5 5 0 0 1 0 7" stroke="#EF406E" stroke-width="2" fill="none" stroke-linecap="round"/></svg></button></span>
   <button class="mute" id="mute" type="button" aria-label="מוזיקה"><svg viewBox="0 0 24 24"><path d="M9 17V5l10-2v12" stroke="#EF406E" stroke-width="2.2" fill="none" stroke-linejoin="round"/><circle cx="6.5" cy="17" r="2.6" fill="#EF406E"/><circle cx="16.5" cy="15" r="2.6" fill="#EF406E"/><path id="muteX" d="M3 3l18 18" stroke="#B8236B" stroke-width="2.4" stroke-linecap="round" style="display:none"/></svg></button>
   <button class="fs" id="fs" type="button" aria-label="מסך מלא"><svg viewBox="0 0 24 24" fill="none" stroke="#EF406E" stroke-width="2.2" stroke-linecap="round"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg></button>
  </div>
@@ -115,7 +115,7 @@ function rel(e){ var r=cv.getBoundingClientRect(); return {x:e.clientX-r.left,y:
 var down=null; cv.addEventListener('pointerdown',function(e){ e.preventDefault(); aim=rel(e); down=aim });
 cv.addEventListener('pointermove',function(e){ if(aim) aim=rel(e) });
 cv.addEventListener('pointerup',function(e){ var p=rel(e), drag=down&&Math.hypot(p.x-down.x,p.y-down.y)>14; aim=null; down=null; shoot(p.x,p.y,drag) }); /* נגיעה = הבועה שנגעו בה; גרירה = הכיוון קובע */
-var START='יוֹרִים עַל אוֹתָהּ אוֹת', DONE='כָּל הַכָּבוֹד! פּוֹצַצְתֶּם אֶת כָּל הַבּוּעוֹת!';
+var START='עִזְרוּ לִי לְפוֹצֵץ אֶת הַבּוּעָה הַמַּתְאִימָה', DONE='כָּל הַכָּבוֹד! פּוֹצַצְתֶּם אֶת כָּל הַבּוּעוֹת!';
 /* חן, 30.10.26: בנגיעה הראשונה (לא על כפתור) נשמעת הפתיחה */ window.WG_FIRST_INS=function(){ if(state==='intro') say(START) };
 function intro(){ state='intro'; ov.classList.remove('hidden'); card.innerHTML='<h2>'+START+'</h2><div class="row"><button class="btn soft" id="e">בועות גדולות</button><button class="btn" id="h">בועות קטנות</button></div>';
   document.getElementById('e').onclick=function(){ easy=true; begin() }; document.getElementById('h').onclick=function(){ easy=false; begin() } }

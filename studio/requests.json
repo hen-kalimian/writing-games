@@ -1482,5 +1482,425 @@
   "game": "../play/index.html?g=ldeck_end_letters",
   "title": "לוטו אות סוגרת",
   "when": "כשהופכים את הקלף"
+ },
+ {
+  "text": "גָּמָל",
+  "nik": "גָּמָל",
+  "game": "../play/index.html?g=ldeck_kamatz_patach",
+  "title": "לוטו צליל פותח קמץ פתח",
+  "when": "אחרי הנחת הקלף"
+ },
+ {
+  "text": "גָּ",
+  "nik": "גָּ",
+  "game": "../play/index.html?g=ldeck_kamatz_patach",
+  "title": "לוטו צליל פותח קמץ פתח",
+  "when": "כשהופכים את הקלף"
+ },
+ {
+  "text": "כַּ",
+  "nik": "כַּ",
+  "game": "../play/index.html?g=ldeck_kamatz_patach",
+  "title": "לוטו צליל פותח קמץ פתח",
+  "when": "כשהופכים את הקלף"
+ },
+ {
+  "text": "אַרְיֵה",
+  "nik": "אַרְיֵה",
+  "game": "../play/index.html?g=ldeck_kamatz_patach",
+  "title": "לוטו צליל פותח קמץ פתח",
+  "when": "אחרי הנחת הקלף"
+ },
+ {
+  "text": "אַ",
+  "nik": "אַ",
+  "game": "../play/index.html?g=ldeck_kamatz_patach",
+  "title": "לוטו צליל פותח קמץ פתח",
+  "when": "כשהופכים את הקלף"
+ },
+ {
+  "text": "תַּ",
+  "nik": "תַּ",
+  "game": "../play/index.html?g=ldeck_kamatz_patach",
+  "title": "לוטו צליל פותח קמץ פתח",
+  "when": "כשהופכים את הקלף"
+ },
+ {
+  "text": "מַפְתֵּחַ",
+  "nik": "מַפְתֵּחַ",
+  "game": "../play/index.html?g=ldeck_kamatz_patach",
+  "title": "לוטו צליל פותח קמץ פתח",
+  "when": "אחרי הנחת הקלף"
+ },
+ {
+  "text": "סַל",
+  "nik": "סַל",
+  "game": "../play/index.html?g=ldeck_kamatz_patach",
+  "title": "לוטו צליל פותח קמץ פתח",
+  "when": "אחרי הנחת הקלף"
+ },
+ {
+  "text": "בַּיִת",
+  "nik": "בַּיִת",
+  "game": "../play/index.html?g=ldeck_kamatz_patach",
+  "title": "לוטו צליל פותח קמץ פתח",
+  "when": "אחרי הנחת הקלף"
+ },
+ {
+  "text": "חָתוּל",
+  "nik": "חָתוּל",
+  "game": "../play/index.html?g=ldeck_kamatz_patach",
+  "title": "לוטו צליל פותח קמץ פתח",
+  "when": "אחרי הנחת הקלף"
+ },
+ {
+  "text": "חָ",
+  "nik": "חָ",
+  "game": "../play/index.html?g=ldeck_kamatz_patach",
+  "title": "לוטו צליל פותח קמץ פתח",
+  "when": "כשהופכים את הקלף"
+ },
+ {
+  "text": "יָד",
+  "nik": "יָד",
+  "game": "../play/index.html?g=ldeck_kamatz_patach",
+  "title": "לוטו צליל פותח קמץ פתח",
+  "when": "אחרי הנחת הקלף"
+ },
+ {
+  "text": "יָ",
+  "nik": "יָ",
+  "game": "../play/index.html?g=ldeck_kamatz_patach",
+  "title": "לוטו צליל פותח קמץ פתח",
+  "when": "כשהופכים את הקלף"
+ },
+ {
+  "text": "דָּ",
+  "nik": "דָּ",
+  "game": "../play/index.html?g=ldeck_kamatz_patach",
+  "title": "לוטו צליל פותח קמץ פתח",
+  "when": "כשהופכים את הקלף"
+ },
+ {
+  "text": "תֹּף",
+  "nik": "תֹּף",
+  "game": "../play/index.html?g=ldeck_holam_shuruk",
+  "title": "לוטו צליל פותח חולם שורוק",
+  "when": "אחרי הנחת הקלף"
+ },
+ {
+  "text": "תֹּ",
+  "nik": "תֹּ",
+  "game": "../play/index.html?g=ldeck_holam_shuruk",
+  "title": "לוטו צליל פותח חולם שורוק",
+  "when": "כשהופכים את הקלף"
+ },
+ {
+  "text": "כּוֹבַע",
+  "nik": "כּוֹבַע",
+  "game": "../play/index.html?g=ldeck_holam_shuruk",
+  "title": "לוטו צליל פותח חולם שורוק",
+  "when": "אחרי הנחת הקלף"
+ },
+ {
+  "text": "קוֹ",
+  "nik": "קוֹ",
+  "game": "../play/index.html?g=ldeck_holam_shuruk",
+  "title": "לוטו צליל פותח חולם שורוק",
+  "when": "כשהופכים את הקלף"
+ },
+ {
+  "text": "רוֹבּוֹט",
+  "nik": "רוֹבּוֹט",
+  "game": "../play/index.html?g=ldeck_holam_shuruk",
+  "title": "לוטו צליל פותח חולם שורוק",
+  "when": "אחרי הנחת הקלף"
+ },
+ {
+  "text": "שׁוֹטֵר",
+  "nik": "שׁוֹטֵר",
+  "game": "../play/index.html?g=ldeck_holam_shuruk",
+  "title": "לוטו צליל פותח חולם שורוק",
+  "when": "אחרי הנחת הקלף"
+ },
+ {
+  "text": "שׁוֹ",
+  "nik": "שׁוֹ",
+  "game": "../play/index.html?g=ldeck_holam_shuruk",
+  "title": "לוטו צליל פותח חולם שורוק",
+  "when": "כשהופכים את הקלף"
+ },
+ {
+  "text": "נוֹצָה",
+  "nik": "נוֹצָה",
+  "game": "../play/index.html?g=ldeck_holam_shuruk",
+  "title": "לוטו צליל פותח חולם שורוק",
+  "when": "אחרי הנחת הקלף"
+ },
+ {
+  "text": "עוּגָה",
+  "nik": "עוּגָה",
+  "game": "../play/index.html?g=ldeck_holam_shuruk",
+  "title": "לוטו צליל פותח חולם שורוק",
+  "when": "אחרי הנחת הקלף"
+ },
+ {
+  "text": "עוּ",
+  "nik": "עוּ",
+  "game": "../play/index.html?g=ldeck_holam_shuruk",
+  "title": "לוטו צליל פותח חולם שורוק",
+  "when": "כשהופכים את הקלף"
+ },
+ {
+  "text": "חֻלְצָה",
+  "nik": "חֻלְצָה",
+  "game": "../play/index.html?g=ldeck_holam_shuruk",
+  "title": "לוטו צליל פותח חולם שורוק",
+  "when": "אחרי הנחת הקלף"
+ },
+ {
+  "text": "חֻ",
+  "nik": "חֻ",
+  "game": "../play/index.html?g=ldeck_holam_shuruk",
+  "title": "לוטו צליל פותח חולם שורוק",
+  "when": "כשהופכים את הקלף"
+ },
+ {
+  "text": "נוּרָה",
+  "nik": "נוּרָה",
+  "game": "../play/index.html?g=ldeck_holam_shuruk",
+  "title": "לוטו צליל פותח חולם שורוק",
+  "when": "אחרי הנחת הקלף"
+ },
+ {
+  "text": "שׁוּעָל",
+  "nik": "שׁוּעָל",
+  "game": "../play/index.html?g=ldeck_holam_shuruk",
+  "title": "לוטו צליל פותח חולם שורוק",
+  "when": "אחרי הנחת הקלף"
+ },
+ {
+  "text": "שׁוּ",
+  "nik": "שׁוּ",
+  "game": "../play/index.html?g=ldeck_holam_shuruk",
+  "title": "לוטו צליל פותח חולם שורוק",
+  "when": "כשהופכים את הקלף"
+ },
+ {
+  "text": "לוּחַ",
+  "nik": "לוּחַ",
+  "game": "../play/index.html?g=ldeck_holam_shuruk",
+  "title": "לוטו צליל פותח חולם שורוק",
+  "when": "אחרי הנחת הקלף"
+ },
+ {
+  "text": "פִּיל",
+  "nik": "פִּיל",
+  "game": "../play/index.html?g=ldeck_hiriq_patach",
+  "title": "לוטו צליל פותח חיריק קמץ פתח",
+  "when": "אחרי הנחת הקלף"
+ },
+ {
+  "text": "פִּ",
+  "nik": "פִּ",
+  "game": "../play/index.html?g=ldeck_hiriq_patach",
+  "title": "לוטו צליל פותח חיריק קמץ פתח",
+  "when": "כשהופכים את הקלף"
+ },
+ {
+  "text": "סִיר",
+  "nik": "סִיר",
+  "game": "../play/index.html?g=ldeck_hiriq_patach",
+  "title": "לוטו צליל פותח חיריק קמץ פתח",
+  "when": "אחרי הנחת הקלף"
+ },
+ {
+  "text": "מִ",
+  "nik": "מִ",
+  "game": "../play/index.html?g=ldeck_hiriq_patach",
+  "title": "לוטו צליל פותח חיריק קמץ פתח",
+  "when": "כשהופכים את הקלף"
+ },
+ {
+  "text": "גִּיטָרָה",
+  "nik": "גִּיטָרָה",
+  "game": "../play/index.html?g=ldeck_hiriq_patach",
+  "title": "לוטו צליל פותח חיריק קמץ פתח",
+  "when": "אחרי הנחת הקלף"
+ },
+ {
+  "text": "גִּ",
+  "nik": "גִּ",
+  "game": "../play/index.html?g=ldeck_hiriq_patach",
+  "title": "לוטו צליל פותח חיריק קמץ פתח",
+  "when": "כשהופכים את הקלף"
+ },
+ {
+  "text": "לִימוֹן",
+  "nik": "לִימוֹן",
+  "game": "../play/index.html?g=ldeck_hiriq_patach",
+  "title": "לוטו צליל פותח חיריק קמץ פתח",
+  "when": "אחרי הנחת הקלף"
+ },
+ {
+  "text": "לִ",
+  "nik": "לִ",
+  "game": "../play/index.html?g=ldeck_hiriq_patach",
+  "title": "לוטו צליל פותח חיריק קמץ פתח",
+  "when": "כשהופכים את הקלף"
+ },
+ {
+  "text": "קִיפּוֹד",
+  "nik": "קִיפּוֹד",
+  "game": "../play/index.html?g=ldeck_hiriq_patach",
+  "title": "לוטו צליל פותח חיריק קמץ פתח",
+  "when": "אחרי הנחת הקלף"
+ },
+ {
+  "text": "קִ",
+  "nik": "קִ",
+  "game": "../play/index.html?g=ldeck_hiriq_patach",
+  "title": "לוטו צליל פותח חיריק קמץ פתח",
+  "when": "כשהופכים את הקלף"
+ },
+ {
+  "text": "כִּסֵּא",
+  "nik": "כִּסֵּא",
+  "game": "../play/index.html?g=ldeck_hiriq_patach",
+  "title": "לוטו צליל פותח חיריק קמץ פתח",
+  "when": "אחרי הנחת הקלף"
+ },
+ {
+  "text": "תִּיק",
+  "nik": "תִּיק",
+  "game": "../play/index.html?g=ldeck_hiriq_patach",
+  "title": "לוטו צליל פותח חיריק קמץ פתח",
+  "when": "אחרי הנחת הקלף"
+ },
+ {
+  "text": "תִּ",
+  "nik": "תִּ",
+  "game": "../play/index.html?g=ldeck_hiriq_patach",
+  "title": "לוטו צליל פותח חיריק קמץ פתח",
+  "when": "כשהופכים את הקלף"
+ },
+ {
+  "text": "אָלֶף",
+  "nik": "אָלֶף",
+  "game": "../play/index.html?g=ldeck_letters_a",
+  "title": "בְּאֵיזוֹ אוֹת מַתְחִילָה הַמִּלָּה?",
+  "when": "כשהופכים את הקלף"
+ },
+ {
+  "text": "גֶּזֶר",
+  "nik": "גֶּזֶר",
+  "game": "../play/index.html?g=ldeck_letters_a",
+  "title": "בְּאֵיזוֹ אוֹת מַתְחִילָה הַמִּלָּה?",
+  "when": "אחרי הנחת הקלף"
+ },
+ {
+  "text": "הַר",
+  "nik": "הַר",
+  "game": "../play/index.html?g=ldeck_letters_a",
+  "title": "בְּאֵיזוֹ אוֹת מַתְחִילָה הַמִּלָּה?",
+  "when": "אחרי הנחת הקלף"
+ },
+ {
+  "text": "פֵּא",
+  "nik": "פֵּא",
+  "game": "../play/index.html?g=ldeck_letters_a",
+  "title": "בְּאֵיזוֹ אוֹת מַתְחִילָה הַמִּלָּה?",
+  "when": "כשהופכים את הקלף"
+ },
+ {
+  "text": "יוּד",
+  "nik": "יוּד",
+  "game": "../play/index.html?g=ldeck_letters_a",
+  "title": "בְּאֵיזוֹ אוֹת מַתְחִילָה הַמִּלָּה?",
+  "when": "כשהופכים את הקלף"
+ },
+ {
+  "text": "כֶּלֶב",
+  "nik": "כֶּלֶב",
+  "game": "../play/index.html?g=ldeck_letters_a",
+  "title": "בְּאֵיזוֹ אוֹת מַתְחִילָה הַמִּלָּה?",
+  "when": "אחרי הנחת הקלף"
+ },
+ {
+  "text": "כַּף",
+  "nik": "כַּף",
+  "game": "../play/index.html?g=ldeck_letters_a",
+  "title": "בְּאֵיזוֹ אוֹת מַתְחִילָה הַמִּלָּה?",
+  "when": "כשהופכים את הקלף"
+ },
+ {
+  "text": "מֵם",
+  "nik": "מֵם",
+  "game": "../play/index.html?g=ldeck_letters_a",
+  "title": "בְּאֵיזוֹ אוֹת מַתְחִילָה הַמִּלָּה?",
+  "when": "כשהופכים את הקלף"
+ },
+ {
+  "text": "נוּן",
+  "nik": "נוּן",
+  "game": "../play/index.html?g=ldeck_letters_b",
+  "title": "בְּאֵיזוֹ אוֹת מַתְחִילָה הַמִּלָּה?",
+  "when": "כשהופכים את הקלף"
+ },
+ {
+  "text": "אוֹטוֹבּוּס",
+  "nik": "אוֹטוֹבּוּס",
+  "game": "../play/index.html?g=ldeck_letters_b",
+  "title": "בְּאֵיזוֹ אוֹת מַתְחִילָה הַמִּלָּה?",
+  "when": "אחרי הנחת הקלף"
+ },
+ {
+  "text": "פֶּ",
+  "nik": "פֶּ",
+  "game": "../play/index.html?g=ldeck_tsere_segol",
+  "title": "לוטו צליל פותח צירה סגול",
+  "when": "כשהופכים את הקלף"
+ },
+ {
+  "text": "עִזְרוּ לִי לְפוֹצֵץ אֶת הַבּוּעָה הַמַּתְאִימָה",
+  "nik": "עִזְרוּ לִי לְפוֹצֵץ אֶת הַבּוּעָה הַמַּתְאִימָה",
+  "game": "../bubbles/index.html",
+  "title": "בועות",
+  "when": "הנחיה בפתיחה"
+ },
+ {
+  "text": "פִּסְפַּסְתֶּם כַּמָּה",
+  "nik": "פִּסְפַּסְתֶּם כַּמָּה",
+  "game": "../jump/index.html?w=l-k4",
+  "title": "הרפתקאות",
+  "when": "כשמגיעים לסוף בלי לאסוף הכל"
+ },
+ {
+  "text": "אוֹתִיּוֹת",
+  "nik": "אוֹתִיּוֹת",
+  "game": "../jump/index.html?w=l-k4",
+  "title": "הרפתקאות",
+  "when": "אחרי \"פספסתם כמה\""
+ },
+ {
+  "text": "סְפָרוֹת",
+  "nik": "סְפָרוֹת",
+  "game": "../jump/index.html?w=l-k4",
+  "title": "הרפתקאות",
+  "when": "אחרי \"פספסתם כמה\""
+ },
+ {
+  "text": "צְלִילִים",
+  "nik": "צְלִילִים",
+  "game": "../jump/index.html?w=l-k4",
+  "title": "הרפתקאות",
+  "when": "אחרי \"פספסתם כמה\""
+ },
+ {
+  "text": "מִלִּים",
+  "nik": "מִלִּים",
+  "game": "../jump/index.html?w=l-k4",
+  "title": "הרפתקאות",
+  "when": "אחרי \"פספסתם כמה\""
  }
 ]

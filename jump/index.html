@@ -88,7 +88,8 @@ function build(lv){
   tiles=[];pits=[];plats=[];hurd=[];items=[];decor=[];parts=[];
   /* חן, 30.10.26: "תגוון במכשולים... קוביה צפה באוויר שעליה אפשר לעלות": קוביות צפות עם צליל נכון למעלה, מכשולים על הקרקע ובורות ברוחב משתנה */
   var good=lv.good, bad=lv.bad, seq=[], n=lv.count||6, i, hard=li>=3;
-  var nbk=lv.blocks!=null?lv.blocks:2; for(i=0;i<n;i++) seq.push({g:1,t:good[i%good.length],blk:i<nbk});
+  /* חן, 31.10.26: "אם כבר אספתי ונפסלתי, בסיבוב החוזר רק אלו שלא אספתי" */var had=(lv.__got||[]).slice(),left=[];for(i=0;i<n;i++){var tt=good[i%good.length],hk=had.indexOf(tt);if(hk>=0)had.splice(hk,1);else left.push(tt)}
+  var nbk=lv.blocks!=null?lv.blocks:2; left.forEach(function(tt,q){seq.push({g:1,t:tt,blk:q<nbk})});
   for(i=0;i<(lv.hurdles!=null?lv.hurdles:2);i++) seq.push({hd:1});
   var nb=lv.bads!=null?lv.bads:Math.max(3,n-1); for(i=0;i<nb;i++) seq.push({g:0,t:bad[i%bad.length]});
   for(i=0;i<(lv.pits!=null?lv.pits:2);i++) seq.push({pit:1});
@@ -99,7 +100,7 @@ function build(lv){
   seq.forEach(function(e){
     if(e.hd){ var HK=['pumpkin','mushroom','flower-pot','acorn'].filter(function(k){return IMG[k]}); hurd.push({x:x,y:cur,k:HK.length?HK[(Math.random()*HK.length)|0]:null}); x+=rnd(180,230); return }
     if(e.blk){ var py2=cur-rnd(88,104); plats.push({x:x,w:118,y:py2}); items.push({x:x+59,y:py2-34,t:e.t,g:1,ph:rnd(0,6),dead:0,hi:false,pl:1}); x+=rnd(240,280); return }
-    if(e.pit){ var w=rnd(70,125); tiles.push({x:sx,w:x-sx,y:cur}); pits.push({x:x,w:w,k:Math.random()<.5?'water':'fire'}); sx=x+w; x=sx+rnd(170,210); return }
+    if(e.pit){ var w=rnd(46,78); tiles.push({x:sx,w:x-sx,y:cur}); pits.push({x:x,w:w,k:Math.random()<.5?'water':'fire'}); sx=x+w; x=sx+rnd(170,210); return }
     if(e.st){ var upw=cur>GY-60?1:cur<GY-40?-1:(Math.random()<.5?1:-1); for(var k=0;k<3;k++){ setH(x,cur-upw*26); x+=46 } x+=rnd(150,190); return }
     var high=e.g?Math.random()<.6:(hard&&Math.random()<.3);
     items.push({x:x,y:cur-(high?128:34),t:e.t,g:e.g,ph:rnd(0,6),dead:0,hi:high});
@@ -107,7 +108,7 @@ function build(lv){
   });
   door={x:x+40,open:0}; tiles.push({x:sx,w:door.x+500-sx,y:cur});
   for(i=0;i<Math.ceil((door.x+600)/260);i++) decor.push({k:W.decor[i%W.decor.length],x:i*260+rnd(-40,40),s:rnd(.8,1.15),far:i%2});
-  need=items.filter(function(o){return o.g}).length; got=0;
+  need=n; got=n-items.filter(function(o){return o.g}).length; door.x0=door.x; door.miss=0; if(got>=need) door.open=1;
   hero={x:VW*.5,y:GY,vy:0,on:1,face:1,sq:1,run:0,wait:1.2};
   cam=0;
 }
@@ -143,15 +144,17 @@ function step(dt){
   items.forEach(function(o){ if(o.dead||state!=='play') return; var oy=o.y+Math.sin(clock*3+o.ph)*5;
     var near=Math.abs(hero.x-o.x), dyy=Math.abs((hero.y-30)-oy);
     if(o.g?(near<34&&dyy<44):(near<24&&dyy<30)){ // תפיסת צליל נכון סלחנית, פגיעה בצליל אחר רק בנגיעה ממשית
-      if(o.g){ o.dead=1; got++; SFX.good(); sparkle(o.x,oy); say(W.names==='num'?(HenVoice.numberName(o.t)||o.t):W.names?(HenVoice.letterName(o.t)||o.t):o.t); if(got===need){door.open=1; setTimeout(SFX.door,350)} renderGoal() }
+      if(o.g){ o.dead=1; got++; (L.__got=L.__got||[]).push(o.t); SFX.good(); sparkle(o.x,oy); if(!(door.miss>clock)) say(W.names==='num'?(HenVoice.numberName(o.t)||o.t):W.names?(HenVoice.letterName(o.t)||o.t):o.t); if(got===need){door.open=1; setTimeout(SFX.door,350)} renderGoal() }
       else lose(o) }
     else if(o.g&&hero.x>o.x+70){
       var lt=tiles[tiles.length-1]; o.x=door.x+30; o.y=lt.y-(o.hi?128:34); o.pl=0; door.x+=230; lt.w=door.x+500-lt.x } });
   if(state!=='play') return;
+  if(!door.miss&&got<need&&hero.x>door.x0-380){ door.miss=clock+2.6; speak(['פִּסְפַּסְתֶּם כַּמָּה',missWord()]) }
   if(hero.x>door.x+20&&door.open) return win();
 }
 function lose(o){ if(state!=='play')return; state='ouch'; lives--; SFX.ouch(); shake=.35; renderHearts(); if(o){o.hit=1}
-  setTimeout(function(){ if(lives<=0){ lives=5; renderHearts(); show('over') } else { build(L); state='play'; renderGoal(); speak(L.goalSay||L.goal) } },1000) }
+  setTimeout(function(){ if(lives<=0){ lives=5; L.__got=[]; renderHearts(); show('over') } else { build(L); state='play'; renderGoal(); speak(L.goalSay||L.goal) } },1000) }
+function missWord(){ if(W.names==='num') return 'סְפָרוֹת'; if(W.names) return 'אוֹתִיּוֹת'; var t=((L.good||[])[0]||'').replace(/[֑-ׇ]/g,''); return t.length>2?'מִלִּים':'צְלִילִים' }
 function win(){ state='win'; sparkle(door.x+30,hero.y-60); setTimeout(function(){ li++; if(li>=W.levels.length) show('trophy'); else show('level') },900) }
 /* ---------- ציור ---------- */
 /* גודל טבעי לפריטים קטנים, כדי שתאנה או אצטרובל לא ייראו ענקיים ליד הדמות */
@@ -230,12 +233,13 @@ function spkBtn(t){ return '<button class="spk" type="button" data-say="'+t.repl
 function show(kind){
   state='card'; ov.classList.remove('hidden'); var h='';
   if(kind==='intro'){ h='<img class="hero" src="art/'+W.hero+'.png" alt=""><h2>'+W.title+'</h2><p>'+W.intro+' '+spkBtn(W.intro)+'</p><button class="btn" id="go">'+(W.start||'יוֹצְאִים לַדֶּרֶךְ')+'</button>'; card.innerHTML=h; bindCard(function(){ show('level') }); return }
-  if(kind==='level'){ L=W.levels[li]; h='<h2>'+(W.levelWord||'שלב')+' '+(li+1)+'</h2><p>'+L.goal+' '+spkBtn(L.goal)+'</p><div class="big">'+L.show.map(function(t){return '<span data-say="'+t+'">'+t+'</span>'}).join('')+'</div><button class="btn" id="go">'+(W.go||'מַתְחִילִים')+'</button>'; card.innerHTML=h; bindCard(start); speak(L.goalSay||L.goal); return }
+  if(kind==='level'){ L=W.levels[li]; L.__got=[]; h='<h2>'+(W.levelWord||'שלב')+' '+(li+1)+'</h2><p>'+L.goal+' '+spkBtn(L.goal)+'</p><div class="big">'+L.show.map(function(t){return '<span data-say="'+t+'">'+t+'</span>'}).join('')+'</div><button class="btn" id="go">'+(W.go||'מַתְחִילִים')+'</button>'; card.innerHTML=h; bindCard(start); speak(L.goalSay||L.goal); return }
   if(kind==='over'){ h='<img class="hero" src="art/'+W.hero+'.png" alt=""><h2>'+(W.again||'נְנַסֶּה שׁוּב')+'</h2><button class="btn" id="go">'+(W.go||'מַתְחִילִים')+'</button>'; card.innerHTML=h; bindCard(start); say(W.again||'נְנַסֶּה שׁוּב'); return }
   if(kind==='trophy'){ h='<img class="trophy" src="art/'+(W.trophy||W.hero)+'.png" alt=""><h2>'+W.done+'</h2><button class="btn" id="go">'+(W.replay||'מְשַׂחֲקִים שׁוּב')+'</button>'; card.innerHTML=h; bindCard(function(){ li=0; lives=5; renderHearts(); show('level') }); say(W.done); confetti(); window.WGEnd&&(WGEnd.replay=function(){var g=document.getElementById('go');g&&g.click()},WGEnd()); return }
 }
 function bindCard(fn){ card.querySelectorAll('[data-say]').forEach(function(b){ b.onclick=function(e){e.stopPropagation();var t=b.getAttribute('data-say'); if(t===L&&L.goal&&L.goalSay) speak(L.goalSay); else if(L&&t===L.goal&&L.goalSay) speak(L.goalSay); else say(t)} }); document.getElementById('go').onclick=function(){ ov.classList.add('hidden'); fn() } }
 window.__T=function(lv){ L=lv; build(lv); state="play" };
+window.__Jx=function(fn){return fn({get L(){return L},build:build,missWord:missWord,get items(){return items},get door(){return door},get hero(){return hero},setState:function(v){state=v},setCam:function(v){cam=v},get got(){return got},get need(){return need},get pits(){return pits},VW:VW})};
 window.__J=function(){return {cam:cam,VW:VW,hero:hero,items:items,pits:pits,tiles:tiles,door:door,plats:plats,hurd:hurd,state:state,li:li,lives:lives,got:got,need:need}};
 function start(){ build(L); state='play'; renderGoal(); renderHearts() }
 function confetti(){ for(var i=0;i<70;i++) setTimeout(function(){ sparkle(cam+rnd(40,VW-40),rnd(20,140)) },i*30) }
