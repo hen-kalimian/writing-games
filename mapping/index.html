@@ -667,7 +667,8 @@ function lp(m) {
       <div class="sec">מה הילד/ה מצליח/ה ללא קושי?</div>
       <div class="cbs">${T3.map((t, i) => cb('t3.c.' + i, t, m)).join('')}</div>
       ${ex('t3.e1', m, 'פתרון תרגיל חיבור עד 10')}
-      ${ex('t3.e2', m, 'תרגיל חשבון עד 5')}
+      <div class="cbs">${cb('t3.ok10', 'הצליח/ה בחיבור עד 10, ולכן אין צורך בתרגיל עד 5', m)}</div>
+      <div id="t3e2"${getP(m, 't3.ok10') ? ' hidden' : ''}>${ex('t3.e2', m, 'לא הצליח/ה? תרגיל חשבון עד 5')}</div>
       <div class="field"><label>הערות</label>${ta('t3.note', m, false)}</div>
     </div>`,
     t4: `<div class="panel"><h3><span class="num n4">4</span>משימה 4 – למידה חדשה בזמן אמת</h3>
@@ -953,7 +954,7 @@ document.addEventListener('input', e => {
   const el = e.target, p = el.dataset.p;
   if (el.dataset.wn) { const m = curMap(); if (!m) return; if (!m.wn) m.wn = {}; m.wn[el.dataset.wn] = el.value; touch(m, 'map:' + m.id); return; }
   if (el.dataset.pn) { const m = curMap(); if (!m) return; if (!m.pm) m.pm = {}; m.pm[el.dataset.pn] = Object.assign(m.pm[el.dataset.pn] || { mode: 'note' }, { note: el.value }); touch(m, 'map:' + m.id); return; }
-  if (p) { const m = curMap(); if (!m) return; setP(m, p, el.type === 'checkbox' ? (el.checked ? 1 : 0) : el.value); touch(m, 'map:' + m.id); if (p === 'name') { const chip = document.querySelector('.chip.on'); if (chip) chip.textContent = (el.value || 'ילד/ה ללא שם') + ' · ' + fmt(m.date); } return; }
+  if (p) { const m = curMap(); if (!m) return; setP(m, p, el.type === 'checkbox' ? (el.checked ? 1 : 0) : el.value); if (p === 't3.ok10') { const d = document.getElementById('t3e2'); if (d) d.hidden = !!el.checked; } touch(m, 'map:' + m.id); if (p === 'name') { const chip = document.querySelector('.chip.on'); if (chip) chip.textContent = (el.value || 'ילד/ה ללא שם') + ' · ' + fmt(m.date); } return; }
   const k = el.dataset.k; if (k) { const c = curKid(); if (!c) return; c[k] = el.value; touch(c, 'children'); if (k === 'name') { const chip = document.querySelector('.chip.on'); if (chip) chip.textContent = el.value || 'ילד/ה'; } }
 });
 document.addEventListener('submit', e => {
