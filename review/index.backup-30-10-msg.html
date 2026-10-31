@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>בדיקת משחקים</title>
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Rubik:wght@500;700;800&display=swap" rel="stylesheet">
+<style>
+/* דף בדיקת המשחקים של חן (29.10.26): כל המשחקים אחד מתחת לשני, מוטמעים בגודל שאפשר לשחק בו (כמו באתר), עם מסך מלא.
+   אישור = מתכווץ. תקן = נפתחת תיבת תיקון, ואחרי שליחה המשחק מתכווץ באדמדם עד שהתיקון מוכן, ואז נפתח שוב לבדיקה.
+   מחק משחק, ומחק וצור משחק חדש לפי רעיון. הפעולות נשמרות באתר (GameReviewActions) ומגיעות לקלוד תוך כמה דקות. */
+:root{--pink:#FDE1EA;--pink2:#FBC5D6;--fuchsia:#EF406E;--deep:#B8236B;--mint:#CFEFE3;--red:#F8D3D0}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;background:#FEF6F5;font-family:Rubik,Arial,sans-serif;color:#3A2A33}
+header{position:sticky;top:0;z-index:5;background:rgba(254,246,245,.95);backdrop-filter:blur(6px);padding:10px 16px;border-bottom:2px solid var(--pink);text-align:center}
+header h1{margin:0;font-size:22px;color:var(--deep)}
+.bar{height:10px;border-radius:99px;background:#F6D3DC;margin:8px auto 4px;max-width:520px;overflow:hidden}.bar i{display:block;height:100%;background:var(--fuchsia);transition:width .4s}
+.sum{font-size:14px;color:#6A5A63}
+.filters{display:flex;gap:6px;justify-content:center;flex-wrap:wrap;margin-top:6px}
+.filters button{font-family:inherit;font-size:13px;font-weight:700;border:0;border-radius:99px;padding:5px 12px;background:#fff;box-shadow:0 0 0 2px var(--pink);color:var(--deep);cursor:pointer}
+.filters button.on{background:var(--fuchsia);color:#fff;box-shadow:none}
+main{max-width:860px;margin:0 auto;padding:14px 16px 80px;display:flex;flex-direction:column;gap:16px}
+.lessonH{font-size:15px;font-weight:800;color:#5F8DB5;margin:10px 4px -6px}
+.card{background:#fff;border-radius:22px;box-shadow:0 0 0 3px var(--pink),0 6px 18px rgba(239,64,110,.08);overflow:hidden;transition:background .3s}
+.top{display:flex;align-items:center;gap:8px;padding:10px 14px;cursor:default}
+.top b{font-size:17px;color:var(--deep);flex:1}
+.top small{font-size:12px;color:#7A6A73}
+.chip{font-size:12px;font-weight:800;border-radius:99px;padding:3px 10px;white-space:nowrap}
+.chip.new{background:var(--mint);color:#2F7A5F}
+.frame{position:relative;width:100%;height:min(78vh,620px);background:#FEF6F5}
+.frame iframe{width:100%;height:100%;border:0;display:block}
+.frame .ph{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:#B8236B;font-weight:700}
+.fsb{flex:none;width:38px;height:38px;border-radius:50%;border:0;background:#fff;box-shadow:0 0 0 3px var(--pink);display:flex;align-items:center;justify-content:center;cursor:pointer}
+.fsb svg{width:20px;height:20px}
+.acts{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;padding:12px 14px}
+.acts button,.send{font-family:inherit;font-size:16px;font-weight:800;border:0;border-radius:99px;padding:10px 18px;cursor:pointer}
+.ok{background:#4FB38C;color:#fff}.fix{background:var(--fuchsia);color:#fff}.del{background:#fff;color:#8A7A83;box-shadow:0 0 0 2px #E8DDE2}.idea{background:#fff;color:var(--deep);box-shadow:0 0 0 2px var(--pink2)}
+.box{display:none;padding:0 14px 14px}.box.open{display:block}
+.box textarea{width:100%;min-height:90px;border-radius:14px;border:2px solid var(--pink2);padding:10px;font:500 16px Rubik,Arial;resize:vertical}
+.box .send{display:block;margin:8px auto 0;background:var(--fuchsia);color:#fff}
+.msg{margin:0 14px 10px;padding:8px 12px;border-radius:12px;background:#EAF7F1;color:#2F7A5F;font-size:14px;font-weight:700}
+.card.closed .frame,.card.closed .acts,.card.closed .box,.card.closed .msg{display:none}
+.card.approved{background:#EEF8F2}.card.approved .top b{color:#2F7A5F}
+.card.fixing{background:var(--red)}.card.fixing .top b{color:#A33A3A}
+.card.deleted{background:#F2EEF0;opacity:.75}
+.reopen{font-family:inherit;font-size:13px;font-weight:700;border:0;background:#fff;border-radius:99px;padding:5px 12px;color:var(--deep);box-shadow:0 0 0 2px var(--pink);cursor:pointer}
+.lock{max-width:420px;margin:60px auto;text-align:center;font-size:18px;color:var(--deep)}
+.toast{position:fixed;bottom:16px;left:50%;transform:translateX(-50%);background:#3A2A33;color:#fff;border-radius:14px;padding:10px 16px;font-weight:700;opacity:0;transition:opacity .3s;pointer-events:none;z-index:9}.toast.on{opacity:1}
+</style>
+</head>
+<body>
+<header><h1>בדיקת משחקים</h1><div class="bar"><i id="bar"></i></div><div class="sum" id="sum"></div>
+ <div class="filters" id="filters"><button data-f="todo" class="on">לבדיקה</button><button data-f="fixing">בתיקון</button><button data-f="approved">אושרו</button><button data-f="all">הכול</button></div></header>
+<main id="main"></main>
+<div class="toast" id="toast"></div>
+<script type="module">
+const $ = id => document.getElementById(id);
+const CLIENT_ID = '058da38e-a911-4b84-876e-e5efedfa9ae9', COL = 'GameReviewActions', LS = 'hen-greview';
+const store = { get(k, d) { try { return JSON.parse(localStorage.getItem(k)) ?? d } catch (e) { return d } }, set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)) } catch (e) {} } };
+let secret = (location.hash.match(/k=([\w-]+)/) || [])[1] || store.get('hen-studio-k', '');
+if (secret) { store.set('hen-studio-k', secret); if (location.hash) history.replaceState(null, '', location.pathname + location.search) }
+if (!secret) { $('main').innerHTML = '<div class="lock">הדף נפתח רק מהקישור האישי ששלחתי לך.</div>'; throw 0 }
+let wix = null;
+async function client() { if (wix) return wix; const [{ createClient, OAuthStrategy }, { items }] = await Promise.all([import('https://esm.sh/@wix/sdk@1.21.16'), import('https://esm.sh/@wix/data@1.0.525')]); wix = createClient({ auth: OAuthStrategy({ clientId: CLIENT_ID }), modules: { items } }); return wix }
+function toast(t) { const e = $('toast'); e.textContent = t; e.classList.add('on'); clearTimeout(toast.t); toast.t = setTimeout(() => e.classList.remove('on'), 2600) }
+async function send(gid, action, note) { const c = await client(); for (let tr = 0; ; tr++) { try { await c.items.insert(COL, { title: secret, gid, action, note: note || '', done: false }); return true } catch (e) { if (tr >= 2) { toast('לא נשמר, נסי שוב'); return false } await new Promise(r => setTimeout(r, 1500)) } } }
+// מצב מקומי: מה שחן עשתה בדף הזה (עד שהשרת מעדכן)
+const local = store.get(LS, {});
+let G = [], filter = 'todo';
+function stateOf(g) { const l = local[g.id]; if (l && l.at > (g.at || 0)) return { status: l.status, note: l.note }; return { status: g.status, note: g.note, msg: g.msg } }
+function render() {
+  const S = G.map(g => ({ g, s: stateOf(g) })); const ok = S.filter(x => x.s.status === 'approved').length, live = S.filter(x => x.s.status !== 'deleted').length;
+  $('bar').style.width = (live ? 100 * ok / live : 0) + '%'; $('sum').textContent = 'אושרו ' + ok + ' מתוך ' + live + ' · בתיקון ' + S.filter(x => x.s.status === 'fixing').length;
+  const show = S.filter(x => filter === 'all' ? true : filter === 'todo' ? x.s.status === 'review' : x.s.status === filter);
+  const m = $('main'); m.innerHTML = ''; let lastL = '';
+  if (!show.length) m.innerHTML = '<div class="lock">' + (filter === 'todo' ? 'אין משחקים שמחכים לבדיקה כרגע' : 'אין כאן משחקים') + '</div>';
+  show.forEach(({ g, s }) => {
+    if (g.lesson !== lastL) { lastL = g.lesson; const h = document.createElement('div'); h.className = 'lessonH'; h.textContent = g.lesson; m.appendChild(h) }
+    const c = document.createElement('div'); c.className = 'card ' + s.status + (s.status !== 'review' ? ' closed' : ''); c.dataset.id = g.id;
+    const chip = s.status === 'approved' ? '<span class="chip" style="background:#D8F0E4;color:#2F7A5F">אושר</span>' : s.status === 'fixing' ? '<span class="chip" style="background:#fff;color:#A33A3A">בתיקון</span>' : s.status === 'deleted' ? '<span class="chip" style="background:#fff;color:#8A7A83">נמחק</span>' : g.isNew ? '<span class="chip new">חדש</span>' : '';
+    c.innerHTML = '<div class="top"><b>' + g.label + '</b>' + chip + /* חן: 2 כפתורי מסך מלא. לכל משחק יש כפתור משלו, אז בדף אין */  (s.status !== 'review' ? '<button class="reopen" type="button">פתיחה</button>' : '') + '</div>' +
+      (s.status === 'fixing' && s.note ? '<div class="msg" style="display:block;background:#fff;color:#A33A3A;margin:0 14px 10px">' + esc(s.note) + '</div>' : '') +
+      (s.msg && s.status === 'review' ? '<div class="msg">תוקן: ' + esc(s.msg) + '</div>' : '') +
+      '<div class="frame"><div class="ph">המשחק נטען כשמגיעים אליו</div></div>' +
+      '<div class="acts"><button class="ok" type="button">אישור</button><button class="fix" type="button">תקן</button><button class="del" type="button">מחק משחק</button><button class="idea" type="button">מחק וצור משחק חדש</button></div>' +
+      '<div class="box" data-k="fix"><textarea placeholder="מה לתקן במשחק הזה?"></textarea><button class="send" type="button">שליחה לתיקון</button></div>' +
+      '<div class="box" data-k="idea"><textarea placeholder="מחק וצור משחק חדש לפי הרעיון הבא:"></textarea><button class="send" type="button">מחק וצור משחק חדש</button></div>';
+    m.appendChild(c); wire(c, g); if (!c.classList.contains('closed')) io.observe(c);
+  });
+}
+function esc(t) { return String(t).replace(/[&<>"]/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[ch])) }
+function mark(g, status, note) { local[g.id] = { status, note: note || '', at: Date.now() }; store.set(LS, local); render() }
+function wire(c, g) {
+  const q = s => c.querySelector(s);
+  q('.ok').onclick = async () => { mark(g, 'approved'); if (await send(g.id, 'approve')) toast('אושר') };
+  q('.fix').onclick = () => { c.querySelectorAll('.box').forEach(b => b.classList.toggle('open', b.dataset.k === 'fix' && !b.classList.contains('open'))); const t = q('.box[data-k=fix] textarea'); t.focus() };
+  q('.idea').onclick = () => { c.querySelectorAll('.box').forEach(b => b.classList.toggle('open', b.dataset.k === 'idea' && !b.classList.contains('open'))); q('.box[data-k=idea] textarea').focus() };
+  q('.del').onclick = async () => { if (!confirm('למחוק את המשחק הזה מהשיעור?')) return; mark(g, 'deleted'); if (await send(g.id, 'delete')) toast('המשחק יימחק') };
+  c.querySelectorAll('.box .send').forEach(b => b.onclick = async () => { const box = b.closest('.box'), note = box.querySelector('textarea').value.trim(); if (!note) { box.querySelector('textarea').focus(); return }
+    const act = box.dataset.k === 'fix' ? 'fix' : 'idea'; mark(g, 'fixing', act === 'idea' ? 'משחק חדש: ' + note : note); if (await send(g.id, act, note)) toast(act === 'fix' ? 'נשלח לתיקון' : 'נשלח: משחק חדש') });
+  const r = q('.reopen'); if (r) r.onclick = () => { c.classList.remove('closed'); io.observe(c) };
+  const fb = q('.fsb'); if (fb) fb.onclick = () => { const f = q('iframe'); if (!f) return; const el = q('.frame'); const fs = el.requestFullscreen || el.webkitRequestFullscreen; if (fs) fs.call(el).catch(() => window.open(g.url, '_blank')); else window.open(g.url, '_blank') };
+}
+// המשחקים נטענים רק כשמגיעים אליהם, כדי שהדף יהיה קל בנייד
+const io = new IntersectionObserver(es => es.forEach(e => { const c = e.target, fr = c.querySelector('.frame'); if (!fr) return; const g = G.find(x => x.id === c.dataset.id);
+  if (e.isIntersecting && !fr.querySelector('iframe')) { const f = document.createElement('iframe'); f.src = g.url; f.allow = 'fullscreen; autoplay'; f.setAttribute('allowfullscreen', ''); f.loading = 'lazy'; fr.appendChild(f); const ph = fr.querySelector('.ph'); ph && ph.remove() } }), { rootMargin: '300px 0px' });
+$('filters').onclick = e => { const b = e.target.closest('button'); if (!b) return; filter = b.dataset.f; [...$('filters').children].forEach(x => x.classList.toggle('on', x === b)); render() };
+async function load() { const j = await fetch('games.json?v=' + Date.now()).then(r => r.json()); const before = JSON.stringify(G.map(g => [g.id, g.status, g.at])); G = j.games; if (JSON.stringify(G.map(g => [g.id, g.status, g.at])) !== before) render() }
+load(); setInterval(load, 60000); // תיקון שהסתיים נפתח שוב לבדיקה בלי לרענן
+</script>
+</body>
+</html>
