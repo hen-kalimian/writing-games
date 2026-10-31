@@ -111,6 +111,7 @@ input[type=date]::-webkit-date-and-time-value{text-align:start;min-height:1.3em}
 .pwboard canvas.dc{width:100%;height:auto;background:#fff;border:3px solid var(--pink-strong);border-radius:20px;box-shadow:0 4px 16px rgba(0,0,0,.08)}
 .pwboard .modes,.pwboard .lbl,.pwboard [data-act=padfs]{display:none}
 .lrgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px}.lrc{display:flex;flex-direction:column;gap:8px;align-items:center;background:#fff;border:1.5px solid #cfe6f5;border-radius:16px;padding:10px}.lrc .sPad{width:100%;border:2px solid #b9dcf2;border-radius:12px;background:#fffef6;padding:4px}.lrc .sPad img,.lrc .sPad svg{width:100%;height:auto;display:block}.lrc .mkrow{gap:5px}.lrc .mk{padding:5px 8px;font-size:.85rem}
+.btn:disabled{opacity:.4;cursor:not-allowed}.lwhint{font-size:.85rem;color:var(--pink-deep);font-weight:700;text-align:center}
 .lwside{align-items:center;text-align:center;gap:10px}.lwn{font-family:var(--head);font-weight:800;color:var(--pink-deep);font-size:1.05rem}.lwchip{font-size:.78rem;color:var(--muted);background:#fff;border:1px solid var(--line);border-radius:10px;padding:4px 8px}
 .lwfull .mkrow{gap:6px}.lwfull .mk{padding:6px 10px;font-size:.95rem}
 .pwbtns{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
@@ -1287,7 +1288,7 @@ function wizScreen(m) {
   } else if (key === 'lw' && !ensureLt(m).nofs) {
     const lt = ensureLt(m), n = lt.i, l = lt.L[n], cur = lt.wr[l] || 0, last = n >= lt.L.length - 1;
     body = `<div class="pwfull lwfull noprint"><div class="pwside lwside"><div class="lwn">אות ${n + 1} מתוך ${lt.L.length}</div><button class="btn mint sm" type="button" data-act="wzSay" data-kind="w" data-l="${l}">השמעה: כתבו את האות</button><div class="lwchip">לבוחנת: ${l} (${esc(stripNik(window.HenVoice ? HenVoice.letterName(l) : l))})</div></div>
-      <div class="pwboard">${pad('lt.d.' + l, pwH(90), '')}${mkRow(cur, 'wzMark', 'data-l="' + l + '"')}<div class="pwbtns"><button type="button" class="btn sm quiet" data-act="wzLback">חזרה</button><button type="button" class="btn solid" data-act="wzLnext">${last ? 'לשקופית הבאה' : 'האות הבאה'}</button><button type="button" class="btn sm quiet" data-act="wzLfs">יציאה מהמסך המלא</button></div></div></div>`;
+      <div class="pwboard">${pad('lt.d.' + l, pwH(115), '')}${mkRow(cur, 'wzMark', 'data-l="' + l + '"')}${cur ? '' : '<div class="lwhint">סמני איך היה כדי להמשיך לאות הבאה</div>'}<div class="pwbtns"><button type="button" class="btn sm quiet" data-act="wzLback">חזרה</button><button type="button" class="btn solid" data-act="wzLnext"${cur ? '' : ' disabled'}>${last ? 'לסיכום האותיות' : 'האות הבאה'}</button><button type="button" class="btn sm quiet" data-act="wzLfs">יציאה מהמסך המלא</button></div></div></div>`;
     ctl = '';
   } else if (key === 'lw') {
     const lt = ensureLt(m), n = lt.i, l = lt.L[n], cur = lt.wr[l] || 0;
@@ -1483,7 +1484,7 @@ function wzAct(a, b, m) {
   else if (a === 'wzLfs') { keep(() => { m.lt.nofs = !m.lt.nofs; }); }
   else if (a === 'wzMark') { const l = b.dataset.l, v = +b.dataset.v; keep(() => { if (m.lt.wr[l] === v) delete m.lt.wr[l]; else m.lt.wr[l] = v; }); }
   else if (a === 'wzNm') { const l = b.dataset.l, v = +b.dataset.v; keep(() => { if (m.lt.nm[l] === v) delete m.lt.nm[l]; else m.lt.nm[l] = v; }); }
-  else if (a === 'wzLnext') { const lt = m.lt; if (lt.i < lt.L.length - 1) { lt.i++; touch(m, 'map:' + m.id); renderMap(); window.scrollTo(0, 0); sayAsk('w', lt.L[lt.i]); } else { markDone(); lt.rev = true; keep(() => {}); window.scrollTo(0, 0); } }
+  else if (a === 'wzLnext') { const lt = m.lt; if (!lt.wr[lt.L[lt.i]]) { toast('סמני קודם איך היה: כתב/ה נכון, בעזרה או לא הצליח/ה'); return; } if (lt.i < lt.L.length - 1) { lt.i++; touch(m, 'map:' + m.id); renderMap(); window.scrollTo(0, 0); sayAsk('w', lt.L[lt.i]); } else { markDone(); lt.rev = true; keep(() => {}); window.scrollTo(0, 0); } }
   else if (a === 'wzLedit') { keep(() => { m.lt.i = +b.dataset.i; m.lt.rev = false; m.lt.nofs = false; }); }
   else if (a === 'wzLrevBack') { keep(() => { m.lt.i = m.lt.L.length - 1; m.lt.rev = false; }); }
   else if (a === 'wzLfin') { let to = m.wz.step + 1; if (!lNeedN(m.lt).length) { m.wz.done.ln = true; m.wz.done.lp = true; to += 2; } wzGo(m, to); }
