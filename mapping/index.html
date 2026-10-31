@@ -110,6 +110,8 @@ input[type=date]::-webkit-date-and-time-value{text-align:start;min-height:1.3em}
 .pwboard .pad{width:100%;align-items:center}
 .pwboard canvas.dc{width:100%;height:auto;background:#fff;border:3px solid var(--pink-strong);border-radius:20px;box-shadow:0 4px 16px rgba(0,0,0,.08)}
 .pwboard .modes,.pwboard .lbl,.pwboard [data-act=padfs]{display:none}
+.lwside{align-items:center;text-align:center;gap:10px}.lwn{font-family:var(--head);font-weight:800;color:var(--pink-deep);font-size:1.05rem}.lwchip{font-size:.78rem;color:var(--muted);background:#fff;border:1px solid var(--line);border-radius:10px;padding:4px 8px}
+.lwfull .mkrow{gap:6px}.lwfull .mk{padding:6px 10px;font-size:.95rem}
 .pwbtns{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
 @media(max-width:620px) and (orientation:portrait){.pwfull{flex-direction:column}.pwside{width:100%;flex-direction:row;justify-content:center}.pwside .pic{width:90px}.pwboard canvas.dc{width:100%}}
 .pad .fsx{display:none}
@@ -548,7 +550,7 @@ const cb = (p, t, m) => `<label class="cb"><input type="checkbox" data-p="${p}"$
 const tx = (p, m, ph) => `<input type="text" data-p="${p}" value="${esc(getP(m, p))}"${ph ? ` placeholder="${esc(ph)}"` : ''}>`;
 const ta = (p, m, ruled, ph) => `<textarea data-p="${p}" class="${ruled ? 'ruled' : ''}"${ph ? ` placeholder="${esc(ph)}"` : ''}>${esc(getP(m, p))}</textarea>`;
 const PM = [['draw', 'כתיבה על המסך'], ['photo', 'צילום או תמונה'], ['note', 'הערה בלבד']];
-function pwH() { const portrait = innerWidth < 620 && innerHeight > innerWidth, w = innerWidth - (portrait ? 30 : 210), hh = innerHeight - (portrait ? 250 : 130); return Math.max(320, Math.min(1700, Math.round(1000 * hh / Math.max(200, w)))); }
+function pwH(extra) { const portrait = innerWidth < 620 && innerHeight > innerWidth, w = innerWidth - (portrait ? 30 : 210), hh = innerHeight - (portrait ? 250 : 130) - (extra || 0); return Math.max(320, Math.min(1700, Math.round(1000 * hh / Math.max(200, w)))); }
 function pad(p, h, label) {
   const m = curMap(), pm = (m && m.pm && m.pm[p]) || { mode: 'draw' }, mode = pm.mode || 'draw';
   const lb = label ? `<span class="lbl">${esc(label)}</span>` : '';
@@ -1266,11 +1268,16 @@ function wizScreen(m) {
   else if (key === 't4') body = `<div class="card"><div class="note noexp noprint">בשלב הזה הבוחנת מלמדת חומר חדש לפי הצורך של הילד/ה, ורק רושמת מה לימדה ואיך הילד/ה הגיב/ה. זה נכנס לסיכום.</div>${P.t4}</div>`;
   else if (key === 't2') body = pwSlide(m);
   else if (key === 't1' || key === 't3') body = `<div class="card">${P[key]}</div>`;
-  else if (key === 'lw') {
+  else if (key === 'lw' && !ensureLt(m).nofs) {
+    const lt = ensureLt(m), n = lt.i, l = lt.L[n], cur = lt.wr[l] || 0, last = n >= lt.L.length - 1;
+    body = `<div class="pwfull lwfull noprint"><div class="pwside lwside"><div class="lwn">אות ${n + 1} מתוך ${lt.L.length}</div><button class="btn mint sm" type="button" data-act="wzSay" data-kind="w" data-l="${l}">השמעה: כתבו את האות</button><div class="lwchip">לבוחנת: ${l} (${esc(stripNik(window.HenVoice ? HenVoice.letterName(l) : l))})</div></div>
+      <div class="pwboard">${pad('lt.d.' + l, pwH(90), '')}${mkRow(cur, 'wzMark', 'data-l="' + l + '"')}<div class="pwbtns"><button type="button" class="btn sm quiet" data-act="wzLback">חזרה</button><button type="button" class="btn solid" data-act="wzLnext">${last ? 'לשקופית הבאה' : 'האות הבאה'}</button><button type="button" class="btn sm quiet" data-act="wzLfs">יציאה מהמסך המלא</button></div></div></div>`;
+    ctl = '';
+  } else if (key === 'lw') {
     const lt = ensureLt(m), n = lt.i, l = lt.L[n], cur = lt.wr[l] || 0;
     body = `<div class="card"><div class="panel"><h3><span class="num n1">${n + 1}</span>כתיבת אות ${n + 1} מתוך ${lt.L.length}</h3>
       <div class="note">לחצי על "השמעה" כדי להשמיע לילד/ה "כתבו את האות...". הילד/ה כותב/ת במסגרת למטה, ואחר כך מסמנים. האות שנשמעת: <b>${l}</b> (${esc(stripNik(window.HenVoice ? HenVoice.letterName(l) : l))})</div>
-      <div class="row"><button class="btn mint" type="button" data-act="wzSay" data-kind="w" data-l="${l}">השמעה שוב: כתבו את האות</button></div>
+      <div class="row"><button class="btn mint" type="button" data-act="wzSay" data-kind="w" data-l="${l}">השמעה שוב: כתבו את האות</button><button class="btn" type="button" data-act="wzLfs">מסך כתיבה מלא</button></div>
       <div class="frame ${FRAMES[n % 4]}">${pad('lt.d.' + l, 320, '')}</div>
       ${mkRow(cur, 'wzMark', 'data-l="' + l + '"')}</div></div>` + wnField(m, 'lw' + n);
     ctl = wizControls(m, { back: 'wzLback', next: 'wzLnext', nextLabel: n < lt.L.length - 1 ? 'האות הבאה' : 'לשקופית הבאה' });
@@ -1454,6 +1461,7 @@ function wzAct(a, b, m) {
   else if (a === 'wzPause') { m.wz.on = false; touch(m, 'map:' + m.id); renderMap(); window.scrollTo(0, 0); toast('המיפוי נשמר. אפשר להמשיך, לערוך ולהדפיס שוב מהרשימה במסך "מיפוי חדש"'); }
   else if (a === 'wzStop') { m.wz.stopped = cur(); wzGo(m, IDX(m, 'fin')); toast('עברנו לסיכום. מלאי את ההערות ולחצי "דף סיכום להדפסה"'); }
   else if (a === 'wzSay') { sayAsk(b.dataset.kind, b.dataset.l || null); }
+  else if (a === 'wzLfs') { keep(() => { m.lt.nofs = !m.lt.nofs; }); }
   else if (a === 'wzMark') { const l = b.dataset.l, v = +b.dataset.v; keep(() => { if (m.lt.wr[l] === v) delete m.lt.wr[l]; else m.lt.wr[l] = v; }); }
   else if (a === 'wzNm') { const l = b.dataset.l, v = +b.dataset.v; keep(() => { if (m.lt.nm[l] === v) delete m.lt.nm[l]; else m.lt.nm[l] = v; }); }
   else if (a === 'wzLnext') { const lt = m.lt; if (lt.i < lt.L.length - 1) { lt.i++; touch(m, 'map:' + m.id); renderMap(); window.scrollTo(0, 0); sayAsk('w', lt.L[lt.i]); } else { markDone(); wzGo(m, m.wz.step + 1); } }
