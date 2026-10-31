@@ -18,6 +18,7 @@ html,body{margin:0;height:100%;background:#FEF6F5;font-family:Rubik,Arial,sans-s
 .spk,.mute,.fs{width:40px;height:40px;border-radius:50%;border:0;background:#fff;box-shadow:0 0 0 3px var(--pink);display:flex;align-items:center;justify-content:center;cursor:pointer;flex:none;padding:0}
 .spk svg,.mute svg,.fs svg{width:21px;height:21px}
 #stage{position:relative;flex:1;min-height:0;width:100%;max-width:760px;touch-action:none;user-select:none;-webkit-user-select:none}
+/*חן 31.10.26: במחשב הלוח חצי מסך*/@media (min-width:700px) and (orientation:landscape){#stage,.hud{max-width:min(760px,52vw)}}
 #cv{position:absolute;inset:0;width:100%;height:100%;border-radius:22px;box-shadow:0 0 0 4px var(--pink),0 8px 22px rgba(239,64,110,.12);display:block;touch-action:none}
 .overlay{position:fixed;inset:0;background:rgba(253,225,234,.72);backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;z-index:20;padding:16px}
 .overlay.hidden{display:none}

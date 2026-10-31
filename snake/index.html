@@ -21,15 +21,16 @@ html,body{touch-action:none;margin:0;height:100%;background:#FEF6F5;font-family:
 .spk svg,.mute svg,.fs svg,.pause svg{width:21px;height:21px}.spk.big{width:54px;height:54px}.spk.big svg{width:28px;height:28px}
 #stage{position:relative;flex:1;min-height:0;width:100%;max-width:900px;display:flex;align-items:center;justify-content:center;touch-action:none;user-select:none;-webkit-user-select:none}
 #cv{border-radius:22px;box-shadow:0 0 0 4px var(--pink),0 8px 22px rgba(239,64,110,.12);display:block;touch-action:none}
-.joy{position:relative;width:min(56vw,230px);aspect-ratio:1;flex:none;touch-action:none}
-.joy button{position:absolute;width:36%;height:36%;border:0;border-radius:22px;background:#fff;box-shadow:0 0 0 3px var(--pink2),0 5px 0 #F2A7B8;cursor:pointer;padding:0;touch-action:none}
+.joy{position:relative;width:min(40vw,150px);aspect-ratio:1;flex:none;touch-action:none}/*חן 31.10.26: חצים הרבה יותר קטנים*/
+.joy button{position:absolute;width:36%;height:36%;border:0;border-radius:14px;background:#fff;box-shadow:0 0 0 3px var(--pink2),0 5px 0 #F2A7B8;cursor:pointer;padding:0;touch-action:none}
 .joy button:active,.joy button.on{background:var(--pink);transform:translateY(3px);box-shadow:0 0 0 3px var(--pink2),0 2px 0 #F2A7B8}
-.joy button::after{content:'';position:absolute;left:50%;top:50%;width:0;height:0;border:16px solid transparent;transform:translate(-50%,-50%)}
-.joy .up{left:32%;top:0}.joy .up::after{border-bottom:22px solid var(--fuchsia);border-top:0;margin-top:-4px}
-.joy .dn{left:32%;bottom:0}.joy .dn::after{border-top:22px solid var(--fuchsia);border-bottom:0;margin-top:4px}
-.joy .rt{right:0;top:32%}.joy .rt::after{border-left:22px solid var(--fuchsia);border-right:0;margin-left:4px}
-.joy .lt{left:0;top:32%}.joy .lt::after{border-right:22px solid var(--fuchsia);border-left:0;margin-left:-4px}
+.joy button::after{content:'';position:absolute;left:50%;top:50%;width:0;height:0;border:10px solid transparent;transform:translate(-50%,-50%)}
+.joy .up{left:32%;top:0}.joy .up::after{border-bottom:14px solid var(--fuchsia);border-top:0;margin-top:-4px}
+.joy .dn{left:32%;bottom:0}.joy .dn::after{border-top:14px solid var(--fuchsia);border-bottom:0;margin-top:4px}
+.joy .rt{right:0;top:32%}.joy .rt::after{border-left:14px solid var(--fuchsia);border-right:0;margin-left:4px}
+.joy .lt{left:0;top:32%}.joy .lt::after{border-right:14px solid var(--fuchsia);border-left:0;margin-left:-4px}
 @media (orientation:landscape) and (max-height:520px){.wrap{flex-direction:row;flex-wrap:wrap}.joy{width:min(30vh,170px)}}
+/*במחשב: החצים קטנים בפינה, והלוח מקבל את כל הגובה*/@media (orientation:landscape) and (min-width:700px) and (min-height:521px){.joy{position:fixed;left:16px;bottom:16px;width:118px;z-index:5}}
 .overlay{position:fixed;inset:0;background:rgba(253,225,234,.72);backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;z-index:20;padding:16px}
 .overlay.hidden{display:none}
 .card{background:#fff;border-radius:28px;padding:22px;max-width:420px;width:100%;text-align:center;box-shadow:0 10px 30px rgba(239,64,110,.18),0 0 0 4px var(--pink);animation:pop .45s cubic-bezier(.2,1.6,.4,1)}
