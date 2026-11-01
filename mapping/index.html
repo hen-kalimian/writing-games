@@ -316,6 +316,7 @@ canvas.dc{width:100%;display:block;border:1.5px dashed var(--pink-strong);border
 .dp .vbox{width:60px;height:74px;font-size:2.4rem}
 .dp .vbox.new{animation:pop .7s;background:var(--pink-strong);color:#fff}
 .learncard{align-items:center;text-align:center}
+.lhint{font-size:.85rem;color:#6b5a62;max-width:520px;margin-top:6px}
 .learnpic{width:min(420px,90%)}
 .ovstep{border:2px solid var(--line);border-radius:18px;background:#fff;margin:8px 0;overflow:hidden}
 .ovstep>summary{display:flex;align-items:center;gap:10px;padding:12px 14px;cursor:pointer;list-style:none;font-weight:700}
@@ -1333,7 +1334,7 @@ function wizScreen(m) {
       <div class="note noexp noprint">לבוחנת: הקוד נקבע אוטומטית ומופיע בתפריט הצד לפי מה שהילד/ה צבר/ה. כל משימה מהארבע נותנת ספרה אחת. בסוף הילד/ה מקיש/ה ארבע ספרות, והפתעה מחכה בפנים.</div></div>`;
     ctl = wizControls(m, { nextLabel: 'מתחילים' });
   } else if (key === 'parents') body = `<div class="card"><h2>פרטי הילד/ה</h2>${P.meta}</div><div class="card">${m.kind === 'kb' ? `<div class="panel"><h3>תובנות משיחת ההורים</h3>${ta('parents', m, true)}</div>` : P.parents}</div>`;
-  else if (key === 't4') body = `<div class="card learncard"><h2>פעילות 4</h2><p class="vq">לומדים יחד משהו חדש</p>${emo('img/learn.png', 'vpic learnpic', '👩‍🏫')}</div><div class="card"><div class="note noexp noprint">בשלב הזה הבוחנת מלמדת חומר חדש לפי הצורך של הילד/ה, ורק רושמת מה לימדה ואיך הילד/ה הגיב/ה. זה נכנס לסיכום.</div>${P.t4}</div>`;
+  else if (key === 't4') body = `<div class="card learncard"><h2>פעילות 4</h2><p class="vq">לומדים יחד משהו חדש</p>${emo('img/learn.png', 'vpic learnpic', '👩‍🏫')}<div class="lhint"><b>לבוחנת:</b> אם הכול היה קל לילד/ה, למדי אותו/ה לקרוא סימן ניקוד חדש לפי שיטת קוראים בקלות. אם היה מאתגר, בחרי מספר, אות או סימן ניקוד ראשוני ולמדי אותו/ה לפי שיטת אותיות בקלות.</div></div><div class="card"><div class="note noexp noprint">בשלב הזה הבוחנת מלמדת חומר חדש לפי הצורך של הילד/ה, ורק רושמת מה לימדה ואיך הילד/ה הגיב/ה. זה נכנס לסיכום.</div>${P.t4}</div>`;
   else if (key === 't2') body = pwSlide(m);
   else if (key === 't1' || key === 't3') body = `<div class="card">${P[key]}</div>`;
   else if (key === 'lw' && ensureLt(m).rev) {
