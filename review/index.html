@@ -71,7 +71,7 @@ let G = [], filter = 'todo';
 function stateOf(g) { const l = local[g.id]; if (l && l.at > (g.at || 0)) return { status: l.status, note: l.note }; return { status: g.status, note: g.note, msg: g.msg } }
 function render() {
   const S = G.map(g => ({ g, s: stateOf(g) })); const ok = S.filter(x => x.s.status === 'approved').length, live = S.filter(x => x.s.status !== 'deleted').length;
-  $('bar').style.width = (live ? 100 * ok / live : 0) + '%'; $('sum').textContent = 'אושרו ' + ok + ' מתוך ' + live + ' · בתיקון ' + S.filter(x => x.s.status === 'fixing').length;
+  $('bar').style.width = (live ? 100 * ok / live : 0) + '%'; $('sum').textContent = 'נשארו ' + (live - ok) + ' משחקים · אושרו ' + ok + ' · בתיקון ' + S.filter(x => x.s.status === 'fixing').length;
   const show = S.filter(x => filter === 'all' ? true : filter === 'todo' ? x.s.status === 'review' : x.s.status === filter);
   const m = $('main'); m.innerHTML = ''; let lastL = '';
   if (!show.length) m.innerHTML = '<div class="lock">' + (filter === 'todo' ? 'אין משחקים שמחכים לבדיקה כרגע' : 'אין כאן משחקים') + '</div>';

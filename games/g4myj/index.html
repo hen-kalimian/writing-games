@@ -49,6 +49,7 @@ body{font-family:'Open Sans',system-ui,sans-serif;color:var(--ink);-webkit-user-
 .nav.pulse::before{color:var(--pink)}
 .bottom{padding-top:12px}
 .nav:disabled{opacity:.35;cursor:default}
+/*חן 1.11.26: חצים קטנים בנייד*/@media(max-width:700px){.nav,#app.compact .bottom .nav{width:32px;height:32px}.nav svg{width:16px;height:16px}}
 .nav.pulse{border-color:var(--pink);color:var(--pink);animation:pulse 1.2s infinite}
 @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(239,64,110,.45)}100%{box-shadow:0 0 0 14px rgba(239,64,110,0)}}
 .bar{flex:1;height:10px;border-radius:6px;background:var(--blue-bg);border:1.5px solid var(--blue);overflow:hidden}
