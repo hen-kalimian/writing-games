@@ -91,14 +91,14 @@ function build(lv){
   /* חן, 31.10.26: "אם כבר אספתי ונפסלתי, בסיבוב החוזר רק אלו שלא אספתי" */var had=(lv.__got||[]).slice(),left=[];for(i=0;i<n;i++){var tt=good[i%good.length],hk=had.indexOf(tt);if(hk>=0)had.splice(hk,1);else left.push(tt)}
   var nbk=lv.blocks!=null?lv.blocks:2; left.forEach(function(tt,q){seq.push({g:1,t:tt,blk:q<nbk})});
   for(i=0;i<(lv.hurdles!=null?lv.hurdles:2);i++) seq.push({hd:1});
-  var nb=lv.bads!=null?lv.bads:Math.max(3,n-1); for(i=0;i<nb;i++) seq.push({g:0,t:bad[i%bad.length]});
+  /*חן 1.11.26: "פחות מסיחים": חצי מהמספר בקובץ העולם*/var nb=Math.max(2,Math.round((lv.bads!=null?lv.bads:Math.max(3,n-1))/2)); for(i=0;i<nb;i++) seq.push({g:0,t:bad[i%bad.length]});
   for(i=0;i<(lv.pits!=null?lv.pits:2);i++) seq.push({pit:1});
   for(i=0;i<(lv.stairs!=null?lv.stairs:2);i++) seq.push({st:1});
   shuffle(seq);
   var x=VW*.5+340, sx=0, cur=GY;
   function setH(at,h){ tiles.push({x:sx,w:at-sx,y:cur}); sx=at; cur=h }
   seq.forEach(function(e){
-    if(e.hd){ var HK=['pumpkin','mushroom','flower-pot','acorn'].filter(function(k){return IMG[k]}); hurd.push({x:x,y:cur,k:HK.length?HK[(Math.random()*HK.length)|0]:null}); x+=rnd(180,230); return }
+    if(e.hd){ var HK=['pumpkin','mushroom','flower-pot','acorn'].filter(function(k){return IMG[k]}); x+=40; hurd.push({x:x,y:cur,k:HK.length?HK[(Math.random()*HK.length)|0]:null}); x+=rnd(240,280); return }
     if(e.blk){ var py2=cur-rnd(88,104); plats.push({x:x,w:118,y:py2}); items.push({x:x+59,y:py2-34,t:e.t,g:1,ph:rnd(0,6),dead:0,hi:false,pl:1}); x+=rnd(240,280); return }
     if(e.pit){ var w=rnd(46,78); tiles.push({x:sx,w:x-sx,y:cur}); pits.push({x:x,w:w,k:Math.random()<.5?'water':'fire'}); sx=x+w; x=sx+rnd(170,210); return }
     if(e.st){ var upw=cur>GY-60?1:cur<GY-40?-1:(Math.random()<.5?1:-1); for(var k=0;k<3;k++){ setH(x,cur-upw*26); x+=46 } x+=rnd(150,190); return }
@@ -140,7 +140,7 @@ function step(dt){
   if(hero.x<cam+22) return lose();                                             // המסך השאיר את הדמות מאחור
   hero.sq+=(1-hero.sq)*Math.min(1,dt*10); if(hero.on&&!hero.blk){ hero.run+=dt*12; if(Math.random()<dt*8) puff(hero.x-14,hero.y,1,'rgba(160,120,90,.35)') }
   if(hero.y>GY+60) return lose();
-  for(var hi2=0;hi2<hurd.length;hi2++){ var hh=hurd[hi2]; if(Math.abs(hero.x-hh.x)<25&&hero.y>hh.y-44) return lose() }
+  for(var hi2=0;hi2<hurd.length;hi2++){ var hh=hurd[hi2]; if(Math.abs(hero.x-hh.x)<26&&hero.y>hh.y-50) return lose() }
   items.forEach(function(o){ if(o.dead||state!=='play') return; var oy=o.y+Math.sin(clock*3+o.ph)*5;
     var near=Math.abs(hero.x-o.x), dyy=Math.abs((hero.y-30)-oy);
     if(o.g?(near<34&&dyy<44):(near<24&&dyy<30)){ // תפיסת צליל נכון סלחנית, פגיעה בצליל אחר רק בנגיעה ממשית
@@ -152,8 +152,8 @@ function step(dt){
   if(!door.miss&&got<need&&hero.x>door.x0-380){ door.miss=clock+2.6; speak(['פִּסְפַּסְתֶּם כַּמָּה',missWord()]) }
   if(hero.x>door.x+20&&door.open) return win();
 }
-function lose(o){ if(state!=='play')return; state='ouch'; lives--; SFX.ouch(); shake=.35; renderHearts(); if(o){o.hit=1}
-  setTimeout(function(){ if(lives<=0){ lives=5; L.__got=[]; renderHearts(); show('over') } else { build(L); state='play'; renderGoal(); speak(L.goalSay||L.goal) } },1000) }
+function lose(o){ if(state!=='play')return; window.__why={x:hero.x|0,y:hero.y|0,cam:cam|0,bad:o&&o.t,hi:o&&o.hi,blk:hero.blk,on:hero.on}; state='ouch'; lives--; SFX.ouch(); shake=.35; renderHearts(); if(o){o.hit=1}
+  setTimeout(function(){ if(lives<=0){ lives=5; L.__got=[]; renderHearts(); show('over') } else { /*חן 1.11.26: "כשנפסלים נחזור לאותו שלב מהתחלה"*/L.__got=[]; build(L); state='play'; renderGoal(); speak(L.goalSay||L.goal) } },1000) }
 function missWord(){ if(W.names==='num') return 'סְפָרוֹת'; if(W.names) return 'אוֹתִיּוֹת'; var t=((L.good||[])[0]||'').replace(/[֑-ׇ]/g,''); return t.length>2?'מִלִּים':'צְלִילִים' }
 function win(){ state='win'; sparkle(door.x+30,hero.y-60); setTimeout(function(){ li++; if(li>=W.levels.length) show('trophy'); else show('level') },900) }
 /* ---------- ציור ---------- */
@@ -181,8 +181,8 @@ function draw(){
   /*חן 1.11.26: "יש ברקע עצים שלא נוגעים באדמה": גדה רציפה מאחורי הבורות. הנוף תמיד עומד עליה, והאש והמים מלפניה*/cx.fillStyle=W.ground[1]; cx.fillRect(cam-40,GY,VW+80,34); cx.fillStyle=W.ground[0]; cx.fillRect(cam-40,GY,VW+80,16);
   // בורות: אש או מים
   pits.forEach(function(p){
-    if((p.k||W.hazard)==='water'){ var wg=cx.createLinearGradient(0,GY,0,VH); wg.addColorStop(0,'#9ED8EE'); wg.addColorStop(1,'#5FB3D9'); cx.fillStyle=wg; cx.fillRect(p.x,GY+14,p.w,VH);
-      cx.strokeStyle='#fff'; cx.lineWidth=3; cx.beginPath(); for(var x=0;x<=p.w;x+=4) cx.lineTo(p.x+x,GY+18+Math.sin(x*.12+clock*4)*3); cx.stroke() }
+    /*חן 1.11.26: "שגם המים ייראו כמו בור": דופן כהה ומפלס המים נמוך מהאדמה*/if((p.k||W.hazard)==='water'){ cx.fillStyle='#A9855F'; cx.fillRect(p.x,GY,p.w,34); var wg=cx.createLinearGradient(0,GY+30,0,VH); wg.addColorStop(0,'#8ED0EA'); wg.addColorStop(1,'#4FA6D0'); cx.fillStyle=wg; cx.fillRect(p.x,GY+30,p.w,VH);
+      cx.strokeStyle='#fff'; cx.lineWidth=3; cx.beginPath(); for(var x=0;x<=p.w;x+=4) cx.lineTo(p.x+x,GY+32+Math.sin(x*.12+clock*4)*3); cx.stroke() }
     /*חן 1.11.26: "האש מתחת לאדמה": הבור צבוע עד קו האדמה והלהבות עולות מעליו, כדי שיהיה ברור שקופצים מעליו*/else { cx.fillStyle='#F7C08A'; cx.fillRect(p.x,GY,p.w,VH); var fn=Math.max(1,Math.round(p.w/40)), fw=p.w/fn+10, fh=fw*1.3; for(var k=0;k<fn;k++){ var fl=1+Math.sin(clock*9+k*2)*.08, fH=fh*fl; dImg('flame',p.x-5+k*p.w/fn,GY+26-fH,fw,fH) } } });
   // קרקע ומדרגות
   tiles.forEach(function(gr){ if(gr.w<=0) return; cx.fillStyle=W.ground[1]; rr(gr.x,gr.y,gr.w,VH-gr.y+20,12); cx.fill(); cx.fillStyle=W.ground[0]; rr(gr.x,gr.y,gr.w,16,9); cx.fill();
@@ -190,8 +190,8 @@ function draw(){
   // קוביות צפות ומכשולים
   plats.forEach(function(p){ if(p.x-cam>VW+60||p.x+p.w-cam<-60) return; cx.fillStyle='rgba(0,0,0,.08)'; cx.beginPath(); cx.ellipse(p.x+p.w/2,GY+8,p.w*.4,7,0,0,6.28); cx.fill(); cx.fillStyle=W.ground[1]; rr(p.x,p.y,p.w,30,10); cx.fill(); cx.fillStyle=W.ground[0]; rr(p.x,p.y,p.w,12,8); cx.fill(); cx.fillStyle='rgba(255,255,255,.4)'; cx.beginPath(); cx.arc(p.x+24,p.y+20,4,0,6.28); cx.arc(p.x+p.w-24,p.y+20,4,0,6.28); cx.fill() });
   /*חן 1.11.26: בלי בועה. המכשול חלק מהאדמה שמלפנים: שקוע מעט בשביל, עם תלולית בצבע השביל מלפניו, וצבעיו מעט חיים יותר מהרקע*/hurd.forEach(function(h){ if(h.x-cam>VW+60||h.x-cam<-60) return;
-    if(h.k) cx.drawImage(vivid(h.k),h.x-38,h.y-66,76,76); else { cx.fillStyle='#C9A27E'; rr(h.x-20,h.y-30,40,36,8); cx.fill() }
-    cx.fillStyle=W.ground[0]; cx.beginPath(); cx.moveTo(h.x-50,h.y+15); cx.quadraticCurveTo(h.x-38,h.y+1,h.x-20,h.y); cx.quadraticCurveTo(h.x,h.y-6,h.x+20,h.y); cx.quadraticCurveTo(h.x+38,h.y+1,h.x+50,h.y+15); cx.closePath(); cx.fill() });
+    if(h.k) cx.drawImage(vivid(h.k),h.x-48,h.y-84,96,96); else { cx.fillStyle='#C9A27E'; rr(h.x-20,h.y-30,40,36,8); cx.fill() }
+    cx.fillStyle=W.ground[0]; cx.beginPath(); cx.moveTo(h.x-62,h.y+15); cx.quadraticCurveTo(h.x-48,h.y+1,h.x-26,h.y); cx.quadraticCurveTo(h.x,h.y-7,h.x+26,h.y); cx.quadraticCurveTo(h.x+48,h.y+1,h.x+62,h.y+15); cx.closePath(); cx.fill() });
   var DY=tiles.length?tiles[tiles.length-1].y:GY;
   // דלת
   var dw=70, dh=112; if(door.open){ cx.save(); cx.globalAlpha=.35+Math.sin(clock*5)*.15; var rg=cx.createRadialGradient(door.x+dw/2,DY-dh/2,10,door.x+dw/2,DY-dh/2,110); rg.addColorStop(0,'#FFF3B0'); rg.addColorStop(1,'rgba(255,243,176,0)'); cx.fillStyle=rg; cx.fillRect(door.x-80,DY-dh-80,dw+160,dh+120); cx.restore() }
@@ -206,7 +206,7 @@ function draw(){
   // דמות
   var hw=64, hh=64, bob=hero.on&&!(hero.wait>0)?Math.abs(Math.sin(hero.run))*5:0;
   if(state!=='ouch'||Math.floor(clock*12)%2){
-    cx.save(); cx.translate(hero.x,hero.y-bob); cx.scale(((/^(bee|hedgehog)$/.test(W.hero))?-1:1)*(2-hero.sq),hero.sq) /* חן, 30.10.26: הדמות תמיד מסתכלת ימינה (דבורה וקיפוד מצוירים שמאלה) */; cx.rotate(hero.on?0:-hero.face*.12);
+    cx.save(); /*חן 1.11.26: בקפיצה הדמות לא נחתכת ולא יוצאת מהמסך. הקפיצה עצמה לא מתקצרת, רק הציור נעצר בראש המסך*/cx.translate(hero.x,Math.max(hero.y,84)-bob); cx.scale(((/^(bee|hedgehog)$/.test(W.hero))?-1:1)*(2-hero.sq),hero.sq) /* חן, 30.10.26: הדמות תמיד מסתכלת ימינה (דבורה וקיפוד מצוירים שמאלה) */; cx.rotate(hero.on?0:-hero.face*.12);
     if(state==='ouch') cx.globalAlpha=.6; var hi=img(W.hero); if(hi) cx.drawImage(hi,-hw/2,-hh,hw,hh); cx.restore() }
   weather();
   // חלקיקים
