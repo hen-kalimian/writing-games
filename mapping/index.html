@@ -906,13 +906,44 @@ function renderKids() {
   $('main').innerHTML = h;
 }
 function summary(c) {
-  let t = 'סיכום התקדמות: ' + c.name + (c.age ? ' (גיל ' + c.age + ')' : '') + '\n';
-  STAGES.forEach(st => { const s = stats(c, st); t += st.title + ': ' + s.mast + ' מתוך ' + s.total + (s.prog ? ' (עוד ' + s.prog + ' בתהליך)' : '') + '\n'; });
-  const done = GROUPS.map((g, i) => ({ g, i })).filter(x => x.g.every(l => (c.marks['lr' + l] || 0) === 2)).map(x => gname(x.g, x.i) + ' (' + x.g.join('') + ')');
-  if (done.length) t += 'קבוצות אותיות שהסתיימו: ' + done.join(', ') + '\n';
-  const n = nowInfo(c); t += n ? 'כרגע בשלב: ' + n.st.title + '. הבא לתרגול: ' + n.next : 'סיימנו את כל השלבים!';
-  const last = c.log.slice().sort((a, b) => a.d < b.d ? 1 : -1)[0]; if (last) t += '\nמהמפגש האחרון (' + fmt(last.d) + '): ' + last.t;
-  return t;
+  const v = k => c.marks[k] || 0, lab = k => KEYLABEL[k].replace(/^שיעור \d+: /, '');
+  const stg = id => STAGES.find(x => x.id === id);
+  // תחום עם שלבים לפי סדר: עד איפה הגיע ומה בתהליך
+  const ladder = (name, keys) => {
+    let i = keys.findIndex(k => v(k) !== 2); const n = keys.length;
+    if (i === -1) return name + ': סיימ/ה את כל השלבים (' + n + ' מתוך ' + n + ').';
+    if (v(keys[i]) === 1) return name + ': הגיע/ה ל"' + lab(keys[i]) + '", בתהליך. שלב ' + (i + 1) + ' מתוך ' + n + '.';
+    if (i === 0) return name + ': עוד לא התחלנו.';
+    return name + ': סיימ/ה עד "' + lab(keys[i - 1]) + '". השלב הבא: "' + lab(keys[i]) + '" (שלב ' + (i + 1) + ' מתוך ' + n + ').';
+  };
+  // אותיות: אם רוב האותיות בשליטה כותבים מה עוד חסר, ואחרת מה כבר בשליטה
+  const letters = (pre, verb) => {
+    const all = GROUPS.flat(), M = all.filter(l => v(pre + l) === 2), P = all.filter(l => v(pre + l) === 1), N = all.filter(l => v(pre + l) === 0);
+    if (M.length === all.length) return verb + ' את כל האותיות.';
+    if (!M.length && !P.length) return 'עוד לא התחלנו.';
+    if (M.length * 2 >= all.length) return verb + ' את רוב האותיות. ' + (N.length ? 'עדיין לא ' + verb + ' את: ' + N.join(', ') + '. ' : '') + (P.length ? 'בתהליך: ' + P.join(', ') + '.' : '');
+    return verb + ' בינתיים את: ' + (M.length ? M.join(', ') : 'עוד אין אות שהושלמה') + '. ' + (P.length ? 'בתהליך: ' + P.join(', ') + '.' : '');
+  };
+  const t = ['סיכום התקדמות: ' + c.name + (c.age ? ' (גיל ' + c.age + ')' : ''), 'תאריך הסיכום: ' + fmt(today())];
+  t.push(ladder('מספרים', stg('num').keys));
+    t.push('זיהוי אותיות: ' + letters('lr', 'מזהה'));
+  t.push('כתיבת אותיות: ' + letters('lw', 'כותב/ת'));
+  t.push(ladder('מודעות פונולוגית', ['pl0', 'pl1', 'pl2', 'pl3', 'pl4', 'lph']));
+  const sl = ['sl0', 'sl1', 'sl2', 'sl3']; if (sl.some(k => v(k))) t.push(ladder('העשרת שפה', sl));
+    // קוראים בקלות: לכל סימן ניקוד עד איזו רמה הגיע
+  const rd = stg('rd'), lv = ['הברות', 'מילים', 'משפטים'], by = {};
+  rd.signs.forEach(sg => {
+    const ks = rd.cols.map(x => 'rd.' + sg[0] + '.' + x[0]); let i = ks.findIndex(k => v(k) !== 2);
+    const key = i === -1 ? 'full' : (v(ks[i]) === 1 || ks.slice(i).some(k => v(k))) ? 'p' + i : 'n' + i;
+    const txt = i === -1 ? 'full' : (i === 0 ? '' : 'קורא/ת ' + lv.slice(0, i).join(' ו') + ' בלי קושי, ') + (key[0] === 'p' ? 'בתהליך קריאת ' + lv[i] : 'עוד לא התחלנו ' + lv[i]);
+    (by[txt] = by[txt] || []).push(sg[0]);
+  });
+  const rows = Object.keys(by);
+  if (!rd.keys.some(k => v(k))) t.push('קוראים בקלות: עוד לא התחלנו.');
+  else { t.push('קוראים בקלות (לפי סימני הניקוד):'); rows.forEach(r => t.push('- ' + (r === 'full' ? 'קורא/ת בהברות, במילים ובמשפטים: ' : r + ': ') + by[r].join('; ') + (r === 'full' ? '' : '.'))); }
+    t.push(ladder('קריאה שוטפת', stg('flu').keys));
+  const last = c.log.slice().sort((a, b) => a.d < b.d ? 1 : -1)[0]; if (last) { t.push('מהמפגש האחרון (' + fmt(last.d) + '): ' + last.t); }
+  return t.join('\n');
 }
 
 /* ===================== תצוגה ואירועים ===================== */
