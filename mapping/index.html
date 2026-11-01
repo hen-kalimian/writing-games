@@ -249,6 +249,9 @@ canvas.dc{width:100%;display:block;border:1.5px dashed var(--pink-strong);border
 .wzmain>.card{padding:18px}
 .wzctl{position:sticky;bottom:-24px;z-index:5;padding:10px 14px;gap:8px;box-shadow:0 -4px 14px rgba(0,0,0,.06)}
 .vaultintro,.vaultcard{align-items:center;text-align:center}
+.vaultcard{position:relative;overflow:hidden}
+.nwgrid.wide{grid-template-columns:1fr}.nwgrid.wide .nww{font-size:1.7rem}
+.ratecard .row{justify-content:center}
 .vpic{width:min(240px,70%);height:auto;font-size:5rem;line-height:1;display:block}
 .vpic.emo{font-size:6rem}
 .vq{font-size:1.15rem;max-width:520px;margin:0}
@@ -548,7 +551,7 @@ function touch(item, key) { item.u = Date.now(); dirty.add(key); persist(); sche
 
 function newMap(pre, kind) {
   const z = (n) => Array(n).fill(0);
-  if (kind === 'kb') return { id: uid(), u: Date.now(), kind: 'kb', name: (pre && pre.name) || '', age: (pre && pre.age) || '', date: today(), school: '', marks: {},
+  if (kind === 'kb') return { id: uid(), u: Date.now(), kind: 'kb', kbv: 2, name: (pre && pre.name) || '', age: (pre && pre.age) || '', date: today(), school: '', marks: {},
     dict: { w: ['', '', ''], d: [[], [], []] }, read: { c: z(4), what: '', errs: '', note: '', nwnote: '' }, nw: ['', '', '', '', '', ''],
     s: { strong: '', hard: '', goals: '', recs: '', r: z(5), note: '' } };
   return { id: uid(), u: Date.now(), name: (pre && pre.name) || '', age: (pre && pre.age) || '', date: today(), school: '', parents: '',
@@ -612,8 +615,12 @@ function kbMatrix(m) {
   return `<table class="matrix"><thead><tr><th></th>${st.cols.map(x => `<th>${x[1]}</th>`).join('')}</tr></thead><tbody>${st.signs.map(s => `<tr><td class="sign"><span>${s[1]}</span>${s[0]}</td>${st.cols.map(x => { const k = 'rd.' + s[0] + '.' + x[0], v = mk(m, k); return `<td><button type="button" class="cell s${v}" data-act="kbmark" data-k="${esc(k)}" aria-label="${esc('סימן ' + s[0] + ': ' + x[1] + ': ' + STATES[v])}">${SYM[v] || '○'}</button></td>`; }).join('')}</tr>`).join('')}</tbody></table>`;
 }
 const NONSENSE = ['דִּינֶל', 'מִשֶּׂרִיחַ', 'פְרוֹנִיק', 'סִיגוֹדוֹ', 'עָמְצוּ', 'פֵּרְשׁוּק'];
-function nwHtml(m) {
-  return `<div class="nwgrid">${NONSENSE.map((w, i) => { const v = mk(m, 'nw' + i); return `<div class="nwc"><div class="nww">${w}</div><button type="button" class="cell s${v}" data-act="kbmark" data-k="nw${i}" aria-label="${esc('מילת תפל ' + w + ': ' + STATES[v])}">${SYM[v] || '○'}</button><input type="text" data-p="nw.${i}" value="${esc(m.nw && m.nw[i])}" placeholder="הערות"></div>`; }).join('')}</div>`;
+const REALW = ['אַבָּא', 'אִמָּא', 'דֶּלֶת', 'גָּמָל', 'שֶׁמֶשׁ', 'רֶגֶל'];
+const SENT = ['אַבָּא רָץ לַגָּן.', 'אִמָּא שָׁרָה שִׁיר.', 'הַגָּמָל שׁוֹתֶה מַיִם.'];
+const RLISTS = { nw: [NONSENSE, 'מילת תפל'], rw: [REALW, 'מילה'], rs: [SENT, 'משפט'] };
+function nwHtml(m, key) {
+  key = key || 'nw'; const L = RLISTS[key][0]; if (!m[key]) m[key] = L.map(() => '');
+  return `<div class="nwgrid${key === 'rs' ? ' wide' : ''}">${L.map((w, i) => { const v = mk(m, key + i); return `<div class="nwc"><div class="nww">${w}</div><button type="button" class="cell s${v}" data-act="kbmark" data-k="${key}${i}" aria-label="${esc(RLISTS[key][1] + ' ' + w + ': ' + STATES[v])}">${SYM[v] || '○'}</button><input type="text" data-p="${key}.${i}" value="${esc(m[key][i])}" placeholder="הערות"></div>`; }).join('')}</div>`;
 }
 function kbp(m) {
   if (!m.nw) m.nw = ['', '', '', '', '', ''];
@@ -624,7 +631,7 @@ function kbp(m) {
     <div class="field"><label>תאריך</label><input type="date" data-p="date" value="${esc(m.date)}"></div>
     <div class="field"><label>מסגרת חינוכית</label>${tx('school', m)}</div>
   </div>`,
-    hint: `<div class="note noexp">לחצי על אות או על משבצת כדי לשנות מצב: לחיצה אחת בתהליך, שתיים שולט/ת, שלוש מאפסת. ○ עוד לא התחלנו, ◐ בתהליך, ✓ שולט/ת.</div>`,
+    hint: `<div class="note noexp">לחצי על אות או על משבצת כדי לשנות מצב: לחיצה אחת שולט/ת, שתיים בתהליך, שלוש מאפסת. ○ עוד לא התחלנו, ◐ בתהליך, ✓ שולט/ת.</div>`,
     p1: `<div class="panel"><h3><span class="num n1">1</span>אותיות: שם, צליל וצורה</h3>${kbLetters(m)}</div>`,
     p2: `<div class="panel"><h3><span class="num n2">2</span>ניקוד: הברות, מילים ומשפטים</h3>${kbMatrix(m)}</div>`,
     p3: `<div class="panel"><h3><span class="num n3">3</span>כתיבה בהכתבה</h3>
@@ -973,7 +980,7 @@ document.addEventListener('click', e => {
   if (a === 'prevTab') { PREV = b.dataset.v; render(); return; }
   if (a === 'newMap') { const kd = b.dataset.kind || 'l9', x = newMap(null, kd); S.maps.push(x); S[kd === 'kb' ? 'kbId' : 'mapId'] = x.id; touch(x, 'map:' + x.id); render(); window.scrollTo(0, 0); }
   else if (a === 'pickMap') { S[S.tab === 'kb' ? 'kbId' : 'mapId'] = b.dataset.id; persist(); render(); }
-  else if (a === 'kbmark') { const k = b.dataset.k; if (!m.marks) m.marks = {}; const v = ((m.marks[k] || 0) + 1) % 3; if (v) m.marks[k] = v; else delete m.marks[k]; touch(m, 'map:' + m.id); const y = scrollY; renderMap(); scrollTo(0, y); }
+  else if (a === 'kbmark') { const k = b.dataset.k; if (!m.marks) m.marks = {}; const v = [2, 0, 1][m.marks[k] || 0]; if (v) m.marks[k] = v; else delete m.marks[k]; touch(m, 'map:' + m.id); const y = scrollY; renderMap(); scrollTo(0, y); }
   else if (a === 'kbgrp') { const g = GROUPS[+b.dataset.i]; if (!m.marks) m.marks = {}; const all = g.every(l => mk(m, 'lr' + l) === 2); g.forEach(l => { if (all) delete m.marks['lr' + l]; else m.marks['lr' + l] = 2; }); touch(m, 'map:' + m.id); const y = scrollY; renderMap(); scrollTo(0, y); toast(all ? 'הסימון בוטל' : 'הקבוצה סומנה כשהסתיימה'); }
   else if (a === 'padfs') { const pd = b.closest('.pad'); pd.classList.add('fs'); document.body.classList.add('padfs'); try { if (pd.requestFullscreen) pd.requestFullscreen().then(() => { try { screen.orientation.lock('landscape').catch(() => {}); } catch (e) {} }).catch(() => {}); } catch (e) {} const cv = pd.querySelector('canvas.dc'); if (cv) drawCanvas(cv); }
   else if (a === 'padfsx') { closePadFs(); }
@@ -1125,7 +1132,18 @@ document.addEventListener('click', async e => {
 const GSLIDES = [['parents', 'שיחת הורים'], ['intro', 'הכספת'], ['t1', 'משימה 1: כתיבת שם'], ['t2', 'משימה 2: כתיבה פונטית'], ['t3', 'משימה 3: חשבון'], ['lw', 'אותיות שלב 1: כתיבה'], ['ln', 'אותיות שלב 2: שיום'], ['lp', 'אותיות שלב 3: זיהוי'], ['t4', 'פעילות 4: לומדים יחד משהו חדש'], ['vault', 'פתיחת הכספת'], ['fin', 'סיכום ומסקנות']];
 const KSLIDES = [['parents', 'שיחת הורים'], ['kp', 'כתיב פונטי'], ['knw', 'קריאת מילות תפל'], ['ksy', 'קריאת הברות'], ['kbd', 'כתיבה עם ניקוד'], ['kr', 'קריאה בקול'], ['kl', 'אותיות'], ['kn', 'ניקוד: סימון כללי'], ['fin', 'סיכום ומסקנות']];
 const TASKKEYS = ['t1', 't2', 't3', 't4'];   /* כל משימה נותנת ספרה אחת לכספת, לפי הסדר */
-const ST = m => (m.kind === 'kb' ? KSLIDES : GSLIDES);
+const KTASKS = ['k1', 'k2', 'k3', 'k4'];
+const TK = m => (m && m.kind === 'kb' && m.kbv) ? KTASKS : TASKKEYS;
+const kbPath = m => { const letters = m.kr1 === 'hard'; return { letters, low: letters || m.kr2 === 'hard' }; };
+function kbSlides(m) {
+  const p = kbPath(m), s = [['parents', 'שיחת הורים'], ['intro', 'הכספת'], ['k1', 'משימה 1: כתיב פונטי']], tail = [['vault', 'פתיחת הכספת'], ['fin', 'סיכום ומסקנות']];
+  if (!m.kr1) return s.concat(tail);
+  if (p.letters) s.push(['lw', 'אותיות שלב 1: כתיבה'], ['ln', 'אותיות שלב 2: שיום'], ['lp', 'אותיות שלב 3: זיהוי'], ['k2', 'משימה 2: סיום האותיות']);
+  else { s.push(['k2', 'משימה 2: קריאת מילות תפל']); if (!m.kr2) return s.concat(tail); }
+  s.push(['k3', p.low ? 'משימה 3: קריאת מילה קצרה' : 'משימה 3: קריאת משפט'], ['k4', p.low ? 'משימה 4: קריאת הברות' : 'משימה 4: כתיבה עם ניקוד']);
+  return s.concat(tail);
+}
+const ST = m => (m.kind === 'kb' ? (m.kbv ? kbSlides(m) : KSLIDES) : GSLIDES);
 const IDX = (m, k) => ST(m).findIndex(x => x[0] === k);
 const MKS = [[1, '✓', 'כתב/ה נכון'], [2, '◐', 'בעזרה'], [3, '✗', 'לא הצליח/ה']];
 const SYMX = { 1: '✓', 2: '◐', 3: '✗' };
@@ -1166,6 +1184,7 @@ function ensureKb(m) {
   if (!m.sy) m.sy = { i: 0, r: {} };
   if (!m.bd) m.bd = { rows: [], d: [[], [], []] };
   if (!m.nw) m.nw = ['', '', '', '', '', ''];
+  if (!m.rw) m.rw = ['', '', '', '', '', '']; if (!m.rs) m.rs = ['', '', ''];
 }
 
 /* ===== קול: ההקלטות של חן קודם, אחר כך הקול המכני, ובסוף קול הדפדפן ===== */
@@ -1195,20 +1214,22 @@ function wizEntry(m) {
     <p class="note">${resume ? 'המיפוי נעצר בשקופית "' + esc(ST(m)[w.step][1]) + '". אפשר להמשיך מהמקום שעצרת, לעבור לכל שקופית אחרת, ולערוך. דף הסיכום מתעדכן לבד.' : 'עוברים עם הילד/ה שקופית אחרי שקופית. בתפריט הצד רואים מה כבר בוצע, ואפשר לעבור לכל שקופית. אפשר לעצור בכל רגע ולהמשיך בפעם הבאה.'}</p>
     <div class="row"><button class="btn solid" type="button" data-act="wzStart">${resume ? 'המשך מיפוי מודרך' : 'התחלת מיפוי מודרך'}</button></div></div>`;
 }
+const readSlide = (m, key, title, note) => `<div class="card"><div class="panel"><h3><span class="num n1">★</span>${title}</h3><div class="note">${note}</div>${nwHtml(m, key)}</div></div>` + wnField(m, 'k' + key);
+const rateCard = (m, f, q, a, b) => `<div class="card noprint ratecard"><h3>${q}</h3><div class="row">${[a, b].map(x => `<button type="button" class="btn${m[f] === x[0] ? ' solid' : ''}" data-act="wzRate" data-f="${f}" data-v="${x[0]}">${x[1]}</button>`).join('')}</div><p class="note">${m[f] ? 'הבחירה קובעת מה תהיה המשימה הבאה. אפשר לשנות.' : 'הסימון קובע מה תהיה המשימה הבאה.'}</p></div>`;
 function wnField(m, key, label) {
   return `<div class="card noprint"><div class="field"><label>${label || 'הערות תוך כדי. אם הילד/ה מתקשה, אפשר לעצור'}</label><textarea data-wn="${key}">${esc((m.wn || {})[key] || '')}</textarea></div></div>`;
 }
 function wizNav(m) {
   const w = m.wz, done = w.done || {}, sl = ST(m);
   let vault = '';
-  if (m.kind !== 'kb') { const v = ensureVault(m); vault = `<div class="wnv">קוד הכספת: <b>${TASKKEYS.map((k, i) => (done[k] ? v.code[i] : '_')).join(' ')}</b></div>`; }
+  if (m.kind !== 'kb' || m.kbv) { const v = ensureVault(m); vault = `<div class="wnv">קוד הכספת: <b>${TK(m).map((k, i) => (done[k] ? v.code[i] : '_')).join(' ')}</b></div>`; }
   return `<nav class="wznav noprint${WZ_NAV ? ' open' : ''}" aria-label="שקופיות"><div class="wnh">${esc(m.name || 'מיפוי')}</div>${vault}<div class="wnl">${sl.map((s, i) => `<button type="button" class="wni${i === w.step && !w.phase ? ' cur' : ''}${done[s[0]] ? ' done' : ''}" data-act="wzGoto" data-i="${i}"><span class="wnk">${done[s[0]] ? '✓' : i + 1}</span><span class="wnt">${esc(s[1])}</span></button>`).join('')}
     <button type="button" class="wni sumbtn${w.phase === 'sum' ? ' cur' : ''}" data-act="wzShow"><span class="wnk">★</span><span class="wnt">דף סיכום להדפסה</span></button>
     <button type="button" class="wni quiet" data-act="wzPause"><span class="wnk">←</span><span class="wnt">יציאה ושמירה</span></button></div></nav>`;
 }
 function wizControls(m, opts) {
   opts = opts || {};
-  const key = ST(m)[m.wz.step][0], isTask = m.kind !== 'kb' && TASKKEYS.includes(key);
+  const key = ST(m)[m.wz.step][0], isTask = TK(m).includes(key);
   return `<div class="card noprint wzctl"><div class="row"><button class="btn" type="button" data-act="${opts.back || 'wzBack'}">חזרה</button>${opts.noNext ? '' : `<button class="btn solid" type="button" data-act="${opts.next || (isTask ? 'wzTask' : 'wzNext')}">${opts.nextLabel || (isTask ? 'סיימנו, קבלת ספרה לכספת' : 'סיימתי, המשך')}</button>`}</div>
     <div class="row"><button class="btn sm quiet" type="button" data-act="wzPause">שמירה ויציאה</button><button class="btn sm danger" type="button" data-act="wzStop">הילד/ה מתקשה, עצרי ועברי לסיכום</button></div>${isTask ? `<div class="row"><button class="btn sm quiet" type="button" data-act="wzSkip">דלג למשימה הבאה</button><button class="btn sm quiet" type="button" data-act="wzGive">תן ספרה לכספת למרות שהמשימה לא הושלמה</button></div>` : ''}</div>`;
 }
@@ -1224,11 +1245,23 @@ function wrapLayout(m, inner) {
 }
 
 /* ===== כספת ===== */
+const confettiHtml = n => { const cols = ['#EF406E', '#FBC5D6', '#9fe3c8', '#9ad7f5', '#ffd966', '#c9a7f0']; return Array.from({ length: n }, () => `<i style="left:${Math.random() * 100}%;background:${cols[Math.floor(Math.random() * cols.length)]};animation-delay:${(Math.random() * 1.2).toFixed(2)}s;animation-duration:${(2.2 + Math.random() * 2).toFixed(2)}s;transform:rotate(${Math.floor(Math.random() * 360)}deg)"></i>`).join(''); };
+function applause() {
+  try {
+    const AC = window.AudioContext || window.webkitAudioContext, c = new AC(), dur = 3.4, sr = c.sampleRate, buf = c.createBuffer(1, Math.floor(sr * dur), sr), d = buf.getChannelData(0);
+    for (let n = 0; n < 260; n++) {
+      const t0 = dur * (0.04 + 0.86 * Math.random()), st = Math.floor(t0 * sr), len = Math.floor(sr * (0.012 + Math.random() * 0.03)), amp = (0.3 + Math.random() * 0.7) * Math.sin(Math.PI * t0 / dur);
+      for (let i = 0; i < len && st + i < d.length; i++) d[st + i] += (Math.random() * 2 - 1) * amp * Math.pow(1 - i / len, 2.5);
+    }
+    const src = c.createBufferSource(); src.buffer = buf; const f = c.createBiquadFilter(); f.type = 'bandpass'; f.frequency.value = 2400; f.Q.value = 0.5; const g = c.createGain(); g.gain.value = 0.8;
+    src.connect(f); f.connect(g); g.connect(c.destination); src.start(); src.onended = () => { try { c.close(); } catch (e) {} };
+  } catch (e) {}
+}
 function vaultPic() { return emo('img/vault.png', 'vpic', '🔐'); }
 function vaultSlide(m) {
-  const v = ensureVault(m), done = m.wz.done || {}, got = TASKKEYS.filter(k => done[k]).length;
+  const v = ensureVault(m), done = m.wz.done || {}, got = TK(m).filter(k => done[k]).length;
   const shown = [0, 1, 2, 3].map(i => `<span class="vbox${i < v.input.length ? ' on' : ''}">${i < v.input.length ? v.input[i] : ''}</span>`).join('');
-  if (v.opened) return `<div class="card vaultcard open"><div class="vpic">🎉</div><h2>זכית בהפתעה!</h2><p>הכספת נפתחה.</p><div class="note noexp noprint">לבוחנת: הכיני לילד/ה הפתעה פיזית.</div></div>`;
+  if (v.opened) return `<div class="card vaultcard open"><div class="confetti" aria-hidden="true">${confettiHtml(70)}</div>${emo('img/gift.png', 'vpic', '🎁')}<h2>זכית בהפתעה! כל הכבוד!</h2><p>הכספת נפתחה.</p><div class="note noexp noprint" style="font-size:.8rem">לבוחנת: הכיני לילד/ה הפתעה קטנה, מדליה, עוגייה או כל הפתעה אחרת.</div></div>`;
   return `<div class="card vaultcard"><h2>פותחים את הכספת</h2>${vaultPic()}
     <p class="note">${got < 4 ? 'הילד/ה קיבל/ה ' + got + ' ספרות מתוך 4. אפשר להמשיך גם כך.' : 'כל ארבע הספרות נאספו. מקישים את הקוד לפי הסדר שבו התקבלו.'}</p>
     <div class="vdisp ${v.bad ? 'bad' : ''}">${shown}</div>
@@ -1236,8 +1269,8 @@ function vaultSlide(m) {
 }
 const DIGW = ['אפס ספרות', 'ספרה אחת', 'שתי ספרות', 'שלוש ספרות', 'ארבע ספרות'];
 function showDigit(m, idx, cb) {
-  const v = ensureVault(m), done = m.wz.done || {}, n = TASKKEYS.filter(k => done[k]).length;
-  const boxes = [0, 1, 2, 3].map(i => `<span class="vbox${i === idx ? ' on new' : (done[TASKKEYS[i]] ? ' on' : '')}">${i === idx || done[TASKKEYS[i]] ? v.code[i] : ''}</span>`).join('');
+  const v = ensureVault(m), done = m.wz.done || {}, tk = TK(m), n = tk.filter(k => done[k]).length;
+  const boxes = [0, 1, 2, 3].map(i => `<span class="vbox${i === idx ? ' on new' : (done[tk[i]] ? ' on' : '')}">${i === idx || done[tk[i]] ? v.code[i] : ''}</span>`).join('');
   const o = document.createElement('div'); o.className = 'digitpop';
   const cols = ['#EF406E', '#FBC5D6', '#9fe3c8', '#9ad7f5', '#ffd966', '#c9a7f0'];
   const conf = Array.from({ length: 56 }, () => `<i style="left:${Math.random() * 100}%;background:${cols[Math.floor(Math.random() * cols.length)]};animation-delay:${(Math.random() * 1.2).toFixed(2)}s;animation-duration:${(2.2 + Math.random() * 2).toFixed(2)}s;transform:rotate(${Math.floor(Math.random() * 360)}deg)"></i>`).join('');
@@ -1275,19 +1308,28 @@ function bdSlide(m) {
 /* ===== קריאת הברות עם מ או ש, כל פעם סימן ניקוד אחר ===== */
 const NIQ = [['פתח', 'ַ'], ['קמץ', 'ָ'], ['צירה', 'ֵ'], ['סגול', 'ֶ'], ['חיריק', 'ִ'], ['חולם', 'holam'], ['שורוק', 'shuruk'], ['קובוץ', 'ֻ'], ['שווא', 'ְ']];
 function mkSyl(l, n) { const L = l === 'ש' ? 'שׁ' : l; if (n[1] === 'holam') return L + 'וֹ'; if (n[1] === 'shuruk') return L + 'וּ'; return L + n[1]; }
+const KSYL = [['א', 'א\u05B8', 'קמץ'], ['ב', 'ב\u05BC\u05B7', 'פתח ודגש'], ['ג', 'ג\u05B5', 'צירה'], ['ד', 'ד\u05B4', 'חיריק'], ['ל', 'לו\u05B9', 'חולם'], ['מ', 'מו\u05BC', 'שורוק'], ['פ', 'פ\u05BC\u05B6', 'סגול ודגש'], ['ר', 'ר\u05BB', 'קובוץ'], ['ש', 'ש\u05C1\u05B0', 'שווא'], ['ת', 'ת\u05B4י', 'חיריק מלא']];
+const SYLNEW = KSYL.map(x => ({ sign: x[2], l: x[0], t: x[1] }));
 const SYLSEQ = (() => { const a = [], b = []; NIQ.forEach((n, i) => { a.push({ sign: n[0], l: i % 2 === 0 ? 'מ' : 'ש', t: mkSyl(i % 2 === 0 ? 'מ' : 'ש', n) }); b.push({ sign: n[0], l: i % 2 === 0 ? 'ש' : 'מ', t: mkSyl(i % 2 === 0 ? 'ש' : 'מ', n) }); }); return a.concat(b); })();
+const sylSeq = m => (m.kbv ? SYLNEW : SYLSEQ);
 function sylSlide(m) {
-  ensureKb(m); const sy = m.sy, n = SYLSEQ.length, cur = SYLSEQ[sy.i], r = sy.r[sy.i] || 0;
+  ensureKb(m); const SEQ = sylSeq(m), sy = m.sy, n = SEQ.length, cur = SEQ[sy.i], r = sy.r[sy.i] || 0;
   return `<div class="card sylcard"><h2>קריאת הברות</h2>
     <p class="note noexp noprint">הילד/ה קורא/ת בקול את ההברה. מסמנים ✓ או ✗. אין צליל שגיאה, כי הילד/ה רואה את המסך. אפשר לדפדף קדימה ואחורה.</p>
     <div class="sylbig ${r === 1 ? 'ok' : r === 3 ? 'no' : ''}">${cur.t}</div>
     <div class="sylmeta noprint noexp">הברה ${sy.i + 1} מתוך ${n} · סימן: ${cur.sign}</div>
     <div class="sylbtns noprint"><button type="button" class="syb no${r === 3 ? ' on' : ''}" data-act="wzSyMark" data-v="3" aria-label="לא נכון">✗</button><button type="button" class="syb ok${r === 1 ? ' on' : ''}" data-act="wzSyMark" data-v="1" aria-label="נכון">✓</button></div>
     <div class="row noprint" style="justify-content:center"><button type="button" class="btn" data-act="wzSyGo" data-d="-1">הקודמת</button><button type="button" class="btn" data-act="wzSyGo" data-d="1">הבאה</button></div>
-    <div class="sylstrip noprint">${SYLSEQ.map((s, i) => `<button type="button" class="sd${i === sy.i ? ' cur' : ''}${sy.r[i] === 1 ? ' ok' : sy.r[i] === 3 ? ' no' : ''}" data-act="wzSyJump" data-i="${i}" aria-label="הברה ${i + 1}"></button>`).join('')}</div></div>` + wnField(m, 'ksy');
+    <div class="sylstrip noprint">${SEQ.map((s, i) => `<button type="button" class="sd${i === sy.i ? ' cur' : ''}${sy.r[i] === 1 ? ' ok' : sy.r[i] === 3 ? ' no' : ''}" data-act="wzSyJump" data-i="${i}" aria-label="הברה ${i + 1}"></button>`).join('')}</div></div>` + wnField(m, 'ksy');
 }
 /* מסקנות: האם הילד/ה מזהה בעקביות כל סימן ניקוד */
 function sylAnalysis(m) {
+  if (m.kbv) {
+    const r = (m.sy && m.sy.r) || {}, rows = SYLNEW.map((s, i) => ({ s, v: r[i] || 0 })), nm = x => x.s.t + ' (' + x.s.sign + ')';
+    const ok = rows.filter(x => x.v === 1).map(nm), no = rows.filter(x => x.v === 3).map(nm), un = rows.filter(x => !x.v).map(nm);
+    const t = (!ok.length && !no.length) ? 'מבדק ההברות עוד לא בוצע.' : (ok.length ? 'קרא/ה נכון: ' + ok.join(', ') + '. ' : '') + (no.length ? 'התקשה: ' + no.join(', ') + '. ' : '') + (un.length ? 'לא נבדקו: ' + un.join(', ') + '.' : '');
+    return { rows, text: t.trim() };
+  }
   const r = (m.sy && m.sy.r) || {}, rows = NIQ.map(n => { const items = SYLSEQ.map((s, i) => ({ s, v: r[i] || 0 })).filter(x => x.s.sign === n[0]); const ok = items.filter(x => x.v === 1).length, no = items.filter(x => x.v === 3).length, tested = ok + no; return { sign: n[0], items, ok, no, tested, st: tested < items.length ? (tested ? 'part' : 'none') : ok === items.length ? 'cons' : ok === 0 ? 'fail' : 'unst' }; });
   const L = st => rows.filter(x => x.st === st).map(x => x.sign);
   const cons = L('cons'), unst = L('unst'), fail = L('fail'), part = L('part'), none = L('none');
@@ -1421,6 +1463,10 @@ function wizScreen(m) {
       <div class="lngrid">${lt.grid.map(l => { const r = lt.pt[l]; return `<button type="button" class="tile${r === 1 ? ' good' : ''}${r === 3 ? ' bad' : ''}" data-act="wzPick" data-l="${l}"${done ? ' disabled' : ''}>${l}</button>`; }).join('')}</div>
       ${done ? `<div class="presult">${lt.order.map(l => `<span class="pr ${lt.pt[l] === 1 ? 'good' : 'bad'}">${l} ${lt.pt[l] === 1 ? '✓' : '✗ (הצביע/ה על ' + (lt.pc[l] || '?') + ')'}</span>`).join('')}</div><div class="row"><button class="btn quiet" type="button" data-act="wzPreset">לחזור על הזיהוי מההתחלה</button></div>` : ''}</div></div>` + wnField(m, 'lp');
   } else if (key === 'vault') { body = vaultSlide(m); ctl = wizControls(m, { nextLabel: 'סיימנו, לסיכום' }); }
+  else if (key === 'k1') body = pwSlide(m) + rateCard(m, 'kr1', 'איך היה לילד/ה לכתוב לפי הצלילים?', ['easy', 'הצליח/ה'], ['hard', 'התקשה']);
+  else if (key === 'k2') body = kbPath(m).letters ? `<div class="card"><h2>סיימנו את כתיבת האותיות</h2><p class="note">אפשר לקבל ספרה לכספת ולהמשיך למשימה הבאה.</p></div>` : readSlide(m, 'nw', 'קריאת מילות תפל', 'הילד/ה קורא/ת בקול מילים שאינן קיימות בשפה. לחצי על המשבצת: ✓ נקראה נכון, ◐ נקראה בעזרה או בתיקון עצמי.') + rateCard(m, 'kr2', 'איך היה לילד/ה לקרוא את המילים?', ['easy', 'קרא/ה בלי קושי'], ['hard', 'היה קשה מדי']);
+  else if (key === 'k3') body = kbPath(m).low ? readSlide(m, 'rw', 'קריאת מילה קצרה', 'הילד/ה קורא/ת בקול מילה אמיתית וקצרה. ✓ נקראה נכון, ◐ בעזרה.') : readSlide(m, 'rs', 'קריאת משפט', 'הילד/ה קורא/ת בקול משפט אמיתי. ✓ נקרא נכון, ◐ בעזרה או בתיקון עצמי.');
+  else if (key === 'k4') body = kbPath(m).low ? sylSlide(m) : bdSlide(m);
   else if (key === 'kp') body = pwSlide(m);
   else if (key === 'knw') body = `<div class="card">${kbp(m).p5}</div>`;
   else if (key === 'ksy') body = sylSlide(m);
@@ -1488,6 +1534,38 @@ function summaryHtml(m) {
 </div>`;
 }
 function summaryKb(m) {
+  if (!m.kbv) return summaryKbOld(m);
+  ensureKb(m);
+  const { w, notes } = sumCommon(m), p = kbPath(m), g = k => mk(m, k), sym = v => SYM[v] || '○', t2 = m.t2, lt = m.lt;
+  const txt = (label, v) => v ? `<div class="sline"><b>${esc(label)}:</b> ${esc(v)}</div>` : '';
+  const doneN = KTASKS.filter(k => (w.done || {})[k]).length, an = sylAnalysis(m);
+  const stCls = v => v === 1 ? 'g' : v === 2 ? 'h' : v === 3 ? 'x' : '';
+  const list = (key, L) => `<div class="nwlist one">${L.map((wd, i) => `<div class="nwr"><span class="nwt">${wd}</span><b class="c${g(key + i)}">${sym(g(key + i))}</b><span>${esc((m[key] || [])[i] || '')}</span></div>`).join('')}</div>`;
+  const lres = lt ? `<div class="lsum">${lt.L.map(l => `<div class="lres"><div class="lbig">${l}</div><div class="lline">כתיבה <b class="${stCls(lt.wr[l])}">${SYMX[lt.wr[l]] || '○'}</b></div><div class="lline">שם האות <b class="${stCls(lt.nm[l])}">${lt.wr[l] === 1 && !lt.nm[l] ? '—' : (SYMX[lt.nm[l]] || '○')}</b></div><div class="lline">זיהוי <b class="${lt.pt[l] === 1 ? 'g' : lt.pt[l] === 3 ? 'x' : ''}">${!lt.pt[l] && (lt.wr[l] === 1 || lt.nm[l] === 1) ? '—' : (lt.pt[l] === 1 ? '✓' : lt.pt[l] === 3 ? '✗' : '○')}</b></div>${strokeImg(lt.d[l], 110, 70)}</div>`).join('')}</div>` : '<div class="note">לא בוצע שלב אותיות</div>';
+  const sylT = `<table class="smat"><thead><tr><th>סימן</th><th>הברה</th><th>תוצאה</th></tr></thead><tbody>${an.rows.map(x => `<tr><td class="sg">${x.s.sign}</td><td><span class="syt">${x.s.t}</span></td><td class="cc ${x.v === 1 ? 'cons' : x.v === 3 ? 'fail' : 'none'}">${x.v === 1 ? '✓' : x.v === 3 ? '✗' : '○'}</td></tr>`).join('')}</tbody></table>`;
+  const bd = m.bd.rows.map((r, i) => `<div class="bdsum"><div class="bdsl">${emo('img/bd-' + r.k + '.png', 'bdi sm', bdOf(r.k)[2])}<b>${bdOf(r.k)[1]}</b> ${r.ok ? '<span class="g">✓ תקין</span>' : ''}</div>${padOut(m, 'bd.d.' + i, 220)}${txt('הערות', r.note)}</div>`).join('');
+  const recs = (m.s && m.s.r ? SR.filter((x, i) => m.s.r[i]) : []);
+  const route = !m.kr1 ? 'כתיב פונטי עוד לא הושלם.' : p.letters ? 'התקשה בכתיב הפונטי, ולכן נבדקו אותיות, קריאת מילה קצרה והברות.' : !m.kr2 ? 'הצליח/ה בכתיב הפונטי ועבר/ה לקריאת מילות תפל.' : p.low ? 'הצליח/ה בכתיב הפונטי אך מילות התפל היו קשות, ולכן נבדקו מילה קצרה והברות.' : 'הצליח/ה בכתיב הפונטי ובקריאת מילות תפל, ולכן נבדקו קריאת משפט וכתיבה עם ניקוד.';
+  const panels = [
+    `<div class="panel"><h3><span class="num n2">1</span>כתיב פונטי${t2.lv ? ' · ' + LVL[t2.lv].t : ''}</h3>${(t2.order && t2.order.length ? t2.order : [0, 1, 2]).map(i => t2.w[i] ? `<div class="sline">${t2.lv ? picImg(LVL[t2.lv].w[i][1], "pic sm", "") : ""}</div>${padOut(m, 't2.d.' + i, 230)}` : '').join('')}${txt('הערות', t2.note)}</div>`,
+    p.letters ? `<div class="panel"><h3><span class="num n1">2</span>אותיות: כתיבה, שם האות והצבעה</h3>${lres}</div>` : `<div class="panel"><h3><span class="num n1">2</span>קריאת מילות תפל</h3>${list('nw', NONSENSE)}${txt('הערות', (m.wn || {}).knw)}</div>`,
+    p.low ? `<div class="panel"><h3><span class="num n3">3</span>קריאת מילה קצרה</h3>${list('rw', REALW)}${txt('הערות', (m.wn || {}).krw)}</div>` : `<div class="panel"><h3><span class="num n3">3</span>קריאת משפט</h3>${list('rs', SENT)}${txt('הערות', (m.wn || {}).krs)}</div>`,
+    p.low ? `<div class="panel"><h3><span class="num n4">4</span>קריאת הברות</h3><div class="sline">${esc(an.text)}</div>${sylT}${txt('הערות', (m.wn || {}).ksy)}</div>` : `<div class="panel"><h3><span class="num n4">4</span>כתיבה עם ניקוד</h3>${bd || '<div class="note">לא בוצע</div>'}</div>`
+  ];
+  return `<div class="sheet sumsheet" id="sheet">
+  <div class="title">סיכום מיפוי: כיתות א׳-ב׳</div>
+  <div class="sub">בשיטת קוראים בקלות · חן קלימיאן, לדבר עם ילדים</div>
+  <div class="sdet"><div><b>שם:</b> ${esc(m.name)}</div><div><b>גיל:</b> ${esc(m.age)}</div><div><b>תאריך:</b> ${fmt(m.date)}</div><div><b>מסגרת:</b> ${esc(m.school)}</div><div><b>הבוחנת:</b> ${esc(m.examiner)}</div><div><b>משימות שהושלמו:</b> ${doneN} מתוך 4${m.vault && m.vault.opened ? ' · הכספת נפתחה' : ''}</div></div>
+  ${w.stopped ? `<div class="stopnote">המיפוי הופסק בשקופית "${esc((ST(m)[IDX(m, w.stopped)] || ['', w.stopped])[1])}" כי הילד/ה התקשה. הנתונים כוללים את מה שבוצע עד אז.</div>` : ''}
+  ${m.parents ? `<div class="panel"><h3>תובנות משיחת ההורים</h3><div class="sNote">${esc(m.parents)}</div></div>` : ''}
+  <div class="panel conc"><h3>מסלול המיפוי</h3><div class="sline">${esc(route)}</div></div>
+  <div class="grid2">${panels.join('')}</div>
+  ${notes ? `<div class="panel"><h3>הערות שנכתבו תוך כדי</h3>${notes}</div>` : ''}
+  <div class="panel"><h3>סיכום ומסקנות הבוחנת</h3>${txt('נקודות חוזק', m.s && m.s.strong)}${txt('מוקדי קושי', m.s && m.s.hard)}${txt('מטרות ראשוניות', m.s && m.s.goals)}${txt('המלצות להורים', m.s && m.s.recs)}${recs.length ? `<div class="sline"><b>המלצות להמשך:</b> ${recs.map(esc).join(', ')}</div>` : ''}${txt('הערות', m.s && m.s.note)}</div>
+  <div class="rights">כל הזכויות שמורות לחן קלימיאן</div>
+</div>`;
+}
+function summaryKbOld(m) {
   ensureKb(m);
   const { w, notes } = sumCommon(m), g = k => mk(m, k), sym = v => SYM[v] || '○';
   const t2 = m.t2;
@@ -1540,7 +1618,7 @@ function renderNew() {
     <div class="field"><label for="st_exam">שם הבוחנת</label><input type="text" id="st_exam" maxlength="40" value="${esc(d.examiner || '')}"></div></div>
     <h3>בחרי רמה ולחצי להתחלת המיפוי</h3>
     <div class="startbtns"><button type="button" class="bigbtn" data-act="startMap" data-kind="l9"><b>מיפוי לילדי גן חובה</b><span>כספת הפתעות, חומר חדש, כתיבת שם, כתיבה פונטית, חשבון ואותיות</span></button>
-    <button type="button" class="bigbtn" data-act="startMap" data-kind="kb"><b>מיפוי לילדי כיתות א׳-ב׳</b><span>כתיב פונטי, מילות תפל, קריאת הברות, כתיבה עם ניקוד וקריאה</span></button></div></div>`;
+    <button type="button" class="bigbtn" data-act="startMap" data-kind="kb"><b>מיפוי לילדי כיתות א׳-ב׳</b><span>כתיב פונטי, ואז לפי הקושי: אותיות או קריאה, וכספת הפתעות</span></button></div></div>`;
 }
 function renderPrev() {
   const all = S.maps.filter(x => !x.del).sort((a, b) => (b.date || '').localeCompare(a.date || '') || (b.u || 0) - (a.u || 0));
@@ -1557,7 +1635,7 @@ function startMap(kind) {
   const m = newMap({ name, age: v('st_age') }, kind);
   m.date = v('st_date') || today(); m.school = v('st_school'); m.examiner = v('st_exam');
   m.wz = { step: 0, on: true, done: {} };
-  if (kind === 'kb') ensureKb(m); else ensureVault(m);
+  if (kind === 'kb') ensureKb(m); ensureVault(m);
   S.defaults = { school: m.school, examiner: m.examiner };
   S.maps.push(m); S[kind === 'kb' ? 'kbId' : 'mapId'] = m.id; S.tab = kind === 'kb' ? 'kb' : 'map';
   touch(m, 'map:' + m.id); try { history.replaceState(null, '', '#' + S.tab); } catch (e) {}
@@ -1597,7 +1675,8 @@ function wzAct(a, b, m) {
   else if (a === 'pwBack') keep(() => { const i = m.t2.cur; if (!((m.t2.d || [])[i] || []).length) m.t2.order = m.t2.order.filter(x => x !== i); m.t2.cur = null; });
   else if (a === 'wzOvGo') { m.wz.on = true; wzGo(m, +b.dataset.i); }
   else if (a === 'wzSkip') wzGo(m, m.wz.step + 1);
-  else if (a === 'wzTask' || a === 'wzGive') { if (a === 'wzGive') (m.wz.forced = m.wz.forced || {})[cur()] = true; markDone(); const k = cur(); touch(m, 'map:' + m.id); renderMap(); showDigit(m, TASKKEYS.indexOf(k),() => showTaskNote(m, k, () => wzGo(m, m.wz.step + 1))); }
+  else if (a === 'wzRate') keep(() => { m[b.dataset.f] = b.dataset.v; });
+  else if (a === 'wzTask' || a === 'wzGive') { if (m.kbv && a === 'wzTask') { const k = cur(); if ((k === 'k1' && !m.kr1) || (k === 'k2' && !kbPath(m).letters && !m.kr2)) { toast('סמני קודם איך היה לילד/ה, כדי שנדע מה המשימה הבאה'); return; } } if (a === 'wzGive') (m.wz.forced = m.wz.forced || {})[cur()] = true; markDone(); const k = cur(); touch(m, 'map:' + m.id); renderMap(); showDigit(m, TK(m).indexOf(k),() => showTaskNote(m, k, () => wzGo(m, m.wz.step + 1))); }
   else if (a === 'wzBack') wzGo(m, m.wz.step - 1);
   else if (a === 'wzGoto') { WZ_NAV = false; wzGo(m, +b.dataset.i); }
   else if (a === 'wzMenu') { WZ_NAV = !WZ_NAV; const n = document.querySelector('.wznav'); if (n) n.classList.toggle('open', WZ_NAV); }
@@ -1624,13 +1703,13 @@ function wzAct(a, b, m) {
   else if (a === 'wzKey') {
     const v = ensureVault(m), d = b.dataset.d;
     if (d === 'del') v.input = v.input.slice(0, -1);
-    else if (d === 'ok') { if (v.input === v.code) { v.opened = true; markDone(); } else { v.input = ''; v.bad = true; } }
+    else if (d === 'ok') { if (v.input === v.code) { v.opened = true; markDone(); applause(); } else { v.input = ''; v.bad = true; } }
     else if (v.input.length < 4) { v.input += d; v.bad = false; }
     keep(() => {});
     if (v.bad) setTimeout(() => { v.bad = false; }, 700);
   }
-  else if (a === 'wzSyMark') { const sy = m.sy; sy.r[sy.i] = +b.dataset.v; if (sy.i < SYLSEQ.length - 1) sy.i++; else markDone(); keep(() => {}); }
-  else if (a === 'wzSyGo') { const sy = m.sy; sy.i = Math.max(0, Math.min(SYLSEQ.length - 1, sy.i + (+b.dataset.d))); keep(() => {}); }
+  else if (a === 'wzSyMark') { const sy = m.sy; sy.r[sy.i] = +b.dataset.v; if (sy.i < sylSeq(m).length - 1) sy.i++; else if (!m.kbv) markDone(); keep(() => {}); }
+  else if (a === 'wzSyGo') { const sy = m.sy; sy.i = Math.max(0, Math.min(sylSeq(m).length - 1, sy.i + (+b.dataset.d))); keep(() => {}); }
   else if (a === 'wzSyJump') { m.sy.i = +b.dataset.i; keep(() => {}); }
   else if (a === 'wzBd') { ensureKb(m); if (m.bd.rows.length < 3 && !m.bd.rows.some(r => r.k === b.dataset.k)) { m.bd.rows.push({ k: b.dataset.k, ok: 0, note: '' }); keep(() => {}); } }
   else if (a === 'wzBdOk') { const r = m.bd.rows[+b.dataset.i]; keep(() => { r.ok = r.ok ? 0 : 1; }); }
