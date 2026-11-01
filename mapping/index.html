@@ -863,12 +863,29 @@ function stepBlock(c, b) {
     <div class="letters">${g.map(l => { const v = c.marks[pre + l] || 0; return `<button type="button" class="lt s${v}" data-act="mark" data-k="${pre + l}" aria-label="${KEYLABEL[pre + l]}: ${STATES[v]}">${l}</button>`; }).join('')}</div></div>`; };
   return `<h3>${esc(b.t)}</h3>` + gl('lr', 'מכיר/ה: שם, צליל וצורה') + gl('lw', 'כותב/ת את האותיות') + (b.items.length ? `<div class="items">${b.items.map(i => { const v = c.marks[i[0]] || 0; return `<button type="button" class="item s${v}" data-act="mark" data-k="${i[0]}"><span class="mark">${SYM[v]}</span><span>${esc(i[1])}</span></button>`; }).join('')}</div>` : '');
 }
+let KV = 'home';
+function renderKidsHome() {
+  const list = kids(), bk = document.querySelector('section[aria-label="גיבוי"]');
+  $('main').after(bk); bk.hidden = KV !== 'list'; bk.classList.remove('bkc', 'bkopen'); $('bkToggle').hidden = true;
+  const back = `<div class="card noprint"><div class="row"><button type="button" class="btn" data-act="kv" data-v="home">חזרה למסך הראשי</button></div></div>`;
+  if (KV === 'new') {
+    $('main').innerHTML = back + `<div class="card"><h2>ילד/ה חדש/ה</h2><p class="note">מומלץ לכתוב שם פרטי או כינוי בלבד. הכרטיסים הקיימים לא משתנים.</p>
+      <form id="addForm" class="row"><div class="field"><label for="newName">שם פרטי או כינוי</label><input type="text" id="newName" autocomplete="off" maxlength="40"></div><button class="btn solid" type="submit">פתיחת כרטיס</button></form></div>`;
+    setTimeout(() => { const n = $('newName'); if (n) n.focus(); }, 0); return;
+  }
+  if (KV === 'list') {
+    $('main').innerHTML = back + `<div class="card" id="kidsList"><h2>ילדים קיימים</h2>${list.length ? `<div class="plist">${list.map(x => { const n = nowInfo(x); return `<button type="button" class="prow" data-act="pickKid" data-id="${x.id}"><b>${esc(x.name || 'ילד/ה')}</b><span>${x.age ? 'גיל ' + esc(x.age) + ' · ' : ''}${n ? esc(n.st.title) : 'סיימ/ה את כל השלבים'}</span></button>`; }).join('')}</div>` : '<p class="note">עוד אין ילדים במעקב. אפשר לפתוח כרטיס חדש, או לשחזר מגיבוי למטה.</p>'}</div>`;
+    return;
+  }
+  $('main').innerHTML = `<div class="card"><h2>מה עושים עכשיו?</h2><div class="startbtns"><button type="button" class="bigbtn mint" data-act="kv" data-v="new"><b>ילד/ה חדש/ה</b><span>פותחים כרטיס חדש ומתחילים לעקוב</span></button>
+    <button type="button" class="bigbtn sky" data-act="kv" data-v="list"><b>ילדים קיימים (${list.length})</b><span>להמשיך כרטיס, לגבות או לשחזר מגיבוי</span></button></div></div>`;
+}
 function renderKids() {
+  if (KV !== 'card') return renderKidsHome();
+  { const bk = document.querySelector('section[aria-label="גיבוי"]'); bk.hidden = true; }
   const list = kids(), c = curKid();
-  let h = `<div class="card"><div class="chips">${list.map(x => `<button type="button" class="chip${x.id === S.childId ? ' on' : ''}" data-act="pickKid" data-id="${x.id}">${esc(x.name || 'ילד/ה')}</button>`).join('')}<button type="button" class="chip add" data-act="showAdd">+ ילד/ה חדש/ה</button></div>
-    <form id="addForm" class="row" hidden><div class="field"><label for="newName">שם פרטי או כינוי</label><input type="text" id="newName" autocomplete="off" maxlength="40"></div><button class="btn solid" type="submit">הוסיפי</button><button class="btn quiet" type="button" data-act="hideAdd">ביטול</button></form>
-    <p class="note">מומלץ לכתוב שם פרטי או כינוי בלבד. הוספת כרטיס חדש לא משנה את הכרטיסים הקיימים, כולם נשמרים.</p></div>`;
-  if (!c) { h += `<div class="card"><h2>עוד אין ילדים במעקב</h2><p class="note">לחצי על "ילד/ה חדש/ה" כדי לפתוח את הכרטיס הראשון.</p></div>`; $('main').innerHTML = h; return; }
+  let h = `<div class="card noprint"><div class="row"><button type="button" class="btn" data-act="kv" data-v="list">חזרה לרשימת הילדים</button></div></div><div class="card"><div class="chips">${list.map(x => `<button type="button" class="chip${x.id === S.childId ? ' on' : ''}" data-act="pickKid" data-id="${x.id}">${esc(x.name || 'ילד/ה')}</button>`).join('')}<button type="button" class="chip add" data-act="kv" data-v="new">+ ילד/ה חדש/ה</button></div></div>`;
+  if (!c) { KV = 'home'; return renderKidsHome(); }
   const info = nowInfo(c);
   h += `<div class="card"><div class="row"><div class="field"><label for="fName">שם</label><input type="text" id="fName" data-k="name" value="${esc(c.name)}" maxlength="40"></div><div class="field" style="flex-basis:90px"><label for="fAge">גיל</label><input type="text" id="fAge" data-k="age" value="${esc(c.age)}" maxlength="8"></div><div class="field"><label for="fStart">התחלנו לעבוד ב</label><input type="date" id="fStart" data-k="start" value="${esc(c.start)}"></div></div>
     <div class="now">${info ? `<span class="note">איפה הוא/היא עכשיו</span><b>${info.started ? esc(info.st.sub + ': ' + info.st.title) : 'עוד לא התחלנו, מתחילים משלב 1: מספרים'}</b><span>${info.started ? 'הבא לתרגול' : 'הפריט הראשון'}: ${esc(info.next)}</span>` : '<b>סיימנו את כל השלבים. קריאה שוטפת!</b>'}</div>
@@ -944,7 +961,8 @@ document.addEventListener('click', e => {
   else if (a === 'word') { const w = b.dataset.w; const i = [0, 1, 2].find(k => !m.t2.w[k]); if (i == null) { toast('כבר נבחרו שלוש מילים'); return; } m.t2.w[i] = w; touch(m, 'map:' + m.id); document.querySelector('[data-p="t2.w.' + i + '"]').value = w; }
   else if (a === 'q') { m.t4.q = (m.t4.q ? m.t4.q + ', ' : '') + b.dataset.w; touch(m, 'map:' + m.id); document.querySelector('[data-p="t4.q"]').value = m.t4.q; }
   else if (a === 'delMap') { sure(b, 'בטוחה? לחצי שוב כדי למחוק את המיפוי של ' + (m.name || 'הילד/ה'), () => { m.del = true; touch(m, 'map:' + m.id); S.mapId = null; render(); toast('המיפוי נמחק'); }); }
-  else if (a === 'pickKid') { S.childId = b.dataset.id; persist(); renderKids(); }
+  else if (a === 'kv') { KV = b.dataset.v; renderKids(); window.scrollTo(0, 0); }
+  else if (a === 'pickKid') { S.childId = b.dataset.id; KV = 'card'; persist(); renderKids(); window.scrollTo(0, 0); }
   else if (a === 'showAdd') { $('addForm').hidden = false; $('newName').focus(); }
   else if (a === 'hideAdd') { $('addForm').hidden = true; }
   else if (a === 'showNote') { $('noteForm').hidden = false; $('noteBtn').hidden = true; $('lText').focus(); }
@@ -985,7 +1003,7 @@ document.addEventListener('input', e => {
 document.addEventListener('submit', e => {
   if (e.target.id !== 'addForm') return; e.preventDefault();
   const n = $('newName').value.trim(); if (!n) { toast('כתבי שם פרטי או כינוי'); return; }
-  const c = newKid(n); S.children.push(c); S.childId = c.id; S.stage = 'num'; touch(c, 'children'); render(); toast('נפתח כרטיס חדש ל' + n);
+  const c = newKid(n); S.children.push(c); S.childId = c.id; S.stage = 'num'; KV = 'card'; touch(c, 'children'); render(); toast('נפתח כרטיס חדש ל' + n);
 });
 $('bkToggle').addEventListener('click', () => { const bk = document.querySelector('section[aria-label="גיבוי"]'); const o = bk.classList.toggle('bkopen'); $('bkToggle').textContent = o ? 'סגירה' : 'פתיחה'; });
 $('copyBackup').addEventListener('click', () => copyText(JSON.stringify({ maps: S.maps, children: S.children }), 'הגיבוי הועתק. שמרי אותו במקום בטוח', $('restoreBox')));
