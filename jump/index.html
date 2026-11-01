@@ -160,6 +160,7 @@ function win(){ state='win'; sparkle(door.x+30,hero.y-60); setTimeout(function()
 /* גודל טבעי לפריטים קטנים, כדי שתאנה או אצטרובל לא ייראו ענקיים ליד הדמות */
 var DSIZE={fig:.42,acorn:.42,pomegranate:.48,grapes:.5,'date-fruit':.45,'boot-red':.5,jacket:.62,'nest-empty':.5,'nest-eggs':.5,pumpkin:.6,'flower-pot':.62,dove:.6,bird:.45,stork:.85,'umbrella-blue':.85,'umbrella-red':.85,'umbrella-pink':.85,mushroom:.7,'olive-branch':.7,wheat:.8,hatzav:.85,garden:.9};
 function img(k){ return IMG[k] }
+/*חן 1.11.26: גרסת צבע מעט חיה יותר למכשולים, נשמרת לכל איור (עובד גם באייפון)*/var VIV={};function vivid(k){ if(VIV[k]) return VIV[k]; var im=IMG[k]; try{ var w=im.naturalWidth||im.width,h=im.naturalHeight||im.height,c=document.createElement('canvas');c.width=w;c.height=h;var x=c.getContext('2d');x.drawImage(im,0,0);var d=x.getImageData(0,0,w,h),a=d.data;for(var i=0;i<a.length;i+=4){var l=.3*a[i]+.59*a[i+1]+.11*a[i+2];for(var j=0;j<3;j++)a[i+j]=Math.max(0,Math.min(255,l+(a[i+j]-l)*1.25))}x.putImageData(d,0,0);VIV[k]=c }catch(e){ VIV[k]=im } return VIV[k] }
 /*חן 31.10.26: "החילזון באוויר": חותכים שוליים שקופים מכל איור כדי שיעמוד על האדמה*/function trimImg(im){ try{ var w=im.naturalWidth,h=im.naturalHeight,cv=document.createElement('canvas');cv.width=w;cv.height=h;var x=cv.getContext('2d');x.drawImage(im,0,0);var d=x.getImageData(0,0,w,h).data,t=h,b=-1,l=w,r=-1;for(var yy=0;yy<h;yy++)for(var xx=0;xx<w;xx++){if(d[(yy*w+xx)*4+3]>16){if(yy<t)t=yy;if(yy>b)b=yy;if(xx<l)l=xx;if(xx>r)r=xx}}if(b<0)return im;var o=document.createElement('canvas');o.width=r-l+1;o.height=b-t+1;o.getContext('2d').drawImage(cv,l,t,o.width,o.height,0,0,o.width,o.height);return o }catch(e){ return im } }
 function draw(){
   var r=DPR*cv.width/(VW*DPR); var s=cv.height/VH; cx.setTransform(s,0,0,s,0,0);
@@ -187,11 +188,9 @@ function draw(){
     cx.fillStyle='rgba(255,255,255,.35)'; for(var x=gr.x+20;x<gr.x+gr.w-10;x+=46){ cx.beginPath(); cx.arc(x,gr.y+40+(x%3)*12,4,0,6.28); cx.fill() } });
   // קוביות צפות ומכשולים
   plats.forEach(function(p){ if(p.x-cam>VW+60||p.x+p.w-cam<-60) return; cx.fillStyle='rgba(0,0,0,.08)'; cx.beginPath(); cx.ellipse(p.x+p.w/2,GY+8,p.w*.4,7,0,0,6.28); cx.fill(); cx.fillStyle=W.ground[1]; rr(p.x,p.y,p.w,30,10); cx.fill(); cx.fillStyle=W.ground[0]; rr(p.x,p.y,p.w,12,8); cx.fill(); cx.fillStyle='rgba(255,255,255,.4)'; cx.beginPath(); cx.arc(p.x+24,p.y+20,4,0,6.28); cx.arc(p.x+p.w-24,p.y+20,4,0,6.28); cx.fill() });
-  /*חן 31.10.26: מכשול ברור: צל על השביל, טבעת אזהרה פועמת, גדול ומלא צבע*/hurd.forEach(function(h){ if(h.x-cam>VW+60||h.x-cam<-60) return; var pu=1+Math.sin(clock*5+h.x)*.08;
-    cx.fillStyle='rgba(60,30,30,.22)'; cx.beginPath(); cx.ellipse(h.x,h.y+2,30,8,0,0,6.28); cx.fill();
-    cx.save(); cx.globalAlpha=.55; cx.strokeStyle='#EF406E'; cx.lineWidth=4; cx.setLineDash([7,6]); cx.beginPath(); cx.arc(h.x,h.y-27,36*pu,0,6.28); cx.stroke(); cx.setLineDash([]); cx.restore();
-    cx.save(); cx.globalAlpha=.16; cx.fillStyle='#EF406E'; cx.beginPath(); cx.arc(h.x,h.y-27,36*pu,0,6.28); cx.fill(); cx.restore();
-    if(h.k) dImg(h.k,h.x-28,h.y-56,56,56); else { cx.fillStyle='#C9A27E'; rr(h.x-20,h.y-34,40,34,8); cx.fill() } });
+  /*חן 1.11.26: בלי בועה. המכשול חלק מהאדמה שמלפנים: שקוע מעט בשביל, עם תלולית בצבע השביל מלפניו, וצבעיו מעט חיים יותר מהרקע*/hurd.forEach(function(h){ if(h.x-cam>VW+60||h.x-cam<-60) return;
+    if(h.k) cx.drawImage(vivid(h.k),h.x-30,h.y-52,60,60); else { cx.fillStyle='#C9A27E'; rr(h.x-20,h.y-30,40,36,8); cx.fill() }
+    cx.fillStyle=W.ground[0]; cx.beginPath(); cx.moveTo(h.x-40,h.y+15); cx.quadraticCurveTo(h.x-30,h.y+1,h.x-16,h.y); cx.quadraticCurveTo(h.x,h.y-5,h.x+16,h.y); cx.quadraticCurveTo(h.x+30,h.y+1,h.x+40,h.y+15); cx.closePath(); cx.fill() });
   var DY=tiles.length?tiles[tiles.length-1].y:GY;
   // דלת
   var dw=70, dh=112; if(door.open){ cx.save(); cx.globalAlpha=.35+Math.sin(clock*5)*.15; var rg=cx.createRadialGradient(door.x+dw/2,DY-dh/2,10,door.x+dw/2,DY-dh/2,110); rg.addColorStop(0,'#FFF3B0'); rg.addColorStop(1,'rgba(255,243,176,0)'); cx.fillStyle=rg; cx.fillRect(door.x-80,DY-dh-80,dw+160,dh+120); cx.restore() }
