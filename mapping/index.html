@@ -824,15 +824,15 @@ const STAGES = [
     { t: 'האותיות הסופיות והחוצפניות', gi: 6, items: [['lch', 'האותיות החוצפניות']] },
     { t: 'בונוסים: חזרה והעשרת שפה', items: [['lrev', 'חזרה על כל האותיות'], ['sl0', 'שיעור 9: שפה, מיון והכללה'], ['sl1', 'שיעור 10: הגדרה והשוואה'], ['sl2', 'שיעור 11: להבין סיפורים'], ['sl3', 'שיעור 12: לספר סיפורים']] }] },
   { id: 'wr', short: 'מודעות פונולוגית', title: 'מודעות פונולוגית', sub: 'שלב 2, במקביל', blocks: [{ t: 'השיעורים לפי הסדר, עד כתיב פונטי', items: [['pl1', 'שיעור 3: חלוקת מילים לצלילים'], ['pl2', 'שיעור 4: צליל פותח'], ['pl3', 'שיעור 5: צליל סוגר'], ['pl4', 'שיעור 6: קשר אות-צליל'], ['lph', 'כתיב פונטי וקריאה ראשונית']] }] },
-  { id: 'rd', short: 'קוראים בקלות', title: 'קוראים בקלות', sub: 'שלב 3, כל סימן ניקוד', matrix: true,
-    signs: [['קמץ ופתח', 'אַ אָ'], ['שין שמאלית ודגש', 'שׂ ּ'], ['שווא', 'אְ'], ['חיריק', 'אִ'], ['חולם', 'אֹ'], ['צירה וסגול', 'אֵ אֶ'], ['שורוק וקובוץ', 'אוּ אֻ']], cols: [['syl', 'הברות'], ['wrd', 'מילים'], ['sen', 'משפטים']] },
-  { id: 'flu', short: 'קריאה שוטפת', title: 'קריאה שוטפת', sub: 'שלב 4', blocks: [{ t: 'משפטים, קטעים ושטף', items: it('f', ['קורא/ת משפט שלם בלי לפרק להברות', 'קורא/ת שני משפטים ברצף', 'קורא/ת קטע קצר מנוקד', 'קורא/ת בהטעמה ובהתאם לפיסוק', 'מבין/ה מה קרא/ה ועונה על שאלות', 'קורא/ת קטע מנוקד בשטף', 'קורא/ת אותיות כתב', 'קורא/ת מילים בלי ניקוד', 'קורא/ת קטע בלי ניקוד', 'קורא/ת בקול בביטחון ובהנאה']) }] }
+  { id: 'rd', short: 'קוראים בקלות', title: 'קוראים בקלות', sub: 'שלב 3, סימני ניקוד וקריאה שוטפת', matrix: true,
+    signs: [['קמץ ופתח', 'אַ אָ'], ['שין שמאלית ודגש', 'שׂ ּ'], ['שווא', 'אְ'], ['חיריק', 'אִ'], ['חולם', 'אֹ'], ['צירה וסגול', 'אֵ אֶ'], ['שורוק וקובוץ', 'אוּ אֻ']], cols: [['syl', 'הברות'], ['wrd', 'מילים'], ['sen', 'משפטים']],
+    blocks: [{ t: 'קריאה שוטפת: משפטים, קטעים ושטף', items: it('f', ['קורא/ת משפט שלם בלי לפרק להברות', 'קורא/ת שני משפטים ברצף', 'קורא/ת קטע קצר מנוקד', 'קורא/ת בהטעמה ובהתאם לפיסוק', 'מבין/ה מה קרא/ה ועונה על שאלות', 'קורא/ת קטע מנוקד בשטף', 'קורא/ת אותיות כתב', 'קורא/ת מילים בלי ניקוד', 'קורא/ת קטע בלי ניקוד', 'קורא/ת בקול בביטחון ובהנאה']) }] }
 ];
 const KEYLABEL = {};
 function stageKeys(st) {
   const k = [];
   if (st.matrix) st.signs.forEach(s => st.cols.forEach(c => { const key = 'rd.' + s[0] + '.' + c[0]; k.push(key); KEYLABEL[key] = 'סימן ' + s[0] + ': ' + c[1]; }));
-  else st.blocks.forEach(b => {
+  (st.blocks || []).forEach(b => {
     if (b.gi !== undefined) { ['lr', 'lw'].forEach(pre => GROUPS[b.gi].forEach(l => { const key = pre + l; k.push(key); KEYLABEL[key] = (pre === 'lr' ? 'מכיר/ה את האות ' : 'כותב/ת את האות ') + l; })); b.items.forEach(i => { k.push(i[0]); KEYLABEL[i[0]] = i[1]; }); }
     else if (b.lg) GROUPS.forEach(g => g.forEach(l => { const key = b.lg + l; k.push(key); KEYLABEL[key] = (b.lg === 'lr' ? 'מכיר/ה את האות ' : 'כותב/ת את האות ') + l; }));
     else b.items.forEach(i => { k.push(i[0]); KEYLABEL[i[0]] = i[1]; });
@@ -894,7 +894,8 @@ function renderKids() {
     <div class="legend"><span>לחצי על פריט כדי לשנות מצב:</span><span><i class="dot"></i>עוד לא התחלנו</span><span><i class="dot" style="background:#ffe9b8"></i>בתהליך</span><span><i class="dot" style="background:var(--mint)"></i>שולט/ת</span></div>`;
   if (st.matrix) {
     h += `<div class="scroll"><table class="matrix"><thead><tr><th></th>${st.cols.map(x => `<th>${x[1]}</th>`).join('')}</tr></thead><tbody>${st.signs.map(s => `<tr><td class="sign"><span>${s[1]}</span>${s[0]}</td>${st.cols.map(x => { const k = 'rd.' + s[0] + '.' + x[0], v = c.marks[k] || 0; return `<td><button type="button" class="cell s${v}" data-act="mark" data-k="${esc(k)}" aria-label="${esc(KEYLABEL[k])}: ${STATES[v]}">${SYM[v] || '○'}</button></td>`; }).join('')}</tr>`).join('')}</tbody></table></div>`;
-  } else st.blocks.forEach(b => {
+  }
+  (st.blocks || []).forEach(b => {
     if (b.gi !== undefined) h += stepBlock(c, b);
     else if (b.lg) h += lgBlock(c, b);
     else h += `<h3>${esc(b.t)}</h3><div class="items">${b.items.map(i => { const v = c.marks[i[0]] || 0; return `<button type="button" class="item s${v}" data-act="mark" data-k="${i[0]}"><span class="mark">${SYM[v]}</span><span>${esc(i[1])}</span></button>`; }).join('')}</div>`;
@@ -939,7 +940,7 @@ function summary(c) {
   const rows = Object.keys(by);
   if (!rd.keys.some(k => v(k))) t.push('קוראים בקלות: עוד לא התחלנו.');
   else { t.push('קוראים בקלות (לפי סימני הניקוד):'); rows.forEach(r => t.push('- ' + (r === 'full' ? 'קורא/ת בהברות, במילים ובמשפטים: ' : r + ': ') + by[r].join('; ') + (r === 'full' ? '' : '.'))); }
-    t.push(ladder('קריאה שוטפת', stg('flu').keys));
+    t.push(ladder('קריאה שוטפת', stg('rd').blocks[0].items.map(x => x[0])));
   const last = c.log.slice().sort((a, b) => a.d < b.d ? 1 : -1)[0]; if (last) { t.push('מהמפגש האחרון (' + fmt(last.d) + '): ' + last.t); }
   return t.join('\n');
 }
