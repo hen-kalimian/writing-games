@@ -197,6 +197,10 @@ canvas.dc{width:100%;display:block;border:1.5px dashed var(--pink-strong);border
 .lline b{min-width:18px;text-align:center}.lline b.g{color:var(--mint-ink)}.lline b.h{color:#8a5a00}.lline b.x{color:#c0392b}
 .sumsheet.fixed{font-size:12.5px}
 .sumsheet.fixed .lsum{grid-template-columns:repeat(8,1fr)}
+.prow{display:flex;flex-direction:column;gap:2px;align-items:flex-start;text-align:start;width:100%;border:1.5px solid #cfe6f5;background:#fff;border-radius:16px;padding:12px 16px}.prow b{font-family:var(--head);font-size:1.05rem}.prow span{font-size:.85rem;color:var(--muted)}.prow:hover{background:#f3faf6}.plist{display:flex;flex-direction:column;gap:8px}
+.ptabs{display:grid;grid-template-columns:1fr 1fr;gap:8px}.ptab{border:2px solid #cfe6f5;background:#fff;border-radius:14px;padding:10px 8px;font-weight:800;font-size:.95rem}.ptab.on{background:#d8ecfa;border-color:#8cc3e8}
+.bkc:not(.bkopen)>.note,.bkc:not(.bkopen)>.row,.bkc:not(.bkopen)>.field{display:none}
+.bigbtn.mint{background:#d8f3e6;border-color:#7fcfb0}.bigbtn.sky{background:#d8ecfa;border-color:#8cc3e8}.bigbtn.mint b,.bigbtn.sky b{color:var(--ink)}
 .startbtns{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 @media(max-width:560px){.startbtns{grid-template-columns:1fr}}
 .bigbtn{border:2px solid var(--pink-strong);background:var(--pink);border-radius:20px;padding:18px 14px;display:flex;flex-direction:column;gap:6px;align-items:center;text-align:center}
@@ -487,7 +491,7 @@ body.pal .gt.done{background:#c9efdc;border-color:#7fcfb0;color:#1f6b4a}
   </nav>
   <main id="main" class="wrap" style="gap:16px"></main>
   <section class="card noprint" aria-label="גיבוי">
-    <h2>גיבוי והעברה</h2>
+    <div class="nhead"><h2>גיבוי ושמירת המיפויים</h2><button class="btn sm" id="bkToggle" type="button" hidden>פתיחה</button></div>
     <p class="note" id="backupNote"></p>
     <div class="row"><button class="btn" id="copyBackup" type="button">העתיקי גיבוי של הכול</button></div>
     <div class="field"><label for="restoreBox">לשחזור: הדביקי כאן גיבוי שהעתקת קודם</label><textarea id="restoreBox"></textarea></div>
@@ -703,8 +707,7 @@ function sheetHtml(m) {
 function renderMap() {
   const kind = S.tab === 'kb' ? 'kb' : 'l9', curId = kind === 'kb' ? S.kbId : S.mapId;
   const list = mapsOf(kind).sort((a, b) => b.u - a.u), m = curMap();
-  let h = `<div class="card noprint"><div class="mapbar">${list.map(x => `<button type="button" class="chip${x.id === curId ? ' on' : ''}" data-act="pickMap" data-id="${x.id}">${esc(x.name || 'ילד/ה ללא שם')} · ${fmt(x.date)}</button>`).join('')}<button type="button" class="chip add" data-act="newMap" data-kind="${kind}">+ מיפוי חדש</button></div>`;
-  h += `<p class="note">כל מיפוי נשמר אוטומטית בזמן שאת כותבת. אפשר לעבור בין מיפויים של ילדים שונים בלי לאבד כלום.</p></div>`;
+  let h = (m && m.wz && m.wz.on) ? '' : `<div class="card noprint"><div class="row"><button type="button" class="btn" data-tab="start">למסך הראשי</button><button type="button" class="btn" data-tab="prev">מיפויים קודמים</button></div></div>`;
   if (!m) {
     h += `<div class="card noprint"><h2>עוד אין מיפוי</h2><p class="note">${kind === 'kb' ? 'לחצי על "מיפוי חדש" כדי לפתוח את המיפוי לילדי כיתות א׳-ב׳: אותיות, ניקוד, כתיבה בהכתבה, קריאה בקול, קריאת מילות תפל וסיכום.' : 'לחצי על "מיפוי חדש" כדי לפתוח את הדף. הוא מיפוי לילדי גן חובה לפי קובץ המיפוי של שיעור 9: שיחת הורים, ארבע משימות וסיכום.'}</p><div><button class="btn solid" type="button" data-act="newMap" data-kind="${kind}">מיפוי חדש</button></div></div>`;
   } else {
@@ -880,8 +883,11 @@ function summary(c) {
 
 /* ===================== תצוגה ואירועים ===================== */
 function render() {
+  { const bk = document.querySelector('section[aria-label="גיבוי"]'); $('main').after(bk); bk.hidden = !PROGRESS; bk.classList.remove('bkc', 'bkopen'); $('bkToggle').hidden = true; }
   [['tabStart', 'start'], ['tabMap', 'map'], ['tabKb', 'kb'], ['tabKids', 'kids']].forEach(([id, t]) => { $(id).classList.toggle('on', S.tab === t); $(id).setAttribute('aria-selected', S.tab === t); });
-  if (S.tab === 'start') renderStart();
+  if (S.tab === 'start') renderHome();
+  else if (S.tab === 'new') renderNew();
+  else if (S.tab === 'prev') renderPrev();
   else if (S.tab === 'map' || S.tab === 'kb') { const kd = S.tab === 'kb' ? 'kb' : 'l9', idk = S.tab === 'kb' ? 'kbId' : 'mapId'; if (!curMap() && mapsOf(kd).length) S[idk] = mapsOf(kd).sort((a, b) => b.u - a.u)[0].id; renderMap(); }
   else { if (!curKid() && kids().length) S.childId = kids()[0].id; renderKids(); }
   renderAcct();
@@ -900,6 +906,7 @@ document.addEventListener('click', e => {
   const t = e.target.closest('[data-tab]'); if (t) return setTab(t.dataset.tab);
   const b = e.target.closest('[data-act]'); if (!b) return;
   const a = b.dataset.act, m = curMap(), c = curKid();
+  if (a === 'prevTab') { PREV = b.dataset.v; render(); return; }
   if (a === 'newMap') { const kd = b.dataset.kind || 'l9', x = newMap(null, kd); S.maps.push(x); S[kd === 'kb' ? 'kbId' : 'mapId'] = x.id; touch(x, 'map:' + x.id); render(); window.scrollTo(0, 0); }
   else if (a === 'pickMap') { S[S.tab === 'kb' ? 'kbId' : 'mapId'] = b.dataset.id; persist(); render(); }
   else if (a === 'kbmark') { const k = b.dataset.k; if (!m.marks) m.marks = {}; const v = ((m.marks[k] || 0) + 1) % 3; if (v) m.marks[k] = v; else delete m.marks[k]; touch(m, 'map:' + m.id); const y = scrollY; renderMap(); scrollTo(0, y); }
@@ -963,6 +970,7 @@ document.addEventListener('submit', e => {
   const n = $('newName').value.trim(); if (!n) { toast('כתבי שם פרטי או כינוי'); return; }
   const c = newKid(n); S.children.push(c); S.childId = c.id; S.stage = 'num'; touch(c, 'children'); render(); toast('נפתח כרטיס חדש ל' + n);
 });
+$('bkToggle').addEventListener('click', () => { const bk = document.querySelector('section[aria-label="גיבוי"]'); const o = bk.classList.toggle('bkopen'); $('bkToggle').textContent = o ? 'סגירה' : 'פתיחה'; });
 $('copyBackup').addEventListener('click', () => copyText(JSON.stringify({ maps: S.maps, children: S.children }), 'הגיבוי הועתק. שמרי אותו במקום בטוח', $('restoreBox')));
 $('restoreBtn').addEventListener('click', () => {
   try {
@@ -1259,7 +1267,7 @@ function wizScreen(m) {
   const w = m.wz;
   if (!w.done) w.done = {};
   if (m.kind === 'kb') ensureKb(m);
-  if (w.phase === 'think' && !window.__thinkT) w.phase = 'sum';
+  if (w.phase === 'think' && !window.__thinkT) { w.phase = 'sum'; m.completed = true; }
   if (w.phase === 'think') return wrapLayout(m, `<div class="card think"><div class="thinkface">🤔</div><h2>מכינה את דף הסיכום...</h2><div class="dots"><i></i><i></i><i></i></div></div>`);
   if (w.phase === 'sum') {
     return wrapLayout(m, summaryHtml(m) + `<div class="card noprint"><h2>שמירה והדפסה</h2><div class="actions"><button class="btn solid" type="button" data-act="png">שמירה כקובץ תמונה A4 (הכול בעמוד אחד)</button><button class="btn" type="button" data-act="print">הדפסה או שמירה כ-PDF</button></div>
@@ -1417,17 +1425,33 @@ function summaryKb(m) {
 }
 
 /* ===== מסך פתיחה: קישור אחד, פרטים פעם אחת ===== */
-function renderStart() {
-  const d = S.defaults || {}, started = S.maps.filter(x => !x.del && x.wz).sort((a, b) => b.u - a.u).slice(0, 8);
-  $('main').innerHTML = `<div class="card"><h2>מיפוי חדש</h2><p class="note">ממלאים פעם אחת את הפרטים, בוחרים את סוג המיפוי ומתחילים. הפרטים עוברים אוטומטית לשקופיות ולדף הסיכום, ואין צורך למלא אותם שוב.</p>
+let PREV = 'done';
+const isDone = m => !!(m.completed || (m.wz && m.wz.phase === 'sum'));
+function renderHome() {
+  $('main').innerHTML = `<div class="card"><h2>מה עושים עכשיו?</h2><div class="startbtns"><button type="button" class="bigbtn mint" data-tab="new"><b>מיפוי חדש</b><span>ממלאים פרטים, בוחרים רמה ומתחילים</span></button>
+    <button type="button" class="bigbtn sky" data-tab="prev"><b>מיפויים קודמים</b><span>להמשיך מיפוי, לערוך או להדפיס שוב</span></button></div></div>`;
+}
+function renderNew() {
+  const d = S.defaults || {};
+  $('main').innerHTML = `<div class="card noprint"><div class="row"><button type="button" class="btn" data-tab="start">חזרה למסך הראשי</button></div></div>
+    <div class="card"><h2>מיפוי חדש</h2><p class="note">ממלאים פעם אחת את הפרטים, בוחרים רמה ומתחילים. הפרטים עוברים אוטומטית לשקופיות ולדף הסיכום.</p>
     <div class="meta"><div class="field"><label for="st_name">שם הילד/ה</label><input type="text" id="st_name" maxlength="40" autocomplete="off"></div>
     <div class="field"><label for="st_age">גיל</label><input type="text" id="st_age" maxlength="8" autocomplete="off"></div>
     <div class="field"><label for="st_date">תאריך</label><input type="date" id="st_date" value="${today()}"></div>
     <div class="field"><label for="st_school">מסגרת חינוכית</label><input type="text" id="st_school" maxlength="60" value="${esc(d.school || '')}"></div>
     <div class="field"><label for="st_exam">שם הבוחנת</label><input type="text" id="st_exam" maxlength="40" value="${esc(d.examiner || '')}"></div></div>
+    <h3>בחרי רמה ולחצי להתחלת המיפוי</h3>
     <div class="startbtns"><button type="button" class="bigbtn" data-act="startMap" data-kind="l9"><b>מיפוי לילדי גן חובה</b><span>כספת הפתעות, חומר חדש, כתיבת שם, כתיבה פונטית, חשבון ואותיות</span></button>
-    <button type="button" class="bigbtn" data-act="startMap" data-kind="kb"><b>מיפוי לילדי כיתות א׳-ב׳</b><span>כתיב פונטי, מילות תפל, קריאת הברות, כתיבה עם ניקוד וקריאה</span></button></div></div>
-    ${started.length ? `<div class="card"><h2>מיפויים שמורים: להמשיך, לערוך או להדפיס שוב</h2><div class="chips">${started.map(x => `<button type="button" class="chip" data-act="openMap" data-id="${x.id}">${esc(x.name || 'ילד/ה')} · ${x.kind === 'kb' ? 'כיתות א׳-ב׳' : 'גן חובה'} · ${fmt(x.date)}</button>`).join('')}</div></div>` : ''}`;
+    <button type="button" class="bigbtn" data-act="startMap" data-kind="kb"><b>מיפוי לילדי כיתות א׳-ב׳</b><span>כתיב פונטי, מילות תפל, קריאת הברות, כתיבה עם ניקוד וקריאה</span></button></div></div>`;
+}
+function renderPrev() {
+  const all = S.maps.filter(x => !x.del).sort((a, b) => (b.date || '').localeCompare(a.date || '') || (b.u || 0) - (a.u || 0));
+  const dn = all.filter(isDone), op = all.filter(x => !isDone(x)), list = PREV === 'done' ? dn : op;
+  const row = x => { let prog = ''; if (!isDone(x) && x.wz) { try { prog = ' · שקופית ' + (x.wz.step + 1) + ' מתוך ' + ST(x).length; } catch (e) {} } return `<button type="button" class="prow" data-act="openMap" data-id="${x.id}"><b>${esc(x.name || 'ילד/ה ללא שם')}</b><span>${x.kind === 'kb' ? 'כיתות א׳-ב׳' : 'גן חובה'} · ${fmt(x.date)}${prog}</span></button>`; };
+  $('main').innerHTML = `<div class="card noprint"><div class="row"><button type="button" class="btn" data-tab="start">חזרה למסך הראשי</button></div></div>
+    <div class="card" id="prevList"><h2>מיפויים קודמים</h2><div class="ptabs" role="tablist"><button type="button" role="tab" class="ptab${PREV === 'done' ? ' on' : ''}" data-act="prevTab" data-v="done">מיפויים שהושלמו (${dn.length})</button><button type="button" role="tab" class="ptab${PREV === 'open' ? ' on' : ''}" data-act="prevTab" data-v="open">מיפויים שלא הושלמו (${op.length})</button></div>
+    <div class="plist">${list.length ? list.map(row).join('') : '<p class="note">אין כאן מיפויים עדיין.</p>'}</div></div>`;
+  const bk = document.querySelector('section[aria-label="גיבוי"]'); $('main').insertBefore(bk, $('prevList')); bk.hidden = false; bk.classList.add('bkc'); $('bkToggle').hidden = false; $('bkToggle').textContent = 'פתיחה';
 }
 function startMap(kind) {
   const v = id => ($(id) ? $(id).value.trim() : '');
@@ -1444,7 +1468,7 @@ function startMap(kind) {
 function openMap(id) {
   const m = S.maps.find(x => x.id === id); if (!m) return;
   S.tab = m.kind === 'kb' ? 'kb' : 'map'; S[m.kind === 'kb' ? 'kbId' : 'mapId'] = id;
-  if (!m.wz) m.wz = { step: 0, done: {} }; m.wz.on = true; if (m.wz.phase === 'think') m.wz.phase = null;
+  const had = !!m.wz; if (!m.wz) m.wz = { step: 0, done: {} }; m.wz.on = had; if (m.wz.phase === 'think') m.wz.phase = null;
   persist(); try { history.replaceState(null, '', '#' + S.tab); } catch (e) {} render(); window.scrollTo(0, 0);
 }
 
@@ -1478,7 +1502,7 @@ function wzAct(a, b, m) {
   else if (a === 'wzGoto') { WZ_NAV = false; wzGo(m, +b.dataset.i); }
   else if (a === 'wzMenu') { WZ_NAV = !WZ_NAV; const n = document.querySelector('.wznav'); if (n) n.classList.toggle('open', WZ_NAV); }
   else if (a === 'wzHints') { WZ_HINT = !WZ_HINT; const mm = document.querySelector('.wzmain'); if (mm) mm.classList.toggle('show', WZ_HINT); b.classList.toggle('solid', WZ_HINT); }
-  else if (a === 'wzPause') { m.wz.on = false; touch(m, 'map:' + m.id); renderMap(); window.scrollTo(0, 0); toast('המיפוי נשמר. אפשר להמשיך, לערוך ולהדפיס שוב מהרשימה במסך "מיפוי חדש"'); }
+  else if (a === 'wzPause') { m.wz.on = false; touch(m, 'map:' + m.id); PREV = isDone(m) ? 'done' : 'open'; S.tab = 'prev'; render(); window.scrollTo(0, 0); toast('המיפוי נשמר. אפשר להמשיך מכאן בכל זמן'); }
   else if (a === 'wzStop') { m.wz.stopped = cur(); wzGo(m, IDX(m, 'fin')); toast('עברנו לסיכום. מלאי את ההערות ולחצי "דף סיכום להדפסה"'); }
   else if (a === 'wzSay') { sayAsk(b.dataset.kind, b.dataset.l || null); }
   else if (a === 'wzLfs') { keep(() => { m.lt.nofs = !m.lt.nofs; }); }
@@ -1511,7 +1535,7 @@ function wzAct(a, b, m) {
   else if (a === 'wzBd') { ensureKb(m); if (m.bd.rows.length < 3 && !m.bd.rows.some(r => r.k === b.dataset.k)) { m.bd.rows.push({ k: b.dataset.k, ok: 0, note: '' }); keep(() => {}); } }
   else if (a === 'wzBdOk') { const r = m.bd.rows[+b.dataset.i]; keep(() => { r.ok = r.ok ? 0 : 1; }); }
   else if (a === 'wzBdRm') { const i = +b.dataset.i; keep(() => { m.bd.rows.splice(i, 1); m.bd.d.splice(i, 1); m.bd.d.push([]); }); }
-  else if (a === 'wzShow') { window.__thinkT = true; m.wz.on = true; m.wz.phase = 'think'; touch(m, 'map:' + m.id); renderMap(); window.scrollTo(0, 0); setTimeout(() => { window.__thinkT = false; if (curMap() === m && m.wz.phase === 'think') { m.wz.phase = 'sum'; touch(m, 'map:' + m.id); renderMap(); window.scrollTo(0, 0); } }, 2300); }
+  else if (a === 'wzShow') { window.__thinkT = true; m.wz.on = true; m.wz.phase = 'think'; touch(m, 'map:' + m.id); renderMap(); window.scrollTo(0, 0); setTimeout(() => { window.__thinkT = false; if (curMap() === m && m.wz.phase === 'think') { m.wz.phase = 'sum'; m.completed = true; touch(m, 'map:' + m.id); renderMap(); window.scrollTo(0, 0); } }, 2300); }
   else if (a === 'wzEdit') { m.wz.phase = null; m.wz.step = IDX(m, 'fin'); touch(m, 'map:' + m.id); renderMap(); window.scrollTo(0, 0); }
   else if (a === 'wzDone') { m.wz.on = false; m.wz.phase = null; touch(m, 'map:' + m.id); renderMap(); window.scrollTo(0, 0); }
 }
@@ -1519,7 +1543,7 @@ function wzAct(a, b, m) {
 /* ===================== פתיחה ===================== */
 load();
 { const h = (location.hash || '').slice(1); PROGRESS = (h === 'progress' || h === 'kids');
-  S.tab = PROGRESS ? 'kids' : ((h === 'map' || h === 'kb') ? h : 'start');
+  S.tab = PROGRESS ? 'kids' : ((h === 'map' || h === 'kb') ? h : 'start'); document.querySelector('.tabs').hidden = true;
   if (PROGRESS) { $('pageTitle').textContent = 'מעקב התקדמות ילדים'; $('pageSub').textContent = 'לפי שלבי התוכנית: מספרים, אותיות ומודעות פונולוגית (עד כתיב פונטי), סימני ניקוד וקריאה שוטפת'; document.querySelector('.tabs').hidden = true; document.title = 'מעקב התקדמות ילדים'; }
   else $('tabKids').hidden = true; }
 render();
