@@ -886,9 +886,7 @@ function renderKids() {
   const list = kids(), c = curKid();
   let h = `<div class="card noprint"><div class="row"><button type="button" class="btn" data-act="kv" data-v="list">חזרה לרשימת הילדים</button></div></div><div class="card"><div class="chips">${list.map(x => `<button type="button" class="chip${x.id === S.childId ? ' on' : ''}" data-act="pickKid" data-id="${x.id}">${esc(x.name || 'ילד/ה')}</button>`).join('')}<button type="button" class="chip add" data-act="kv" data-v="new">+ ילד/ה חדש/ה</button></div></div>`;
   if (!c) { KV = 'home'; return renderKidsHome(); }
-  const info = nowInfo(c);
-  h += `<div class="card"><div class="row"><div class="field"><label for="fName">שם</label><input type="text" id="fName" data-k="name" value="${esc(c.name)}" maxlength="40"></div><div class="field" style="flex-basis:90px"><label for="fAge">גיל</label><input type="text" id="fAge" data-k="age" value="${esc(c.age)}" maxlength="8"></div><div class="field"><label for="fStart">התחלנו לעבוד ב</label><input type="date" id="fStart" data-k="start" value="${esc(c.start)}"></div></div>
-    <div class="now">${info ? `<span class="note">איפה הוא/היא עכשיו</span><b>${info.started ? esc(info.st.sub + ': ' + info.st.title) : 'עוד לא התחלנו, מתחילים משלב 1: מספרים'}</b><span>${info.started ? 'הבא לתרגול' : 'הפריט הראשון'}: ${esc(info.next)}</span>` : '<b>סיימנו את כל השלבים. קריאה שוטפת!</b>'}</div>
+    h += `<div class="card"><div class="row"><div class="field"><label for="fName">שם</label><input type="text" id="fName" data-k="name" value="${esc(c.name)}" maxlength="40"></div><div class="field" style="flex-basis:90px"><label for="fAge">גיל</label><input type="text" id="fAge" data-k="age" value="${esc(c.age)}" maxlength="8"></div><div class="field"><label for="fStart">התחלנו לעבוד ב</label><input type="date" id="fStart" data-k="start" value="${esc(c.start)}"></div></div>
     <div class="bars">${STAGES.map(st => { const s = stats(c, st); return `<div class="bar${s.mast === s.total ? ' done' : ''}"><span><b>${esc(st.title)}</b> · ${s.mast} מתוך ${s.total}</span><div class="track"><div class="fill" style="width:${s.pct}%"></div></div></div>`; }).join('')}</div>
     <div class="row"></div></div>`;
   const st = STAGES.find(x => x.id === S.stage) || STAGES[0];
@@ -914,7 +912,7 @@ function summary(c) {
     if (i === -1) return name + ': סיימ/ה את כל השלבים (' + n + ' מתוך ' + n + ').';
     if (v(keys[i]) === 1) return name + ': הגיע/ה ל"' + lab(keys[i]) + '", בתהליך. שלב ' + (i + 1) + ' מתוך ' + n + '.';
     if (i === 0) return name + ': עוד לא התחלנו.';
-    return name + ': סיימ/ה עד "' + lab(keys[i - 1]) + '". השלב הבא: "' + lab(keys[i]) + '" (שלב ' + (i + 1) + ' מתוך ' + n + ').';
+    return name + ': סיימ/ה עד "' + lab(keys[i - 1]) + '" (שלב ' + i + ' מתוך ' + n + ').';
   };
   // אותיות: אם רוב האותיות בשליטה כותבים מה עוד חסר, ואחרת מה כבר בשליטה
   const letters = (pre, verb) => {
