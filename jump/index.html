@@ -140,7 +140,7 @@ function step(dt){
   if(hero.x<cam+22) return lose();                                             // המסך השאיר את הדמות מאחור
   hero.sq+=(1-hero.sq)*Math.min(1,dt*10); if(hero.on&&!hero.blk){ hero.run+=dt*12; if(Math.random()<dt*8) puff(hero.x-14,hero.y,1,'rgba(160,120,90,.35)') }
   if(hero.y>GY+60) return lose();
-  for(var hi2=0;hi2<hurd.length;hi2++){ var hh=hurd[hi2]; if(Math.abs(hero.x-hh.x)<20&&hero.y>hh.y-34) return lose() }
+  for(var hi2=0;hi2<hurd.length;hi2++){ var hh=hurd[hi2]; if(Math.abs(hero.x-hh.x)<25&&hero.y>hh.y-44) return lose() }
   items.forEach(function(o){ if(o.dead||state!=='play') return; var oy=o.y+Math.sin(clock*3+o.ph)*5;
     var near=Math.abs(hero.x-o.x), dyy=Math.abs((hero.y-30)-oy);
     if(o.g?(near<34&&dyy<44):(near<24&&dyy<30)){ // תפיסת צליל נכון סלחנית, פגיעה בצליל אחר רק בנגיעה ממשית
@@ -177,7 +177,8 @@ function draw(){
   // נוף רחוק ונוף קרוב
   decor.forEach(function(d){ if(!d.far) return; var x=d.x-cam*.55; if(x<-200||x>VW+200) return; var z=150*d.s*(DSIZE[d.k]||1); dImg(d.k,x,GY-z+10,z,z,0,.55) });
   cx.save(); cx.translate(-cam,0);
-  /*חן 31.10.26: הנוף מאחורי השביל, קטן ושקוף מעט, כדי שלא ייראה כמו מכשול*/decor.forEach(function(d){ if(d.far) return; var x=d.x+130; if(x-cam<-200||x-cam>VW+200) return; var z=80*d.s*(DSIZE[d.k]||1); dImg(d.k,x,GY-z-16,z,z,Math.sin(clock*1.5+d.x)*.02,.6) });
+  /*חן 31.10.26: הנוף מאחורי השביל, קטן ושקוף מעט, כדי שלא ייראה כמו מכשול*/decor.forEach(function(d){ if(d.far) return; var x=d.x+130; if(x-cam<-200||x-cam>VW+200) return; var z=80*d.s*(DSIZE[d.k]||1); dImg(d.k,x,GY-z+6,z,z,Math.sin(clock*1.5+d.x)*.02,.6) });
+  /*חן 1.11.26: "יש ברקע עצים שלא נוגעים באדמה": גדה רציפה מאחורי הבורות. הנוף תמיד עומד עליה, והאש והמים מלפניה*/cx.fillStyle=W.ground[1]; cx.fillRect(cam-40,GY,VW+80,34); cx.fillStyle=W.ground[0]; cx.fillRect(cam-40,GY,VW+80,16);
   // בורות: אש או מים
   pits.forEach(function(p){
     if((p.k||W.hazard)==='water'){ var wg=cx.createLinearGradient(0,GY,0,VH); wg.addColorStop(0,'#9ED8EE'); wg.addColorStop(1,'#5FB3D9'); cx.fillStyle=wg; cx.fillRect(p.x,GY+14,p.w,VH);
@@ -189,8 +190,8 @@ function draw(){
   // קוביות צפות ומכשולים
   plats.forEach(function(p){ if(p.x-cam>VW+60||p.x+p.w-cam<-60) return; cx.fillStyle='rgba(0,0,0,.08)'; cx.beginPath(); cx.ellipse(p.x+p.w/2,GY+8,p.w*.4,7,0,0,6.28); cx.fill(); cx.fillStyle=W.ground[1]; rr(p.x,p.y,p.w,30,10); cx.fill(); cx.fillStyle=W.ground[0]; rr(p.x,p.y,p.w,12,8); cx.fill(); cx.fillStyle='rgba(255,255,255,.4)'; cx.beginPath(); cx.arc(p.x+24,p.y+20,4,0,6.28); cx.arc(p.x+p.w-24,p.y+20,4,0,6.28); cx.fill() });
   /*חן 1.11.26: בלי בועה. המכשול חלק מהאדמה שמלפנים: שקוע מעט בשביל, עם תלולית בצבע השביל מלפניו, וצבעיו מעט חיים יותר מהרקע*/hurd.forEach(function(h){ if(h.x-cam>VW+60||h.x-cam<-60) return;
-    if(h.k) cx.drawImage(vivid(h.k),h.x-30,h.y-52,60,60); else { cx.fillStyle='#C9A27E'; rr(h.x-20,h.y-30,40,36,8); cx.fill() }
-    cx.fillStyle=W.ground[0]; cx.beginPath(); cx.moveTo(h.x-40,h.y+15); cx.quadraticCurveTo(h.x-30,h.y+1,h.x-16,h.y); cx.quadraticCurveTo(h.x,h.y-5,h.x+16,h.y); cx.quadraticCurveTo(h.x+30,h.y+1,h.x+40,h.y+15); cx.closePath(); cx.fill() });
+    if(h.k) cx.drawImage(vivid(h.k),h.x-38,h.y-66,76,76); else { cx.fillStyle='#C9A27E'; rr(h.x-20,h.y-30,40,36,8); cx.fill() }
+    cx.fillStyle=W.ground[0]; cx.beginPath(); cx.moveTo(h.x-50,h.y+15); cx.quadraticCurveTo(h.x-38,h.y+1,h.x-20,h.y); cx.quadraticCurveTo(h.x,h.y-6,h.x+20,h.y); cx.quadraticCurveTo(h.x+38,h.y+1,h.x+50,h.y+15); cx.closePath(); cx.fill() });
   var DY=tiles.length?tiles[tiles.length-1].y:GY;
   // דלת
   var dw=70, dh=112; if(door.open){ cx.save(); cx.globalAlpha=.35+Math.sin(clock*5)*.15; var rg=cx.createRadialGradient(door.x+dw/2,DY-dh/2,10,door.x+dw/2,DY-dh/2,110); rg.addColorStop(0,'#FFF3B0'); rg.addColorStop(1,'rgba(255,243,176,0)'); cx.fillStyle=rg; cx.fillRect(door.x-80,DY-dh-80,dw+160,dh+120); cx.restore() }
