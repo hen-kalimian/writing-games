@@ -814,16 +814,16 @@ const gname = (g, i) => i === 6 ? 'האותיות הסופיות' : 'קבוצה 
 const it = (pre, arr) => arr.map((l, i) => [pre + i, l]);
 const STAGES = [
   { id: 'num', short: 'מספרים', title: 'מספרים', sub: 'שלב 1', blocks: [{ t: 'השיעורים הדיגיטליים ב"מספרים בקלות", לפי הסדר', items: [['nl2', 'הכרת הספרות 2, 3, 4, 5, 6'], ['nl3', 'הכרת הספרות 0, 1, 7, 8, 9'], ['nl4', 'תרגול כל הספרות יחד'], ['nl1', 'מנייה והתאמת כמות למספר'], ['nl6', 'הרצף המספרי'], ['nl7', 'פתרון בעיות חשבוניות: חיבור'], ['nl8', 'חיסור'], ['nl9', 'הכרת מספרי עשרה: תבנית העשר'], ['nl10', 'חיבור וחיסור מעל 10'], ['nl11', 'משחקים לסיכום מוכנות חשבונית לכיתה א׳']] }] },
-  { id: 'let', short: 'אותיות ומודעות פונולוגית', title: 'אותיות ומודעות פונולוגית', sub: 'שלב 2, במקביל', blocks: [
-    { t: 'משחק ההיכרות', items: [['pl0', 'משחק היכרות']] },
+  { id: 'let', short: 'אותיות', title: 'אותיות', sub: 'שלב 2, במקביל', blocks: [
     { t: 'האותיות א ב ג ד + מבדק דיגיטלי', gi: 0, items: [['ltest', 'מבדק האותיות הדיגיטלי']] },
-    { t: 'האותיות ה ו ז ח + חלוקה לצלילים', gi: 1, items: [['pl1', 'שיעור 3: חלוקת מילים לצלילים']] },
-    { t: 'האותיות ט י כ ל + צליל פותח', gi: 2, items: [['pl2', 'שיעור 4: צליל פותח']] },
-    { t: 'האותיות מ נ ס ע + צליל סוגר', gi: 3, items: [['pl3', 'שיעור 5: צליל סוגר']] },
-    { t: 'האותיות פ צ ק + קשר אות-צליל', gi: 4, items: [['pl4', 'שיעור 6: קשר אות-צליל']] },
+    { t: 'האותיות ה ו ז ח', gi: 1, items: [] },
+    { t: 'האותיות ט י כ ל', gi: 2, items: [] },
+    { t: 'האותיות מ נ ס ע', gi: 3, items: [] },
+    { t: 'האותיות פ צ ק', gi: 4, items: [] },
     { t: 'האותיות ר ש ת', gi: 5, items: [] },
-    { t: 'האותיות הסופיות והחוצפניות + כתיב פונטי', gi: 6, items: [['lch', 'האותיות החוצפניות'], ['lph', 'כתיב פונטי וקריאה ראשונית']] },
+    { t: 'האותיות הסופיות והחוצפניות', gi: 6, items: [['lch', 'האותיות החוצפניות']] },
     { t: 'בונוסים: חזרה והעשרת שפה', items: [['lrev', 'חזרה על כל האותיות'], ['sl0', 'שיעור 9: שפה, מיון והכללה'], ['sl1', 'שיעור 10: הגדרה והשוואה'], ['sl2', 'שיעור 11: להבין סיפורים'], ['sl3', 'שיעור 12: לספר סיפורים']] }] },
+  { id: 'wr', short: 'מודעות פונולוגית', title: 'מודעות פונולוגית', sub: 'שלב 2, במקביל', blocks: [{ t: 'השיעורים לפי הסדר, עד כתיב פונטי', items: [['pl1', 'שיעור 3: חלוקת מילים לצלילים'], ['pl2', 'שיעור 4: צליל פותח'], ['pl3', 'שיעור 5: צליל סוגר'], ['pl4', 'שיעור 6: קשר אות-צליל'], ['lph', 'כתיב פונטי וקריאה ראשונית']] }] },
   { id: 'rd', short: 'קוראים בקלות', title: 'קוראים בקלות', sub: 'שלב 3, כל סימן ניקוד', matrix: true,
     signs: [['קמץ ופתח', 'אַ אָ'], ['שין שמאלית ודגש', 'שׂ ּ'], ['שווא', 'אְ'], ['חיריק', 'אִ'], ['חולם', 'אֹ'], ['צירה וסגול', 'אֵ אֶ'], ['שורוק וקובוץ', 'אוּ אֻ']], cols: [['syl', 'הברות'], ['wrd', 'מילים'], ['sen', 'משפטים']] },
   { id: 'flu', short: 'קריאה שוטפת', title: 'קריאה שוטפת', sub: 'שלב 4', blocks: [{ t: 'משפטים, קטעים ושטף', items: it('f', ['קורא/ת משפט שלם בלי לפרק להברות', 'קורא/ת שני משפטים ברצף', 'קורא/ת קטע קצר מנוקד', 'קורא/ת בהטעמה ובהתאם לפיסוק', 'מבין/ה מה קרא/ה ועונה על שאלות', 'קורא/ת קטע מנוקד בשטף', 'קורא/ת אותיות כתב', 'קורא/ת מילים בלי ניקוד', 'קורא/ת קטע בלי ניקוד', 'קורא/ת בקול בביטחון ובהנאה']) }] }
@@ -928,7 +928,7 @@ function summary(c) {
   t.push(ladder('מספרים', stg('num').keys));
     t.push('זיהוי אותיות: ' + letters('lr', 'מזהה'));
   t.push('כתיבת אותיות: ' + letters('lw', 'כותב/ת'));
-  t.push(ladder('מודעות פונולוגית', ['pl0', 'pl1', 'pl2', 'pl3', 'pl4', 'lph']));
+  t.push(ladder('מודעות פונולוגית', stg('wr').keys));
   const sl = ['sl0', 'sl1', 'sl2', 'sl3']; if (sl.some(k => v(k))) t.push(ladder('העשרת שפה', sl));
     // קוראים בקלות: לכל סימן ניקוד עד איזו רמה הגיע
   const rd = stg('rd'), lv = ['הברות', 'מילים', 'משפטים'], by = {};
@@ -999,7 +999,7 @@ document.addEventListener('click', e => {
   else if (a === 'showNote') { $('noteForm').hidden = false; $('noteBtn').hidden = true; $('lText').focus(); }
   else if (a === 'hideNote') { $('noteForm').hidden = true; $('noteBtn').hidden = false; }
   else if (a === 'stage') { S.stage = b.dataset.id; persist(); renderKids(); }
-  else if (a === 'mark') { const k = b.dataset.k; const v = ((c.marks[k] || 0) + 1) % 3; if (v) c.marks[k] = v; else delete c.marks[k]; touch(c, 'children'); const y = scrollY; renderKids(); scrollTo(0, y); }
+  else if (a === 'mark') { const k = b.dataset.k; const v = [2, 0, 1][c.marks[k] || 0]; if (v) c.marks[k] = v; else delete c.marks[k]; touch(c, 'children'); const y = scrollY; renderKids(); scrollTo(0, y); }
   else if (a === 'grp') { const g = GROUPS[+b.dataset.i], pre = b.dataset.pre; const all = g.every(l => (c.marks[pre + l] || 0) === 2); g.forEach(l => { if (all) delete c.marks[pre + l]; else c.marks[pre + l] = 2; }); touch(c, 'children'); const y = scrollY; renderKids(); scrollTo(0, y); toast(all ? 'הסימון בוטל' : 'הקבוצה סומנה כשהסתיימה'); }
   else if (a === 'addLog') { const tx_ = $('lText').value.trim(); if (!tx_) { toast('כתבי שורה קצרה לפני ההוספה'); return; } c.log.push({ d: $('lDate').value || today(), t: tx_ }); touch(c, 'children'); renderKids(); toast('ההערה נשמרה'); }
   else if (a === 'delLog') { c.log.splice(+b.dataset.i, 1); touch(c, 'children'); renderKids(); }
