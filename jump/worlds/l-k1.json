@@ -1,7 +1,7 @@
 {
  "title": "הַצִּפּוֹר עַל חוֹף הַיָּם",
  "intro": "אוֹסְפִים צְלִילִים עִם קָמַץ וּפַתָּח",
- "hero": "bird",
+ "hero": "bird-walk",
  "heroFlip": true,
  "sky": [
   "#BFE6F7",
