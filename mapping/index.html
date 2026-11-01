@@ -874,7 +874,7 @@ function renderKidsHome() {
     setTimeout(() => { const n = $('newName'); if (n) n.focus(); }, 0); return;
   }
   if (KV === 'list') {
-    $('main').innerHTML = back + `<div class="card" id="kidsList"><h2>ילדים קיימים</h2>${list.length ? `<div class="plist">${list.map(x => { const n = nowInfo(x); return `<button type="button" class="prow" data-act="pickKid" data-id="${x.id}"><b>${esc(x.name || 'ילד/ה')}</b><span>${x.age ? 'גיל ' + esc(x.age) + ' · ' : ''}${n ? esc(n.st.title) : 'סיימ/ה את כל השלבים'}</span></button>`; }).join('')}</div>` : '<p class="note">עוד אין ילדים במעקב. אפשר לפתוח כרטיס חדש, או לשחזר מגיבוי למטה.</p>'}</div>`;
+    $('main').innerHTML = back + `<div class="card" id="kidsList"><h2>ילדים קיימים</h2>${list.length ? `<div class="plist">${list.map(x => { const ud = x.u ? new Date(x.u) : null, upd = ud ? 'עודכן ' + fmt(ud.getFullYear() + '-' + ('0' + (ud.getMonth() + 1)).slice(-2) + '-' + ('0' + ud.getDate()).slice(-2)) : ''; return `<button type="button" class="prow" data-act="pickKid" data-id="${x.id}"><b>${esc(x.name || 'ילד/ה')}</b><span>${[x.age ? 'גיל ' + esc(x.age) : '', upd].filter(Boolean).join(' · ') || 'לחצי לפתיחת הכרטיס'}</span></button>`; }).join('')}</div>` : '<p class="note">עוד אין ילדים במעקב. אפשר לפתוח כרטיס חדש, או לשחזר מגיבוי למטה.</p>'}</div>`;
     return;
   }
   $('main').innerHTML = `<div class="card"><h2>מה עושים עכשיו?</h2><div class="startbtns"><button type="button" class="bigbtn mint" data-act="kv" data-v="new"><b>ילד/ה חדש/ה</b><span>פותחים כרטיס חדש ומתחילים לעקוב</span></button>
