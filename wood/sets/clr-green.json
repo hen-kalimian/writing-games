@@ -3,26 +3,9 @@
  "boards": [
   [
    {
-    "img": "clr-bus-green",
-    "word": "אוטובוס ירק",
-    "say": "אוֹטוֹבּוּס יָרֹק"
-   },
-   {
-    "img": "clr-frog",
-    "word": "צפרדע ירקה",
-    "say": "צְפַרְדֵּעַ יְרֻקָּה"
-   }
-  ],
-  [
-   {
-    "img": "clr-apple-green",
-    "word": "תפוח ירק",
-    "say": "תַּפּוּחַ יָרֹק"
-   },
-   {
-    "img": "clr-leaf-green",
-    "word": "עלה ירק",
-    "say": "עָלֶה יָרֹק"
+    "img": "clr-umbrella-green",
+    "word": "מטריה ירקה",
+    "say": "מִטְרִיָּה יְרֻקָּה"
    },
    {
     "img": "clr-boot-green",
@@ -37,19 +20,36 @@
     "say": "אַגָּס יָרֹק"
    },
    {
-    "img": "clr-umbrella-green",
-    "word": "מטריה ירקה",
-    "say": "מִטְרִיָּה יְרֻקָּה"
+    "img": "clr-ball-green",
+    "word": "כדור ירק",
+    "say": "כַּדּוּר יָרֹק"
    },
    {
     "img": "clr-tree",
     "word": "עץ ירק",
     "say": "עֵץ יָרֹק"
+   }
+  ],
+  [
+   {
+    "img": "clr-apple-green",
+    "word": "תפוח ירק",
+    "say": "תַּפּוּחַ יָרֹק"
    },
    {
-    "img": "clr-ball-green",
-    "word": "כדור ירק",
-    "say": "כַּדּוּר יָרֹק"
+    "img": "clr-frog",
+    "word": "צפרדע ירקה",
+    "say": "צְפַרְדֵּעַ יְרֻקָּה"
+   },
+   {
+    "img": "clr-cucumber",
+    "word": "מלפפון ירק",
+    "say": "מְלָפְפוֹן יָרֹק"
+   },
+   {
+    "img": "clr-leaf-green",
+    "word": "עלה ירק",
+    "say": "עָלֶה יָרֹק"
    }
   ]
  ]
