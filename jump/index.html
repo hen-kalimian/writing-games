@@ -183,7 +183,7 @@ function draw(){
   pits.forEach(function(p){
     if((p.k||W.hazard)==='water'){ var wg=cx.createLinearGradient(0,GY,0,VH); wg.addColorStop(0,'#9ED8EE'); wg.addColorStop(1,'#5FB3D9'); cx.fillStyle=wg; cx.fillRect(p.x,GY+14,p.w,VH);
       cx.strokeStyle='#fff'; cx.lineWidth=3; cx.beginPath(); for(var x=0;x<=p.w;x+=4) cx.lineTo(p.x+x,GY+18+Math.sin(x*.12+clock*4)*3); cx.stroke() }
-    else { cx.fillStyle='#FCE3C4'; cx.fillRect(p.x,GY+30,p.w,VH); for(var k=0;k<Math.max(1,Math.round(p.w/48));k++){ var fx=p.x+8+k*(p.w-16)/Math.max(1,Math.round(p.w/48)), fl=1+Math.sin(clock*9+k*2)*.08; dImg('flame',fx,GY-6-14*(fl-1)*4,44,56*fl) } } });
+    /*חן 1.11.26: "האש מתחת לאדמה": הבור צבוע עד קו האדמה והלהבות עולות מעליו, כדי שיהיה ברור שקופצים מעליו*/else { cx.fillStyle='#F7C08A'; cx.fillRect(p.x,GY,p.w,VH); var fn=Math.max(1,Math.round(p.w/40)), fw=p.w/fn+10, fh=fw*1.3; for(var k=0;k<fn;k++){ var fl=1+Math.sin(clock*9+k*2)*.08, fH=fh*fl; dImg('flame',p.x-5+k*p.w/fn,GY+26-fH,fw,fH) } } });
   // קרקע ומדרגות
   tiles.forEach(function(gr){ if(gr.w<=0) return; cx.fillStyle=W.ground[1]; rr(gr.x,gr.y,gr.w,VH-gr.y+20,12); cx.fill(); cx.fillStyle=W.ground[0]; rr(gr.x,gr.y,gr.w,16,9); cx.fill();
     cx.fillStyle='rgba(255,255,255,.35)'; for(var x=gr.x+20;x<gr.x+gr.w-10;x+=46){ cx.beginPath(); cx.arc(x,gr.y+40+(x%3)*12,4,0,6.28); cx.fill() } });
