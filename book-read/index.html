@@ -7,7 +7,7 @@
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{margin:0;background:transparent;font-family:Rubik,Arial,sans-serif;color:#5E5A73}
 #app{max-width:860px;margin:0 auto;padding:6px 8px 10px;display:flex;flex-direction:column;align-items:center;gap:10px}
-#stage{position:relative;width:100%;aspect-ratio:16/9;border-radius:18px;background:#fff;box-shadow:0 0 0 3px #FBC5D6,0 10px 26px rgba(184,35,107,.14);-webkit-user-select:none;user-select:none;touch-action:pan-y;overflow:hidden;cursor:grab}
+#stage{position:relative;width:100%;aspect-ratio:1280/808;border-radius:18px;background:#fff;box-shadow:0 0 0 3px #FBC5D6,0 10px 26px rgba(184,35,107,.14);-webkit-user-select:none;user-select:none;touch-action:pan-y;overflow:hidden;cursor:grab}
 #v{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:#fff;pointer-events:none}
 #cv{position:absolute;inset:0;width:100%;height:100%;display:none;pointer-events:none}
 #cv.on{display:block}
@@ -32,7 +32,7 @@ html,body{margin:0;background:transparent;font-family:Rubik,Arial,sans-serif;col
 <div id="app">
   <div id="stage">
     <video id="v" playsinline preload="auto"></video>
-    <canvas id="cv" width="1280" height="720"></canvas>
+    <canvas id="cv" width="1280" height="808"></canvas>
     <div id="hint"></div>
     <div id="endrow"><button class="big" id="againBtn" type="button">קוראים שוב מההתחלה</button></div>
   </div>
@@ -43,7 +43,7 @@ html,body{margin:0;background:transparent;font-family:Rubik,Arial,sans-serif;col
 </div>
 <script>
 (function(){
-var $=function(i){return document.getElementById(i)},stage=$('stage'),v=$('v'),cv=$('cv'),cx=cv.getContext('2d'),aud=$('aud'),VER='3',AUTO_MS=8000,W=1280,H=720;
+var $=function(i){return document.getElementById(i)},stage=$('stage'),v=$('v'),cv=$('cv'),cx=cv.getContext('2d'),aud=$('aud'),VER='4',AUTO_MS=8000,W=1280,H=808;
 var clips=[],imgs={},cover=new Image(),idx=-1,busy=false,ended=false,timer=0,hintRaf=0,drag=null,AC=null,wasPlaying=false;
 var off=document.createElement('canvas');off.width=W;off.height=H;var ocx=off.getContext('2d');
 cover.src='cover.jpg?v='+VER;
