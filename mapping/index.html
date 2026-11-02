@@ -104,18 +104,24 @@ input[type=date]::-webkit-date-and-time-value{text-align:start;min-height:1.3em}
 .pwth{border:1.5px solid var(--line);background:#fff;border-radius:16px;padding:6px;display:flex;flex-direction:column;align-items:center;gap:2px}
 .pwth small{font-size:.7rem;color:var(--muted)}
 .pwfull{position:fixed;inset:0;z-index:70;background:linear-gradient(180deg,#fff,#fff3f7);display:flex;flex-direction:row;gap:14px;padding:12px;align-items:stretch}
-.pwside{flex:none;width:clamp(96px,16vw,150px);display:flex;flex-direction:column;align-items:center;gap:6px;justify-content:flex-start;padding-top:6px}
-.pwside .pic{width:100%;height:auto;max-height:150px;object-fit:contain}
+.pwside{flex:none;width:clamp(110px,18vw,190px);display:flex;flex-direction:column;align-items:center;gap:6px;justify-content:center;padding-top:0}
+.pwside .pic{width:100%;height:auto;max-height:190px;object-fit:contain}
 .pwboard{flex:1;min-width:0;display:flex;flex-direction:column;justify-content:center;align-items:center;gap:10px}
 .pwboard .pad{width:100%;align-items:center}
 .pwboard canvas.dc{width:100%;height:auto;background:#fff;border:3px solid var(--pink-strong);border-radius:20px;box-shadow:0 4px 16px rgba(0,0,0,.08)}
-.pwboard .modes,.pwboard .lbl,.pwboard [data-act=padfs]{display:none}
+.pwboard .lbl,.pwboard [data-act=padfs],.pwboard .mdb[data-mode=note]{display:none}
+.pwboard .modes{justify-content:center}
+.pwboard .mdb{font-size:.9rem;padding:5px 14px}
+.pwboard .pimg{max-height:calc(100vh - 230px)}
+.wrhint{font-size:.8rem;color:var(--muted);text-align:center;max-width:640px;margin:0 auto;line-height:1.35}
 .lrgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px}.lrc{display:flex;flex-direction:column;gap:8px;align-items:center;background:#fff;border:1.5px solid #cfe6f5;border-radius:16px;padding:10px}.lrc .sPad{width:100%;border:2px solid #b9dcf2;border-radius:12px;background:#fffef6;padding:4px}.lrc .sPad img,.lrc .sPad svg{width:100%;height:auto;display:block}.lrc .mkrow{gap:5px}.lrc .mk{padding:5px 8px;font-size:.85rem}
 .btn:disabled{opacity:.4;cursor:not-allowed}.lwhint{font-size:.85rem;color:var(--pink-deep);font-weight:700;text-align:center}
 .lwside{align-items:center;text-align:center;gap:10px}.lwn{font-family:var(--head);font-weight:800;color:var(--pink-deep);font-size:1.05rem}.lwchip{font-size:.78rem;color:var(--muted);background:#fff;border:1px solid var(--line);border-radius:10px;padding:4px 8px}
-.lwfull .mkrow{gap:6px}.lwfull .mk{padding:6px 10px;font-size:.95rem}
+.lwfull .mkrow{gap:12px;width:100%}.lwfull .mk{flex:1 1 0;min-width:0;padding:14px 8px;font-size:1.7rem;border-width:3px;border-radius:20px;display:flex;flex-direction:column;align-items:center;gap:2px;line-height:1.1}.lwfull .mk small{font-size:1rem;font-weight:700}
+.lwfull .pad .tools{display:none}
+.lwfull .mk.on{box-shadow:0 0 0 4px rgba(0,0,0,.08);transform:scale(1.04)}
 .pwbtns{display:flex;gap:10px;flex-wrap:wrap;justify-content:center}
-@media(max-width:620px) and (orientation:portrait){.pwfull{flex-direction:column}.pwside{width:100%;flex-direction:row;justify-content:center}.pwside .pic{width:90px}.pwboard canvas.dc{width:100%}}
+@media(max-width:620px) and (orientation:portrait){.pwfull{gap:8px;padding:8px}.pwside{width:74px}.pwside .pic{width:74px}.pwboard canvas.dc{width:100%}.lwside{width:96px}}
 .pad .fsx{display:none}
 .pad.fs{position:fixed;inset:0;z-index:70;background:#fff;align-items:center;justify-content:center;gap:10px;padding:10px}
 .pad.fs .fsx{display:inline-flex;position:absolute;top:10px;inset-inline-start:10px}
@@ -253,6 +259,16 @@ canvas.dc{width:100%;display:block;border:1.5px dashed var(--pink-strong);border
 .nwgrid.wide{grid-template-columns:1fr}.nwgrid.wide .nww{font-size:1.7rem}
 .ratecard .row{justify-content:center}
 .vpic{width:min(240px,70%);height:auto;font-size:5rem;line-height:1;display:block}
+.vaultintro .vpic,.vaultcard:not(.open) .vpic{width:min(360px,80%,24vh);font-size:11rem}
+@media(min-width:860px) and (orientation:landscape){.vaultintro,.vaultcard:not(.open){display:grid;grid-template-columns:1fr 1fr;column-gap:28px;row-gap:12px;align-content:center;justify-items:center}.vaultintro>h2,.vaultcard:not(.open)>h2{grid-column:1/-1;margin:0}.vaultintro .vpic,.vaultcard:not(.open) .vpic{grid-column:1;grid-row:2/span 5;width:min(420px,100%,46vh);align-self:center}.vaultintro>:not(h2):not(.vpic),.vaultcard:not(.open)>:not(h2):not(.vpic){grid-column:2}.vaultintro .vq{font-size:1rem}.vaultintro .note{grid-column:1/-1!important}}
+.vaultintro .vbox,.vaultcard .vdisp .vbox{width:76px;height:92px;font-size:2.8rem;border-width:3px}
+.vaultintro .digits{gap:14px}
+.vaultcard .vpad{grid-template-columns:repeat(3,104px);gap:10px}
+.vaultcard .vk{height:76px;font-size:2rem;border-radius:20px}
+.vaultcard .vk.go,.vaultcard .vk[data-d=del]{font-size:1.1rem}
+.vaultintro .vpad{grid-template-columns:repeat(3,84px);gap:8px;opacity:.9;pointer-events:none}
+.vaultintro .vk{height:60px;font-size:1.6rem;border-radius:18px;display:grid;place-items:center}
+.vaultcard.open .vpic{width:min(300px,70%);font-size:9rem}
 .vpic.emo{font-size:6rem}
 .vq{font-size:1.15rem;max-width:520px;margin:0}
 .digits{display:flex;gap:10px;justify-content:center}
@@ -491,6 +507,7 @@ body.pal .gt.done{background:#c9efdc;border-color:#7fcfb0;color:#1f6b4a}
 .x{border:0;background:transparent;color:var(--muted);font-size:1.1rem;padding:0 4px}
 #toast{position:fixed;inset-inline:0;bottom:16px;display:flex;justify-content:center;pointer-events:none;z-index:50}
 #toast span{background:var(--ink);color:#fff;padding:9px 18px;border-radius:99px;font-weight:600;font-size:.9rem}
+.npl{display:block;font-weight:700;font-size:.9rem;color:var(--pink-deep);margin:8px 0 2px;text-align:start}
 </style>
 </head>
 <body class="pal">
@@ -575,15 +592,16 @@ const CHECK = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l5 5L
 const cb = (p, t, m) => `<label class="cb"><input type="checkbox" data-p="${p}"${getP(m, p) ? ' checked' : ''}><span class="bx">${CHECK}</span><span>${esc(t)}</span></label>`;
 const tx = (p, m, ph) => `<input type="text" data-p="${p}" value="${esc(getP(m, p))}"${ph ? ` placeholder="${esc(ph)}"` : ''}>`;
 const ta = (p, m, ruled, ph) => `<textarea data-p="${p}" class="${ruled ? 'ruled' : ''}"${ph ? ` placeholder="${esc(ph)}"` : ''}>${esc(getP(m, p))}</textarea>`;
-const PM = [['draw', 'כתיבה על המסך'], ['photo', 'צילום או תמונה'], ['note', 'הערה בלבד']];
-function pwH(extra) { const portrait = innerWidth < 620 && innerHeight > innerWidth, w = innerWidth - (portrait ? 30 : 210), hh = innerHeight - (portrait ? 250 : 130) - (extra || 0); return Math.max(320, Math.min(1700, Math.round(1000 * hh / Math.max(200, w)))); }
+const PM = [['draw', 'כתיבה על המסך'], ['photo', 'צילום או העלאת תמונה'], ['note', 'הערה בלבד']];
+const WRHINT = '<div class="wrhint noprint noexp">מומלץ לכתוב בכלי כתיבה לטאבלט (עט מגע). אם אין, אפשר לכתוב בדף עם עיפרון ולצלם או להעלות את התמונה.</div>';
+function pwH(extra) { const portrait = innerWidth < 620 && innerHeight > innerWidth, w = innerWidth - (portrait ? 120 : 210), hh = innerHeight - (portrait ? 295 : 185) - (extra || 0); return Math.max(320, Math.min(1700, Math.round(1000 * hh / Math.max(200, w)))); }
 function pad(p, h, label) {
   const m = curMap(), pm = (m && m.pm && m.pm[p]) || { mode: 'draw' }, mode = pm.mode || 'draw';
   const lb = label ? `<span class="lbl">${esc(label)}</span>` : '';
   const modes = `<div class="modes noprint noexp">${PM.map(x => `<button type="button" class="mdb${x[0] === mode ? ' on' : ''}" data-act="padmode" data-d="${p}" data-mode="${x[0]}">${x[1]}</button>`).join('')}</div>`;
-  if (mode === 'photo') return `<div class="pad">${lb}${modes}${pm.img ? `<img class="pimg" alt="תמונה של מה שהילד/ה כתב/ה" src="${pm.img}">` : '<div class="pimg empty">עוד אין תמונה</div>'}<div class="tools noprint"><button type="button" class="btn sm" data-act="padcam" data-d="${p}">פתיחת מצלמה</button><button type="button" class="btn sm quiet" data-act="padgal" data-d="${p}">בחירת תמונה מהגלריה</button>${pm.img ? `<button type="button" class="btn sm quiet" data-act="padrm" data-d="${p}">הסרת התמונה</button>` : ''}</div></div>`;
+  if (mode === 'photo') return `<div class="pad">${lb}${modes}${pm.img ? `<img class="pimg" alt="תמונה של מה שהילד/ה כתב/ה" src="${pm.img}">` : '<div class="pimg empty">עוד אין תמונה</div>'}<div class="tools noprint"><button type="button" class="btn sm" data-act="padcam" data-d="${p}">פתיחת מצלמה</button><button type="button" class="btn sm quiet" data-act="padgal" data-d="${p}">העלאת תמונה</button>${pm.img ? `<button type="button" class="btn sm quiet" data-act="padrm" data-d="${p}">הסרת התמונה</button>` : ''}</div></div>`;
   if (mode === 'note') return `<div class="pad">${lb}${modes}<textarea class="ruled" data-pn="${p}" placeholder="כתבי כאן מה הילד/ה כתב/ה ואיך הוא/היא כתב/ה">${esc(pm.note || '')}</textarea></div>`;
-  return `<div class="pad">${lb}${modes}<button type="button" class="btn sm fsx noprint" data-act="padfsx">סגירה וחזרה</button><canvas class="dc" data-d="${p}" data-h="${h}" style="--h:${h}" width="1000" height="${h}"></canvas><div class="tools noprint"><button type="button" class="btn sm" data-act="padfs" data-d="${p}">מסך מלא לרוחב</button><button type="button" class="btn sm quiet" data-act="undo" data-d="${p}">בטלי קו אחרון</button><button type="button" class="btn sm quiet" data-act="clr" data-d="${p}">נקי הכול</button></div></div>`;
+  return `<div class="pad">${lb}${modes}${WRHINT}<button type="button" class="btn sm fsx noprint" data-act="padfsx">סגירה וחזרה</button><canvas class="dc" data-d="${p}" data-h="${h}" style="--h:${h}" width="1000" height="${h}"></canvas><div class="tools noprint"><button type="button" class="btn sm" data-act="padfs" data-d="${p}">מסך מלא לרוחב</button><button type="button" class="btn sm quiet" data-act="undo" data-d="${p}">בטלי קו אחרון</button><button type="button" class="btn sm quiet" data-act="clr" data-d="${p}">נקי הכול</button></div></div>`;
 }
 const ex = (p, m, title) => `<div class="panel" style="gap:6px"><b style="font-size:.9rem">${title}</b><div class="ex">${tx(p + '.0', m)}<span>+</span>${tx(p + '.1', m)}<span>=</span>${tx(p + '.2', m)}</div><div class="field"><label>פתרון מלא:</label>${tx(p + '.3', m)}</div></div>`;
 
@@ -696,8 +714,8 @@ function lp(m) {
       <div class="sec">מה הילד/ה מצליח/ה ללא קושי?</div>
       <div class="cbs">${T3.map((t, i) => cb('t3.c.' + i, t, m)).join('')}</div>
       ${ex('t3.e1', m, 'פתרון תרגיל חיבור עד 10')}
-      <div class="cbs">${cb('t3.ok10', 'הצליח/ה בחיבור עד 10, ולכן אין צורך בתרגיל עד 5', m)}</div>
-      <div id="t3e2"${getP(m, 't3.ok10') ? ' hidden' : ''}>${ex('t3.e2', m, 'לא הצליח/ה? תרגיל חשבון עד 5')}</div>
+      <div class="cbs">${cb('t3.no10', 'לא הצליח/ה בחיבור עד 10 (רק אז מופיע תרגיל עד 5)', m)}</div>
+      <div id="t3e2"${getP(m, 't3.no10') ? '' : ' hidden'}>${ex('t3.e2', m, 'לא הצליח/ה? תרגיל חשבון עד 5')}</div>
       <div class="field"><label>הערות</label>${ta('t3.note', m, false)}</div>
     </div>`,
     t4: `<div class="panel"><h3><span class="num n4">4</span>משימה 4 – למידה חדשה בזמן אמת</h3>
@@ -1034,7 +1052,7 @@ document.addEventListener('input', e => {
   const el = e.target, p = el.dataset.p;
   if (el.dataset.wn) { const m = curMap(); if (!m) return; if (!m.wn) m.wn = {}; m.wn[el.dataset.wn] = el.value; touch(m, 'map:' + m.id); return; }
   if (el.dataset.pn) { const m = curMap(); if (!m) return; if (!m.pm) m.pm = {}; m.pm[el.dataset.pn] = Object.assign(m.pm[el.dataset.pn] || { mode: 'note' }, { note: el.value }); touch(m, 'map:' + m.id); return; }
-  if (p) { const m = curMap(); if (!m) return; setP(m, p, el.type === 'checkbox' ? (el.checked ? 1 : 0) : el.value); if (p === 't3.ok10') { const d = document.getElementById('t3e2'); if (d) d.hidden = !!el.checked; } touch(m, 'map:' + m.id); if (p === 'name') { const chip = document.querySelector('.chip.on'); if (chip) chip.textContent = (el.value || 'ילד/ה ללא שם') + ' · ' + fmt(m.date); } return; }
+  if (p) { const m = curMap(); if (!m) return; setP(m, p, el.type === 'checkbox' ? (el.checked ? 1 : 0) : el.value); if (p === 't3.no10') { const d = document.getElementById('t3e2'); if (d) d.hidden = !el.checked; } touch(m, 'map:' + m.id); if (p === 'name') { const chip = document.querySelector('.chip.on'); if (chip) chip.textContent = (el.value || 'ילד/ה ללא שם') + ' · ' + fmt(m.date); } return; }
   const k = el.dataset.k; if (k) { const c = curKid(); if (!c) return; c[k] = el.value; touch(c, 'children'); if (k === 'name') { const chip = document.querySelector('.chip.on'); if (chip) chip.textContent = el.value || 'ילד/ה'; } }
 });
 document.addEventListener('submit', e => {
@@ -1261,7 +1279,7 @@ function vaultPic() { return emo('img/vault.png', 'vpic', '🔐'); }
 function vaultSlide(m) {
   const v = ensureVault(m), done = m.wz.done || {}, got = TK(m).filter(k => done[k]).length;
   const shown = [0, 1, 2, 3].map(i => `<span class="vbox${i < v.input.length ? ' on' : ''}">${i < v.input.length ? v.input[i] : ''}</span>`).join('');
-  if (v.opened) return `<div class="card vaultcard open"><div class="confetti" aria-hidden="true">${confettiHtml(70)}</div>${emo('img/gift.png', 'vpic', '🎁')}<h2>זכית בהפתעה! כל הכבוד!</h2><p>הכספת נפתחה.</p><div class="note noexp noprint" style="font-size:.8rem">לבוחנת: הכיני לילד/ה הפתעה קטנה, מדליה, עוגייה או כל הפתעה אחרת.</div></div>`;
+  if (v.opened) return `<div class="card vaultcard open"><div class="confetti" aria-hidden="true">${confettiHtml(70)}</div>${vaultPic()}<div class="vdisp">${v.code.split('').map(c => `<span class="vbox on">${c}</span>`).join('')}</div>${emo('img/gift.png', 'vpic', '🎁')}<h2>זכית בהפתעה! כל הכבוד!</h2><p>הכספת נפתחה.</p><div class="note noexp noprint" style="font-size:.8rem">לבוחנת: הכיני לילד/ה הפתעה קטנה, מדליה, עוגייה או כל הפתעה אחרת.</div></div>`;
   return `<div class="card vaultcard"><h2>פותחים את הכספת</h2>${vaultPic()}
     <p class="note">${got < 4 ? 'הילד/ה קיבל/ה ' + got + ' ספרות מתוך 4. אפשר להמשיך גם כך.' : 'כל ארבע הספרות נאספו. מקישים את הקוד לפי הסדר שבו התקבלו.'}</p>
     <div class="vdisp ${v.bad ? 'bad' : ''}">${shown}</div>
@@ -1283,8 +1301,9 @@ function showDigit(m, idx, cb) {
 const TNOTE = { t1: ['t1.note', 'כתיבת שם'], t2: ['t2.note', 'כתיב פונטי'], t3: ['t3.note', 'חשבון'], t4: ['t4.how', 'למידת מושג חדש'] };
 function showTaskNote(m, key, cb) {
   const tn = TNOTE[key]; if (!tn) { cb(); return; }
+  const WR2 = key === 't1' || key === 't2';
   const o = document.createElement('div'); o.className = 'notepop noprint';
-  o.innerHTML = `<div class="np"><h2>הערות לדוח המסכם</h2><div class="npt">${esc(tn[1])}</div><p class="note">מה שנכתב כאן יופיע בדוח המסכם תחת המשימה הזאת. אפשר גם להשאיר ריק.</p><textarea data-p="${tn[0]}" placeholder="כתבי כאן הערות על המשימה">${esc(getP(m, tn[0]) || '')}</textarea><button type="button" class="btn solid npgo">שמירה והמשך לשלב הבא</button></div>`;
+  o.innerHTML = `<div class="np"><h2>הערות לדוח המסכם</h2><div class="npt">${esc(tn[1])}</div><p class="note">מה שנכתב כאן יופיע בדוח המסכם תחת המשימה הזאת. אפשר גם להשאיר ריק.</p>${WR2 ? `<label class="npl">האם הילד/ה בחר/ה את צורת האותיות באופן עצמאי?</label><textarea data-p="${key}.noteS" placeholder="למשל: בחר/ה לבד את הצורה, ביקש/ה עזרה, העתיק/ה מהמודל">${esc(getP(m, key + '.noteS') || '')}</textarea><label class="npl">הערות לכתיבה עצמה: גודל, אחיזה ועוד</label>` : ''}<textarea data-p="${tn[0]}" placeholder="${WR2 ? 'למשל: גודל האותיות, אחיזת העט, לחץ, כיוון' : 'כתבי כאן הערות על המשימה'}">${esc(getP(m, tn[0]) || '')}</textarea><button type="button" class="btn solid npgo">שמירה והמשך לשלב הבא</button></div>`;
   document.body.appendChild(o);
   const ta = o.querySelector('textarea'); setTimeout(() => { try { ta.focus(); } catch (e) {} }, 100);
   o.querySelector('.npgo').addEventListener('click', () => { o.remove(); cb(); });
@@ -1378,8 +1397,8 @@ const OVSTEPS = [['t1', 'כתיבת שם', 0, ['t1']], ['t2', 'כתיבה פונ
 function ovDetail(m, k) {
   const lines = (arr, pre) => arr.map((t, i) => `<div class="ovsub"><b>${getP(m, pre + '.' + i) ? '✓' : '○'}</b> ${esc(t)}</div>`).join('');
   const txt = (l, v) => v ? `<div class="ovsub"><b>${esc(l)}:</b> ${esc(v)}</div>` : '';
-  if (k === 't1') return padOut(m, 't1.draw', 380) + lines(T1, 't1.c') + txt('אותיות בשם', m.t1 && m.t1.ask) + txt('הערות', m.t1 && m.t1.note);
-  if (k === 't2') { const t2 = m.t2 || {}; if (!t2.lv) return '<div class="note">עוד לא נבחרה רמה</div>'; return (t2.order || []).map(i => `<div class="ovsub">${picImg(LVL[t2.lv].w[i][1], 'pic sm', '')}${padOut(m, 't2.d.' + i, 230) || '<span class="note">עוד לא נכתב</span>'}</div>`).join('') + txt('הערות', t2.note); }
+  if (k === 't1') return padOut(m, 't1.draw', 380) + lines(T1, 't1.c') + txt('אותיות בשם', m.t1 && m.t1.ask) + txt('בחירת צורת האותיות באופן עצמאי', m.t1 && m.t1.noteS)+txt('הערות לכתיבה (גודל, אחיזה ועוד)', m.t1 && m.t1.note);
+  if (k === 't2') { const t2 = m.t2 || {}; if (!t2.lv) return '<div class="note">עוד לא נבחרה רמה</div>'; return (t2.order || []).map(i => `<div class="ovsub">${picImg(LVL[t2.lv].w[i][1], 'pic sm', '')}${padOut(m, 't2.d.' + i, 230) || '<span class="note">עוד לא נכתב</span>'}</div>`).join('') + txt('בחירת צורת האותיות באופן עצמאי', t2.noteS)+txt('הערות לכתיבה (גודל, אחיזה ועוד)', t2.note); }
   if (k === 't3') return lines(T3, 't3.c') + txt('הערות', m.t3 && m.t3.note);
   if (k === 'let') { const lt = m.lt; if (!lt) return '<div class="note">עוד לא התחלנו</div>'; const mk = v => SYMX[v] || '○'; return lt.L.map(l => `<div class="ovsub"><span class="lbig">${l}</span><span>כתיבה ${mk(lt.wr[l])} · שיום ${lt.wr[l] === 1 && !lt.nm[l] ? '—' : mk(lt.nm[l])} · זיהוי ${lt.pt[l] === 1 ? '✓' : lt.pt[l] === 3 ? '✗' : ((lt.wr[l] === 1 || lt.nm[l] === 1) ? '—' : '○')}</span>${strokeImg(lt.d[l], 110, 70)}</div>`).join(''); }
   if (k === 't4') return txt('מה לימדנו', m.t4 && m.t4.q) + lines(T4, 't4.c') + txt('איך הגיב/ה', m.t4 && m.t4.how);
@@ -1421,6 +1440,7 @@ function wizScreen(m) {
     body = `<div class="card vaultintro"><h2>בכספת מחכה הפתעה</h2>${vaultPic()}
       <p class="vq">מה יש בכספת? כדי לפתוח אותה צריך קוד של 4 ספרות. בכל משימה שנעשה ביחד תקבל/י ספרה אחת. בסוף תקיש/י את הקוד ותפתח/י את הכספת.</p>
       <div class="digits">${[0, 1, 2, 3].map(j => `<span class="vbox">?</span>`).join('')}</div>
+      <div class="vpad" aria-hidden="true">${[1, 2, 3, 4, 5, 6, 7, 8, 9].map(d => `<span class="vk">${d}</span>`).join('')}<span class="vk"></span><span class="vk">0</span><span class="vk"></span></div>
       <div class="note noexp noprint">לבוחנת: הקוד נקבע אוטומטית ומופיע בתפריט הצד לפי מה שהילד/ה צבר/ה. כל משימה מהארבע נותנת ספרה אחת. בסוף הילד/ה מקיש/ה ארבע ספרות, והפתעה מחכה בפנים.</div></div>`;
     ctl = wizControls(m, { nextLabel: 'מתחילים' });
   } else if (key === 'parents') body = `<div class="card"><h2>פרטי הילד/ה</h2>${P.meta}</div><div class="card">${m.kind === 'kb' ? `<div class="panel"><h3>תובנות משיחת ההורים</h3>${ta('parents', m, true)}</div>` : P.parents}</div>`;
@@ -1436,7 +1456,7 @@ function wizScreen(m) {
   } else if (key === 'lw' && !ensureLt(m).nofs) {
     const lt = ensureLt(m), n = lt.i, l = lt.L[n], cur = lt.wr[l] || 0, last = n >= lt.L.length - 1;
     body = `<div class="pwfull lwfull noprint"><div class="pwside lwside"><div class="lwn">אות ${n + 1} מתוך ${lt.L.length}</div><button class="btn mint sm" type="button" data-act="wzSay" data-kind="w" data-l="${l}">השמעה: כתבו את האות</button><div class="lwchip">לבוחנת: ${l} (${esc(stripNik(window.HenVoice ? HenVoice.letterName(l) : l))})</div></div>
-      <div class="pwboard">${pad('lt.d.' + l, pwH(115), '')}${mkRow(cur, 'wzMark', 'data-l="' + l + '"')}${cur ? '' : '<div class="lwhint">סמני איך היה כדי להמשיך לאות הבאה</div>'}<div class="pwbtns"><button type="button" class="btn sm quiet" data-act="wzLback">חזרה</button><button type="button" class="btn solid" data-act="wzLnext"${cur ? '' : ' disabled'}>${last ? 'לסיכום האותיות' : 'האות הבאה'}</button><button type="button" class="btn sm quiet" data-act="wzLfs">יציאה מהמסך המלא</button></div></div></div>`;
+      <div class="pwboard">${pad('lt.d.' + l, pwH(175), '')}${mkRow(cur, 'wzMark', 'data-l="' + l + '"')}${cur ? '' : '<div class="lwhint">סמני איך היה כדי להמשיך לאות הבאה</div>'}<div class="pwbtns"><button type="button" class="btn sm quiet" data-act="wzLback">חזרה</button><button type="button" class="btn solid" data-act="wzLnext"${cur ? '' : ' disabled'}>${last ? 'לסיכום האותיות' : 'האות הבאה'}</button><button type="button" class="btn sm quiet" data-act="wzLfs">יציאה מהמסך המלא</button></div></div></div>`;
     ctl = '';
   } else if (key === 'lw') {
     const lt = ensureLt(m), n = lt.i, l = lt.L[n], cur = lt.wr[l] || 0;
@@ -1523,8 +1543,8 @@ function summaryHtml(m) {
   ${m.parents ? `<div class="panel"><h3>תובנות משיחת ההורים</h3><div class="sNote">${esc(m.parents)}</div></div>` : ''}
   <div class="grid2">
     <div class="panel"><h3><span class="num n4">1</span>חומר חדש בזמן אמת</h3>${txt('מה לימדנו', m.t4 && m.t4.q)}${two(a4, b4)}${txt('איך הגיב/ה', m.t4 && m.t4.how)}</div>
-    <div class="panel"><h3><span class="num n1">2</span>כתיבת שם</h3>${padOut(m, 't1.draw', 380)}${two(a1, b1)}${txt('אותיות בשם', m.t1 && m.t1.ask)}${txt('הערות', m.t1 && m.t1.note)}</div>
-    <div class="panel"><h3><span class="num n2">3</span>כתיבה פונטית${t2.lv ? ' · ' + LVL[t2.lv].t : ''}</h3>${(t2.order && t2.order.length ? t2.order : [0, 1, 2]).map(i => t2.w[i] ? `<div class="sline">${t2.lv ? picImg(LVL[t2.lv].w[i][1], "pic sm", "") : ""}</div>${padOut(m, 't2.d.' + i, 230)}` : '').join('')}${txt('הערות', t2.note)}</div>
+    <div class="panel"><h3><span class="num n1">2</span>כתיבת שם</h3>${padOut(m, 't1.draw', 380)}${two(a1, b1)}${txt('אותיות בשם', m.t1 && m.t1.ask)}${txt('בחירת צורת האותיות באופן עצמאי', m.t1 && m.t1.noteS)+txt('הערות לכתיבה (גודל, אחיזה ועוד)', m.t1 && m.t1.note)}</div>
+    <div class="panel"><h3><span class="num n2">3</span>כתיבה פונטית${t2.lv ? ' · ' + LVL[t2.lv].t : ''}</h3>${(t2.order && t2.order.length ? t2.order : [0, 1, 2]).map(i => t2.w[i] ? `<div class="sline">${t2.lv ? picImg(LVL[t2.lv].w[i][1], "pic sm", "") : ""}</div>${padOut(m, 't2.d.' + i, 230)}` : '').join('')}${txt('בחירת צורת האותיות באופן עצמאי', t2.noteS)+txt('הערות לכתיבה (גודל, אחיזה ועוד)', t2.note)}</div>
     <div class="panel"><h3><span class="num n3">4</span>חשבון</h3>${two(a3, b3)}${txt('הערות', m.t3 && m.t3.note)}</div>
   </div>
   <div class="panel"><h3>אותיות: כתיבה בהכתבה, שם האות והצבעה</h3>${lres}</div>
@@ -1547,7 +1567,7 @@ function summaryKb(m) {
   const recs = (m.s && m.s.r ? SR.filter((x, i) => m.s.r[i]) : []);
   const route = !m.kr1 ? 'כתיב פונטי עוד לא הושלם.' : p.letters ? 'התקשה בכתיב הפונטי, ולכן נבדקו אותיות, קריאת מילה קצרה והברות.' : !m.kr2 ? 'הצליח/ה בכתיב הפונטי ועבר/ה לקריאת מילות תפל.' : p.low ? 'הצליח/ה בכתיב הפונטי אך מילות התפל היו קשות, ולכן נבדקו מילה קצרה והברות.' : 'הצליח/ה בכתיב הפונטי ובקריאת מילות תפל, ולכן נבדקו קריאת משפט וכתיבה עם ניקוד.';
   const panels = [
-    `<div class="panel"><h3><span class="num n2">1</span>כתיב פונטי${t2.lv ? ' · ' + LVL[t2.lv].t : ''}</h3>${(t2.order && t2.order.length ? t2.order : [0, 1, 2]).map(i => t2.w[i] ? `<div class="sline">${t2.lv ? picImg(LVL[t2.lv].w[i][1], "pic sm", "") : ""}</div>${padOut(m, 't2.d.' + i, 230)}` : '').join('')}${txt('הערות', t2.note)}</div>`,
+    `<div class="panel"><h3><span class="num n2">1</span>כתיב פונטי${t2.lv ? ' · ' + LVL[t2.lv].t : ''}</h3>${(t2.order && t2.order.length ? t2.order : [0, 1, 2]).map(i => t2.w[i] ? `<div class="sline">${t2.lv ? picImg(LVL[t2.lv].w[i][1], "pic sm", "") : ""}</div>${padOut(m, 't2.d.' + i, 230)}` : '').join('')}${txt('בחירת צורת האותיות באופן עצמאי', t2.noteS)+txt('הערות לכתיבה (גודל, אחיזה ועוד)', t2.note)}</div>`,
     p.letters ? `<div class="panel"><h3><span class="num n1">2</span>אותיות: כתיבה, שם האות והצבעה</h3>${lres}</div>` : `<div class="panel"><h3><span class="num n1">2</span>קריאת מילות תפל</h3>${list('nw', NONSENSE)}${txt('הערות', (m.wn || {}).knw)}</div>`,
     p.low ? `<div class="panel"><h3><span class="num n3">3</span>קריאת מילה קצרה</h3>${list('rw', REALW)}${txt('הערות', (m.wn || {}).krw)}</div>` : `<div class="panel"><h3><span class="num n3">3</span>קריאת משפט</h3>${list('rs', SENT)}${txt('הערות', (m.wn || {}).krs)}</div>`,
     p.low ? `<div class="panel"><h3><span class="num n4">4</span>קריאת הברות</h3><div class="sline">${esc(an.text)}</div>${sylT}${txt('הערות', (m.wn || {}).ksy)}</div>` : `<div class="panel"><h3><span class="num n4">4</span>כתיבה עם ניקוד</h3>${bd || '<div class="note">לא בוצע</div>'}</div>`
@@ -1588,7 +1608,7 @@ function summaryKbOld(m) {
   ${m.parents ? `<div class="panel"><h3>תובנות משיחת ההורים</h3><div class="sNote">${esc(m.parents)}</div></div>` : ''}
   <div class="panel conc"><h3>מסקנות: זיהוי סימני ניקוד</h3><div class="sline">${esc(an.text)}</div>${smat}</div>
   <div class="grid2">
-    <div class="panel"><h3><span class="num n2">1</span>כתיב פונטי${t2.lv ? ' · ' + LVL[t2.lv].t : ''}</h3>${(t2.order && t2.order.length ? t2.order : [0, 1, 2]).map(i => t2.w[i] ? `<div class="sline">${t2.lv ? picImg(LVL[t2.lv].w[i][1], "pic sm", "") : ""}</div>${padOut(m, 't2.d.' + i, 230)}` : '').join('')}${txt('הערות', t2.note)}</div>
+    <div class="panel"><h3><span class="num n2">1</span>כתיב פונטי${t2.lv ? ' · ' + LVL[t2.lv].t : ''}</h3>${(t2.order && t2.order.length ? t2.order : [0, 1, 2]).map(i => t2.w[i] ? `<div class="sline">${t2.lv ? picImg(LVL[t2.lv].w[i][1], "pic sm", "") : ""}</div>${padOut(m, 't2.d.' + i, 230)}` : '').join('')}${txt('בחירת צורת האותיות באופן עצמאי', t2.noteS)+txt('הערות לכתיבה (גודל, אחיזה ועוד)', t2.note)}</div>
     <div class="panel"><h3><span class="num n1">2</span>קריאת מילות תפל</h3><div class="nwlist one">${nw}</div>${txt('הערות', m.read && m.read.nwnote)}</div>
     <div class="panel"><h3><span class="num n3">3</span>כתיבה עם ניקוד</h3>${bd || '<div class="note">לא בוצע</div>'}</div>
     <div class="panel"><h3><span class="num n4">4</span>קריאה בקול</h3><ul class="rdl">${rd}</ul>${txt('מה קראנו', m.read && m.read.what)}${txt('טעויות שחוזרות', m.read && m.read.errs)}${txt('הערות', m.read && m.read.note)}</div>
