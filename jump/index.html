@@ -79,7 +79,7 @@ function fit(){ stage.style.maxHeight=''; var r0=stage.getBoundingClientRect(); 
 addEventListener('resize',fit);
 /* ---------- שלב ---------- */
 var L=null, hero=null, cam=0, lives=5, li=0, items=[], tiles=[], pits=[], plats=[], hurd=[], decor=[], door=null, parts=[], need=0, got=0, state='intro', trail=[], trailT=0, loseT=0, tPrev=0, clock=0, shake=0;
-var G=896, JV=560, SPD=120, GY=290; /* SPD 150->120: חן 2.11.26, 20% לאט יותר */ // כוח משיכה, מהירות קפיצה, מהירות הליכה, גובה הקרקע
+var G=1400, JV=700, SPD=120, AIR=150, GY=290; /* SPD 150->120: חן 2.11.26, 20% לאט יותר */ // כוח משיכה, מהירות קפיצה, מהירות הליכה, גובה הקרקע
 function rnd(a,b){return a+Math.random()*(b-a)}
 function shuffle(a){for(var i=a.length-1;i>0;i--){var j=Math.random()*(i+1)|0,t=a[i];a[i]=a[j];a[j]=t}return a}
 function build(lv){
@@ -123,13 +123,13 @@ addEventListener('keydown',function(e){ if(e.repeat)return; if(e.key==='ArrowUp'
 function puff(x,y,n,col){ for(var i=0;i<n;i++) parts.push({x:x,y:y,vx:rnd(-90,90),vy:rnd(-160,-40),l:rnd(.35,.7),c:col||'rgba(255,255,255,.9)',r:rnd(3,7)}) }
 function sparkle(x,y){ var C=['#EF406E','#F2C94C','#7FCFD9','#9BD97A','#FBC5D6']; for(var i=0;i<16;i++){var a=i/16*6.28; parts.push({x:x,y:y,vx:Math.cos(a)*rnd(120,260),vy:Math.sin(a)*rnd(120,260),l:rnd(.5,.9),c:C[i%5],r:rnd(3,6),star:1})} }
 /* ---------- עדכון ---------- */
-function step(dt){
+var camY=0;function step(dt){window.__dtl=dt;
   clock+=dt; if(shake>0) shake-=dt;
   parts.forEach(function(p){p.x+=p.vx*dt;p.y+=p.vy*dt;p.vy+=500*dt;p.l-=dt}); parts=parts.filter(function(p){return p.l>0});
   if(state!=='play') return;
   if(hero.wait>0){ hero.wait-=dt; return }
   cam+=SPD*dt;                                                                 // המסך מתקדם כל הזמן
-  var mid=cam+VW*.5, py=hero.y, vx=hero.x<mid-4?SPD*1.7:SPD;                    // מאחור? רצה מהר יותר עד שחוזרת למרכז
+  /*חן 2.11.26: הליכה איטית ב-20%, אבל קפיצה בקשת טבעית: באוויר נעים כמו קודם (AIR), ועל הקרקע חוזרים בעדינות למרכז*/var mid=cam+VW*.5, py=hero.y, vx=!hero.on?AIR:hero.x<mid-4?SPD*1.7:hero.x>mid+4?SPD*.8:SPD;                    // מאחור? רצה מהר יותר עד שחוזרת למרכז
   var nx=hero.x+vx*dt, ft=tileAt(nx+14);
   if(ft&&ft.y<hero.y-4&&nx+14>ft.x){ nx=Math.min(hero.x,ft.x-14); hero.blk=1 } else hero.blk=0; // מדרגה: נעצרים, צריך לקפוץ
   hero.x=nx; hero.vy+=G*dt; hero.y+=hero.vy*dt;
@@ -180,7 +180,7 @@ function draw(){
   (W.hills||[]).forEach(function(hc,hi){ cx.fillStyle=hc; cx.beginPath(); cx.moveTo(0,VH); var sp=.12+hi*.12, base=GY-40+hi*28, amp=46-hi*12; for(var x=0;x<=VW+20;x+=20){ var wx=x+cam*sp; cx.lineTo(x,base-amp*(.55+.45*Math.sin(wx*.006+hi*2))-amp*.35*Math.sin(wx*.017+hi)) } cx.lineTo(VW,VH); cx.closePath(); cx.fill() });
   // נוף רחוק ונוף קרוב
   decor.forEach(function(d){ if(!d.far) return; var x=d.x-cam*.55; if(x<-200||x>VW+200) return; var z=150*d.s*(DSIZE[d.k]||1); dImg(d.k,x,GY-z+10,z,z,0,.55) });
-  cx.save(); cx.translate(-cam,0);
+  /*חן 2.11.26: "נתקעת למעלה בקפיצה": במקום לעצור את הדמות בראש המסך, העולם יורד מעט*/camY+=(Math.max(0,84-hero.y)-camY)*Math.min(1,(window.__dtl||.016)*10); cx.save(); cx.translate(-cam,camY);
   /*חן 31.10.26: הנוף מאחורי השביל, קטן ושקוף מעט, כדי שלא ייראה כמו מכשול*/decor.forEach(function(d){ if(d.far) return; var x=d.x+130; if(x-cam<-200||x-cam>VW+200) return; var z=80*d.s*(DSIZE[d.k]||1); dImg(d.k,x,GY-z+6,z,z,Math.sin(clock*1.5+d.x)*.02,.6) });
   /*חן 1.11.26: "יש ברקע עצים שלא נוגעים באדמה": גדה רציפה מאחורי הבורות. הנוף תמיד עומד עליה, והאש והמים מלפניה*/cx.fillStyle=W.ground[1]; cx.fillRect(cam-40,GY,VW+80,34); cx.fillStyle=W.ground[0]; cx.fillRect(cam-40,GY,VW+80,16);
   // בורות: אש או מים
@@ -210,7 +210,7 @@ function draw(){
   // דמות
   var hw=64, hh=64, bob=hero.on&&!(hero.wait>0)?Math.abs(Math.sin(hero.run))*5:0;
   if(state!=='ouch'||Math.floor(clock*12)%2){
-    cx.save(); /*חן 1.11.26: בקפיצה הדמות לא נחתכת ולא יוצאת מהמסך. הקפיצה עצמה לא מתקצרת, רק הציור נעצר בראש המסך*/cx.translate(hero.x,Math.max(hero.y,84)-bob); cx.scale(((/^(bee|hedgehog)$/.test(W.hero))?-1:1)*(2-hero.sq),hero.sq) /* חן, 30.10.26: הדמות תמיד מסתכלת ימינה (דבורה וקיפוד מצוירים שמאלה) */; cx.rotate(hero.on?0:-hero.face*.12);
+    cx.save(); /*חן 1.11.26: בקפיצה הדמות לא נחתכת ולא יוצאת מהמסך. הקפיצה עצמה לא מתקצרת, רק הציור נעצר בראש המסך*/cx.translate(hero.x,hero.y-bob); cx.scale(((/^(bee|hedgehog)$/.test(W.hero))?-1:1)*(2-hero.sq),hero.sq) /* חן, 30.10.26: הדמות תמיד מסתכלת ימינה (דבורה וקיפוד מצוירים שמאלה) */; cx.rotate(hero.on?0:-hero.face*.12);
     if(state==='ouch') cx.globalAlpha=.6; var hi=img(W.hero); if(hi) cx.drawImage(hi,-hw/2,-hh,hw,hh); cx.restore() }
   weather();
   // חלקיקים
