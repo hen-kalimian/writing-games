@@ -120,7 +120,8 @@ function step(dt){
 function burst(x,y,col){ var C=['#EF406E','#F2C94C','#7FCFD9','#9BD97A','#FBC5D6']; for(var i=0;i<18;i++){var a=i/18*6.28; parts.push({x:x,y:y,vx:Math.cos(a)*rnd(140,300),vy:Math.sin(a)*rnd(140,300)-100,l:rnd(.5,.9),c:col||C[i%5],r:rnd(3,7)})} }
 function rnd(a,b){return a+Math.random()*(b-a)}
 /* ---------- ציור ---------- */
-function draw(){
+/*__PASSOFF (חן, 2.11.26: "האות שלא נתפסה נעלמת כשעדיין רואים"): אות שעברה ממשיכה להתקרב ולצאת מהמסך, ורק אז נעלמת*/var FRM=0,PASS=[],PASST=0,CURD=[],LASTD=[];window.__PASSN=function(){return {pass:PASS.length,curd:CURD.length,max:window.__pmax||0}};function bub(sx,yy,r,t){var ga0=cx.globalAlpha;cx.globalAlpha=ga0*.62;var bg=cx.createRadialGradient(sx-r*.3,yy-r*.35,r*.1,sx,yy,r);bg.addColorStop(0,'#fff');bg.addColorStop(1,W.bubble||'#FBC5D6');cx.fillStyle=bg;cx.beginPath();cx.ellipse(sx,yy,r*.92,r,0,0,6.28);cx.fill();cx.lineWidth=Math.max(1,r*.08);cx.strokeStyle='#F2A7B8';cx.stroke();cx.globalAlpha=ga0;cx.fillStyle='#4A2C3A';cx.font='800 '+Math.round(r*(t.length>2?.8:1.05))+'px Rubik,Arial';cx.textAlign='center';cx.textBaseline='middle';cx.fillText(t,sx,yy+r*.06)}
+function draw(){FRM++;LASTD=CURD;CURD=[];var pdt=Math.min(.05,PASST?(performance.now()-PASST)/1000:.016);PASST=performance.now();
   var s=cv.height/VH; cx.setTransform(s,0,0,s,0,0);
   var sk=shake>0?Math.sin(clock*70)*5:0;
   var g=cx.createLinearGradient(0,0,0,VH*.55); g.addColorStop(0,W.sky[0]); g.addColorStop(1,W.sky[1]); cx.fillStyle=g; cx.fillRect(0,0,VW,VH);
@@ -147,13 +148,15 @@ function draw(){
     sg2.sp.forEach(function(sp){ var im=IMG[sp.k]; if(!im) return; var w=sc*900, h=w*im.height/im.width, sx=cl.p1.x+sc*sp.off*RW; if(cl.p1.y-h>cl.clip) return; cx.drawImage(im,sx-w/2,cl.p1.y-h,w,h) });
     sg2.it.forEach(function(o){ if(o.dead) return; /* חן, 30.10.26: "רואים את האות ברגע האחרון, אני רוצה אותם גדולים יותר כדי שיהיה זמן להגיב": אותיות רחוקות מוגדלות */ var sx=cl.p1.x+sc*o.off*RW, r=sc*230*.8*(1+2.6*Math.min(1,sg2.n/30)),/*חן 31.10.26: קטן ב-20% ושקוף*/ yy=cl.p1.y-r*1.6+Math.sin(clock*3+(o.ph||0))*r*.08;
       if(o.box){ var im=IMG[W.obstacle||'cone']; if(im){ var w=sc*520, h=w*im.height/im.width; cx.drawImage(im,sx-w/2,cl.p1.y-h,w,h) } return }
-      cx.strokeStyle='rgba(120,80,90,.5)'; cx.lineWidth=Math.max(1,r*.06); cx.beginPath(); cx.moveTo(sx,yy+r); cx.lineTo(sx,cl.p1.y); cx.stroke();
+      o.__d={sx:sx,yy:yy,r:r,f:FRM};CURD.push(o);cx.strokeStyle='rgba(120,80,90,.5)'; cx.lineWidth=Math.max(1,r*.06); cx.beginPath(); cx.moveTo(sx,yy+r); cx.lineTo(sx,cl.p1.y); cx.stroke();
       var ga0=cx.globalAlpha; cx.globalAlpha=ga0*.62; var bg=cx.createRadialGradient(sx-r*.3,yy-r*.35,r*.1,sx,yy,r); bg.addColorStop(0,'#fff'); bg.addColorStop(1,W.bubble||'#FBC5D6'); cx.fillStyle=bg; cx.beginPath(); cx.ellipse(sx,yy,r*.92,r,0,0,6.28); cx.fill();
       cx.lineWidth=Math.max(1,r*.08); cx.strokeStyle='#F2A7B8'; cx.stroke(); cx.globalAlpha=ga0;
       if(r>6){ cx.fillStyle='#4A2C3A'; cx.font='800 '+Math.round(r*(o.t.length>2?.8:1.05))+'px Rubik,Arial'; cx.textAlign='center'; cx.textBaseline='middle'; cx.fillText(o.t,sx,yy+r*.06) } });
     if(sg2.i===finishAt){ var aw=cl.p1.w*1.25, ah=aw*.55; cx.lineWidth=Math.max(2,aw*.05); cx.strokeStyle='#EF406E'; cx.beginPath(); cx.moveTo(cl.p1.x-aw,cl.p1.y); cx.lineTo(cl.p1.x-aw,cl.p1.y-ah); cx.lineTo(cl.p1.x+aw,cl.p1.y-ah); cx.lineTo(cl.p1.x+aw,cl.p1.y); cx.stroke();
       cx.fillStyle='#fff'; cx.fillRect(cl.p1.x-aw*.6,cl.p1.y-ah-aw*.14,aw*1.2,aw*.2); cx.fillStyle='#B8236B'; cx.font='800 '+Math.round(aw*.13)+'px Rubik'; cx.textAlign='center'; cx.textBaseline='middle'; cx.fillText(W.finishWord||'סִיּוּם',cl.p1.x,cl.p1.y-ah-aw*.04) } }
   cx.globalAlpha=1;
+  LASTD.forEach(function(o){if(o.__d.f===FRM-1&&!o.dead&&!o.box&&!o.__p&&state==='play'){o.__p=1;PASS.push({sx:o.__d.sx,yy:o.__d.yy,r:o.__d.r,t:o.t})}});
+  window.__pmax=Math.max(window.__pmax||0,PASS.length);PASS=PASS.filter(function(q){var dir=q.dir||(q.dir=(q.sx>=VW/2?1:-1));q.r=Math.min(q.r*(1+pdt*1.1),VH*.22);q.sx+=dir*VW*.9*pdt;q.yy+=q.r*pdt*.6;bub(q.sx,q.yy,q.r,q.t);return !(q.sx+q.r<0||q.sx-q.r>VW||q.yy-q.r>VH)});
   // מכסה המנוע של המכונית שנבחרה (נקודת המבט של הנהג)
   var hb=VH*.82+Math.sin(clock*18)*(speed/MAXS)*1.5;
   if(car&&IMG['car_'+car]){ var ci=IMG['car_'+car], cw=VW*.9, ch=cw*ci.height/ci.width; cx.drawImage(ci,VW/2-cw/2,VH-ch*.62+(hb-VH*.82),cw,ch) }
