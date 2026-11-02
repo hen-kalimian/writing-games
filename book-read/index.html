@@ -15,7 +15,9 @@ html,body{margin:0;background:transparent;font-family:Rubik,Arial,sans-serif;col
 #hint.on{display:block}
 #endrow{position:absolute;inset:auto 0 12px 0;z-index:9;display:none;justify-content:center}
 #endrow.on{display:flex}
-.big{border:0;border-radius:18px;background:linear-gradient(135deg,#EF406E,#F27A9B);color:#fff;font-family:Rubik,sans-serif;font-weight:800;font-size:clamp(16px,4.4vw,22px);padding:11px 26px;box-shadow:0 8px 22px rgba(239,64,110,.3);cursor:pointer}
+.big{display:flex;align-items:center;gap:10px;border:0;border-radius:18px;background:linear-gradient(135deg,#EF406E,#F27A9B);color:#fff;font-family:Rubik,sans-serif;font-weight:800;font-size:clamp(16px,4.4vw,22px);padding:11px 26px;box-shadow:0 8px 22px rgba(239,64,110,.3);cursor:pointer}
+.rot{animation:spin 2.4s linear infinite}@keyframes spin{to{transform:rotate(-360deg)}}
+#musicBtn{border:2px solid #FBC5D6;background:#fff;color:#B8236B;font-family:Rubik,sans-serif;font-weight:700;font-size:14px;border-radius:30px;padding:6px 16px;cursor:pointer}
 #bar{display:flex;align-items:center;justify-content:center;gap:12px;width:100%}
 .nav{border:2px solid #FBC5D6;background:#fff;color:#B8236B;font-family:Rubik,sans-serif;font-weight:700;font-size:16px;border-radius:30px;padding:8px 18px;cursor:pointer}
 .nav:disabled{opacity:.35;cursor:default}
@@ -34,16 +36,21 @@ html,body{margin:0;background:transparent;font-family:Rubik,Arial,sans-serif;col
     <video id="v" playsinline preload="auto"></video>
     <canvas id="cv" width="1280" height="808"></canvas>
     <div id="hint"></div>
-    <div id="endrow"><button class="big" id="againBtn" type="button">קוראים שוב מההתחלה</button></div>
+    <div id="endrow"><button class="big" id="againBtn" type="button"><svg class="rot" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12a8 8 0 1 1-2.6-5.9"/><path d="M20 3.5V8h-4.5"/></svg><span>לקריאה נוספת</span></button></div>
   </div>
   <div id="dots"></div>
   <div id="bar"><button class="nav" id="prev" type="button">לעמוד הקודם</button><button class="nav main" id="next" type="button">פתחו את הספר</button></div>
   <div id="audioRow"><button id="abtn" type="button"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg><span id="alabel">להאזנה רציפה</span></button></div>
+  <div id="audioRow2" style="display:flex;justify-content:center"><button id="musicBtn" type="button">מוזיקת רקע: פועלת</button></div>
   <audio id="aud" preload="none"></audio>
+  <audio id="bgm" preload="auto" loop></audio>
 </div>
 <script>
 (function(){
-var $=function(i){return document.getElementById(i)},stage=$('stage'),v=$('v'),cv=$('cv'),cx=cv.getContext('2d'),aud=$('aud'),VER='4',AUTO_MS=8000,W=1280,H=808;
+var $=function(i){return document.getElementById(i)},stage=$('stage'),v=$('v'),cv=$('cv'),cx=cv.getContext('2d'),aud=$('aud'),VER='5',AUTO_MS=8000,W=1280,H=808;
+var bgm=$('bgm'),musicOn=true,musicStarted=false;bgm.volume=.13;
+function startMusic(){if(musicStarted||!musicOn)return;musicStarted=true;if(!bgm.src)bgm.src='bgmusic.mp3?v='+VER;var p=bgm.play();if(p&&p.catch)p.catch(function(){musicStarted=false})}
+$('musicBtn').onclick=function(){musicOn=!musicOn;if(musicOn){musicStarted=false;startMusic()}else bgm.pause();$('musicBtn').textContent='מוזיקת רקע: '+(musicOn?'פועלת':'כבויה')};
 var clips=[],imgs={},cover=new Image(),idx=-1,busy=false,ended=false,timer=0,hintRaf=0,drag=null,AC=null,wasPlaying=false;
 var off=document.createElement('canvas');off.width=W;off.height=H;var ocx=off.getContext('2d');
 cover.src='cover.jpg?v='+VER;
@@ -92,7 +99,7 @@ function turn(dir,auto){
 v.addEventListener('ended',function(){ended=true;if(idx>=clips.length-1){$('endrow').classList.add('on');return}startHint('משכו את הדף ימינה, או חכו רגע',true)});
 v.addEventListener('play',function(){if(!aud.paused){aud.pause();setA(false)}});
 /* drag: left to right = next page, right to left = previous page. Tap on the cover opens the book. */
-stage.addEventListener('pointerdown',function(e){if(busy||!clips.length)return;stopHint();drag={x:e.clientX,y:e.clientY,mode:null,w:stage.getBoundingClientRect().width,t:Date.now(),d:0};try{stage.setPointerCapture(e.pointerId)}catch(x){}});
+stage.addEventListener('pointerdown',function(e){if(e.target.closest&&e.target.closest('button'))return;startMusic();if(busy||!clips.length)return;stopHint();drag={x:e.clientX,y:e.clientY,mode:null,w:stage.getBoundingClientRect().width,t:Date.now(),d:0};try{stage.setPointerCapture(e.pointerId)}catch(x){}});
 stage.addEventListener('pointermove',function(e){if(!drag)return;var dx=e.clientX-drag.x,dy=e.clientY-drag.y;
   if(!drag.mode){if(Math.abs(dx)<8)return;if(Math.abs(dy)>Math.abs(dx)*1.3){drag=null;return}
     if(dx>0&&idx<clips.length-1){drag.mode='f';wasPlaying=!v.paused;aud.pause();setA(false);flipSound();drag.A=idx<0?cover:copy(snapshot());drag.B=poster(idx+1);if(idx>=0){v.pause()}}
@@ -110,8 +117,8 @@ function endDrag(){if(!drag)return;var d=drag;drag=null;
     else animate(pos,W+8,Math.max(200,(W+8-pos)*.5),function(x){render(A2,B2,x)},function(){cv.classList.remove('on');busy=false;if(!ended){var p=v.play();if(p&&p.catch)p.catch(function(){})}else startHint('משכו את הדף ימינה, או חכו רגע',true)})}}
 stage.addEventListener('pointerup',endDrag);stage.addEventListener('pointercancel',endDrag);
 document.addEventListener('keydown',function(e){if(e.key==='ArrowLeft')turn(1);if(e.key==='ArrowRight')turn(-1)});
-$('next').onclick=function(){turn(1)};$('prev').onclick=function(){turn(-1)};
-$('againBtn').onclick=function(){if(busy)return;stopHint();$('endrow').classList.remove('on');v.pause();idx=-1;ui();startHint('לחצו על הספר כדי לפתוח אותו',false)};
+$('next').onclick=function(){startMusic();turn(1)};$('prev').onclick=function(){startMusic();turn(-1)};
+$('againBtn').onclick=function(e){if(e&&e.stopPropagation)e.stopPropagation();if(busy)return;stopHint();$('endrow').classList.remove('on');v.pause();aud.pause();setA(false);ended=false;idx=-1;ui();v.removeAttribute('src');v.load();startHint('לחצו על הספר כדי לפתוח אותו',false)};
 function setA(on){$('abtn').classList.toggle('on',on);$('alabel').textContent=on?'עצירת ההאזנה':'להאזנה רציפה';$('abtn').querySelector('path').setAttribute('d',on?'M6 5h4v14H6zm8 0h4v14h-4z':'M8 5v14l11-7z')}
 $('abtn').onclick=function(){if(aud.paused){v.pause();stopHint();if(!aud.src)aud.src=window.__AUDIO;aud.play();setA(true)}else{aud.pause();setA(false);if(ended&&idx>=0&&idx<clips.length-1&&!busy)startHint('משכו את הדף ימינה, או חכו רגע',true)}};
 aud.addEventListener('ended',function(){setA(false)});
