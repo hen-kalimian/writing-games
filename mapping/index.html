@@ -260,7 +260,8 @@ canvas.dc{width:100%;display:block;border:1.5px dashed var(--pink-strong);border
 .ratecard .row{justify-content:center}
 .vpic{width:min(240px,70%);height:auto;font-size:5rem;line-height:1;display:block}
 .vaultintro .vpic,.vaultcard:not(.open) .vpic{width:min(360px,80%,24vh);font-size:11rem}
-@media(min-width:860px) and (orientation:landscape){.vaultintro,.vaultcard:not(.open){display:grid;grid-template-columns:1fr 1fr;column-gap:28px;row-gap:12px;align-content:center;justify-items:center}.vaultintro>h2,.vaultcard:not(.open)>h2{grid-column:1/-1;margin:0}.vaultintro .vpic,.vaultcard:not(.open) .vpic{grid-column:1;grid-row:2/span 5;width:min(420px,100%,46vh);align-self:center}.vaultintro>:not(h2):not(.vpic),.vaultcard:not(.open)>:not(h2):not(.vpic){grid-column:2}.vaultintro .vq{font-size:1rem}.vaultintro .note{grid-column:1/-1!important}}
+@media(min-width:860px) and (orientation:landscape){.vaultintro,.vaultcard:not(.open){display:grid;grid-template-columns:1fr 1fr;column-gap:28px;row-gap:12px;align-content:center;justify-items:center}.vaultintro>h2,.vaultcard:not(.open)>h2{grid-column:1/-1;margin:0}.vaultintro .vpic,.vaultcard:not(.open) .vpic{grid-column:1;grid-row:2/span 5;width:min(420px,100%,46vh);align-self:center}.vaultintro>:not(h2):not(.vpic),.vaultcard:not(.open)>:not(h2):not(.vpic){grid-column:2}.vaultintro .vq{font-size:1rem}.vaultintro .note{grid-column:1/-1!important}.vaultcard:not(.open) .vk{height:58px;font-size:1.7rem}.vaultcard:not(.open) .vpad{gap:8px;grid-template-columns:repeat(3,96px)}.vaultcard:not(.open) .vdisp .vbox{width:64px;height:70px;font-size:2.3rem}.vaultcard:not(.open){row-gap:8px}}
+@media(max-height:760px){.vaultcard:not(.open) .vk{height:50px}.vaultcard:not(.open) .vdisp .vbox{height:58px}}
 .vaultintro .vbox,.vaultcard .vdisp .vbox{width:76px;height:92px;font-size:2.8rem;border-width:3px}
 .vaultintro .digits{gap:14px}
 .vaultcard .vpad{grid-template-columns:repeat(3,104px);gap:10px}
@@ -271,13 +272,13 @@ canvas.dc{width:100%;display:block;border:1.5px dashed var(--pink-strong);border
 .vaultcard.open .vpic{width:min(300px,70%);font-size:9rem}
 .vpic.emo{font-size:6rem}
 .vq{font-size:1.15rem;max-width:520px;margin:0}
-.digits{display:flex;gap:10px;justify-content:center}
+.digits{display:flex;gap:10px;justify-content:center;direction:ltr}
 .vbox{width:52px;height:64px;border:2px solid var(--pink-strong);border-radius:12px;display:grid;place-items:center;font-family:var(--head);font-weight:800;font-size:1.8rem;background:#fff;color:var(--pink-deep)}
 .vbox.on{background:var(--pink)}
-.vdisp{display:flex;gap:10px;justify-content:center}
+.vdisp{display:flex;gap:10px;justify-content:center;direction:ltr}
 .vdisp.bad{animation:shake .4s}
 @keyframes shake{25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
-.vpad{display:grid;grid-template-columns:repeat(3,76px);gap:8px;justify-content:center}
+.vpad{direction:ltr;display:grid;grid-template-columns:repeat(3,76px);gap:8px;justify-content:center}
 .vk{height:60px;border:2px solid var(--line);background:#fff;border-radius:16px;font-family:var(--head);font-weight:800;font-size:1.3rem}
 .vk.go{background:var(--pink-strong);border-color:var(--pink-strong);color:#fff;font-size:1rem}
 .vaultcard.open .vpic{font-size:7rem}
@@ -508,6 +509,20 @@ body.pal .gt.done{background:#c9efdc;border-color:#7fcfb0;color:#1f6b4a}
 #toast{position:fixed;inset-inline:0;bottom:16px;display:flex;justify-content:center;pointer-events:none;z-index:50}
 #toast span{background:var(--ink);color:#fff;padding:9px 18px;border-radius:99px;font-weight:600;font-size:.9rem}
 .npl{display:block;font-weight:700;font-size:.9rem;color:var(--pink-deep);margin:8px 0 2px;text-align:start}
+/* פחות ורוד במבדק המודרך (חן, 2.11.26) */
+.wzlayout{--pink:#e4f2fb;--pink2:#cfe8f7;--pink-deep:#245e8c;--line:#d3e6ef}
+.wzlayout .wztop{border-bottom-color:#cfe8f7}
+.wzlayout .wzmain>.card:nth-child(3n+1){border-color:#cfe8f7;background:linear-gradient(180deg,#fff,#f4fafe)}
+.wzlayout .wzmain>.card:nth-child(3n+2){border-color:#cdebdc;background:linear-gradient(180deg,#fff,#f3fbf7)}
+.wzlayout .wzmain>.card:nth-child(3n){border-color:#cfe8f7;background:linear-gradient(180deg,#fff,#f4fafe)}
+.wzlayout .wzmain .panel{border-color:#cdebdc;background:linear-gradient(180deg,#fff,#f6fcf9);box-shadow:0 6px 18px rgba(31,107,74,.07)}
+.wzlayout .vbox{border-color:#5aa6d4;color:#245e8c}.wzlayout .vbox.on{background:#d8ecfa}
+.wzlayout .vk{border-color:#cfe8f7}
+.wzlayout .pwp,.wzlayout .pwth{border-color:#bfe6d3}
+.wzlayout .vault-got{display:flex;flex-direction:column;align-items:center;gap:4px;direction:rtl}
+.wzlayout .vault-got b{font-size:.95rem;color:#245e8c}
+.wzlayout .vault-got .vbox{width:52px;height:60px;font-size:1.8rem;background:#fffbe8;border-color:#e6c96a;color:#8a5a00}
+.wzlayout .vault-got .vbox:empty{background:#f4f8fa;border-style:dashed;border-color:#cfe0ea}
 </style>
 </head>
 <body class="pal">
@@ -584,7 +599,7 @@ function setP(o, p, v) { const ks = p.split('.'); const last = ks.pop(); const t
 /* ===================== טופס המיפוי ===================== */
 const T1 = ['מזהה אותיות בשם', 'משיים אותיות בשם', 'כותב את השם בעזרת תיווך', 'כותב את השם באופן עצמאי'];
 const T3 = ['ספירה', 'מנייה', 'כתיבת מספרים', 'התאמת כמות למספר', 'פותר תרגילי חיבור ללא המחשה', 'פותר בעיות מילוליות ללא המחשה'];
-const T4 = ['יכולת למידה', 'תגובה לתיווך', 'זיכרון', 'גמישות', 'קשב', 'יכולת הכללה', 'מוטיבציה', 'תסכול / הימנעות', 'מוכן להתנסות', 'מגלה רצון לנסות שוב'];
+const T4 = ['יכולת למידה טובה', 'זיכרון תואם גיל', 'מוטיבציה גבוהה ללמידה', 'שיתוף פעולה', 'מוכן/ה להתנסות', 'תסכול רב', 'קושי בהתמדה', 'מגלה רצון לנסות שוב', 'מגיב/ה היטב לתיווך ומצליח/ה', 'נמנע/ת'];
 const SR = ['קבוצה', 'פרטני', 'מעקב', 'ריפוי בעיסוק', 'הפניה נוספת'];
 const LVL = { easy: { t: 'רמה קלה', w: [['פרח', 'prach'], ['דגל', 'degel'], ['פנס', 'panas']] }, hard: { t: 'רמה קשה', w: [['חולצה', 'cholca'], ['מסרק', 'masrek'], ['מסמר', 'masmer']] } };
 const picImg = (k, cls, word) => `<img class="${cls}" src="img/${k}.png" alt="" onerror="this.outerHTML='<span class=&quot;${cls} nopic&quot;>🖼️</span>'">`;
@@ -1240,7 +1255,7 @@ function wnField(m, key, label) {
 function wizNav(m) {
   const w = m.wz, done = w.done || {}, sl = ST(m);
   let vault = '';
-  if (m.kind !== 'kb' || m.kbv) { const v = ensureVault(m); vault = `<div class="wnv">קוד הכספת: <b>${TK(m).map((k, i) => (done[k] ? v.code[i] : '_')).join(' ')}</b></div>`; }
+  if (m.kind !== 'kb' || m.kbv) { const v = ensureVault(m); vault = `<div class="wnv">קוד הכספת: <b dir="ltr" style="unicode-bidi:isolate">${TK(m).map((k, i) => (done[k] ? v.code[i] : '_')).join(' ')}</b></div>`; }
   return `<nav class="wznav noprint${WZ_NAV ? ' open' : ''}" aria-label="שקופיות"><div class="wnh">${esc(m.name || 'מיפוי')}</div>${vault}<div class="wnl">${sl.map((s, i) => `<button type="button" class="wni${i === w.step && !w.phase ? ' cur' : ''}${done[s[0]] ? ' done' : ''}" data-act="wzGoto" data-i="${i}"><span class="wnk">${done[s[0]] ? '✓' : i + 1}</span><span class="wnt">${esc(s[1])}</span></button>`).join('')}
     <button type="button" class="wni sumbtn${w.phase === 'sum' ? ' cur' : ''}" data-act="wzShow"><span class="wnk">★</span><span class="wnt">דף סיכום להדפסה</span></button>
     <button type="button" class="wni quiet" data-act="wzPause"><span class="wnk">←</span><span class="wnt">יציאה ושמירה</span></button></div></nav>`;
@@ -1282,6 +1297,7 @@ function vaultSlide(m) {
   if (v.opened) return `<div class="card vaultcard open"><div class="confetti" aria-hidden="true">${confettiHtml(70)}</div>${vaultPic()}<div class="vdisp">${v.code.split('').map(c => `<span class="vbox on">${c}</span>`).join('')}</div>${emo('img/gift.png', 'vpic', '🎁')}<h2>זכית בהפתעה! כל הכבוד!</h2><p>הכספת נפתחה.</p><div class="note noexp noprint" style="font-size:.8rem">לבוחנת: הכיני לילד/ה הפתעה קטנה, מדליה, עוגייה או כל הפתעה אחרת.</div></div>`;
   return `<div class="card vaultcard"><h2>פותחים את הכספת</h2>${vaultPic()}
     <p class="note">${got < 4 ? 'הילד/ה קיבל/ה ' + got + ' ספרות מתוך 4. אפשר להמשיך גם כך.' : 'כל ארבע הספרות נאספו. מקישים את הקוד לפי הסדר שבו התקבלו.'}</p>
+    <div class="vault-got"><b>הספרות שקיבלת (לפי הסדר)</b><div class="vdisp">${TK(m).map((k, i) => `<span class="vbox">${done[k] ? v.code[i] : ''}</span>`).join('')}</div></div>
     <div class="vdisp ${v.bad ? 'bad' : ''}">${shown}</div>
     <div class="vpad">${[1, 2, 3, 4, 5, 6, 7, 8, 9].map(d => `<button type="button" class="vk" data-act="wzKey" data-d="${d}">${d}</button>`).join('')}<button type="button" class="vk" data-act="wzKey" data-d="del">מחיקה</button><button type="button" class="vk" data-act="wzKey" data-d="0">0</button><button type="button" class="vk go" data-act="wzKey" data-d="ok">פתיחה</button></div></div>`;
 }
