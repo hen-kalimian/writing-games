@@ -523,6 +523,30 @@ body.pal .gt.done{background:#c9efdc;border-color:#7fcfb0;color:#1f6b4a}
 .wzlayout .vault-got b{font-size:.95rem;color:#245e8c}
 .wzlayout .vault-got .vbox{width:52px;height:60px;font-size:1.8rem;background:#fffbe8;border-color:#e6c96a;color:#8a5a00}
 .wzlayout .vault-got .vbox:empty{background:#f4f8fa;border-style:dashed;border-color:#cfe0ea}
+/* דף מיפוי לבן וידידותי למדפסת */
+.sumsheet,.repsheet{border-color:#bbb!important;background:#fff!important}
+.sumsheet .title,.repsheet .title{color:#111!important}
+.wzlayout .wzmain .sumsheet .panel,.sumsheet .panel{background:#fff!important;border:1px solid #aaa!important;box-shadow:none!important}
+.sumsheet .panel h3{color:#111!important}
+.sumsheet .num{background:#fff!important;color:#111!important;border:1.5px solid #111}
+.sumsheet .lres,.sumsheet .sPad,.sumsheet .bdsum{background:#fff!important;border-color:#bbb!important}
+.sumsheet .sec.good,.sumsheet .sec.hard,.sumsheet .stopnote,.sumsheet .conc{background:#fff!important;color:#111!important}
+.sumsheet .sImg{width:100%;height:auto;display:block;border:1px solid #ccc;border-radius:6px;background:#fff}
+.sumsheet .lres .sImg{border:0}
+.sumsheet .pic.sm{max-height:46px;width:auto}
+.repsheet{gap:12px;line-height:1.55;font-size:1rem;color:#111;border:2px solid #bbb;border-radius:8px;padding:22px}
+.repsheet .title{font-size:1.7rem;text-align:center}
+.repsheet .sub{text-align:center;color:#444;margin-top:-6px}
+.repsheet .rdet{display:grid;grid-template-columns:1fr 1fr;gap:6px 18px;border:1px solid #999;border-radius:6px;padding:10px 14px}
+.repsheet .rsec{break-inside:avoid;border-top:1.5px solid #333;padding-top:6px}
+.repsheet .rsec h3{font-size:1.08rem;color:#111;margin:0 0 4px}
+.repsheet .rsec ul{margin:0;padding-inline-start:22px}
+.repsheet .rsec li{margin:2px 0}
+.repsheet .sign{margin-top:14px;display:flex;gap:30px;font-size:.95rem}
+.repsheet .rights{font-size:.75rem;color:#555;text-align:center}
+.npgrid{display:flex;flex-direction:column;gap:6px;text-align:start;max-height:60vh;overflow:auto}
+.npskip{border:0;background:none;color:var(--muted);text-decoration:underline;font-size:.95rem;padding:6px}
+@media print{.repsheet{border:0;padding:0;font-size:12.5px;gap:8px}.repsheet .rdet{border-color:#777}.sumsheet *{background-image:none!important}}
 </style>
 </head>
 <body class="pal">
@@ -600,7 +624,7 @@ function setP(o, p, v) { const ks = p.split('.'); const last = ks.pop(); const t
 const T1 = ['מזהה אותיות בשם', 'משיים אותיות בשם', 'כותב את השם בעזרת תיווך', 'כותב את השם באופן עצמאי'];
 const T3 = ['ספירה', 'מנייה', 'כתיבת מספרים', 'התאמת כמות למספר', 'פותר תרגילי חיבור ללא המחשה', 'פותר בעיות מילוליות ללא המחשה'];
 const T4 = ['יכולת למידה טובה', 'זיכרון תואם גיל', 'מוטיבציה גבוהה ללמידה', 'שיתוף פעולה', 'מוכן/ה להתנסות', 'תסכול רב', 'קושי בהתמדה', 'מגלה רצון לנסות שוב', 'מגיב/ה היטב לתיווך ומצליח/ה', 'נמנע/ת'];
-const SR = ['קבוצה', 'פרטני', 'מעקב', 'ריפוי בעיסוק', 'הפניה נוספת'];
+const SR = ['מומלץ להמשיך בקבוצת הכנה לכיתה א׳ עם ילדים נוספים', 'מומלץ להמשיך בתהליך פרטני', 'מומלץ מעקב בעוד מספר חודשים', 'מומלץ להתייעץ או להתחיל טיפול בריפוי בעיסוק', 'מומלצת הפניה נוספת להערכה מקצועית'];
 const LVL = { easy: { t: 'רמה קלה', w: [['פרח', 'prach'], ['דגל', 'degel'], ['פנס', 'panas']] }, hard: { t: 'רמה קשה', w: [['חולצה', 'cholca'], ['מסרק', 'masrek'], ['מסמר', 'masmer']] } };
 const picImg = (k, cls, word) => `<img class="${cls}" src="img/${k}.png" alt="" onerror="this.outerHTML='<span class=&quot;${cls} nopic&quot;>🖼️</span>'">`;
 const CHECK = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l5 5L19 7"/></svg>';
@@ -817,7 +841,7 @@ document.addEventListener('pointerdown', e => {
   e.preventDefault(); cv.setPointerCapture(e.pointerId);
   const r = cv.getBoundingClientRect();
   cur = { cv, pts: [[Math.round((e.clientX - r.left) / r.width * 1000), Math.round((e.clientY - r.top) / r.height * 1000)]] };
-  const m = curMap(); getP(m, cv.dataset.d).push(cur.pts); drawCanvas(cv);
+  const m = curMap(); getP(m, cv.dataset.d).push(cur.pts); if (!m.dh) m.dh = {}; m.dh[cv.dataset.d] = +cv.dataset.h || 600; drawCanvas(cv);
 });
 document.addEventListener('pointermove', e => {
   if (!cur) return; const r = cur.cv.getBoundingClientRect();
@@ -1294,7 +1318,7 @@ function vaultPic() { return emo('img/vault.png', 'vpic', '🔐'); }
 function vaultSlide(m) {
   const v = ensureVault(m), done = m.wz.done || {}, got = TK(m).filter(k => done[k]).length;
   const shown = [0, 1, 2, 3].map(i => `<span class="vbox${i < v.input.length ? ' on' : ''}">${i < v.input.length ? v.input[i] : ''}</span>`).join('');
-  if (v.opened) return `<div class="card vaultcard open"><div class="confetti" aria-hidden="true">${confettiHtml(70)}</div>${vaultPic()}<div class="vdisp">${v.code.split('').map(c => `<span class="vbox on">${c}</span>`).join('')}</div>${emo('img/gift.png', 'vpic', '🎁')}<h2>זכית בהפתעה! כל הכבוד!</h2><p>הכספת נפתחה.</p><div class="note noexp noprint" style="font-size:.8rem">לבוחנת: הכיני לילד/ה הפתעה קטנה, מדליה, עוגייה או כל הפתעה אחרת.</div></div>`;
+  if (v.opened) return `<div class="card vaultcard open"><div class="confetti" aria-hidden="true">${confettiHtml(70)}</div>${vaultPic()}<div class="vdisp">${v.code.split('').map(c => `<span class="vbox on">${c}</span>`).join('')}</div>${emo('img/gift.png', 'vpic', '🎁')}<h2>זכית בהפתעה! כל הכבוד!</h2><p>הכספת נפתחה.</p><div class="note noexp noprint" style="font-size:.8rem">לבוחנת: הכיני לילד/ה הפתעה קטנה, מדליה, עוגייה או כל הפתעה אחרת.</div>${m.kind === 'kb' ? '' : '<div class="row noprint" style="justify-content:center"><button type="button" class="btn" data-act="wzNotes">השלמת הערות שחסרות</button></div>'}</div>`;
   return `<div class="card vaultcard"><h2>פותחים את הכספת</h2>${vaultPic()}
     <p class="note">${got < 4 ? 'הילד/ה קיבל/ה ' + got + ' ספרות מתוך 4. אפשר להמשיך גם כך.' : 'כל ארבע הספרות נאספו. מקישים את הקוד לפי הסדר שבו התקבלו.'}</p>
     <div class="vault-got"><b>הספרות שקיבלת (לפי הסדר)</b><div class="vdisp">${TK(m).map((k, i) => `<span class="vbox">${done[k] ? v.code[i] : ''}</span>`).join('')}</div></div>
@@ -1319,10 +1343,18 @@ function showTaskNote(m, key, cb) {
   const tn = TNOTE[key]; if (!tn) { cb(); return; }
   const WR2 = key === 't1' || key === 't2';
   const o = document.createElement('div'); o.className = 'notepop noprint';
-  o.innerHTML = `<div class="np"><h2>הערות לדוח המסכם</h2><div class="npt">${esc(tn[1])}</div><p class="note">מה שנכתב כאן יופיע בדוח המסכם תחת המשימה הזאת. אפשר גם להשאיר ריק.</p>${WR2 ? `<label class="npl">האם הילד/ה בחר/ה את צורת האותיות באופן עצמאי?</label><textarea data-p="${key}.noteS" placeholder="למשל: בחר/ה לבד את הצורה, ביקש/ה עזרה, העתיק/ה מהמודל">${esc(getP(m, key + '.noteS') || '')}</textarea><label class="npl">הערות לכתיבה עצמה: גודל, אחיזה ועוד</label>` : ''}<textarea data-p="${tn[0]}" placeholder="${WR2 ? 'למשל: גודל האותיות, אחיזת העט, לחץ, כיוון' : 'כתבי כאן הערות על המשימה'}">${esc(getP(m, tn[0]) || '')}</textarea><button type="button" class="btn solid npgo">שמירה והמשך לשלב הבא</button></div>`;
+  o.innerHTML = `<div class="np"><h2>הערות לדוח המסכם</h2><div class="npt">${esc(tn[1])}</div><p class="note">מה שנכתב כאן יופיע בדוח המסכם תחת המשימה הזאת. אפשר גם להשאיר ריק.</p>${WR2 ? `<label class="npl">האם הילד/ה בחר/ה את צורת האותיות באופן עצמאי?</label><textarea data-p="${key}.noteS" placeholder="למשל: בחר/ה לבד את הצורה, ביקש/ה עזרה, העתיק/ה מהמודל">${esc(getP(m, key + '.noteS') || '')}</textarea><label class="npl">הערות לכתיבה עצמה: גודל, אחיזה ועוד</label>` : ''}<textarea data-p="${tn[0]}" placeholder="${WR2 ? 'למשל: גודל האותיות, אחיזת העט, לחץ, כיוון' : 'כתבי כאן הערות על המשימה'}">${esc(getP(m, tn[0]) || '')}</textarea><button type="button" class="btn solid npgo">שמירה והמשך לשלב הבא</button><button type="button" class="npskip npgo">דילוג, אכתוב את ההערות אחר כך</button></div>`;
   document.body.appendChild(o);
   const ta = o.querySelector('textarea'); setTimeout(() => { try { ta.focus(); } catch (e) {} }, 100);
-  o.querySelector('.npgo').addEventListener('click', () => { o.remove(); cb(); });
+  o.querySelectorAll('.npgo').forEach(x => x.addEventListener('click', () => { o.remove(); cb(); }));
+}
+const NOTEKEYS = m => [['t1.noteS', 'כתיבת שם: האם בחר/ה את צורת האותיות באופן עצמאי'], ['t1.note', 'כתיבת שם: גודל, אחיזה ועוד'], ['t2.noteS', 'כתיב פונטי: האם בחר/ה את צורת האותיות באופן עצמאי'], ['t2.note', 'כתיב פונטי: גודל, אחיזה ועוד'], ['t3.note', 'חשבון'], ['t4.how', 'למידת מושג חדש']];
+function showMissingNotes(m) {
+  const miss = NOTEKEYS(m).filter(k => !(getP(m, k[0]) || '').toString().trim());
+  const o = document.createElement('div'); o.className = 'notepop noprint';
+  o.innerHTML = `<div class="np"><h2>השלמת הערות</h2>${miss.length ? '<p class="note">אלה ההערות שעוד לא נכתבו. אפשר למלא מה שרוצים ולהשאיר ריק את השאר.</p><div class="npgrid">' + miss.map(k => `<label class="npl">${esc(k[1])}</label><textarea data-p="${k[0]}"></textarea>`).join('') + '</div>' : '<p class="note">כל ההערות כבר כתובות.</p>'}<button type="button" class="btn solid npgo">שמירה וסגירה</button></div>`;
+  document.body.appendChild(o);
+  o.querySelector('.npgo').addEventListener('click', () => { o.remove(); renderMap(); });
 }
 
 /* ===== כתיבה עם ניקוד: איורים של יום הולדת ===== */
@@ -1403,7 +1435,7 @@ function pwSlide(m) {
     if (t2.cur != null) {
       const i = t2.cur, last = fin.length >= 2;
       h += `<div class="pwfull noprint"><div class="pwside">${pic(i, 'pic big')}</div>
-        <div class="pwboard">${pad('t2.d.' + i, pwH(), '')}<div class="pwbtns"><button type="button" class="btn solid" data-act="pwDone">${last ? 'סיימתי' : 'סיימתי, למילה הבאה'}</button><button type="button" class="btn sm quiet" data-act="pwBack">חזרה לבחירת מילה</button></div></div></div>`;
+        <div class="pwboard">${pad('t2.d.' + i, pwH(95), '')}${mkRow((t2.r || {})[i] || 0, 'pwMark', 'data-i="' + i + '"')}<div class="pwbtns"><button type="button" class="btn solid" data-act="pwDone">${last ? 'סיימתי' : 'סיימתי, למילה הבאה'}</button><button type="button" class="btn sm quiet" data-act="pwBack">חזרה לבחירת מילה</button></div></div></div>`;
     }
   }
   return h;
@@ -1416,7 +1448,7 @@ function ovDetail(m, k) {
   if (k === 't1') return padOut(m, 't1.draw', 380) + lines(T1, 't1.c') + txt('אותיות בשם', m.t1 && m.t1.ask) + txt('בחירת צורת האותיות באופן עצמאי', m.t1 && m.t1.noteS)+txt('הערות לכתיבה (גודל, אחיזה ועוד)', m.t1 && m.t1.note);
   if (k === 't2') { const t2 = m.t2 || {}; if (!t2.lv) return '<div class="note">עוד לא נבחרה רמה</div>'; return (t2.order || []).map(i => `<div class="ovsub">${picImg(LVL[t2.lv].w[i][1], 'pic sm', '')}${padOut(m, 't2.d.' + i, 230) || '<span class="note">עוד לא נכתב</span>'}</div>`).join('') + txt('בחירת צורת האותיות באופן עצמאי', t2.noteS)+txt('הערות לכתיבה (גודל, אחיזה ועוד)', t2.note); }
   if (k === 't3') return lines(T3, 't3.c') + txt('הערות', m.t3 && m.t3.note);
-  if (k === 'let') { const lt = m.lt; if (!lt) return '<div class="note">עוד לא התחלנו</div>'; const mk = v => SYMX[v] || '○'; return lt.L.map(l => `<div class="ovsub"><span class="lbig">${l}</span><span>כתיבה ${mk(lt.wr[l])} · שיום ${lt.wr[l] === 1 && !lt.nm[l] ? '—' : mk(lt.nm[l])} · זיהוי ${lt.pt[l] === 1 ? '✓' : lt.pt[l] === 3 ? '✗' : ((lt.wr[l] === 1 || lt.nm[l] === 1) ? '—' : '○')}</span>${strokeImg(lt.d[l], 110, 70)}</div>`).join(''); }
+  if (k === 'let') { const lt = m.lt; if (!lt) return '<div class="note">עוד לא התחלנו</div>'; const mk = v => SYMX[v] || '○'; return lt.L.map(l => `<div class="ovsub"><span class="lbig">${l}</span><span>כתיבה ${mk(lt.wr[l])} · שיום ${lt.wr[l] === 1 && !lt.nm[l] ? '—' : mk(lt.nm[l])} · זיהוי ${lt.pt[l] === 1 ? '✓' : lt.pt[l] === 3 ? '✗' : ((lt.wr[l] === 1 || lt.nm[l] === 1) ? '—' : '○')}</span>${strokeImg(lt.d[l], 110, 70, dhOf(m, 'lt.d.' + l))}</div>`).join(''); }
   if (k === 't4') return txt('מה לימדנו', m.t4 && m.t4.q) + lines(T4, 't4.c') + txt('איך הגיב/ה', m.t4 && m.t4.how);
   return '';
 }
@@ -1445,7 +1477,10 @@ function wizScreen(m) {
   if (w.phase === 'think' && !window.__thinkT) { w.phase = 'sum'; m.completed = true; }
   if (w.phase === 'think') return wrapLayout(m, `<div class="card think"><div class="thinkface">🤔</div><h2>מכינה את דף הסיכום...</h2><div class="dots"><i></i><i></i><i></i></div></div>`);
   if (w.phase === 'sum') {
-    return wrapLayout(m, summaryHtml(m) + `<div class="card noprint"><h2>שמירה והדפסה</h2><div class="actions"><button class="btn solid" type="button" data-act="png">שמירה כקובץ תמונה A4 (הכול בעמוד אחד)</button><button class="btn" type="button" data-act="print">הדפסה או שמירה כ-PDF</button></div>
+    if (w.view === 'report') return wrapLayout(m, reportHtml(m) + `<div class="card noprint"><h2>הדפסת דו״ח סיכום מיפוי</h2><div class="actions"><button class="btn solid" type="button" data-act="print">הדפסה או שמירה כ-PDF</button><button class="btn" type="button" data-act="png">שמירה כקובץ תמונה A4</button></div>
+      <p class="note">הדו״ח כתוב לפי מה שסומן והוקלד במיפוי, ומתעדכן לבד אם משנים משהו בשקופיות.</p>
+      <div class="row"><button class="btn quiet" type="button" data-act="wzNotes">השלמת הערות שחסרות</button><button class="btn quiet" type="button" data-act="wzRepBack">חזרה לדף המיפוי</button><button class="btn quiet" type="button" data-act="wzEdit">חזרה לעריכה</button></div></div>`);
+    return wrapLayout(m, summaryHtml(m) + `<div class="card noprint"><h2>הדפסה ושמירה</h2><div class="actions"><button class="btn solid" type="button" data-act="wzRep">לדו״ח סיכום מיפוי בכתב (דף נפרד להדפסה)</button><button class="btn solid" type="button" data-act="png">שמירת דף המיפוי כתמונה A4 (עמוד אחד)</button><button class="btn" type="button" data-act="print">הדפסת דף המיפוי (עמוד אחד) או שמירה כ-PDF</button></div>
       <p class="note">אם משנים משהו בשקופיות אחרי ההדפסה, דף הסיכום מתעדכן לבד. פותחים אותו שוב ומדפיסים.</p>
       <div class="row"><button class="btn quiet" type="button" data-act="wzEdit">חזרה לעריכה</button><button class="btn quiet" type="button" data-act="wzDone">סיום ויציאה לדף המיפוי</button></div></div>`);
   }
@@ -1518,8 +1553,22 @@ function wizScreen(m) {
 }
 
 /* ===== דף הסיכום ===== */
-function strokeImg(st, W, H) {
+const dhOf = (m, path) => (m && m.dh && m.dh[path]) || (/^(t2|lt)\.d\./.test(path) ? 600 : 0);
+function strokeCrop(st, rh) {
+  let x0 = 1e9, x1 = -1e9, y0 = 1e9, y1 = -1e9;
+  st.forEach(sg => sg.forEach(pt => { const y = pt[1] * rh / 1000; x0 = Math.min(x0, pt[0]); x1 = Math.max(x1, pt[0]); y0 = Math.min(y0, y); y1 = Math.max(y1, y); }));
+  const pad = 45; const w = Math.max(x1 - x0 + 2 * pad, 380), h = Math.max(y1 - y0 + 2 * pad, 150);
+  const cx = (x0 + x1) / 2, cy = (y0 + y1) / 2, sc = Math.min(640 / w, 480 / h);
+  const c = document.createElement('canvas'); c.width = Math.round(w * sc); c.height = Math.round(h * sc);
+  const g = c.getContext('2d'); g.fillStyle = '#fff'; g.fillRect(0, 0, c.width, c.height);
+  g.strokeStyle = '#111'; g.lineWidth = Math.max(2.5, 8 * sc); g.lineCap = 'round'; g.lineJoin = 'round';
+  const X = v => (v - (cx - w / 2)) * sc, Y = v => (v * rh / 1000 - (cy - h / 2)) * sc;
+  st.forEach(sg => { g.beginPath(); sg.forEach((pt, i) => { if (i) g.lineTo(X(pt[0]), Y(pt[1])); else g.moveTo(X(pt[0]), Y(pt[1])); }); if (sg.length === 1) g.lineTo(X(sg[0][0]) + 0.1, Y(sg[0][1])); g.stroke(); });
+  return c.toDataURL('image/png');
+}
+function strokeImg(st, W, H, rh) {
   if (!st || !st.length) return '';
+  if (rh) return `<img class="sImg crop" src="${strokeCrop(st, rh)}" alt="">`;
   const c = document.createElement('canvas'); c.width = W; c.height = H;
   const g = c.getContext('2d'); g.fillStyle = '#fff'; g.fillRect(0, 0, W, H);
   g.strokeStyle = '#2b3138'; g.lineWidth = Math.max(2, W / 110); g.lineCap = 'round'; g.lineJoin = 'round';
@@ -1531,7 +1580,7 @@ function padOut(m, path, h, label) {
   let c = '';
   if (mode === 'photo') c = pm.img ? `<img class="sImg" src="${pm.img}" alt="">` : '';
   else if (mode === 'note') c = pm.note ? `<div class="sNote">${esc(pm.note)}</div>` : '';
-  else c = strokeImg(getP(m, path), 300, Math.round(300 * h / 1000));
+  else c = strokeImg(getP(m, path), 300, Math.round(300 * h / 1000), dhOf(m, path) || h);
   return c ? `<div class="sPad">${label ? `<span class="lbl">${esc(label)}</span>` : ''}${c}</div>` : '';
 }
 function checks(arr, prefix, m) { const ok = [], no = []; arr.forEach((t, i) => (getP(m, prefix + '.' + i) ? ok : no).push(t)); return [ok, no]; }
@@ -1539,6 +1588,73 @@ function sumCommon(m) {
   const w = m.wz || {};
   const notes = Object.keys(m.wn || {}).filter(k => (m.wn[k] || '').trim()).map(k => { const nm = k.indexOf('lw') === 0 ? 'אות ' + (+k.slice(2) + 1) : (ST(m)[IDX(m, k)] || [k, k])[1]; return `<div class="sline"><b>${esc(nm)}:</b> ${esc(m.wn[k])}</div>`; }).join('');
   return { w, notes };
+}
+
+/* ===== דו״ח סיכום מיפוי בכתב ===== */
+function reportHtml(m) {
+  const GN = (a, b) => { if (m.gender === 'ילדה') return b; if (m.gender === 'ילד') return a; let i = 0; while (i < a.length && i < b.length && a[i] === b[i]) i++; return a + '/' + b.slice(i); };
+  const jn = arr => arr.length < 2 ? (arr[0] || '') : arr.slice(0, -1).join(', ') + ' ו' + arr[arr.length - 1];
+  const sec = (title, items) => { items = items.filter(Boolean); return items.length ? '<div class="rsec"><h3>' + esc(title) + '</h3><ul>' + items.map(x => '<li>' + esc(x) + '</li>').join('') + '</ul></div>' : ''; };
+  const lt = m.lt, w = m.wz || {}, t2 = m.t2 || { w: [] };
+  const lets = a => (a.length > 1 ? 'את האותיות ' : 'את האות ') + a.join(' ');
+  const wr = n => lt ? lt.L.filter(l => lt.wr[l] === n) : [], nm = n => lt ? lt.L.filter(l => lt.nm[l] === n) : [], pt = n => lt ? lt.L.filter(l => lt.pt[l] === n) : [];
+  const letters = () => {
+    if (!lt) return [];
+    const o = [], a1 = wr(1), a2 = wr(2), a3 = wr(3), n1 = nm(1), n2 = nm(2), n3 = nm(3), p1 = pt(1), p3 = pt(3);
+    if (a1.length) o.push(GN('זכר', 'זכרה') + ' ' + GN('וכתב', 'וכתבה') + ' ' + lets(a1));
+    if (a2.length) o.push(GN('כתב', 'כתבה') + ' בעזרה ' + lets(a2));
+    if (a3.length) o.push('לא ' + GN('הצליח', 'הצליחה') + ' לכתוב ' + lets(a3));
+    if (n1.length) o.push(GN('הצליח', 'הצליחה') + ' בשיום ' + (a1.length || a2.length || a3.length ? 'גם ' : '') + lets(n1));
+    if (n2.length) o.push(GN('שיים', 'שיימה') + ' בעזרה ' + lets(n2));
+    if (n3.length) o.push('לא ' + GN('שיים', 'שיימה') + ' ' + lets(n3));
+    if (p1.length) o.push(GN('זיהה', 'זיהתה') + ' בהצבעה ' + lets(p1));
+    if (p3.length) o.push('לא ' + GN('זיהה', 'זיהתה') + ' ' + lets(p3));
+    const wn = Object.keys(m.wn || {}).filter(k => /^lw\d+$/.test(k) && (m.wn[k] || '').trim()).map(k => 'אות ' + lt.L[+k.slice(2)] + ': ' + m.wn[k].trim());
+    return o.concat(wn);
+  };
+  const nt = (label, v) => (v && String(v).trim()) ? label + ': ' + String(v).trim() : '';
+  const phon = () => {
+    if (!t2.lv) return [];
+    const ord = (t2.order && t2.order.length ? t2.order : [0, 1, 2]), words = i => LVL[t2.lv].w[i][0], r = t2.r || {}, o = [];
+    const g = n => ord.filter(i => r[i] === n).map(words), none = ord.filter(i => !r[i]).map(words);
+    const W = a => (a.length > 1 ? 'המילים ' : 'המילה ') + jn(a);
+    if (g(1).length) o.push(GN('הצליח', 'הצליחה') + ' לכתוב לפי שמיעה את ' + W(g(1)));
+    if (g(2).length) o.push(GN('כתב', 'כתבה') + ' לפי שמיעה בעזרה את ' + W(g(2)));
+    if (g(3).length) o.push('לא ' + GN('הצליח', 'הצליחה') + ' לכתוב לפי שמיעה את ' + W(g(3)));
+    if (none.length) o.push(GN('כתב', 'כתבה') + ' לפי שמיעה את ' + W(none));
+    o.push(nt('בחירת צורת האותיות באופן עצמאי', t2.noteS), nt('הערות לכתיבה (גודל, אחיזה ועוד)', t2.note));
+    return o;
+  };
+  const sums = (() => { const x = m.s || {}; return [nt('נקודות חוזק', x.strong), nt('מוקדי קושי', x.hard), nt('מטרות ראשוניות', x.goals), nt('המלצות להורים', x.recs), (x.r && SR.filter((_, i) => x.r[i]).length) ? SR.filter((_, i) => x.r[i]).join('. ') + '.' : '', nt('הערות', x.note)]; })();
+  const other = Object.keys(m.wn || {}).filter(k => !/^lw\d+$/.test(k) && (m.wn[k] || '').trim()).map(k => ((ST(m)[IDX(m, k)] || [k, k])[1]) + ': ' + m.wn[k].trim());
+  const secs = [];
+  if (m.parents) secs.push(sec('רקע ותובנות משיחת ההורים', [m.parents.trim()]));
+  if (m.kind !== 'kb') {
+    const [a1, b1] = checks(T1, 't1.c', m), [a3] = checks(T3, 't3.c', m), [a4] = checks(T4, 't4.c', m);
+    secs.push(sec('כתיבת שם', [a1.length ? 'נצפה: ' + a1.join(', ') : '', b1.length && a1.length ? 'לא סומן: ' + b1.join(', ') : '', nt('אותיות בשם', m.t1 && m.t1.ask), nt('בחירת צורת האותיות באופן עצמאי', m.t1 && m.t1.noteS), nt('הערות לכתיבה (גודל, אחיזה ועוד)', m.t1 && m.t1.note)]));
+    secs.push(sec('כתיבה פונטית' + (t2.lv ? ', ' + LVL[t2.lv].t : ''), phon()));
+    secs.push(sec('חשבון', [a3.length ? GN('הצליח', 'הצליחה') + ' ב: ' + a3.join(', ') : '', getP(m, 't3.no10') ? 'לא ' + GN('הצליח', 'הצליחה') + ' בחיבור עד 10, ולכן ניתן תרגיל חשבון עד 5' : '', nt('הערות', m.t3 && m.t3.note)]));
+    secs.push(sec('אותיות: כתיבה בהכתבה, שיום והצבעה', letters()));
+    secs.push(sec('למידה חדשה בזמן אמת' + (m.t4 && m.t4.q ? ' (' + m.t4.q + ')' : ''), [a4.length ? 'נצפה: ' + a4.join(', ') : '', nt('איך הגיב/ה', m.t4 && m.t4.how)]));
+  } else {
+    ensureKb(m); const p = kbPath(m), g = k => mk(m, k), an = sylAnalysis(m);
+    const rd = (key, L, noun) => { const ok = L.filter((_, i) => g(key + i) === 2), hp = L.filter((_, i) => g(key + i) === 1), no = L.filter((_, i) => !g(key + i)); return [ok.length ? GN('קרא', 'קראה') + ' נכון ' + noun + ': ' + ok.join(', ') : '', hp.length ? GN('קרא', 'קראה') + ' בעזרה או בתיקון עצמי ' + noun + ': ' + hp.join(', ') : '', no.length ? 'לא ' + GN('קרא', 'קראה') + ' או לא נבדק ' + noun + ': ' + no.join(', ') : '']; };
+    secs.push(sec('כתיב פונטי' + (t2.lv ? ', ' + LVL[t2.lv].t : ''), phon().concat(m.kr1 ? [m.kr1 === 'easy' ? GN('הצליח', 'הצליחה') + ' לכתוב לפי הצלילים' : GN('התקשה', 'התקשתה') + ' בכתיבה לפי הצלילים'] : [])));
+    if (p.letters) secs.push(sec('אותיות: כתיבה, שיום והצבעה', letters()));
+    else secs.push(sec('קריאת מילות תפל', rd('nw', NONSENSE, 'מילות תפל').concat([nt('הערות', (m.wn || {}).knw)])));
+    if (p.low) { secs.push(sec('קריאת מילה קצרה', rd('rw', REALW, 'מילים').concat([nt('הערות', (m.wn || {}).krw)]))); secs.push(sec('קריאת הברות', [an.text, nt('הערות', (m.wn || {}).ksy)])); }
+    else {
+      secs.push(sec('קריאת משפט', rd('rs', SENT, 'משפטים').concat([nt('הערות', (m.wn || {}).krs)])));
+      secs.push(sec('כתיבה עם ניקוד', ((m.bd && m.bd.rows) || []).map(r => bdOf(r.k)[1] + ': ' + (r.ok ? GN('כתב', 'כתבה') + ' נכון עם ניקוד' : 'לא סומן כתקין') + (r.note ? ' (' + r.note + ')' : ''))));
+    }
+  }
+  secs.push(sec('הערות הבוחנת תוך כדי המיפוי', other));
+  secs.push(sec('סיכום, מטרות והמלצות', sums));
+  const doneN = (m.kind === 'kb' ? KTASKS : TASKKEYS).filter(k => (w.done || {})[k]).length;
+  return '<div class="sheet repsheet" id="sheet"><div class="title">דו״ח סיכום מיפוי</div><div class="sub">' + (m.kind === 'kb' ? 'כיתות א׳-ב׳ · בשיטת קוראים בקלות' : 'הכנה לכיתה א׳ · גן חובה') + ' · חן קלימיאן, לדבר עם ילדים</div>' +
+    '<div class="rdet"><div><b>שם הבודקת:</b> ' + esc(m.examiner) + '</div><div><b>תאריך:</b> ' + fmt(m.date) + '</div><div><b>שם הילד/ה:</b> ' + esc(m.name) + '</div><div><b>גיל:</b> ' + esc(m.age) + '</div><div><b>מסגרת חינוכית:</b> ' + esc(m.school) + '</div><div><b>משימות שהושלמו:</b> ' + doneN + ' מתוך 4</div></div>' +
+    (w.stopped ? '<div class="rsec"><h3>הערה</h3><ul><li>המיפוי הופסק בשקופית "' + esc((ST(m)[IDX(m, w.stopped)] || ['', w.stopped])[1]) + '" כי ' + GN('הילד', 'הילדה') + ' ' + GN('התקשה', 'התקשתה') + '. הדו״ח כולל את מה שבוצע עד אז.</li></ul></div>' : '') +
+    secs.join('') + '<div class="sign"><span>חתימת הבודקת: ____________________</span></div><div class="rights">כל הזכויות שמורות לחן קלימיאן</div></div>';
 }
 function summaryHtml(m) {
   if (m.kind === 'kb') return summaryKb(m);
@@ -1550,7 +1666,7 @@ function summaryHtml(m) {
   const stCls = v => v === 1 ? 'g' : v === 2 ? 'h' : v === 3 ? 'x' : '';
   const recs = (m.s && m.s.r ? SR.filter((x, i) => m.s.r[i]) : []);
   const doneN = TASKKEYS.filter(k => (w.done || {})[k]).length;
-  const lres = lt ? `<div class="lsum">${lt.L.map(l => `<div class="lres"><div class="lbig">${l}</div><div class="lline">כתיבה <b class="${stCls(lt.wr[l])}">${SYMX[lt.wr[l]] || '○'}</b></div><div class="lline">שם האות <b class="${stCls(lt.nm[l])}">${lt.wr[l] === 1 && !lt.nm[l] ? '—' : (SYMX[lt.nm[l]] || '○')}</b></div><div class="lline">זיהוי <b class="${lt.pt[l] === 1 ? 'g' : lt.pt[l] === 3 ? 'x' : ''}">${!lt.pt[l] && (lt.wr[l] === 1 || lt.nm[l] === 1) ? '—' : (lt.pt[l] === 1 ? '✓' : lt.pt[l] === 3 ? '✗' : '○')}</b></div>${strokeImg(lt.d[l], 110, 70)}</div>`).join('')}</div>` : '<div class="note">לא בוצע שלב אותיות</div>';
+  const lres = lt ? `<div class="lsum">${lt.L.map(l => `<div class="lres"><div class="lbig">${l}</div><div class="lline">כתיבה <b class="${stCls(lt.wr[l])}">${SYMX[lt.wr[l]] || '○'}</b></div><div class="lline">שם האות <b class="${stCls(lt.nm[l])}">${lt.wr[l] === 1 && !lt.nm[l] ? '—' : (SYMX[lt.nm[l]] || '○')}</b></div><div class="lline">זיהוי <b class="${lt.pt[l] === 1 ? 'g' : lt.pt[l] === 3 ? 'x' : ''}">${!lt.pt[l] && (lt.wr[l] === 1 || lt.nm[l] === 1) ? '—' : (lt.pt[l] === 1 ? '✓' : lt.pt[l] === 3 ? '✗' : '○')}</b></div>${strokeImg(lt.d[l], 110, 70, dhOf(m, 'lt.d.' + l))}</div>`).join('')}</div>` : '<div class="note">לא בוצע שלב אותיות</div>';
   return `<div class="sheet sumsheet" id="sheet">
   <div class="title">סיכום מיפוי: הכנה לכיתה א׳</div>
   <div class="sub">מיפוי לילדי גן חובה · חן קלימיאן, לדבר עם ילדים</div>
@@ -1577,7 +1693,7 @@ function summaryKb(m) {
   const doneN = KTASKS.filter(k => (w.done || {})[k]).length, an = sylAnalysis(m);
   const stCls = v => v === 1 ? 'g' : v === 2 ? 'h' : v === 3 ? 'x' : '';
   const list = (key, L) => `<div class="nwlist one">${L.map((wd, i) => `<div class="nwr"><span class="nwt">${wd}</span><b class="c${g(key + i)}">${sym(g(key + i))}</b><span>${esc((m[key] || [])[i] || '')}</span></div>`).join('')}</div>`;
-  const lres = lt ? `<div class="lsum">${lt.L.map(l => `<div class="lres"><div class="lbig">${l}</div><div class="lline">כתיבה <b class="${stCls(lt.wr[l])}">${SYMX[lt.wr[l]] || '○'}</b></div><div class="lline">שם האות <b class="${stCls(lt.nm[l])}">${lt.wr[l] === 1 && !lt.nm[l] ? '—' : (SYMX[lt.nm[l]] || '○')}</b></div><div class="lline">זיהוי <b class="${lt.pt[l] === 1 ? 'g' : lt.pt[l] === 3 ? 'x' : ''}">${!lt.pt[l] && (lt.wr[l] === 1 || lt.nm[l] === 1) ? '—' : (lt.pt[l] === 1 ? '✓' : lt.pt[l] === 3 ? '✗' : '○')}</b></div>${strokeImg(lt.d[l], 110, 70)}</div>`).join('')}</div>` : '<div class="note">לא בוצע שלב אותיות</div>';
+  const lres = lt ? `<div class="lsum">${lt.L.map(l => `<div class="lres"><div class="lbig">${l}</div><div class="lline">כתיבה <b class="${stCls(lt.wr[l])}">${SYMX[lt.wr[l]] || '○'}</b></div><div class="lline">שם האות <b class="${stCls(lt.nm[l])}">${lt.wr[l] === 1 && !lt.nm[l] ? '—' : (SYMX[lt.nm[l]] || '○')}</b></div><div class="lline">זיהוי <b class="${lt.pt[l] === 1 ? 'g' : lt.pt[l] === 3 ? 'x' : ''}">${!lt.pt[l] && (lt.wr[l] === 1 || lt.nm[l] === 1) ? '—' : (lt.pt[l] === 1 ? '✓' : lt.pt[l] === 3 ? '✗' : '○')}</b></div>${strokeImg(lt.d[l], 110, 70, dhOf(m, 'lt.d.' + l))}</div>`).join('')}</div>` : '<div class="note">לא בוצע שלב אותיות</div>';
   const sylT = `<table class="smat"><thead><tr><th>סימן</th><th>הברה</th><th>תוצאה</th></tr></thead><tbody>${an.rows.map(x => `<tr><td class="sg">${x.s.sign}</td><td><span class="syt">${x.s.t}</span></td><td class="cc ${x.v === 1 ? 'cons' : x.v === 3 ? 'fail' : 'none'}">${x.v === 1 ? '✓' : x.v === 3 ? '✗' : '○'}</td></tr>`).join('')}</tbody></table>`;
   const bd = m.bd.rows.map((r, i) => `<div class="bdsum"><div class="bdsl">${emo('img/bd-' + r.k + '.png', 'bdi sm', bdOf(r.k)[2])}<b>${bdOf(r.k)[1]}</b> ${r.ok ? '<span class="g">✓ תקין</span>' : ''}</div>${padOut(m, 'bd.d.' + i, 220)}${txt('הערות', r.note)}</div>`).join('');
   const recs = (m.s && m.s.r ? SR.filter((x, i) => m.s.r[i]) : []);
@@ -1651,6 +1767,7 @@ function renderNew() {
     <div class="field"><label for="st_age">גיל</label><input type="text" id="st_age" maxlength="8" autocomplete="off"></div>
     <div class="field"><label for="st_date">תאריך</label><input type="date" id="st_date" value="${today()}"></div>
     <div class="field"><label for="st_school">מסגרת חינוכית</label><input type="text" id="st_school" maxlength="60" value="${esc(d.school || '')}"></div>
+    <div class="field"><label for="st_gender">ילד או ילדה (לניסוח הדו״ח)</label><select id="st_gender"><option value="">לא צוין</option><option value="ילדה">ילדה</option><option value="ילד">ילד</option></select></div>
     <div class="field"><label for="st_exam">שם הבוחנת</label><input type="text" id="st_exam" maxlength="40" value="${esc(d.examiner || '')}"></div></div>
     <h3>בחרי רמה ולחצי להתחלת המיפוי</h3>
     <div class="startbtns"><button type="button" class="bigbtn" data-act="startMap" data-kind="l9"><b>מיפוי לילדי גן חובה</b><span>כספת הפתעות, חומר חדש, כתיבת שם, כתיבה פונטית, חשבון ואותיות</span></button>
@@ -1669,7 +1786,7 @@ function startMap(kind) {
   const v = id => ($(id) ? $(id).value.trim() : '');
   const name = v('st_name'); if (!name) { toast('כתבי את שם הילד/ה'); $('st_name').focus(); return; }
   const m = newMap({ name, age: v('st_age') }, kind);
-  m.date = v('st_date') || today(); m.school = v('st_school'); m.examiner = v('st_exam');
+  m.date = v('st_date') || today(); m.school = v('st_school'); m.examiner = v('st_exam'); m.gender = v('st_gender');
   m.wz = { step: 0, on: true, done: {} };
   if (kind === 'kb') ensureKb(m); ensureVault(m);
   S.defaults = { school: m.school, examiner: m.examiner };
@@ -1708,6 +1825,10 @@ function wzAct(a, b, m) {
   else if (a === 'pwPick') keep(() => { const i = +b.dataset.i; if (!m.t2.order) m.t2.order = []; if (!m.t2.order.includes(i)) m.t2.order.push(i); m.t2.cur = i; });
   else if (a === 'pwOpen') keep(() => { m.t2.cur = +b.dataset.i; });
   else if (a === 'pwDone') keep(() => { m.t2.cur = null; });
+  else if (a === 'pwMark') { const i = +b.dataset.i, v = +b.dataset.v; keep(() => { if (!m.t2.r) m.t2.r = {}; if (m.t2.r[i] === v) delete m.t2.r[i]; else m.t2.r[i] = v; }); }
+  else if (a === 'wzRep') { m.wz.view = 'report'; touch(m, 'map:' + m.id); renderMap(); window.scrollTo(0, 0); }
+  else if (a === 'wzRepBack') { m.wz.view = null; touch(m, 'map:' + m.id); renderMap(); window.scrollTo(0, 0); }
+  else if (a === 'wzNotes') { showMissingNotes(m); }
   else if (a === 'pwBack') keep(() => { const i = m.t2.cur; if (!((m.t2.d || [])[i] || []).length) m.t2.order = m.t2.order.filter(x => x !== i); m.t2.cur = null; });
   else if (a === 'wzOvGo') { m.wz.on = true; wzGo(m, +b.dataset.i); }
   else if (a === 'wzSkip') wzGo(m, m.wz.step + 1);
