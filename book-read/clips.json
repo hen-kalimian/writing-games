@@ -1,0 +1,73 @@
+{
+ "clips": [
+  {
+   "src": "clips/c01.mp4",
+   "poster": "clips/c01.jpg"
+  },
+  {
+   "src": "clips/c02.mp4",
+   "poster": "clips/c02.jpg"
+  },
+  {
+   "src": "clips/c03.mp4",
+   "poster": "clips/c03.jpg"
+  },
+  {
+   "src": "clips/c04.mp4",
+   "poster": "clips/c04.jpg"
+  },
+  {
+   "src": "clips/c05.mp4",
+   "poster": "clips/c05.jpg"
+  },
+  {
+   "src": "clips/c06.mp4",
+   "poster": "clips/c06.jpg"
+  },
+  {
+   "src": "clips/c07.mp4",
+   "poster": "clips/c07.jpg"
+  },
+  {
+   "src": "clips/c08.mp4",
+   "poster": "clips/c08.jpg"
+  },
+  {
+   "src": "clips/c09.mp4",
+   "poster": "clips/c09.jpg"
+  },
+  {
+   "src": "clips/c10.mp4",
+   "poster": "clips/c10.jpg"
+  },
+  {
+   "src": "clips/c11.mp4",
+   "poster": "clips/c11.jpg"
+  },
+  {
+   "src": "clips/c12.mp4",
+   "poster": "clips/c12.jpg"
+  },
+  {
+   "src": "clips/c13.mp4",
+   "poster": "clips/c13.jpg"
+  },
+  {
+   "src": "clips/c14.mp4",
+   "poster": "clips/c14.jpg"
+  },
+  {
+   "src": "clips/c15.mp4",
+   "poster": "clips/c15.jpg"
+  },
+  {
+   "src": "clips/c16.mp4",
+   "poster": "clips/c16.jpg"
+  },
+  {
+   "src": "clips/c17.mp4",
+   "poster": "clips/c17.jpg"
+  }
+ ],
+ "audio": "book-read-audio.mp3"
+}

@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="he" dir="rtl"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<title>בואו נקרא יחד: האותיות הסודיות של גיא</title>
+<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@500;700;800&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;background:transparent;font-family:Rubik,Arial,sans-serif;color:#5E5A73}
+#app{max-width:760px;margin:0 auto;padding:6px 8px 10px;display:flex;flex-direction:column;align-items:center;gap:10px}
+#stage{position:relative;width:100%;aspect-ratio:16/9;perspective:2200px;border-radius:18px;background:#fff;box-shadow:0 0 0 3px #FBC5D6,0 10px 26px rgba(184,35,107,.14);-webkit-user-select:none;user-select:none;touch-action:pan-y;overflow:hidden}
+#stage video{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:#fff;border-radius:16px}
+#snap{position:absolute;inset:0;background-size:100% 100%;transform-origin:right center;border-radius:16px;display:none;backface-visibility:hidden;will-change:transform}
+#snap.go{display:block;animation:flip .5s cubic-bezier(.4,.05,.3,1) forwards}
+#snap.back{display:block;animation:flipb .5s cubic-bezier(.4,.05,.3,1) forwards}
+@keyframes flip{from{transform:rotateY(0);filter:brightness(1)}to{transform:rotateY(100deg);filter:brightness(.75)}}
+@keyframes flipb{from{transform:rotateY(100deg);filter:brightness(.75)}to{transform:rotateY(0);filter:brightness(1)}}
+.ov{position:absolute;inset:0;display:none;flex-direction:column;align-items:center;justify-content:center;gap:10px;background:rgba(255,255,255,.34);backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px);border-radius:16px;z-index:5;text-align:center;padding:10px}
+.ov.on{display:flex}
+.big{border:0;border-radius:18px;background:linear-gradient(135deg,#EF406E,#F27A9B);color:#fff;font-family:Rubik,sans-serif;font-weight:800;font-size:clamp(17px,4.6vw,24px);padding:12px 28px;box-shadow:0 8px 22px rgba(239,64,110,.3);cursor:pointer;display:flex;align-items:center;gap:10px}
+.big:active{transform:scale(.97)}
+.hint{font-weight:700;color:#B8236B;font-size:clamp(14px,3.8vw,18px);background:rgba(255,255,255,.8);padding:4px 14px;border-radius:30px}
+.curl{position:absolute;left:0;bottom:0;width:70px;height:70px;background:linear-gradient(225deg,transparent 50%,#FBC5D6 50%,#fff 80%);border-top-right-radius:60px;box-shadow:-4px -4px 10px rgba(0,0,0,.08);display:none;z-index:6;animation:wob 1.2s ease-in-out infinite;pointer-events:none}
+.curl.on{display:block}
+@keyframes wob{0%,100%{transform:translate(0,0)}50%{transform:translate(-6px,-6px)}}
+#bar{display:flex;align-items:center;justify-content:center;gap:12px;width:100%}
+.nav{border:2px solid #FBC5D6;background:#fff;color:#B8236B;font-family:Rubik,sans-serif;font-weight:700;font-size:16px;border-radius:30px;padding:8px 18px;cursor:pointer}
+.nav:disabled{opacity:.35;cursor:default}
+.nav.main{background:#EF406E;border-color:#EF406E;color:#fff}
+#dots{display:flex;gap:6px;justify-content:center;flex-wrap:wrap;max-width:100%}
+#dots i{width:9px;height:9px;border-radius:50%;background:#F5D3DC}
+#dots i.on{background:#EF406E;transform:scale(1.25)}
+#dots i.done{background:#F8A7BC}
+#audioRow{display:flex;justify-content:center;width:100%}
+#abtn{border:2px solid #EF406E;background:#fff;color:#B8236B;font-family:Rubik,sans-serif;font-weight:800;font-size:clamp(16px,4.4vw,20px);border-radius:30px;padding:10px 26px;cursor:pointer;display:flex;align-items:center;gap:10px}
+#abtn.on{background:#EF406E;color:#fff}
+#abtn svg{width:20px;height:20px;fill:currentColor}
+</style></head><body>
+<div id="app">
+  <div id="stage">
+    <video id="v" playsinline preload="auto"></video>
+    <div id="snap"></div>
+    <div class="curl" id="curl"></div>
+    <div class="ov on" id="start"><button class="big" id="startBtn" type="button"><span>להתחלת הקריאה</span></button></div>
+    <div class="ov" id="endov"><span class="hint">סיימנו את העמוד</span><button class="big" id="flipBtn" type="button"><span>דפדפו לעמוד הבא</span></button></div>
+  </div>
+  <div id="dots"></div>
+  <div id="bar"><button class="nav" id="prev" type="button">לעמוד הקודם</button><button class="nav main" id="next" type="button">דפדפו לעמוד הבא</button></div>
+  <div id="audioRow"><button id="abtn" type="button"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg><span id="alabel">להאזנה רציפה</span></button></div>
+  <audio id="aud" preload="none"></audio>
+</div>
+<script>
+(function(){
+var $=function(i){return document.getElementById(i)},v=$('v'),aud=$('aud'),snap=$('snap'),stage=$('stage'),VER='1';
+var clips=[],idx=0,started=false,busy=false,AC=null;
+function flipSound(){try{AC=AC||new (window.AudioContext||window.webkitAudioContext)();if(AC.state==='suspended')AC.resume();var d=.42,n=Math.floor(AC.sampleRate*d),b=AC.createBuffer(1,n,AC.sampleRate),a=b.getChannelData(0);for(var i=0;i<n;i++){var t=i/n;a[i]=(Math.random()*2-1)*Math.pow(Math.sin(Math.PI*t),2)*(.6+.4*Math.sin(t*38))}var s=AC.createBufferSource(),f=AC.createBiquadFilter(),g=AC.createGain();s.buffer=b;f.type='bandpass';f.frequency.value=2600;f.Q.value=.7;g.gain.value=.05;s.connect(f);f.connect(g);g.connect(AC.destination);s.start()}catch(e){}}
+function dots(){var h='';for(var i=0;i<clips.length;i++)h+='<i class="'+(i===idx?'on':(i<idx?'done':''))+'"></i>';$('dots').innerHTML=h}
+function ui(){$('prev').disabled=idx<=0;var last=idx>=clips.length-1;$('next').textContent=last?'הגענו לסוף הספר':'דפדפו לעמוד הבא';$('next').disabled=last;$('flipBtn').firstChild.textContent=last?'קוראים שוב מההתחלה':'דפדפו לעמוד הבא';dots()}
+function load(i,play){idx=i;v.src=clips[i].src+'?v='+VER;v.poster=clips[i].poster||'';$('endov').classList.remove('on');$('curl').classList.remove('on');ui();if(play){var p=v.play();if(p&&p.catch)p.catch(function(){})}}
+function grab(){try{var c=document.createElement('canvas');c.width=640;c.height=360;c.getContext('2d').drawImage(v,0,0,640,360);snap.style.backgroundImage='url('+c.toDataURL('image/jpeg',.7)+')'}catch(e){snap.style.backgroundImage='none';snap.style.background='#fff'}}
+function turn(to){
+  if(busy||to<0||to>=clips.length)return;busy=true;aud.pause();setA(false);
+  var fwd=to>idx;grab();flipSound();
+  snap.className='';void snap.offsetWidth;
+  if(fwd){load(to,true);snap.className='go'}else{load(to,true);snap.className='back'}
+  setTimeout(function(){snap.className='';busy=false},520)}
+v.addEventListener('ended',function(){if(idx>=clips.length-1){$('endov').classList.add('on')}else{$('endov').classList.add('on');$('curl').classList.add('on')}});
+v.addEventListener('play',function(){if(!aud.paused){aud.pause();setA(false)}});
+$('startBtn').onclick=function(){$('start').classList.remove('on');started=true;load(idx,true)};
+$('flipBtn').onclick=function(){if(idx>=clips.length-1){turn(0)}else turn(idx+1)};
+$('next').onclick=function(){turn(idx+1)};$('prev').onclick=function(){turn(idx-1)};
+var sx=null,sy=0;
+stage.addEventListener('pointerdown',function(e){sx=e.clientX;sy=e.clientY});
+stage.addEventListener('pointerup',function(e){if(sx===null)return;var dx=e.clientX-sx,dy=e.clientY-sy;sx=null;if(!started)return;if(Math.abs(dx)>40&&Math.abs(dx)>Math.abs(dy)){turn(dx>0?idx+1:idx-1)}else if(Math.abs(dx)<10&&Math.abs(dy)<10&&!$('endov').classList.contains('on')){if(v.paused)v.play();else v.pause()}});
+document.addEventListener('keydown',function(e){if(e.key==='ArrowLeft')turn(idx+1);if(e.key==='ArrowRight')turn(idx-1)});
+function setA(on){$('abtn').classList.toggle('on',on);$('alabel').textContent=on?'עצירת ההאזנה':'להאזנה רציפה';$('abtn').querySelector('path').setAttribute('d',on?'M6 5h4v14H6zm8 0h4v14h-4z':'M8 5v14l11-7z')}
+$('abtn').onclick=function(){if(aud.paused){v.pause();if(!aud.src)aud.src=window.__AUDIO;aud.play();setA(true)}else{aud.pause();setA(false)}};
+aud.addEventListener('ended',function(){setA(false)});
+fetch('clips.json?v='+VER).then(function(r){return r.json()}).then(function(j){clips=j.clips;window.__AUDIO=j.audio+'?v='+VER;idx=0;v.poster=clips[0].poster||'';ui()});
+})();
+</script></body></html>
