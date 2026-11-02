@@ -7,21 +7,15 @@
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 html,body{margin:0;background:transparent;font-family:Rubik,Arial,sans-serif;color:#5E5A73}
 #app{max-width:860px;margin:0 auto;padding:6px 8px 10px;display:flex;flex-direction:column;align-items:center;gap:10px}
-#stage{position:relative;width:100%;aspect-ratio:16/9;perspective:1700px;border-radius:18px;background:#EDE3E6;box-shadow:0 0 0 3px #FBC5D6,0 10px 26px rgba(184,35,107,.14);-webkit-user-select:none;user-select:none;touch-action:pan-y;overflow:hidden;cursor:grab}
-.pg{position:absolute;inset:0;transform-origin:right center;backface-visibility:hidden;-webkit-backface-visibility:hidden;will-change:transform;background:#fff;border-radius:16px;overflow:hidden}
-.pg video{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:#fff;pointer-events:none}
-.pg .sh{position:absolute;inset:0;pointer-events:none;opacity:0;background:linear-gradient(270deg,rgba(0,0,0,.05),rgba(0,0,0,.55))}
-.pg .dim{position:absolute;inset:0;pointer-events:none;opacity:0;background:#2a1a24}
-.pg .edge{position:absolute;left:0;top:0;bottom:0;width:10px;pointer-events:none;background:linear-gradient(90deg,rgba(0,0,0,.28),transparent);opacity:0}
-.peel{animation:peel 1.5s ease-in-out infinite}
-@keyframes peel{0%,100%{transform:rotateY(0)}45%,55%{transform:rotateY(17deg)}}
-#hint{position:absolute;left:50%;bottom:10px;transform:translateX(-50%);z-index:9;display:none;background:rgba(255,255,255,.92);color:#B8236B;font-weight:800;font-size:clamp(13px,3.6vw,17px);padding:5px 16px;border-radius:30px;box-shadow:0 3px 10px rgba(184,35,107,.2);pointer-events:none;white-space:nowrap}
+#stage{position:relative;width:100%;aspect-ratio:16/9;border-radius:18px;background:#fff;box-shadow:0 0 0 3px #FBC5D6,0 10px 26px rgba(184,35,107,.14);-webkit-user-select:none;user-select:none;touch-action:pan-y;overflow:hidden;cursor:grab}
+#v{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;background:#fff;pointer-events:none}
+#cv{position:absolute;inset:0;width:100%;height:100%;display:none;pointer-events:none}
+#cv.on{display:block}
+#hint{position:absolute;left:50%;bottom:12px;transform:translateX(-50%);z-index:9;display:none;background:rgba(255,255,255,.94);color:#B8236B;font-weight:800;font-size:clamp(13px,3.6vw,18px);padding:6px 18px;border-radius:30px;box-shadow:0 3px 10px rgba(184,35,107,.22);pointer-events:none;white-space:nowrap}
 #hint.on{display:block}
-#start{position:absolute;inset:0;z-index:20;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,.28);border-radius:16px}
-#start.off{display:none}
-.big{border:0;border-radius:18px;background:linear-gradient(135deg,#EF406E,#F27A9B);color:#fff;font-family:Rubik,sans-serif;font-weight:800;font-size:clamp(17px,4.6vw,24px);padding:12px 28px;box-shadow:0 8px 22px rgba(239,64,110,.3);cursor:pointer}
 #endrow{position:absolute;inset:auto 0 12px 0;z-index:9;display:none;justify-content:center}
 #endrow.on{display:flex}
+.big{border:0;border-radius:18px;background:linear-gradient(135deg,#EF406E,#F27A9B);color:#fff;font-family:Rubik,sans-serif;font-weight:800;font-size:clamp(16px,4.4vw,22px);padding:11px 26px;box-shadow:0 8px 22px rgba(239,64,110,.3);cursor:pointer}
 #bar{display:flex;align-items:center;justify-content:center;gap:12px;width:100%}
 .nav{border:2px solid #FBC5D6;background:#fff;color:#B8236B;font-family:Rubik,sans-serif;font-weight:700;font-size:16px;border-radius:30px;padding:8px 18px;cursor:pointer}
 .nav:disabled{opacity:.35;cursor:default}
@@ -37,69 +31,91 @@ html,body{margin:0;background:transparent;font-family:Rubik,Arial,sans-serif;col
 </style></head><body>
 <div id="app">
   <div id="stage">
-    <div class="pg" id="L0"><video playsinline preload="auto"></video><div class="dim"></div><div class="sh"></div><div class="edge"></div></div>
-    <div class="pg" id="L1"><video playsinline preload="auto"></video><div class="dim"></div><div class="sh"></div><div class="edge"></div></div>
-    <div id="hint">משכו את הדף ימינה, או חכו רגע</div>
+    <video id="v" playsinline preload="auto"></video>
+    <canvas id="cv" width="1280" height="720"></canvas>
+    <div id="hint"></div>
     <div id="endrow"><button class="big" id="againBtn" type="button">קוראים שוב מההתחלה</button></div>
-    <div id="start"><button class="big" id="startBtn" type="button">להתחלת הקריאה</button></div>
   </div>
   <div id="dots"></div>
-  <div id="bar"><button class="nav" id="prev" type="button">לעמוד הקודם</button><button class="nav main" id="next" type="button">דפדפו לעמוד הבא</button></div>
+  <div id="bar"><button class="nav" id="prev" type="button">לעמוד הקודם</button><button class="nav main" id="next" type="button">פתחו את הספר</button></div>
   <div id="audioRow"><button id="abtn" type="button"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg><span id="alabel">להאזנה רציפה</span></button></div>
   <audio id="aud" preload="none"></audio>
 </div>
 <script>
 (function(){
-var $=function(i){return document.getElementById(i)},stage=$('stage'),aud=$('aud'),VER='2',AUTO_MS=8000;
-var clips=[],idx=0,started=false,busy=false,AC=null,cur=0,timer=0,ended=false,drag=null;
-var Ls=[mk('L0'),mk('L1')];
-function mk(id){var e=$(id);return{el:e,v:e.querySelector('video'),dim:e.querySelector('.dim'),sh:e.querySelector('.sh'),edge:e.querySelector('.edge'),i:-1}}
+var $=function(i){return document.getElementById(i)},stage=$('stage'),v=$('v'),cv=$('cv'),cx=cv.getContext('2d'),aud=$('aud'),VER='3',AUTO_MS=8000,W=1280,H=720;
+var clips=[],imgs={},cover=new Image(),idx=-1,busy=false,ended=false,timer=0,hintRaf=0,drag=null,AC=null,wasPlaying=false;
+var off=document.createElement('canvas');off.width=W;off.height=H;var ocx=off.getContext('2d');
+cover.src='cover.jpg?v='+VER;
 function flipSound(){try{AC=AC||new (window.AudioContext||window.webkitAudioContext)();if(AC.state==='suspended')AC.resume();var d=.42,n=Math.floor(AC.sampleRate*d),b=AC.createBuffer(1,n,AC.sampleRate),a=b.getChannelData(0);for(var i=0;i<n;i++){var t=i/n;a[i]=(Math.random()*2-1)*Math.pow(Math.sin(Math.PI*t),2)*(.6+.4*Math.sin(t*38))}var s=AC.createBufferSource(),f=AC.createBiquadFilter(),g=AC.createGain();s.buffer=b;f.type='bandpass';f.frequency.value=2600;f.Q.value=.7;g.gain.value=.05;s.connect(f);f.connect(g);g.connect(AC.destination);s.start()}catch(e){}}
-function setLayer(L,i){if(i<0||i>=clips.length){L.i=-1;L.v.removeAttribute('src');L.v.load();return}if(L.i===i)return;L.i=i;L.v.pause();L.v.poster=clips[i].poster||'';L.v.src=clips[i].src+'?v='+VER;L.v.load()}
-function rot(L,deg){L.el.style.transform='rotateY('+deg+'deg)';var p=Math.min(1,deg/100);L.sh.style.opacity=p*0.9;L.edge.style.opacity=deg>1?1:0;L.el.style.boxShadow=deg>1?(-8-p*20)+'px 0 '+(14+p*30)+'px rgba(0,0,0,'+(0.25+p*0.2)+')':'none'}
-function under(L,p){L.dim.style.opacity=.42*(1-p)}
-function z(){var c=Ls[cur],o=Ls[1-cur];c.el.style.zIndex=3;o.el.style.zIndex=2;o.el.style.transform='none';o.el.style.visibility='visible';o.sh.style.opacity=0;o.edge.style.opacity=0;o.el.style.boxShadow='none'}
+function poster(i){if(i<0)return cover;if(i>=clips.length)return null;if(!imgs[i]){var m=new Image();m.src=clips[i].poster+'?v='+VER;imgs[i]=m}return imgs[i]}
+function snapshot(){ocx.fillStyle='#fff';ocx.fillRect(0,0,W,H);var vw=v.videoWidth||W,vh=v.videoHeight||H;if(v.readyState>=2){var sc=Math.min(W/vw,H/vh);ocx.drawImage(v,(W-vw*sc)/2,(H-vh*sc)/2,vw*sc,vh*sc)}else{var p=poster(idx);if(p&&p.complete)ocx.drawImage(p,0,0,W,H)}return off}
+/* realistic page curl: the left part of page A rolls over a cylinder to the right (spine on the right), page B is revealed underneath */
+function render(A,B,xf){
+  cx.clearRect(0,0,W,H);if(B&&B.complete!==false)cx.drawImage(B,0,0,W,H);
+  var R=Math.max(24,xf/3.35),g;
+  g=cx.createLinearGradient(xf-90,0,xf+4,0);g.addColorStop(0,'rgba(0,0,0,0)');g.addColorStop(1,'rgba(0,0,0,.32)');cx.fillStyle=g;cx.fillRect(Math.max(0,xf-90),0,94,H);
+  if(xf>=W)return;
+  cx.drawImage(A,xf,0,W-xf,H,xf,0,W-xf,H);
+  g=cx.createLinearGradient(xf+R*.6,0,xf+R*2.6,0);g.addColorStop(0,'rgba(0,0,0,.38)');g.addColorStop(1,'rgba(0,0,0,0)');cx.fillStyle=g;cx.fillRect(xf+R*.6,0,R*2,H);
+  var ds=2,PI=Math.PI;
+  for(var s=0;s<xf;s+=ds){
+    var src=xf-s-ds,w=ds;if(src<0){w=ds+src;src=0}if(w<=0)break;
+    var ph=s/R,dx,dw,front=false,sh=0;
+    if(ph<PI){var c=Math.cos(ph),sn=Math.sin(ph);dx=xf+R*sn;dw=w*c;if(c>=0){front=true;sh=.34*Math.pow(sn,1.4)}else{dx=dx+dw;dw=-dw;sh=.12+.1*sn}}
+    else{dx=xf+(s-PI*R);dw=w;sh=.04}
+    if(dx>W)continue;
+    if(front){cx.drawImage(A,src,0,w,H,dx,0,dw+.7,H);cx.fillStyle='rgba(20,10,20,'+sh+')';cx.fillRect(dx,0,dw+.7,H);if(ph>.35&&ph<.8){cx.fillStyle='rgba(255,255,255,.14)';cx.fillRect(dx,0,dw+.7,H)}}
+    else{var br=ph<PI?(.97-.45*Math.pow(Math.sin(ph),1.5)):.97;cx.fillStyle='rgb('+Math.round(252*br)+','+Math.round(244*br)+','+Math.round(236*br)+')';cx.fillRect(dx,0,dw+.7,H);if(ph>PI*.8&&ph<PI){cx.fillStyle='rgba(255,255,255,.25)';cx.fillRect(dx,0,dw+.7,H)}}
+  }
+}
+function animate(from,to,ms,step,done){var t0=null;(function f(ts){if(t0===null)t0=ts;var k=Math.min(1,(ts-t0)/ms),e=k<.5?2*k*k:1-Math.pow(-2*k+2,2)/2;step(from+(to-from)*e);if(k<1)requestAnimationFrame(f);else done&&done()})(performance.now())}
 function dots(){var h='';for(var i=0;i<clips.length;i++)h+='<i class="'+(i===idx?'on':(i<idx?'done':''))+'"></i>';$('dots').innerHTML=h}
-function ui(){$('prev').disabled=idx<=0;var last=idx>=clips.length-1;$('next').disabled=last;$('next').textContent=last?'הגענו לסוף הספר':'דפדפו לעמוד הבא';dots()}
-function clearTimer(){clearTimeout(timer);timer=0;$('hint').classList.remove('on');Ls[cur].el.classList.remove('peel')}
-function armAuto(){clearTimer();if(!ended)return;if(idx>=clips.length-1){$('endrow').classList.add('on');return}
-  Ls[cur].el.classList.add('peel');under(Ls[1-cur],.0);Ls[1-cur].dim.style.opacity=.3;$('hint').classList.add('on');
-  timer=setTimeout(function(){turn(1,true)},AUTO_MS)}
-function playCur(){var v=Ls[cur].v;ended=false;$('endrow').classList.remove('on');var p=v.play();if(p&&p.catch)p.catch(function(){})}
-function animate(L,from,to,ms,step,done){var t0=null;(function f(ts){if(t0===null)t0=ts;var k=Math.min(1,(ts-t0)/ms),e=k<.5?2*k*k:1-Math.pow(-2*k+2,2)/2;step(from+(to-from)*e);if(k<1)requestAnimationFrame(f);else done&&done()})(performance.now())}
-/* forward: current page lifts from the left edge and folds to the right, next page is underneath */
-function prepFwd(){var c=Ls[cur],o=Ls[1-cur];setLayer(o,idx+1);o.el.style.zIndex=2;c.el.style.zIndex=3}
-function finishFwd(){var old=Ls[cur];old.v.pause();old.el.style.visibility='hidden';old.el.style.transform='none';cur=1-cur;idx++;ui();z();Ls[1-cur].el.style.visibility='visible';Ls[cur].dim.style.opacity=0;Ls[cur].v.currentTime=0;playCur();setLayer(Ls[1-cur],idx+1);Ls[1-cur].dim.style.opacity=0;busy=false}
+function ui(){$('prev').disabled=idx<0;var last=idx>=clips.length-1;$('next').disabled=last;$('next').textContent=idx<0?'פתחו את הספר':(last?'הגענו לסוף הספר':'דפדפו לעמוד הבא');dots()}
+function stopHint(){clearTimeout(timer);timer=0;cancelAnimationFrame(hintRaf);hintRaf=0;$('hint').classList.remove('on')}
+/* hint: the page corner lifts a little and peeks at the next page, then (after 8s) turns by itself */
+function startHint(text,auto){stopHint();if(busy)return;var A=idx<0?cover:snapshot(),B=poster(idx+1);if(!B)return;var A2=A;if(A===off){var c2=document.createElement('canvas');c2.width=W;c2.height=H;c2.getContext('2d').drawImage(off,0,0);A2=c2}
+  cv.classList.add('on');$('hint').textContent=text;$('hint').classList.add('on');var t0=performance.now();
+  (function f(ts){var x=(1-Math.cos(((ts-t0)/1700)*2*Math.PI))*52;render(A2,B,x);hintRaf=requestAnimationFrame(f)})(t0);
+  if(auto)timer=setTimeout(function(){turn(1,true)},AUTO_MS)}
+function showClip(i,playIt){idx=i;ui();if(i<0){v.pause();v.removeAttribute('src');v.removeAttribute('poster');v.load();return}
+  v.poster=clips[i].poster+'?v='+VER;v.src=clips[i].src+'?v='+VER;ended=false;$('endrow').classList.remove('on');if(playIt){var p=v.play();if(p&&p.catch)p.catch(function(){})}}
 function turn(dir,auto){
-  if(busy)return;if(dir>0&&idx>=clips.length-1)return;if(dir<0&&idx<=0)return;busy=true;clearTimer();aud.pause();setA(false);flipSound();
-  if(dir>0){prepFwd();var c=Ls[cur],o=Ls[1-cur];animate(c,0,100,auto?850:640,function(d){rot(c,d);under(o,d/100)},function(){rot(c,0);finishFwd()})}
-  else{backStart();var p=Ls[1-cur];animate(p,100,0,640,function(d){rot(p,d);under(Ls[cur],1-d/100)},function(){backFinish()})}}
-function backStart(){var c=Ls[cur],o=Ls[1-cur];c.v.pause();setLayer(o,idx-1);o.el.style.visibility='visible';o.el.style.zIndex=4;rot(o,100);under(c,0)}
-function backFinish(){var o=Ls[1-cur],old=Ls[cur];old.v.pause();old.el.style.visibility='hidden';cur=1-cur;idx--;ui();rot(o,0);z();o.dim.style.opacity=0;o.v.currentTime=0;playCur();setLayer(old,idx+1);old.el.style.visibility='visible';old.el.style.zIndex=2;old.dim.style.opacity=0;busy=false}
-/* drag with the finger / mouse: left to right = next page, right to left = previous page */
-stage.addEventListener('pointerdown',function(e){if(!started||busy)return;clearTimer();drag={x:e.clientX,y:e.clientY,mode:null,w:stage.getBoundingClientRect().width,t:Date.now()};try{stage.setPointerCapture(e.pointerId)}catch(x){}});
+  if(busy||(dir>0&&idx>=clips.length-1)||(dir<0&&idx<0))return;busy=true;stopHint();aud.pause();setA(false);flipSound();
+  var from=idx,to=idx+dir,A,B;
+  if(dir>0){A=from<0?cover:snapshot();B=poster(to);if(A===off){var c2=document.createElement('canvas');c2.width=W;c2.height=H;c2.getContext('2d').drawImage(off,0,0);A=c2}
+    v.pause();cv.classList.add('on');render(A,B,0);
+    showClip(to,true);/* next clip starts under the canvas, in the same user gesture */
+    animate(0,W+8,auto?900:700,function(x){render(A,B,x)},function(){cv.classList.remove('on');busy=false})}
+  else{var cur=snapshot(),c3=document.createElement('canvas');c3.width=W;c3.height=H;c3.getContext('2d').drawImage(cur,0,0);v.pause();A=poster(to);B=c3;cv.classList.add('on');render(A,B,W+8);showClip(to,to>=0);
+    animate(W+8,0,700,function(x){render(A,B,x)},function(){cv.classList.remove('on');busy=false;if(to<0){ended=false;startHint('לחצו על הספר כדי לפתוח אותו',false)}})}}
+v.addEventListener('ended',function(){ended=true;if(idx>=clips.length-1){$('endrow').classList.add('on');return}startHint('משכו את הדף ימינה, או חכו רגע',true)});
+v.addEventListener('play',function(){if(!aud.paused){aud.pause();setA(false)}});
+/* drag: left to right = next page, right to left = previous page. Tap on the cover opens the book. */
+stage.addEventListener('pointerdown',function(e){if(busy||!clips.length)return;stopHint();drag={x:e.clientX,y:e.clientY,mode:null,w:stage.getBoundingClientRect().width,t:Date.now(),d:0};try{stage.setPointerCapture(e.pointerId)}catch(x){}});
 stage.addEventListener('pointermove',function(e){if(!drag)return;var dx=e.clientX-drag.x,dy=e.clientY-drag.y;
   if(!drag.mode){if(Math.abs(dx)<8)return;if(Math.abs(dy)>Math.abs(dx)*1.3){drag=null;return}
-    if(dx>0&&idx<clips.length-1){drag.mode='f';aud.pause();setA(false);prepFwd();flipSound()}else if(dx<0&&idx>0){drag.mode='b';aud.pause();setA(false);backStart()}else{drag=null;return}}
-  var d=Math.max(0,Math.min(100,Math.abs(dx)/(drag.w*.8)*100));drag.d=d;
-  if(drag.mode==='f'){rot(Ls[cur],d);under(Ls[1-cur],d/100)}else{rot(Ls[1-cur],100-d);under(Ls[cur],d/100)}});
-function endDrag(e){if(!drag)return;var m=drag.mode,d=drag.d||0,v=(d)/Math.max(1,Date.now()-drag.t);drag=null;
-  if(!m){if(started&&!busy){var vv=Ls[cur].v;if(!ended){if(vv.paused)vv.play();else vv.pause()}}return}
-  busy=true;var done=d>30||v>.12;
-  if(m==='f'){var c=Ls[cur],o=Ls[1-cur];if(done)animate(c,d,100,Math.max(160,(100-d)*5),function(x){rot(c,x);under(o,x/100)},function(){rot(c,0);finishFwd()});else animate(c,d,0,Math.max(160,d*5),function(x){rot(c,x);under(o,x/100)},function(){rot(c,0);o.el.style.zIndex=2;busy=false;if(ended)armAuto()})}
-  else{var p=Ls[1-cur],c2=Ls[cur];if(done)animate(p,100-d,0,Math.max(160,(100-d)*5),function(x){rot(p,x);under(c2,1-x/100)},function(){backFinish()});else animate(p,100-d,100,Math.max(160,d*5),function(x){rot(p,x);under(c2,1-x/100)},function(){p.el.style.visibility='hidden';busy=false;if(ended)armAuto()})}}
+    if(dx>0&&idx<clips.length-1){drag.mode='f';wasPlaying=!v.paused;aud.pause();setA(false);flipSound();drag.A=idx<0?cover:copy(snapshot());drag.B=poster(idx+1);if(idx>=0){v.pause()}}
+    else if(dx<0&&idx>=0){drag.mode='b';aud.pause();setA(false);flipSound();drag.B=copy(snapshot());drag.A=poster(idx-1);v.pause()}else{drag=null;return}
+    cv.classList.add('on')}
+  var k=W/drag.w,m=Math.abs(dx)*k*1.2;drag.d=m;
+  if(drag.mode==='f')render(drag.A,drag.B,Math.min(W+8,m));else render(drag.A,drag.B,Math.max(0,W+8-m))});
+function copy(c){var o=document.createElement('canvas');o.width=W;o.height=H;o.getContext('2d').drawImage(c,0,0);return o}
+function endDrag(){if(!drag)return;var d=drag;drag=null;
+  if(!d.mode){/* a tap */if(idx<0){turn(1)}else if(!busy){if(!ended){if(v.paused){var p=v.play();if(p&&p.catch)p.catch(function(){})}else v.pause()}}return}
+  busy=true;var pos=d.mode==='f'?d.d:W+8-d.d,fast=d.d/Math.max(1,Date.now()-d.t)>1.1,done=d.d>W*.3||fast;
+  if(d.mode==='f'){var A=d.A,B=d.B;if(done){var to=idx+1;showClip(to,true);animate(pos,W+8,Math.max(200,(W+8-pos)*.5),function(x){render(A,B,x)},function(){cv.classList.remove('on');busy=false})}
+    else animate(pos,0,Math.max(200,pos*.5),function(x){render(A,B,x)},function(){cv.classList.remove('on');if(idx>=0&&wasPlaying&&!ended){var p=v.play();if(p&&p.catch)p.catch(function(){})}busy=false;if(idx<0)startHint('לחצו על הספר כדי לפתוח אותו',false);else if(ended)startHint('משכו את הדף ימינה, או חכו רגע',true)})}
+  else{var A2=d.A,B2=d.B;if(done){var to2=idx-1;showClip(to2,to2>=0);animate(pos,0,Math.max(200,pos*.5),function(x){render(A2,B2,x)},function(){cv.classList.remove('on');busy=false;if(to2<0)startHint('לחצו על הספר כדי לפתוח אותו',false)})}
+    else animate(pos,W+8,Math.max(200,(W+8-pos)*.5),function(x){render(A2,B2,x)},function(){cv.classList.remove('on');busy=false;if(!ended){var p=v.play();if(p&&p.catch)p.catch(function(){})}else startHint('משכו את הדף ימינה, או חכו רגע',true)})}}
 stage.addEventListener('pointerup',endDrag);stage.addEventListener('pointercancel',endDrag);
 document.addEventListener('keydown',function(e){if(e.key==='ArrowLeft')turn(1);if(e.key==='ArrowRight')turn(-1)});
 $('next').onclick=function(){turn(1)};$('prev').onclick=function(){turn(-1)};
-$('againBtn').onclick=function(){if(busy)return;clearTimer();$('endrow').classList.remove('on');var c=Ls[cur];c.v.pause();idx=0;setLayer(Ls[1-cur],0);cur=1-cur;z();setLayer(Ls[1-cur],1);ui();Ls[cur].el.style.visibility='visible';Ls[cur].v.currentTime=0;playCur()};
-Ls.forEach(function(L,n){L.v.addEventListener('ended',function(){if(Ls[cur]!==L)return;ended=true;armAuto()});L.v.addEventListener('play',function(){if(!aud.paused){aud.pause();setA(false)}})});
-$('startBtn').onclick=function(){$('start').classList.add('off');started=true;
-  var o=Ls[1-cur].v;try{o.volume=0;var pr=o.play();if(pr&&pr.then)pr.then(function(){o.pause();o.currentTime=0;o.volume=1}).catch(function(){o.volume=1})}catch(e){}
-  playCur()};
+$('againBtn').onclick=function(){if(busy)return;stopHint();$('endrow').classList.remove('on');v.pause();idx=-1;ui();startHint('לחצו על הספר כדי לפתוח אותו',false)};
 function setA(on){$('abtn').classList.toggle('on',on);$('alabel').textContent=on?'עצירת ההאזנה':'להאזנה רציפה';$('abtn').querySelector('path').setAttribute('d',on?'M6 5h4v14H6zm8 0h4v14h-4z':'M8 5v14l11-7z')}
-$('abtn').onclick=function(){if(aud.paused){Ls[cur].v.pause();clearTimer();if(!aud.src)aud.src=window.__AUDIO;aud.play();setA(true)}else{aud.pause();setA(false);if(ended)armAuto()}};
+$('abtn').onclick=function(){if(aud.paused){v.pause();stopHint();if(!aud.src)aud.src=window.__AUDIO;aud.play();setA(true)}else{aud.pause();setA(false);if(ended&&idx>=0&&idx<clips.length-1&&!busy)startHint('משכו את הדף ימינה, או חכו רגע',true)}};
 aud.addEventListener('ended',function(){setA(false)});
-fetch('clips.json?v='+VER).then(function(r){return r.json()}).then(function(j){clips=j.clips;window.__AUDIO=j.audio+'?v='+VER;idx=0;cur=0;setLayer(Ls[0],0);setLayer(Ls[1],1);Ls[1].el.style.visibility='visible';z();ui()});
+fetch('clips.json?v='+VER).then(function(r){return r.json()}).then(function(j){clips=j.clips;window.__AUDIO=j.audio+'?v='+VER;for(var i=0;i<3;i++)poster(i);ui();var go=function(){startHint('לחצו על הספר כדי לפתוח אותו',false)};if(cover.complete)go();else cover.onload=go});
 window.__rd={idx:function(){return idx},ended:function(){return ended},busy:function(){return busy},turn:turn};
 })();
 </script></body></html>
