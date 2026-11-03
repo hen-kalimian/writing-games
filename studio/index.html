@@ -133,7 +133,7 @@ let secret = (location.hash.match(/k=([\w-]+)/) || [])[1] || store.get(KEYS, '')
 if (secret) { store.set(KEYS, secret); if (location.hash) history.replaceState(null, '', location.pathname + location.search); }
 if (!secret) { $('main').innerHTML = '<div class="lock">האולפן נפתח רק מהקישור האישי ששלחתי לך.</div>'; $('tabs').remove(); $('tip').remove(); throw 0; }
 
-const SECS = [{ id: 'new', name: 'חדש להקלטה', note: 'מילים והנחיות שמשחקים חדשים צריכים. עד שתקליטי, נשמע קול ממוחשב, ואחרי ההקלטה הקול שלך נכנס לבד.' },
+const SECS = [{ id: 'cont', name: 'משפטים עם המשך', note: 'משפטים שאחריהם נשמעים אות, מספר או מילה, למשל "כתבו את האות...". שלוש הנקודות מסמנות אינטונציה של המשך. עד שתקליטי שוב, נשארת ההקלטה הקודמת.' }, { id: 'new', name: 'חדש להקלטה', note: 'מילים והנחיות שמשחקים חדשים צריכים. עד שתקליטי, נשמע קול ממוחשב, ואחרי ההקלטה הקול שלך נכנס לבד.' },
   { id: 'packgen', name: 'משפטים כלליים לכל החבילות', note: 'משפטים שחוזרים בכמה חבילות תוכן (מתחילים, לשלב הבא, אספו את הכול). מקליטים פעם אחת, וההקלטה נכנסת לכל החבילות, גם לחבילות הבאות.' },
   { id: 'packs', name: 'משחקי חבילות התוכן', note: 'כל מה שנשמע במשחקים של חבילות התוכן, לפי תאריך החבילה: מהפורסמות ועד העתידיות (חבילה חדשה נכנסת לכאן אוטומטית כשהיא נבנית). כל קבוצה היא חבילה אחת.' },
   { id: 'kb', name: 'הנחיות במשחקים', note: 'כל ההנחיות הקצרות במשחקים, קוראים בקלות קודם. כל הנחיה נכנסת לכל המשחקים שמופיעים מתחתיה (גם למשחקים נוספים עם אותה הנחיה). לחיצה על משחק פותחת אותו.' },
@@ -148,9 +148,10 @@ const SECS = [{ id: 'new', name: 'חדש להקלטה', note: 'מילים והנ
 let D, HEN = {}, sent = store.get(SENT, {}), sec = store.get('hen-studio-sec', 'packs');
 const [d, h] = await Promise.all([fetch('items.json?v=' + Date.now()).then(r => r.json()), fetch('../play/assets/hen/index.json?v=' + Date.now()).then(r => r.ok ? r.json() : {}).catch(() => ({}))]);
 D = d; HEN = h;
+/*__CONT (חן, 3.11.26): משפטים עם המשך חוזרים להקלטה עם שלוש נקודות*/try { const rd = await fetch('redo.json?v=' + Date.now()).then(r => r.ok ? r.json() : null); if (rd) { D.items.forEach(it => { if (rd.ids.includes(it.id)) { it.sec = 'cont'; it.redo = rd.ts; it.nik0 = it.nik || it.text; it.nik = (it.nik || it.text) + '...'; it.text = it.text + '...'; } }); if (!store.get('hen-studio-cont', 0)) { sec = 'cont'; store.set('hen-studio-cont', 1); } } } catch (e) {}
 const G = Object.fromEntries(D.games.map(g => [g.n, g]));
 
-function status(it) { return HEN[it.k] && (!sent[it.id] || HEN[it.k] >= sent[it.id]) ? 'done' : sent[it.id] ? 'sent' : ''; }
+function status(it) { return HEN[it.k] && HEN[it.k] > (it.redo || 0) && (!sent[it.id] || HEN[it.k] >= sent[it.id]) ? 'done' : sent[it.id] ? 'sent' : ''; }
 function progress() { const n = D.items.filter(i => status(i)).length; $('bar').style.width = (100 * n / D.items.length) + '%'; $('cnt').textContent = 'הוקלטו ' + n + ' מתוך ' + D.items.length; }
 function tabs() { $('tabs').innerHTML = SECS.map(s => { const all = D.items.filter(i => i.sec === s.id), n = all.filter(i => status(i)).length; return '<button type="button" data-s="' + s.id + '" class="' + (s.id === sec ? 'on' : '') + '">' + s.name + ' (' + n + '/' + all.length + ')</button>' }).join(''); }
 const esc = t => String(t).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
@@ -241,7 +242,7 @@ async function save(id) {
   try {
     const audio = await b64(blob); if (audio.length > 480000) throw new Error('long');
     const c = await client();
-    for (let tr = 0; ; tr++) { try { await c.items.insert(COL, { title: secret, itemId: id, k: it.k, text: it.nik, mime: blob.type, audio, synced: false }); break; } catch (er) { if (tr >= 2) throw er; setSt(id, 'מנסה לשמור שוב...'); await new Promise(r => setTimeout(r, 1500)); } }
+    for (let tr = 0; ; tr++) { try { await c.items.insert(COL, { title: secret, itemId: id, k: it.k, text: it.nik0 || it.nik, mime: blob.type, audio, synced: false }); break; } catch (er) { if (tr >= 2) throw er; setSt(id, 'מנסה לשמור שוב...'); await new Promise(r => setTimeout(r, 1500)); } }
     sent[id] = Date.now(); store.set(SENT, sent); saved[id] = blob;
     tabs(); progress(); const s = el0(); if (s) { const bEl = s.closest('.batch'); s.outerHTML = tile(it); if (bEl) { delete openedB[bEl.id]; setTimeout(syncBatches, 900); } }
   } catch (e) { takes[id] = blob; setSt(id, e.message === 'long' ? 'ההקלטה ארוכה מדי. נסי שוב קצת יותר קצר' : 'השמירה לא הצליחה. בדקי שיש אינטרנט ולחצי שוב על שמירה', 'err'); console.error(e); }
