@@ -199,11 +199,11 @@ document.addEventListener('pointerdown',function(e){var c=e.target.closest&&e.ta
 function itemSay(o,cb){if(o.s){if(cb)cb(o);else say(o.s);return}if(o.i){var u=picSnd(BASE+'assets/'+o.i);if(u)say(u);else if(PICW[o.i])sayText(PICW[o.i].w)}}
 function KB(c,t){if(D&&D.keep){var m=/translate\((-?[\d.]+)px,\s*(-?[\d.]+)px\)/.exec(c.style.transform);if(m){c.__ox=+m[1];c.__oy=+m[2];c.style.transform='translate('+m[1]+'px,'+m[2]+'px)'}return}c.style.transition='transform '+(t||.25)+'s';c.style.transform=''}
 function hasHen(pre){return Object.keys(HENM).some(function(k){return k.indexOf('x'+pre)===0})}
-function good(){var v=hasHen('p')&&Date.now()-(henPick.t||0)>1200&&Date.now()-(say.t||0)>1500,ch;do{ch=pickV([[v?40:0,'voice'],[20,'chime'],[16,'clap'],[14,'conf'],[10,'spark']])}while(ch===good.l&&ch!=='voice'&&Math.random()<.7);good.l=ch;
-if(ch==='spark')sparkle();else{tone(660,.18,'triangle');tone(880,.22,'triangle',.16,.1)}if(ch==='voice')setTimeout(function(){if(Date.now()-(say.t||0)>1500)henPick('p',1200)},180);else if(ch==='clap')setTimeout(function(){clap(7)},120);else if(ch==='conf')miniConf()}
+/*__PRAISEMIX (חן, 4.11.26: 'כל פעם שהילד מצליח, לפעמים צליל הצלחה, לפעמים וואו, לפעמים יופי'): עידוד בקול כשלא מתנגנת מילה כרגע*/function good(){var v=hasHen('p')&&Date.now()-(henPick.t||0)>1200,ch;do{ch=pickV([[v?45:0,'voice'],[20,'chime'],[15,'clap'],[12,'conf'],[8,'spark']])}while(ch===good.l&&ch!=='voice'&&Math.random()<.7);good.l=ch;
+if(ch==='spark')sparkle();else{tone(660,.18,'triangle');tone(880,.22,'triangle',.16,.1)}if(ch==='voice')setTimeout(function(){try{if(cur&&!cur.paused)cur.pause()}catch(e){}henPick('p',1200)},180);else if(ch==='clap')setTimeout(function(){clap(7)},120);else if(ch==='conf')miniConf()}
 function bad(){var v=hasHen('r')&&Date.now()-(henPick.t||0)>2500&&Date.now()-(say.t||0)>1500,ch=pickV([[v?45:0,'voice'],[35,'tone'],[20,'boing']]);if(ch==='boing')boing();else tone(220,.22,'sine',.12);if(ch==='voice')setTimeout(function(){if(Date.now()-(say.t||0)>1500)henPick('r',2500)},150)}
 function win(){[523,659,784,1046].forEach(function(f,i){tone(f,.3,'triangle',.15,i*.11)});setTimeout(function(){henPick.t=0;if(Date.now()-(say.t||0)<1800||!henPick('w',0))clap(12)},650)}
-var cache={},cur=null;function say(s){if(!s||!window.__touched)return;say.t=Date.now();try{if(cur){cur.pause();cur.currentTime=0}var a=cache[s]||(cache[s]=new Audio(BASE+'assets/'+s));cur=a;a.currentTime=0;var p=a.play();if(p&&p.catch)p.catch(function(){})}catch(e){}}
+var cache={},cur=null;/*__PRAISEFIRST (חן, 4.11.26): מילה חדשה מחכה שהעידוד בקול של חן ייגמר, ולא נשמעת עליו*/function praiseBusy(){return Object.keys(henS.c).some(function(k){var a=henS.c[k];return /^[pw]/.test(k)&&a&&!a.paused&&!a.ended})}function say(s,_n){if(!s||!window.__touched)return;if(praiseBusy()&&(_n||0)<25)return setTimeout(function(){say(s,(_n||0)+1)},120);say.t=Date.now();try{if(cur){cur.pause();cur.currentTime=0}var a=cache[s]||(cache[s]=new Audio(BASE+'assets/'+s));cur=a;a.currentTime=0;var p=a.play();if(p&&p.catch)p.catch(function(){})}catch(e){}}
 function fs(n){var l=n.length;return l>40?14:l>24?17:l>12?21:l>6?26:34}
 function mk(o,cls,opt){opt=opt||{};var c=el('div','card '+(cls||''));if(o.i){var im=el('img');im.src=BASE+'assets/'+o.i;im.alt='';im.draggable=false;c.appendChild(im)}
   var ot=o.t;if(ot&&ot.length<=6){var cl0=ot.replace(/^[^֐-׿A-Za-z0-9]+|[^֐-׿A-Za-z0-9]+$/g,'');if(!cl0&&o.i)ot=''; else if(cl0)ot=cl0}
@@ -886,8 +886,8 @@ if(L==='ב')C=dg?'b':'v';else if(L==='כ')C=dg?'k':'x';else if(L==='פ')C=dg?'p'
 var all=d+vd,v='';if(V==='ו'&&/ּ/.test(vd)&&!/[ְ-ֻ]/.test(vd))v='u';else if(V==='ו'&&/ֹ/.test(vd))v='o';else if(/[ֲֳַָ]/.test(d))v='a';else if(/[ֱֵֶ]/.test(d))v='e';else if(/ִ/.test(d))v='i';else if(/[ֹֺ]/.test(d))v='o';else if(/ֻ/.test(d))v='u';
 if(V==='ו'&&v!=='u'&&v!=='o')return'';if(V==='ו'&&/[ְ-ֻ]/.test(d))return'';if(V==='י'&&v!=='i'&&v!=='e')return'';if(!v&&(C==='q'||C==='h'))return'';if(!v&&!/[ְּ]/.test(d)&&!d)return'';return 's'+C+v}
 document.addEventListener('pointerdown',function(e){var el=e.target.closest&&e.target.closest('.tile,.card,.opt,.chip,.ans,.slot,.piece,.lbl,.wlbl');if(!el||el.querySelector('.tile,.card'))return;var k=sylKey(el.textContent);if(!k)return;setTimeout(function(){ttsMan(function(){if(!HENM[k]||!window.__touched)return;sylKey.t=Date.now();try{var a=henS.c[k]||(henS.c[k]=new Audio(BASE+'assets/hen/'+k+'.mp3?v='+HENM[k]));a.currentTime=0;var p=a.play();if(p&&p.catch)p.catch(function(){})}catch(x){}})},0)},true);
-function pickup(){if(Date.now()-(sylKey.t||0)<400)return;if(henS('g1'))return;tone(520,.09,'sine',.12);tone(720,.1,'sine',.1,.05)}
-function drop(){if(henS('g2'))return;tone(180,.12,'sine',.18);noise(.08,.1,600)}
+/*__NODRAGSND (חן, 4.11.26: 'האווו זה צליל גרירה, למחוק לגמרי', ו'וואו' נשמע בכל הנחה): בלי צליל בהרמה ובהנחה. ההצלחה משמיעה צליל משתנה דרך good()*/function pickup(){}
+function drop(){}
 function popS(){noise(.18,.3,1800,300);tone(300,.1,'square',.06)}
 function whoosh(){noise(.7,.18,400,2600)}
 function sparkle(){[1046,1318,1568,2093].forEach(function(f,i){tone(f,.16,'triangle',.07,i*.06)})}
