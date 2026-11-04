@@ -151,7 +151,7 @@ var camY=0;function step(dt){window.__dtl=dt;
     else if(o.g&&hero.x>o.x+70){
       var lt=tiles[tiles.length-1]; o.x=door.x+30; o.y=lt.y-(o.hi?128:34); o.pl=0; door.x+=230; lt.w=door.x+500-lt.x } });
   if(state!=='play') return;
-  if(!door.miss&&got<need&&hero.x>door.x0-380){ door.miss=clock+2.6; speak(['פִּסְפַּסְתֶּם כַּמָּה',missWord()]) }
+  if(!door.miss&&got<need&&hero.x>door.x0-380){ door.miss=clock+2.6; /*__MISS1: משפט שלם אחד (חן, 4.11.26: 'צלילים' נשמע ברובוטי, ו'פספסתם כמה' הוקלט עם בכי) */say('פִּסְפַּסְתֶּם כַּמָּה '+missWord()) }
   if(hero.x>door.x+20&&door.open) return win();
 }
 function lose(o){ if(state!=='play')return; window.__why={x:hero.x|0,y:hero.y|0,cam:cam|0,bad:o&&o.t,hi:o&&o.hi,blk:hero.blk,on:hero.on}; loseT=clock; state='ouch'; lives--; SFX.ouch(); shake=.35; renderHearts(); if(o){o.hit=1}
