@@ -37,16 +37,15 @@ html,body{margin:0;height:100%;overflow:hidden;background:linear-gradient(180deg
 @keyframes pop{50%{transform:scale(1.08)}}@keyframes shake{25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
 /* מטוס */
 .sky{position:relative;flex:1;min-height:0;border-radius:22px;overflow:hidden;background:linear-gradient(#9CD3F5,#E4F4FF 75%,#FDE9EE);touch-action:none}
-.bal{position:absolute;display:flex;align-items:center;justify-content:center;font-weight:800;direction:ltr;color:#fff;text-shadow:0 2px 0 rgba(0,0,0,.28);width:30%;max-width:130px;aspect-ratio:.82;background-size:100% 100%;background-repeat:no-repeat;font-size:clamp(20px,6.2vw,34px);padding-bottom:12%}
+.bal{position:absolute;display:flex;align-items:center;justify-content:center;font-weight:800;direction:ltr;color:#4A2C3A;text-shadow:0 0 4px #fff,0 0 4px #fff,0 1px 0 #fff;width:25%;max-width:104px;aspect-ratio:.607;background-size:100% 100%;background-repeat:no-repeat;box-sizing:border-box;align-items:flex-start;white-space:nowrap}
 .bal.pop{animation:bpop .3s forwards}@keyframes bpop{to{transform:scale(1.6);opacity:0}}
 #pl{position:absolute;left:0;top:0;width:23%;max-width:96px;pointer-events:none;z-index:5;transition:none}
 /* רכבת */
 .track{position:relative;flex:1;min-height:0;border-radius:22px;overflow:hidden;background:linear-gradient(#BFE3F7,#E4F4FF 62%,#CFEFB5);touch-action:none}
-.cargo{position:absolute;display:flex;align-items:center;justify-content:center;font-weight:800;direction:ltr;color:#fff;text-shadow:0 2px 0 rgba(0,0,0,.28);width:26%;max-width:112px;aspect-ratio:.82;background-size:100% 100%;font-size:clamp(18px,5.6vw,30px);padding-bottom:12%;left:50%;transform:translateX(-50%);top:6%}
-.wag{position:absolute;left:0;bottom:10%;height:34%;border:3px solid #D14175;border-radius:12px 12px 6px 6px;background:#F8B9B6;display:flex;align-items:center;justify-content:center;font-weight:800;direction:ltr;font-size:clamp(24px,7vw,40px);color:#fff;text-shadow:0 2px 0 rgba(0,0,0,.25)}
-.wag:nth-child(3n+2){background:#8FD3B6;border-color:#4FB38C}.wag:nth-child(3n+3){background:#B7CDE0;border-color:#5F8DB5}
-.wag:after{content:"";position:absolute;bottom:-12px;left:18%;width:22px;height:22px;border-radius:50%;background:#444;border:4px solid #bbb;box-shadow:70px 0 0 -0px #444}
-.rail{position:absolute;left:0;right:0;bottom:7%;height:6px;background:#8d8aa0}
+.cargo{position:absolute;display:flex;align-items:center;justify-content:center;font-weight:800;direction:ltr;color:#4A2C3A;text-shadow:0 0 4px #fff,0 0 4px #fff,0 1px 0 #fff;width:22%;max-width:92px;aspect-ratio:.607;background-size:100% 100%;background-repeat:no-repeat;box-sizing:border-box;align-items:flex-start;white-space:nowrap;left:50%;transform:translateX(-50%);top:4%}
+.wag,.loco{position:absolute;left:0;bottom:calc(11% + 5px);background-repeat:no-repeat;background-size:100% 100%;display:flex;align-items:center;justify-content:center;font-weight:800;direction:ltr;color:#4A2C3A;text-shadow:0 0 4px #fff,0 0 4px #fff;font-size:clamp(24px,7vw,40px);box-sizing:border-box;white-space:nowrap}
+.loco{background-size:contain;background-position:left bottom}
+.rail{position:absolute;left:0;right:0;bottom:11%;height:6px;background:#8d8aa0}
 .pin{position:absolute;left:0;right:0;bottom:calc(10% + 34% + 4px);top:30%;display:flex;justify-content:center;pointer-events:none}
 .tapbtn{position:absolute;bottom:2%;left:50%;transform:translateX(-50%);font:800 clamp(16px,4.6vw,22px) Rubik,Arial;color:#fff;background:#EF406E;border:0;border-radius:99px;padding:8px 26px;box-shadow:0 4px 0 #D14175;cursor:pointer;z-index:6}
 /* נחש */
@@ -76,6 +75,8 @@ html,body{margin:0;height:100%;overflow:hidden;background:linear-gradient(180deg
 var Q=new URLSearchParams(location.search), N=Math.max(2,Math.min(12,+Q.get('n')||3));
 var $=function(s,r){return(r||document).querySelector(s)}, stage=$('#stage'), ttl=$('#ttl'), backB=$('#back');
 var muted=false, AC=null, touched=false;
+function fsFor(t,w){var n=String(t).replace(/ /g,'').length;return Math.round(w*(n<=2?.36:n<=3?.3:n<=4?.25:n<=5?.21:.18))}
+function place(el,w,t){var f=fsFor(t,w),h=w/.607;el.style.fontSize=f+'px';el.style.lineHeight='1';el.style.paddingTop=Math.max(0,Math.round(h*.30-f*.5))+'px'}
 function rnd(a,b){return a+Math.floor(Math.random()*(b-a+1))}
 function sh(a){a=a.slice();for(var i=a.length-1;i>0;i--){var j=rnd(0,i),t=a[i];a[i]=a[j];a[j]=t}return a}
 /* ---------- צלילים ---------- */
@@ -137,8 +138,8 @@ function gPlane(done){ var R=makeSet(ROUNDS),i=0,lock=false,raf=0; var box=docum
   function size(){W=sky.clientWidth;H=sky.clientHeight} size();
   function build(){ var r=R[i]; lock=false; dw.innerHTML=dotsHtml(R.length,i); pq.innerHTML=r.q+'<small>'+(r.dir==='res'?'פוצצו את הבלון עם התוצאה':'פוצצו את הבלון עם התרגיל')+'</small>';
     bals.forEach(function(b){b.el.remove()});bals=[];size();
-    var bw=Math.min(130,W*.3),bh=bw/.82,cells=[[.08,.06],[.58,.06],[.08,.44],[.58,.44]];cells=sh(cells);
-    r.a.forEach(function(o,k){var el=document.createElement('div');el.className='bal';el.textContent=o.t;if(o.t.length>4)el.style.fontSize='clamp(15px,4.4vw,26px)';el.style.backgroundImage='url(../play/assets/balloons/b'+(k+1)+'.png)';sky.appendChild(el);var bx=cells[k][0]*W+rnd(-4,4),by=cells[k][1]*H;bals.push({el:el,o:o,x:bx,y:by,ph:Math.random()*6,w:bw,h:bh})});
+    var bw=Math.min(104,W*.25),bh=bw/.607,cells=[[.08,.04],[.60,.04],[.08,.46],[.60,.46]];cells=sh(cells);
+    r.a.forEach(function(o,k){var el=document.createElement('div');el.className='bal';el.textContent=o.t;place(el,bw,o.t);el.style.backgroundImage='url(../play/assets/balloons/b'+(k+1)+'.png)';sky.appendChild(el);var bx=cells[k][0]*W+rnd(-4,4),by=cells[k][1]*H;bals.push({el:el,o:o,x:bx,y:by,ph:Math.random()*6,w:bw,h:bh})});
     px=W/2-pl.offsetWidth/2;py=H-pl.offsetHeight-6;tx=px;ty=py }
   function move(e){var rc=sky.getBoundingClientRect(),cx=(e.touches?e.touches[0].clientX:e.clientX)-rc.left,cy=(e.touches?e.touches[0].clientY:e.clientY)-rc.top;tx=cx-pl.offsetWidth/2;ty=cy-pl.offsetHeight/2-10}
   sky.addEventListener('pointerdown',function(e){touched=true;ac();move(e);try{sky.setPointerCapture(e.pointerId)}catch(x){}});sky.addEventListener('pointermove',function(e){if(e.buttons||e.pointerType==='touch')move(e)});
@@ -153,16 +154,17 @@ function gPlane(done){ var R=makeSet(ROUNDS),i=0,lock=false,raf=0; var box=docum
   cleanup=function(){cancelAnimationFrame(raf);removeEventListener('keydown',kd);removeEventListener('keyup',ku)} }
 /* ---------- רכבת ---------- */
 function gTrain(done){ var R=makeSet(ROUNDS),i=0,lock=false,raf=0; var box=document.createElement('div');box.className='game';box.innerHTML='<div class="dots-w"></div><div class="q" id="tq" style="font-size:clamp(16px,4.6vw,24px)"></div><div class="track" id="trk"><div class="cargo" id="cg"></div><div class="rail"></div><button class="tapbtn" id="drop" type="button">עכשיו</button></div>';stage.appendChild(box);
-  var trk=$('#trk',box),cg=$('#cg',box),tq=$('#tq',box),dw=$('.dots-w',box),wags=[],off=0,W=0,GAP=10,WW=0,cargoY=0,falling=false,fy=0,r=null,hitW=null;
+  var trk=$('#trk',box),cg=$('#cg',box),tq=$('#tq',box),dw=$('.dots-w',box),wags=[],loco=null,off=0,W=0,GAP=10,WW=0,cargoY=0,falling=false,fy=0,r=null,hitW=null;
   function build(){ r=R[i];lock=false;falling=false;dw.innerHTML=dotsHtml(R.length,i);tq.innerHTML=(r.dir==='res'?'שחררו את הבלון מעל הקרון עם התוצאה':'שחררו את הבלון מעל הקרון עם התרגיל');
-    cg.textContent=r.q;if(r.q.length>4)cg.style.fontSize='clamp(14px,4vw,22px)';else cg.style.fontSize='';cg.style.backgroundImage='url(../play/assets/balloons/b'+rnd(1,6)+'.png)';cg.style.top='6%';cg.style.transform='translateX(-50%)';
-    wags.forEach(function(w){w.remove()});wags=[];W=trk.clientWidth;WW=Math.max(96,Math.min(150,W*.3));
+    cg.textContent=r.q;place(cg,Math.min(92,trk.clientWidth*.22),r.q);cg.style.backgroundImage='url(../play/assets/balloons/b'+rnd(1,6)+'.png)';cg.style.top='6%';cg.style.transform='translateX(-50%)';
+    wags.forEach(function(w){w.remove()});wags=[];if(loco)loco.remove();W=trk.clientWidth;WW=Math.max(124,Math.min(190,W*.4));
     /* שלושה קרונות: התשובה הנכונה ועוד שניים. הרכבת עוברת במעגל */
     var three=sh(r.a.filter(function(o){return !o.ok}).slice(0,2).concat(r.a.filter(function(o){return o.ok})));
-    three.forEach(function(o){var w=document.createElement('div');w.className='wag';w.textContent=o.t;w.__ok=o.ok;if(o.t.length>4)w.style.fontSize='clamp(16px,4.6vw,26px)';w.style.width=WW+'px';trk.insertBefore(w,$('.rail',trk));wags.push(w)}); off=-WW*1.2 }
-  function total(){return wags.length*(WW+GAP)}
-  var last=0;function loop(t){ var dt=Math.min(.05,(t-(last||t))/1000);last=t; var sp=Math.max(52,W*.17); off+=sp*dt; var T=total()+W*.35;
-    wags.forEach(function(w,k){var x=((off+k*(WW+GAP))%T);x=x-WW; w.style.transform='translateX('+x+'px)';w.__x=x});
+    var wh=Math.round(WW/1.86);var FS=Math.min.apply(null,three.map(function(o){var n=o.t.replace(/ /g,'').length;return Math.round(WW*(n<=3?.3:n<=5?.19:.16))}));loco=document.createElement('div');loco.className='loco';loco.style.width=Math.round(WW*1.05)+'px';loco.style.height=Math.round(wh*1.3)+'px';loco.style.backgroundImage='url(../play/assets/train/loco.png)';trk.insertBefore(loco,$('.rail',trk));
+    three.forEach(function(o,k){var w=document.createElement('div');w.className='wag';w.textContent=o.t;w.__ok=o.ok;w.style.fontSize=FS+'px';w.style.width=WW+'px';w.style.height=wh+'px';w.style.padding=Math.round(wh*.17)+'px '+Math.round(WW*.1)+'px '+Math.round(wh*.36)+'px';w.style.backgroundImage='url(../play/assets/train/wag'+k+'.png)';trk.insertBefore(w,$('.rail',trk));wags.push(w)}); off=0 }
+  function total(){return (wags.length+1)*(WW+GAP)}
+  var last=0;function loop(t){ var dt=Math.min(.05,(t-(last||t))/1000);last=t; var sp=Math.max(52,W*.17); off-=sp*dt; var T=total()+W*.35;var pos=function(k){return (((off+k*(WW+GAP))%T)+T)%T-WW};if(loco){loco.style.transform='translateX('+pos(0)+'px)'}
+    wags.forEach(function(w,k){var x=pos(k+1); w.style.transform='translateX('+x+'px)';w.__x=x});
     if(falling){fy+=dt*(420+fy*2);var maxY=trk.clientHeight*.52;cg.style.top=(6+fy/trk.clientHeight*100)+'%';if(hitW)cg.style.left=(hitW.__x+WW/2)+'px';if(fy>=maxY){falling=false;var hit=hitW;cg.style.left='50%';
       if(hit&&hit.__ok){good();cg.style.opacity='0';lock=true;setTimeout(function(){cg.style.opacity='1';i++;if(i>=R.length)done();else build()},600)}else{bad();cg.style.top='6%';cg.style.transition='top .5s';setTimeout(function(){cg.style.transition='';lock=false},520)}}}
     raf=requestAnimationFrame(loop) }
