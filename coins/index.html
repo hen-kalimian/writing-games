@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="he" dir="rtl"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>זורקים מטבע לקופה</title>
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;height:100%;width:100%;overflow:hidden;position:fixed;background:linear-gradient(180deg,#fff 0%,#FEF6F5 100%);font-family:Rubik,'Open Sans',Arial,sans-serif;color:#4A2C3A;touch-action:none;user-select:none;-webkit-user-select:none}
+#app{position:absolute;inset:0;overflow:hidden;display:flex;flex-direction:column;padding:8px;gap:6px}
+.bar{display:flex;align-items:center;justify-content:space-between;gap:8px;min-height:40px}
+.bar h1{margin:0;font-size:clamp(15px,4vw,20px);font-weight:800;color:#B8236B;flex:1;text-align:center}
+.ib{width:40px;height:40px;border-radius:50%;border:2.5px solid #F8B9B6;background:#fff;color:#D14175;display:flex;align-items:center;justify-content:center;cursor:pointer;padding:0}
+.ib svg{width:22px;height:22px}
+.dots{display:flex;gap:6px;justify-content:center}.dots i{width:12px;height:12px;border-radius:50%;background:#FBD9D6}.dots i.on{background:#EF406E}
+#field{flex:1;min-height:0;position:relative}
+#coinzone{position:absolute;left:0;right:0;top:0;height:46%;display:flex;align-items:center;justify-content:center}
+.coin{width:min(46vw,200px,38vh);aspect-ratio:1;border-radius:50%;background:radial-gradient(circle at 35% 30%,#FFF3B8,#F6D24F 55%,#E0A92B);border:6px solid #E8B93A;box-shadow:0 8px 0 #C99A22,0 14px 18px rgba(0,0,0,.18);display:flex;align-items:center;justify-content:center;position:absolute;touch-action:none;cursor:grab;z-index:5}
+.coin:before{content:"";position:absolute;inset:9px;border-radius:50%;border:3px dashed rgba(184,120,20,.45)}
+.coin img{width:72%;height:72%;object-fit:contain;border-radius:50%;pointer-events:none;background:#fff}
+#kupot{position:absolute;left:0;right:0;bottom:0;height:52%;display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.kupa{position:relative;border:4px solid #FBC5D6;border-radius:24px 24px 18px 18px;background:#FDE1EA;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:2px;padding:30px 4px 6px;cursor:pointer;box-shadow:0 6px 0 #F8B9B6;min-height:0}
+.kupa:nth-child(2){background:#E3F5EC;border-color:#B9E3D0;box-shadow:0 6px 0 #A8D9C3}
+.kupa:nth-child(3){background:#E5F1FA;border-color:#BCD9F0;box-shadow:0 6px 0 #A9CBE6}
+.kupa .slot{position:absolute;top:10px;left:50%;transform:translateX(-50%);width:56%;height:12px;border-radius:99px;background:#7a4b60;box-shadow:inset 0 3px 0 rgba(0,0,0,.35)}
+.kupa .ic{flex:1;min-height:0;width:100%;display:flex;align-items:center;justify-content:center}
+.kupa .ic img{max-width:92%;max-height:100%;object-fit:contain;pointer-events:none}
+.kupa .nm{font-weight:700;font-size:clamp(11px,3vw,14px);color:#6b3a52;text-align:center;line-height:1.1}
+.kupa.ok{animation:kok .45s}.kupa.no{animation:kno .4s}
+@keyframes kok{40%{transform:scale(1.08) translateY(-4px)}}@keyframes kno{25%{transform:translateX(-7px)}75%{transform:translateX(7px)}}
+.kupa.over{outline:4px solid #EF406E}
+.end{position:absolute;inset:0;background:rgba(255,246,248,.94);display:none;flex-direction:column;align-items:center;justify-content:center;gap:16px;z-index:20;border-radius:22px}
+.end.on{display:flex}.end h2{margin:0;font-size:clamp(28px,8vw,44px);color:#B8236B}
+.btn{font:800 clamp(18px,5vw,24px) Rubik,Arial;color:#fff;background:#EF406E;border:0;border-radius:99px;padding:12px 34px;box-shadow:0 5px 0 #D14175;cursor:pointer}
+.cf{position:fixed;width:10px;height:14px;z-index:30;pointer-events:none}
+</style></head><body>
+<div id="app">
+ <div class="bar"><div style="width:40px"></div><h1>זרקו את המטבע לקופה הנכונה</h1><button class="ib" id="mute" type="button" aria-label="השתקה"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M9 17V5l10-2v12" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/><circle cx="7" cy="17" r="3"/><circle cx="17" cy="15" r="3"/><path id="mx" d="M3 3l18 18" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" style="display:none"/></svg></button></div>
+ <div id="dots" class="dots"></div>
+ <div id="field"><div id="coinzone"></div><div id="kupot"></div><div class="end" id="end"><h2>כל הכבוד!</h2><button class="btn" id="again" type="button">עוד פעם</button></div></div>
+</div>
+<script src="../ios-audio.js"></script>
+<script>
+(function(){
+var Q=new URLSearchParams(location.search);
+var BASE='../play/assets/', ICONS='../play/assets/img/cat/';
+/* קטגוריות: שם, איור הקטגוריה (חדש, מופשט) ופריטים (איורים קיימים של חן) */
+var CAT={
+ fruit:{nm:'פירות',ic:'k-fruit.png',items:['img/la6467c35223.jpg','img/3d8ac35adafa.jpg','img/c8a10e862375.jpg','img/e8b123193a64.jpg','img/cb2a5046ebf3.jpg']},
+ animal:{nm:'חיות',ic:'k-animal.png',items:['img/afa5d4740849.jpg','img/97304ccf113d.jpg','img/c14d3724102d.jpg','img/616e3232d181.jpg','img/934997cff215.jpg']},
+ vehicle:{nm:'כלי תחבורה',ic:'k-vehicle.png',items:['img/906bc12177f8.jpg','img/943f9b256cbd.jpg','img/c12e3906268c.jpg','img/edfa1641ea6f.jpg','img/e5c00985a0bb.jpg']},
+ clothes:{nm:'בגדים',ic:'k-clothes.png',items:['img/ba610488d6da.jpg','img/842d0e52f647.jpg','img/4610b05888f7.jpg','img/748ee6089ba7.jpg','img/ebb24567b28f.jpg']},
+ write:{nm:'כלי כתיבה',ic:'k-write.png',items:['img/e6d599f0bab1.jpg','img/fb54d3382b8d.jpg','img/385805455395.jpg','img/05c69c690c6e.jpg']}
+};
+var SETS={a:['fruit','animal','vehicle'],b:['clothes','animal','fruit'],c:['vehicle','write','clothes'],d:['animal','vehicle','write']};
+var keys=(Q.get('c')?Q.get('c').split(','):SETS[Q.get('s')||'a']||SETS.a).filter(function(k){return CAT[k]}).slice(0,3);
+function rnd(a,b){return a+Math.floor(Math.random()*(b-a+1))}
+function sh(a){a=a.slice();for(var i=a.length-1;i>0;i--){var j=rnd(0,i),t=a[i];a[i]=a[j];a[j]=t}return a}
+var muted=false,AC=null;
+function ac(){try{AC=AC||new(window.AudioContext||window.webkitAudioContext)();if(AC.state==='suspended')AC.resume()}catch(e){}return AC}
+function tone(f1,f2,d,type,vol){if(muted||!ac())return;var o=AC.createOscillator(),g=AC.createGain(),t=AC.currentTime;o.type=type||'sine';o.frequency.setValueAtTime(f1,t);o.frequency.exponentialRampToValueAtTime(f2,t+d);g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(vol||.12,t+.015);g.gain.exponentialRampToValueAtTime(.0001,t+d);o.connect(g);g.connect(AC.destination);o.start(t);o.stop(t+d+.02)}
+function clink(){tone(1760,2349,.18,'triangle',.14);setTimeout(function(){tone(2349,2637,.22,'sine',.1)},80)}
+function good(){tone(660,990,.12,'triangle',.16);setTimeout(function(){tone(880,1320,.16,'triangle',.14)},90)}
+function bad(){tone(330,250,.25,'sine',.09)}
+function whoosh(){tone(300,900,.16,'sine',.05)}
+function confetti(){var cols=['#EF406E','#8FD3B6','#B7CDE0','#F3DE98','#FBC5D6'];for(var i=0;i<40;i++){var c=document.createElement('i');c.className='cf';c.style.left=rnd(5,95)+'vw';c.style.top='-20px';c.style.background=cols[i%5];c.style.borderRadius=i%2?'50%':'2px';document.body.appendChild(c);c.animate([{transform:'translateY(0) rotate(0)'},{transform:'translateY('+(innerHeight+40)+'px) rotate('+rnd(180,720)+'deg)'}],{duration:rnd(1400,2600),easing:'ease-in'}).onfinish=(function(x){return function(){x.remove()}})(c)}}
+document.getElementById('mute').onclick=function(){muted=!muted;document.getElementById('mx').style.display=muted?'':'none'};
+var field=document.getElementById('field'),zone=document.getElementById('coinzone'),kup=document.getElementById('kupot'),dotsEl=document.getElementById('dots'),endEl=document.getElementById('end');
+var queue=[],idx=0,coin=null,lock=false,PER=3;
+function build(){ queue=[];keys.forEach(function(k){sh(CAT[k].items).slice(0,PER).forEach(function(i){queue.push({k:k,i:i})})}); queue=sh(queue); idx=0; lock=false;
+  kup.innerHTML='';sh(keys).forEach(function(k){var d=document.createElement('div');d.className='kupa';d.setAttribute('data-k',k);d.innerHTML='<div class="slot"></div><div class="ic"><img src="'+ICONS+CAT[k].ic+'" alt=""></div><div class="nm">'+CAT[k].nm+'</div>';d.addEventListener('pointerup',function(){if(!dragging)throw_(k)});kup.appendChild(d)});
+  endEl.classList.remove('on'); next() }
+function dots(){var h='';for(var i=0;i<queue.length;i++)h+='<i class="'+(i<idx?'on':'')+'"></i>';dotsEl.innerHTML=h}
+function next(){ dots(); zone.innerHTML=''; if(idx>=queue.length){ finish(); return } var it=queue[idx];coin=document.createElement('div');coin.className='coin';coin.innerHTML='<img src="'+BASE+it.i+'" alt="">';zone.appendChild(coin);coin.__k=it.k;coin.animate([{transform:'translateY(-40px) scale(.6)',opacity:0},{transform:'none',opacity:1}],{duration:260,easing:'ease-out'});lock=false;bindDrag(coin) }
+/* זריקה: המטבע עף בקשת אל הקופה */
+function throw_(k,fromDrag){ if(lock||!coin)return;lock=true;ac();var c=coin,cr=c.getBoundingClientRect(),kb=kup.querySelector('[data-k="'+k+'"]'),kr=kb.getBoundingClientRect();
+  var dx=(kr.left+kr.width/2)-(cr.left+cr.width/2),dy=(kr.top+14)-(cr.top+cr.height/2), ok=(k===c.__k); whoosh();
+  c.style.transition='none';var from=fromDrag||{x:0,y:0};
+  var anim=c.animate([{transform:'translate('+from.x+'px,'+from.y+'px) scale(1)'},{transform:'translate('+(from.x+(dx-from.x)*.5)+'px,'+(Math.min(from.y,dy)-70)+'px) scale(.8) rotate(180deg)',offset:.5},{transform:'translate('+dx+'px,'+dy+'px) scale(.28) rotate(360deg)'}],{duration:520,easing:'ease-in-out',fill:'forwards'});
+  anim.onfinish=function(){ if(ok){clink();good();kb.classList.add('ok');setTimeout(function(){kb.classList.remove('ok')},500);c.style.display='none';idx++;setTimeout(next,450)}
+    else{bad();kb.classList.add('no');setTimeout(function(){kb.classList.remove('no')},420);c.animate([{transform:'translate('+dx+'px,'+dy+'px) scale(.28)'},{transform:'translate(0,0) scale(1)'}],{duration:450,easing:'ease-out',fill:'forwards'}).onfinish=function(){c.getAnimations().forEach(function(a){a.cancel()});c.style.transform='';lock=false}} } }
+/* גרירה של המטבע: שחרור מעל קופה = זריקה */
+var dragging=false;
+function bindDrag(c){ var sx=0,sy=0,moved=false,id=null;
+  c.addEventListener('pointerdown',function(e){if(lock)return;ac();id=e.pointerId;try{c.setPointerCapture(id)}catch(x){}sx=e.clientX;sy=e.clientY;moved=false;dragging=false});
+  c.addEventListener('pointermove',function(e){if(id===null||lock)return;var dx=e.clientX-sx,dy=e.clientY-sy;if(Math.abs(dx)+Math.abs(dy)>8){moved=true;dragging=true}if(moved){c.style.transform='translate('+dx+'px,'+dy+'px)';var k=under(e.clientX,e.clientY);kup.querySelectorAll('.kupa').forEach(function(x){x.classList.toggle('over',x.getAttribute('data-k')===k)})}});
+  c.addEventListener('pointerup',function(e){if(id===null)return;id=null;kup.querySelectorAll('.kupa').forEach(function(x){x.classList.remove('over')});if(moved){var k=under(e.clientX,e.clientY),dx=e.clientX-sx,dy=e.clientY-sy;if(k){c.style.transform='';throw_(k,{x:dx,y:dy})}else{c.animate([{transform:'translate('+dx+'px,'+dy+'px)'},{transform:'none'}],{duration:260,easing:'ease-out'});c.style.transform=''}setTimeout(function(){dragging=false},60)}else dragging=false});
+}
+function under(x,y){var r=null;kup.querySelectorAll('.kupa').forEach(function(k){var b=k.getBoundingClientRect();if(x>=b.left&&x<=b.right&&y>=b.top-20&&y<=b.bottom)r=k.getAttribute('data-k')});return r}
+function finish(){ dots(); confetti();[523,659,784,988,1047,1319].forEach(function(f,i){setTimeout(function(){tone(f,f*1.003,.45,'sine',.08)},i*140)}); endEl.classList.add('on'); try{window.WGEnd&&(WGEnd.replay=function(){build()},WGEnd())}catch(x){} }
+document.getElementById('again').onclick=build;
+document.addEventListener('touchmove',function(e){e.preventDefault()},{passive:false});
+window.__C={left:function(){return queue.length-idx},cur:function(){return coin&&coin.__k},throw_:throw_,keys:keys};
+build();
+})();
+</script>
+<script src="../end-fs.js"></script>
+</body></html>
