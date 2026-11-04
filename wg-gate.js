@@ -30,20 +30,10 @@
     '<button id="go" type="button">התחברות לתוכנית</button><div id="msg"></div><div><a class="b alt" href="https://www.talkwithkids.co.il/">לאתר של חן</a></div></div></div>' +
     '';
   var code = '' +
-    'const CLIENT="058da38e-a911-4b84-876e-e5efedfa9ae9",BACK=' + JSON.stringify(back) + ',OA="wg-gate-oauth";' +
+    'const CLIENT="4eb1ece7-08e9-4d05-9fc7-09c5824b2fc0",BACK=' + JSON.stringify(back) + ',RET="https://hen-kalimian.github.io/writing-games/gate-return.html",OA="wg-gate-oauth";' +
     'const $=id=>document.getElementById(id),msg=t=>{$("msg").textContent=t};' +
     'let sdk=null;async function client(){if(sdk)return sdk;const m=await import("https://esm.sh/@wix/sdk@1.21.16");sdk={m,c:m.createClient({auth:m.OAuthStrategy({clientId:CLIENT})})};return sdk}' +
-    'async function hasAccess(tok){const H={Authorization:tok.accessToken.value,"content-type":"application/json"};' +
-    'try{const r=await fetch("https://www.wixapis.com/pricing-plans/v2/member/orders?limit=100",{headers:H});if(r.ok){const j=await r.json();if((j.orders||[]).some(o=>o.status==="ACTIVE"))return true}}catch(e){}' +
-    'try{const r=await fetch("https://www.wixapis.com/online-programs/v3/participants/query",{method:"POST",headers:H,body:JSON.stringify({query:{cursorPaging:{limit:1}}})});if(r.ok){const j=await r.json();if((j.participants||[]).length)return true}}catch(e){}' +
-    'return false}' +
-    'async function finish(){const u=new URL(location.href);if(!u.searchParams.get("code")||!u.searchParams.get("state"))return false;msg("בודקות את המנוי...");$("go").disabled=true;' +
-    'try{const s=await client();const od=JSON.parse(localStorage.getItem(OA)||"null");const r=s.c.auth.parseFromUrl();const tk=await s.c.auth.getMemberTokens(r.code,r.state,od);' +
-    'if(await hasAccess(tk)){localStorage.setItem("wg-member-until",String(Date.now()+864e5));try{sessionStorage.setItem("wgok","1")}catch(e){}location.replace(BACK);return true}' +
-    '$("t").textContent="לא מצאנו מנוי פעיל בתוכנית עבור המשתמש הזה. אם יש לך גישה, כדאי להתחבר עם המשתמש שאיתו נרשמת.";msg("");$("go").disabled=false;$("go").textContent="להתחבר עם משתמש אחר"}' +
-    'catch(e){msg("ההתחברות לא הושלמה, אפשר לנסות שוב");$("go").disabled=false}return true}' +
-    '$("go").onclick=async()=>{$("go").disabled=true;msg("עוברות להתחברות...");try{const s=await client();const od=s.c.auth.generateOAuthData(BACK,BACK);localStorage.setItem(OA,JSON.stringify(od));const {authUrl}=await s.c.auth.getAuthUrl(od);(window.top||window).location.href=authUrl}catch(e){msg("לא הצלחנו לפתוח את ההתחברות, אפשר לנסות שוב");$("go").disabled=false}};' +
-    'finish();';
+    '$("go").onclick=async()=>{$("go").disabled=true;msg("עוברות להתחברות...");try{const s=await client();const od=s.c.auth.generateOAuthData(RET,RET);localStorage.setItem(OA,JSON.stringify(od));localStorage.setItem("wg-gate-back",BACK);const {authUrl}=await s.c.auth.getAuthUrl(od);(window.top||window).location.href=authUrl}catch(e){msg("לא הצלחנו לפתוח את ההתחברות, אפשר לנסות שוב");$("go").disabled=false}};';
     /* מחליפים את כל הדף בצומת חדש: שאר הדף המקורי ימשיך להיטען אל עץ מנותק, ולכן קוד המשחק והצלילים שלו לא ירוצו */
   var nh = document.createElement('html'); nh.setAttribute('lang', 'he'); nh.setAttribute('dir', 'rtl');
   nh.innerHTML = '<head>' + headHtml + '</head><body>' + bodyHtml + '</body>';

@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="he" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>בדיקת מנוי</title>
+<style>*{box-sizing:border-box}html,body{margin:0;height:100%;font-family:Rubik,Arial,sans-serif;background:linear-gradient(180deg,#fff,#FEF6F5);color:#4A2C3A}.w{min-height:100%;display:grid;place-items:center;padding:20px;text-align:center}.c{max-width:420px;background:#fff;border:3px solid #FBC5D6;border-radius:26px;padding:26px 22px;box-shadow:0 6px 18px rgba(184,35,107,.12)}h1{font-size:24px;color:#B8236B;margin:0 0 10px}p{font-size:17px;line-height:1.5;margin:0 0 18px;color:#6b4a5a}a.b{font:800 19px Rubik,Arial;color:#fff;background:#EF406E;border-radius:99px;padding:12px 30px;box-shadow:0 4px 0 #D14175;text-decoration:none;display:inline-block;margin:6px}a.b.alt{background:#fff;color:#D14175;border:3px solid #F8B9B6;box-shadow:none}</style></head>
+<body><div class="w"><div class="c"><h1 id="h">בודקות את המנוי...</h1><p id="t">רגע אחד, בודקות שיש לך גישה לתוכנית.</p><div id="acts"></div></div></div>
+<script type="module">
+const CLIENT = '4eb1ece7-08e9-4d05-9fc7-09c5824b2fc0', OA = 'wg-gate-oauth';
+const $ = id => document.getElementById(id);
+const BASE = 'https://hen-kalimian.github.io/writing-games/';
+let back = ''; try { back = localStorage.getItem('wg-gate-back') || '' } catch (e) {}
+if (!back.startsWith(BASE) || back.includes('gate-return')) back = 'https://www.talkwithkids.co.il/';
+const fail = (h, t) => { $('h').textContent = h; $('t').textContent = t; $('acts').innerHTML = '<a class="b" href="' + back + '">לנסות שוב</a><a class="b alt" href="https://www.talkwithkids.co.il/">לאתר של חן</a>' };
+async function hasAccess(tok) {
+  const H = { Authorization: tok.accessToken.value, 'content-type': 'application/json' };
+  try { const r = await fetch('https://www.wixapis.com/pricing-plans/v2/member/orders?limit=100', { headers: H }); if (r.ok) { const j = await r.json(); window.__orders = (j.orders || []).map(o => o.status); if ((j.orders || []).some(o => o.status === 'ACTIVE')) return true } else window.__ordersErr = r.status } catch (e) { window.__ordersErr = String(e) }
+  try { const r = await fetch('https://www.wixapis.com/online-programs/v3/participants/query', { method: 'POST', headers: H, body: JSON.stringify({ query: { cursorPaging: { limit: 1 } } }) }); window.__partStatus = r.status; if (r.ok) { const j = await r.json(); if ((j.participants || []).length) return true } } catch (e) {}
+  return false;
+}
+try {
+  const m = await import('https://esm.sh/@wix/sdk@1.21.16');
+  const c = m.createClient({ auth: m.OAuthStrategy({ clientId: CLIENT }) });
+  const od = JSON.parse(localStorage.getItem(OA) || 'null');
+  const r = c.auth.parseFromUrl();
+  if (!od || !r.code) throw new Error('no-code');
+  const tk = await c.auth.getMemberTokens(r.code, r.state, od);
+  window.__tokens = true;
+  if (await hasAccess(tk)) {
+    localStorage.setItem('wg-member-until', String(Date.now() + 864e5));
+    try { sessionStorage.setItem('wgok', '1') } catch (e) {}
+    window.__result = 'ok';
+    location.replace(back);
+  } else {
+    window.__result = 'noaccess';
+    fail('לא מצאנו מנוי פעיל בתוכנית', 'המשתמש הזה לא מופיע כמשתתפת עם מנוי פעיל. אם יש לך גישה, אפשר להתחבר עם המשתמש שאיתו נרשמת.');
+  }
+} catch (e) {
+  window.__result = 'error ' + e;
+  fail('ההתחברות לא הושלמה', 'אפשר לנסות שוב.');
+}
+</script></body></html>
