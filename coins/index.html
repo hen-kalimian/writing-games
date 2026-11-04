@@ -46,11 +46,12 @@ var BASE='../play/assets/', ICONS='../play/assets/img/cat/';
 var CAT={
  fruit:{nm:'פירות',ic:'k-fruit.png',items:['img/la6467c35223.jpg','img/3d8ac35adafa.jpg','img/c8a10e862375.jpg','img/e8b123193a64.jpg','img/cb2a5046ebf3.jpg']},
  animal:{nm:'חיות',ic:'k-animal.png',items:['img/afa5d4740849.jpg','img/97304ccf113d.jpg','img/c14d3724102d.jpg','img/616e3232d181.jpg','img/934997cff215.jpg']},
- vehicle:{nm:'כלי תחבורה',ic:'k-vehicle.png',items:['img/906bc12177f8.jpg','img/943f9b256cbd.jpg','img/c12e3906268c.jpg','img/edfa1641ea6f.jpg','img/e5c00985a0bb.jpg']},
+ vehicle:{nm:'כלי תחבורה',ic:'k-vehicle.png',items:['img/906bc12177f8.jpg','img/943f9b256cbd.jpg','img/c12e3906268c.jpg','img/edfa1641ea6f.jpg','img/e5c00985a0bb.jpg','img/763715415f49.jpg','img/24856ad2ea54.jpg']},
  clothes:{nm:'בגדים',ic:'k-clothes.png',items:['img/ba610488d6da.jpg','img/842d0e52f647.jpg','img/4610b05888f7.jpg','img/748ee6089ba7.jpg','img/ebb24567b28f.jpg']},
+ fruitveg:{nm:'פירות וירקות',ic:'k-fruitveg.png',items:['img/3d8ac35adafa.jpg','img/11614a42320e.jpg','img/7e38808feaf2.jpg','img/e8b123193a64.jpg','img/69acbcc07a32.jpg','img/abf03e4fc849.jpg']},
  write:{nm:'כלי כתיבה',ic:'k-write.png',items:['img/e6d599f0bab1.jpg','img/fb54d3382b8d.jpg','img/385805455395.jpg','img/05c69c690c6e.jpg']}
 };
-var SETS={a:['fruit','animal','vehicle'],b:['clothes','animal','fruit'],c:['vehicle','write','clothes'],d:['animal','vehicle','write']};
+var SETS={a:['fruit','animal','vehicle'],b:['clothes','animal','fruit'],c:['vehicle','write','clothes'],d:['animal','vehicle','write'],e:['write','vehicle','fruitveg']};
 var keys=(Q.get('c')?Q.get('c').split(','):SETS[Q.get('s')||'a']||SETS.a).filter(function(k){return CAT[k]}).slice(0,3);
 function rnd(a,b){return a+Math.floor(Math.random()*(b-a+1))}
 function sh(a){a=a.slice();for(var i=a.length-1;i>0;i--){var j=rnd(0,i),t=a[i];a[i]=a[j];a[j]=t}return a}
