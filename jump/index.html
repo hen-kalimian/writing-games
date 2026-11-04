@@ -40,6 +40,18 @@ html,body{margin:0;height:100%;background:#FEF6F5;font-family:Rubik,Arial,sans-s
 .btn:active{transform:translateY(3px);box-shadow:0 2px 0 #C92E57}
 .trophy{width:150px;height:150px;object-fit:contain;animation:shine 1.4s ease-in-out infinite}
 @keyframes shine{50%{transform:scale(1.08) rotate(4deg);filter:drop-shadow(0 0 16px #F2C94C)}}
+.map{position:relative;display:flex;flex-direction:row-reverse;align-items:center;justify-content:center;padding:62px 4px 10px;direction:ltr}
+.mdot{width:clamp(34px,10vw,46px);height:clamp(34px,10vw,46px);border-radius:50%;border:3.5px dashed var(--pink2);background:#fff;flex:none;display:flex;align-items:center;justify-content:center;font-style:normal;font-weight:800;font-size:18px;color:var(--pink2);transition:transform .4s}
+.mdot.on{border:3.5px solid var(--fuchsia);background:var(--fuchsia);color:#fff}
+.mdot.new{animation:mpop .7s cubic-bezier(.2,1.8,.4,1)}
+.mdot.next{transform:scale(1.15);border-color:var(--fuchsia);color:var(--fuchsia)}
+@keyframes mpop{0%{transform:scale(.3)}100%{transform:scale(1)}}
+.mline{flex:1;min-width:10px;max-width:46px;height:0;border-top:3.5px dashed var(--pink2)}
+.mline.on{border-top-style:solid;border-top-color:var(--fuchsia)}
+.mfin{width:clamp(36px,10vw,48px);height:clamp(36px,10vw,48px);object-fit:contain;flex:none}
+.mhero{position:absolute;top:4px;width:58px;height:58px;object-fit:contain;transform:translateX(-50%) scaleX(var(--mf,-1));transition:left 1.6s ease-in-out}
+.mhero.walk{animation:mhop .4s ease-in-out infinite}
+@keyframes mhop{50%{margin-top:-10px}}
 </style>
 </head>
 <body>
@@ -149,9 +161,9 @@ var camY=0;function step(dt){window.__dtl=dt;
       if(o.g){ o.dead=1; got++; (L.__got=L.__got||[]).push(o.t); SFX.good(); sparkle(o.x,oy); if(!(door.miss>clock)) say(W.names==='num'?(HenVoice.numberName(o.t)||o.t):W.names?(HenVoice.letterName(o.t)||o.t):o.t); if(got===need){door.open=1; setTimeout(SFX.door,350)} renderGoal() }
       else lose(o) }
     else if(o.g&&hero.x>o.x+70){
-      var lt=tiles[tiles.length-1]; o.x=door.x+30; o.y=lt.y-(o.hi?128:34); o.pl=0; door.x+=230; lt.w=door.x+500-lt.x } });
+      /*__MISS2 (חן, 4.11.26: "אמרה פספסתם אבל אספתי הכל"): מסמנים רק צליל שבאמת עברו אותו*/o.mv=1; var lt=tiles[tiles.length-1]; o.x=door.x+30; o.y=lt.y-(o.hi?128:34); o.pl=0; door.x+=230; lt.w=door.x+500-lt.x } });
   if(state!=='play') return;
-  if(!door.miss&&got<need&&hero.x>door.x0-380){ door.miss=clock+2.6; /*__MISS1: משפט שלם אחד (חן, 4.11.26: 'צלילים' נשמע ברובוטי, ו'פספסתם כמה' הוקלט עם בכי) */say('פִּסְפַּסְתֶּם כַּמָּה '+missWord()) }
+  if(!door.miss&&got<need&&hero.x>door.x0-380&&items.some(function(o){return o.g&&!o.dead&&o.mv})){ door.miss=clock+2.6; /*__MISS1: משפט שלם אחד (חן, 4.11.26: 'צלילים' נשמע ברובוטי, ו'פספסתם כמה' הוקלט עם בכי) */say('פִּסְפַּסְתֶּם כַּמָּה '+missWord()) }
   if(hero.x>door.x+20&&door.open) return win();
 }
 function lose(o){ if(state!=='play')return; window.__why={x:hero.x|0,y:hero.y|0,cam:cam|0,bad:o&&o.t,hi:o&&o.hi,blk:hero.blk,on:hero.on}; loseT=clock; state='ouch'; lives--; SFX.ouch(); shake=.35; renderHearts(); if(o){o.hit=1}
@@ -159,7 +171,7 @@ function lose(o){ if(state!=='play')return; window.__why={x:hero.x|0,y:hero.y|0,
 /*חן 1.11.26: המסלול נשאר קבוע, מה שנאסף נשאר, וחוזרים 2 שניות אחורה ולא לתחילת המסלול*/function resume(){ var t=loseT-2, b=null, i; for(i=trail.length-1;i>=0;i--){ if(trail[i].t<=t){ b=trail[i]; break } } if(!b) b=trail[0]||{x:VW*.5,y:GY,t:clock}; while(trail.length&&trail[trail.length-1].t>b.t) trail.pop();
   hero.x=b.x; hero.y=b.y; hero.vy=0; hero.on=1; hero.sq=1; hero.blk=0; hero.wait=1; cam=b.x-VW*.5; parts=[]; items.forEach(function(o){o.hit=0}); state='play'; renderGoal(); speak(L.goalSay||L.goal) }
 function missWord(){ if(W.names==='num') return 'סְפָרוֹת'; if(W.names) return 'אוֹתִיּוֹת'; var t=((L.good||[])[0]||'').replace(/[֑-ׇ]/g,''); return t.length>2?'מִלִּים':'צְלִילִים' }
-function win(){ state='win'; sparkle(door.x+30,hero.y-60); setTimeout(function(){ li++; if(li>=W.levels.length) show('trophy'); else show('level') },900) }
+function win(){ state='win'; sparkle(door.x+30,hero.y-60); setTimeout(function(){ li++; show('map') },900) }
 /* ---------- ציור ---------- */
 /* גודל טבעי לפריטים קטנים, כדי שתאנה או אצטרובל לא ייראו ענקיים ליד הדמות */
 var DSIZE={fig:.42,acorn:.42,pomegranate:.48,grapes:.5,'date-fruit':.45,'boot-red':.5,jacket:.62,'nest-empty':.5,'nest-eggs':.5,pumpkin:.6,'flower-pot':.62,dove:.6,bird:.45,stork:.85,'umbrella-blue':.85,'umbrella-red':.85,'umbrella-pink':.85,mushroom:.7,'olive-branch':.7,wheat:.8,hatzav:.85,garden:.9};
@@ -243,14 +255,29 @@ function show(kind){
   state='card'; ov.classList.remove('hidden'); var h='';
   if(kind==='intro'){ h='<img class="hero" src="art/'+W.hero+'.png" alt=""><h2>'+W.title+'</h2><p>'+W.intro+' '+spkBtn(W.intro)+'</p><button class="btn" id="go">'+(W.start||'יוֹצְאִים לַדֶּרֶךְ')+'</button>'; card.innerHTML=h; bindCard(function(){ show('level') }); return }
   if(kind==='level'){ L=W.levels[li]; L.__got=[]; h='<h2>'+(W.levelWord||'שלב')+' '+(li+1)+'</h2><p>'+L.goal+' '+spkBtn(L.goal)+'</p><div class="big">'+L.show.map(function(t){return '<span data-say="'+t+'">'+t+'</span>'}).join('')+'</div><button class="btn" id="go">'+(W.go||'מַתְחִילִים')+'</button>'; card.innerHTML=h; bindCard(start); speak(L.goalSay||L.goal); return }
+  /*__MAP4 (חן, 4.11.26): בין שלב לשלב תיבה לבנה עם עיגול לכל שלב, השלמים מלאים, והדמות הולכת לעיגול הבא כמו במפת אוצר*/
+  if(kind==='map'){ var nL=W.levels.length, c='';
+    for(var mi=0;mi<nL;mi++) c+='<i class="mdot'+(mi<li-1?' on':mi===li-1?' on new':'')+'">'+(mi+1)+'</i><b class="mline'+(mi<li-1||li>=nL?' on':'')+'"></b>';
+    c+='<img class="mfin" src="art/'+(W.trophy||'door')+'.png" alt="">';
+    card.innerHTML='<h2>'+(li>=nL?(W.mapDone||'הִגַּעְתֶּם לַסּוֹף!'):(W.levelWord||'שלב')+' '+li+' '+(W.mapOk||'הֻשְׁלַם'))+'</h2><div class="map" id="map">'+c+'<img class="mhero" id="mhero" src="art/'+W.hero+'.png" alt=""></div>';
+    SFX.good(); var map=document.getElementById('map'), mh=document.getElementById('mhero'), pts=map.querySelectorAll('.mdot,.mfin');
+    function at(el){ var r=el.getBoundingClientRect(), m=map.getBoundingClientRect(); return (r.left-m.left+r.width/2)+'px' }
+    if(W.heroFlip) mh.style.setProperty('--mf','1'); mh.style.transition='none'; mh.style.left=at(pts[li-1]); void mh.offsetWidth;
+    setTimeout(function(){ mh.style.transition=''; mh.classList.add('walk'); mh.style.left=at(pts[Math.min(li,pts.length-1)]) },600);
+    setTimeout(function(){ mh.classList.remove('walk'); if(li<nL) pts[li].classList.add('next') },2300);
+    setTimeout(function(){ if(state!=='card'||!document.getElementById('map')) return; if(li>=nL) show('trophy'); else show('level') },3400); return }
   if(kind==='over'){ h='<img class="hero" src="art/'+W.hero+'.png" alt=""><h2>'+(W.again||'נְנַסֶּה שׁוּב')+'</h2><button class="btn" id="go">'+(W.go||'מַתְחִילִים')+'</button>'; card.innerHTML=h; bindCard(resume); say(W.again||'נְנַסֶּה שׁוּב'); return }
   if(kind==='trophy'){ h='<img class="trophy" src="art/'+(W.trophy||W.hero)+'.png" alt=""><h2>'+W.done+'</h2><button class="btn" id="go">'+(W.replay||'מְשַׂחֲקִים שׁוּב')+'</button>'; card.innerHTML=h; bindCard(function(){ li=0; lives=5; renderHearts(); show('level') }); say(W.done); confetti(); window.WGEnd&&(WGEnd.replay=function(){var g=document.getElementById('go');g&&g.click()},WGEnd()); return }
 }
 function bindCard(fn){ card.querySelectorAll('[data-say]').forEach(function(b){ b.onclick=function(e){e.stopPropagation();var t=b.getAttribute('data-say'); if(t===L&&L.goal&&L.goalSay) speak(L.goalSay); else if(L&&t===L.goal&&L.goalSay) speak(L.goalSay); else say(t)} }); document.getElementById('go').onclick=function(){ ov.classList.add('hidden'); fn() } }
 window.__T=function(lv){ L=lv; build(lv); state="play" };
-window.__Jx=function(fn){return fn({get L(){return L},build:build,missWord:missWord,get items(){return items},get door(){return door},get hero(){return hero},setState:function(v){state=v},setCam:function(v){cam=v},get got(){return got},get need(){return need},get pits(){return pits},VW:VW})};
+window.__Jx=function(fn){return fn({get L(){return L},win:win,show:show,get W(){return W},build:build,missWord:missWord,get items(){return items},get door(){return door},get hero(){return hero},setState:function(v){state=v},setCam:function(v){cam=v},get got(){return got},get need(){return need},get pits(){return pits},VW:VW})};
 window.__J=function(){return {cam:cam,VW:VW,hero:hero,items:items,pits:pits,tiles:tiles,door:door,plats:plats,hurd:hurd,state:state,li:li,lives:lives,got:got,need:need}};
-function start(){ build(L); state='play'; renderGoal(); renderHearts() }
+/*__WXLV (חן, 4.11.26): "בכל שלב באותו עולם מזג האוויר ישתנה". שלב 1 כמו העולם, ואחריו מזג אוויר אחר בכל שלב*/
+var WXP={sunny:{weather:null,sky:['#BFE6F7','#FFF6EC'],sun:true,clouds:'cloud'},rain:{weather:'rain',sky:['#B9C8D8','#E8EEF4'],sun:false,clouds:'cloud-rain'},leaves:{weather:'leaves',sky:['#FCD9B8','#FDF0E4'],sun:true,clouds:'cloud'},snow:{weather:'snow',sky:['#DCEAF6','#F7FBFE'],sun:false,clouds:'cloud'},petals:{weather:'petals',sky:['#E9E1F7','#FDF0F6'],sun:true,clouds:'cloud'}};
+function setWx(){ var b=W.__wx0, base=b.weather||(b.sun===false?'':'sunny'), ord=['sunny','rain','leaves','snow','petals'].filter(function(k){return k!==base}), p=li===0?b:WXP[ord[(li-1)%ord.length]];
+  W.weather=p.weather; W.sky=p.sky; W.sun=p.sun; W.clouds=p.clouds===undefined?b.clouds:p.clouds; W.night=li===0?b.night:false; WX=null }
+function start(){ setWx(); build(L); state='play'; renderGoal(); renderHearts() }
 function confetti(){ for(var i=0;i<70;i++) setTimeout(function(){ sparkle(cam+rnd(40,VW-40),rnd(20,140)) },i*30) }
 var hintT=0; function hideHint(){ if(hintT) return; hintT=1; setTimeout(function(){document.getElementById('hint').classList.add('gone')},4000) }
 document.getElementById('pause').onclick=function(){ if(state!=='play') return; state='pause'; try{aud.pause()}catch(e){} ov.classList.remove('hidden'); card.innerHTML='<h2>'+(W.paused||'הַמִּשְׂחָק עָצוּר')+'</h2><button class="btn" id="go">'+(W.resume||'מַמְשִׁיכִים')+'</button>'; bindCard(function(){ state='play' }) };
@@ -259,8 +286,13 @@ document.getElementById('mute').onclick=function(){ muted=!muted; document.getEl
 document.getElementById('fs').onclick=function(){ var d=document.documentElement; if(document.fullscreenElement) document.exitFullscreen(); else (d.requestFullscreen||d.webkitRequestFullscreen||function(){}).call(d) };
 /* ---------- טעינה ---------- */
 fetch('worlds/'+(Q.get('w')||'dagesh')+'.json?v=1').then(function(r){return r.json()}).then(function(w){
-  W=w; document.title=W.title; document.getElementById('hintUp').textContent=W.hintUp||'נוֹגְעִים בַּמָּסָךְ כְּדֵי לִקְפֹּץ';
-  var ks=['door','flame','cloud','sun','pumpkin','mushroom','flower-pot','acorn',W.hero].concat(W.clouds?[W.clouds]:[]).concat(W.weather==='leaves'?['leaf-orange','leaf-yellow','leaf-red','leaf-brown']:[]).concat(W.trophy?[W.trophy]:[]).concat(W.decor), n=0;
+  W=w; /*__LV4 (חן, 4.11.26: "עד 4 שלבים"): שלבים עם הנחיות שונות קודם, ואם כולם באותה הנחיה, שניים ראשונים ושניים אחרונים (הקשים)*/
+  if(W.levels.length>4){ var LV=W.levels, gs=[], pick=[]; LV.forEach(function(l,i){ var g=JSON.stringify(l.goalSay||l.goal); if(gs.indexOf(g)<0){gs.push(g);pick.push(i)} });
+    if(pick.length>=4) pick=pick.slice(0,4); else { var all=[0,1,LV.length-2,LV.length-1]; all.forEach(function(i){ if(pick.length<4&&pick.indexOf(i)<0) pick.push(i) }); for(var pi=0;pick.length<4&&pi<LV.length;pi++) if(pick.indexOf(pi)<0) pick.push(pi); pick.sort(function(a,b){return a-b}) }
+    W.levels=pick.map(function(i){return LV[i]}) }
+  W.__wx0={weather:W.weather,sky:W.sky,sun:W.sun,clouds:W.clouds,night:W.night};
+  document.title=W.title; document.getElementById('hintUp').textContent=W.hintUp||'נוֹגְעִים בַּמָּסָךְ כְּדֵי לִקְפֹּץ';
+  var ks=['door','flame','cloud','sun','pumpkin','mushroom','flower-pot','acorn',W.hero].concat(W.clouds?[W.clouds]:[]).concat(['leaf-orange','leaf-yellow','leaf-red','leaf-brown','cloud-rain']).concat(W.trophy?[W.trophy]:[]).concat(W.decor), n=0;
   ks.forEach(function(k){ var im=new Image(); im.onload=im.onerror=function(){ if(im.naturalWidth) IMG[k]=trimImg(im); if(++n===ks.length){ fit(); show('intro'); requestAnimationFrame(loop) } }; im.src='art/'+k+'.png'; IMG[k]=im });
   renderHearts();
 });
