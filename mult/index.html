@@ -39,7 +39,7 @@ html,body{margin:0;height:100%;overflow:hidden;background:linear-gradient(180deg
 .sky{position:relative;flex:1;min-height:0;border-radius:22px;overflow:hidden;background:linear-gradient(#9CD3F5,#E4F4FF 75%,#FDE9EE);touch-action:none}
 .bal{position:absolute;display:flex;align-items:center;justify-content:center;font-weight:800;direction:ltr;color:#fff;text-shadow:0 2px 0 rgba(0,0,0,.28);width:30%;max-width:130px;aspect-ratio:.82;background-size:100% 100%;background-repeat:no-repeat;font-size:clamp(20px,6.2vw,34px);padding-bottom:12%}
 .bal.pop{animation:bpop .3s forwards}@keyframes bpop{to{transform:scale(1.6);opacity:0}}
-#pl{position:absolute;width:23%;max-width:96px;pointer-events:none;z-index:5;transition:none}
+#pl{position:absolute;left:0;top:0;width:23%;max-width:96px;pointer-events:none;z-index:5;transition:none}
 /* רכבת */
 .track{position:relative;flex:1;min-height:0;border-radius:22px;overflow:hidden;background:linear-gradient(#BFE3F7,#E4F4FF 62%,#CFEFB5);touch-action:none}
 .cargo{position:absolute;display:flex;align-items:center;justify-content:center;font-weight:800;direction:ltr;color:#fff;text-shadow:0 2px 0 rgba(0,0,0,.28);width:26%;max-width:112px;aspect-ratio:.82;background-size:100% 100%;font-size:clamp(18px,5.6vw,30px);padding-bottom:12%;left:50%;transform:translateX(-50%);top:6%}
@@ -196,7 +196,7 @@ function gSnake(done){ var GOAL=6,score=0,CW=7,CH=9,S=40,snake=[],dir=[1,0],next
   /* נגיעה בלוח: פונים לכיוון הנגיעה ביחס לראש */
   cv.addEventListener('pointerdown',function(e){var r=cv.getBoundingClientRect(),x=(e.clientX-r.left)/S,y=(e.clientY-r.top)/S,h=snake[0],dx=x-h[0]-.5,dy=y-h[1]-.5;if(Math.abs(dx)>Math.abs(dy))turn([dx>0?1:-1,0]);else turn([0,dy>0?1:-1])});
   function kd(e){var m={ArrowLeft:[-1,0],ArrowRight:[1,0],ArrowUp:[0,-1],ArrowDown:[0,1]}[e.key];if(m){turn(m);e.preventDefault()}}addEventListener('keydown',kd);
-  fit();var cy=Math.floor(CH/2);snake=[[3,cy],[2,cy],[1,cy]];touched=true;dots();newTarget();raf=requestAnimationFrame(loop);
+  dots();sq.innerHTML='00<small style="font-size:clamp(12px,3.2vw,16px)">א</small>';fit();var cy=Math.floor(CH/2);snake=[[3,cy],[2,cy],[1,cy]];touched=true;dots();newTarget();raf=requestAnimationFrame(loop);
   var rs=function(){fit()};addEventListener('resize',rs);cleanup=function(){cancelAnimationFrame(raf);removeEventListener('keydown',kd);removeEventListener('resize',rs)};
   window.__S=function(){return{state:state,score:score,tr:tr,items:items,head:snake[0],dir:dir,CW:CW,CH:CH}} }
 document.addEventListener('touchmove',function(e){e.preventDefault()},{passive:false});
