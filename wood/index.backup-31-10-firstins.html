@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<title>פאזל עץ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Rubik:wght@500;700;800&display=swap" rel="stylesheet">
+<style>
+/* פאזל עץ דיגיטלי לפעוטות (חן, 29.10.26): לוח עץ עם מקומות, ובכל מקום האיור עצמו בשקיפות כדי שיהיה קל להתאים.
+   החלקים נראים כמו חלקי עץ (תלת-ממד וידית קטנה), גרירה קלה מאוד שנצמדת מרחוק, ורמז: אחרי כמה שניות החלק המתאים מתנדנד והמקום שלו זוהר.
+   כשחלק נכנס למקום נשמעת המילה בקול של חן. כתובת: ?set=<שם> (הסטים ב-wood/sets). */
+:root{--pink:#FDE1EA;--pink2:#FBC5D6;--fuchsia:#EF406E;--deep:#B8236B}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;height:100%;background:#FEF6F5;font-family:Rubik,Arial,sans-serif;overflow:hidden;overscroll-behavior:none;user-select:none;-webkit-user-select:none}
+.wrap{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;padding:8px;gap:8px}
+.hud{width:100%;max-width:900px;display:flex;align-items:center;justify-content:space-between;gap:8px}
+.goal{flex:1;display:flex;align-items:center;justify-content:center;gap:8px;font-weight:700;color:var(--deep);font-size:clamp(15px,3.8vw,20px)}
+.spk,.mute,.fs{width:40px;height:40px;border-radius:50%;border:0;background:#fff;box-shadow:0 0 0 3px var(--pink);display:flex;align-items:center;justify-content:center;cursor:pointer;flex:none;padding:0}
+.spk svg,.mute svg,.fs svg{width:21px;height:21px}
+#stage{position:relative;flex:1;min-height:0;width:100%;max-width:900px;display:flex;flex-direction:column;gap:10px;touch-action:none}
+@media (orientation:landscape) and (min-width:640px){#stage{flex-direction:row}}
+.board{flex:1.25;min-height:0;position:relative;border-radius:26px;background:linear-gradient(145deg,#F2D7B0,#E3BC8B);box-shadow:inset 0 4px 0 rgba(255,255,255,.45),inset 0 -6px 0 rgba(150,100,60,.25),0 8px 0 #C99B68,0 14px 22px rgba(120,80,40,.18)}
+.board::before{content:'';position:absolute;inset:0;border-radius:26px;background:repeating-linear-gradient(100deg,rgba(255,255,255,0) 0 22px,rgba(180,130,80,.07) 22px 26px);pointer-events:none}
+.tray{flex:1;min-height:0;position:relative;border-radius:22px;background:#FFF8F3;box-shadow:0 0 0 3px var(--pink)}
+.slot{position:absolute;display:flex;align-items:center;justify-content:center;border-radius:22px;background:rgba(150,100,60,.12);box-shadow:inset 0 5px 10px rgba(120,80,40,.28);transition:box-shadow .3s}
+.slot img{max-width:84%;max-height:84%;opacity:.28;filter:grayscale(.35);pointer-events:none}
+.slot.glow{animation:glow 1s ease-in-out infinite}
+@keyframes glow{50%{box-shadow:inset 0 5px 10px rgba(120,80,40,.28),0 0 0 5px #FBC5D6,0 0 22px #EF406E}}
+.piece{position:absolute;display:flex;align-items:center;justify-content:center;touch-action:none;cursor:grab;transition:transform .25s}
+.piece img{max-width:100%;max-height:100%;pointer-events:none;filter:drop-shadow(0 3px 0 #D9A877) drop-shadow(0 6px 0 #C08A55) drop-shadow(0 12px 10px rgba(100,60,30,.28))}
+.piece .knob{position:absolute;top:8%;left:50%;width:16%;aspect-ratio:1;transform:translateX(-50%);border-radius:50%;background:radial-gradient(circle at 35% 30%,#FFE9CF,#D7A46D 60%,#B5824E);box-shadow:0 3px 4px rgba(100,60,30,.35);pointer-events:none}
+.piece.drag{cursor:grabbing;z-index:20;transition:none}
+.piece.drag img{filter:drop-shadow(0 3px 0 #D9A877) drop-shadow(0 8px 0 #C08A55) drop-shadow(0 22px 16px rgba(100,60,30,.3))}
+.piece.placed{transition:left .3s cubic-bezier(.2,1.4,.4,1),top .3s cubic-bezier(.2,1.4,.4,1),width .3s,height .3s;cursor:default}
+.piece.placed .knob{display:none}
+.piece.wiggle{animation:wig .9s ease-in-out infinite}
+@keyframes wig{25%{transform:rotate(-8deg) scale(1.06)}75%{transform:rotate(8deg) scale(1.06)}}
+.piece.back{transition:left .45s ease,top .45s ease}
+.word{position:absolute;left:50%;top:40%;transform:translate(-50%,-50%) scale(.6);opacity:0;background:#fff;border-radius:22px;padding:8px 22px;font-size:34px;font-weight:800;color:var(--deep);box-shadow:0 8px 22px rgba(239,64,110,.2),0 0 0 4px var(--pink);pointer-events:none;z-index:30}
+.word.show{animation:wd 1.3s ease forwards}
+@keyframes wd{15%{opacity:1;transform:translate(-50%,-50%) scale(1.05)}80%{opacity:1;transform:translate(-50%,-50%) scale(1)}100%{opacity:0;transform:translate(-50%,-50%) scale(.9)}}
+.overlay{position:fixed;inset:0;background:rgba(253,225,234,.72);backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;z-index:40;padding:16px}
+.overlay.hidden{display:none}
+.card{background:#fff;border-radius:28px;padding:22px;max-width:420px;width:100%;text-align:center;box-shadow:0 10px 30px rgba(239,64,110,.18),0 0 0 4px var(--pink);animation:pop .45s cubic-bezier(.2,1.6,.4,1)}
+@keyframes pop{0%{transform:scale(.6);opacity:0}100%{transform:scale(1);opacity:1}}
+.card h2{margin:6px 0 14px;color:var(--deep);font-size:26px}
+.card .row{display:flex;gap:10px;justify-content:center;margin-bottom:14px}.card .row img{width:64px;height:64px;object-fit:contain}
+.btn{font-family:inherit;font-size:22px;font-weight:800;color:#fff;background:var(--fuchsia);border:0;border-radius:999px;padding:12px 34px;cursor:pointer;box-shadow:0 5px 0 #C92E57}
+.dots{display:flex;gap:6px}.dots i{width:14px;height:14px;border-radius:50%;background:#F6D3DC;display:block}.dots i.on{background:#4FB38C}
+</style>
+</head>
+<body>
+<div class="wrap">
+ <div class="hud">
+  <span class="dots" id="dots"></span>
+  <span class="goal"><span id="ins"></span><button class="spk" id="spk" type="button" aria-label="להשמיע את ההנחיה"><svg viewBox="0 0 24 24" fill="#EF406E"><path d="M4 9v6h4l5 4V5L8 9H4z"/><path d="M16 8.5a5 5 0 0 1 0 7" stroke="#EF406E" stroke-width="2" fill="none" stroke-linecap="round"/></svg></button></span>
+  <button class="mute" id="mute" type="button" aria-label="מוזיקה"><svg viewBox="0 0 24 24"><path d="M9 17V5l10-2v12" stroke="#EF406E" stroke-width="2.2" fill="none" stroke-linejoin="round"/><circle cx="6.5" cy="17" r="2.6" fill="#EF406E"/><circle cx="16.5" cy="15" r="2.6" fill="#EF406E"/><path id="muteX" d="M3 3l18 18" stroke="#B8236B" stroke-width="2.4" stroke-linecap="round" style="display:none"/></svg></button>
+  <button class="fs" id="fs" type="button" aria-label="מסך מלא"><svg viewBox="0 0 24 24" fill="none" stroke="#EF406E" stroke-width="2.2" stroke-linecap="round"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg></button>
+ </div>
+ <div id="stage"><div class="board" id="board"></div><div class="tray" id="tray"></div><div class="word" id="word"></div></div>
+</div>
+<div class="overlay" id="ov"><div class="card" id="card"></div></div>
+<script src="../ios-audio.js"></script>
+<script src="../hen-voice.js"></script>
+<script>
+(function(){
+var Q=new URLSearchParams(location.search), BASE='../', SET=null, bi=0, pieces=[], slots=[], placed=0, idle=0, muted=false, AC=null, aud=new Audio(), touched=false;
+var board=document.getElementById('board'), tray=document.getElementById('tray'), stage=document.getElementById('stage'), ov=document.getElementById('ov'), card=document.getElementById('card');
+function key(t){t=String(t||'').replace(/\s+/g,' ').trim();var h=2166136261;for(var i=0;i<t.length;i++){h^=t.charCodeAt(i);h=Math.imul(h,16777619)>>>0}return('0000000'+h.toString(16)).slice(-8)}
+function say(t,cb){ if(muted||!t||!touched){cb&&setTimeout(cb,200);return} HenVoice.url(t,BASE+'play/assets/tts/'+key(t)+'.mp3',function(u){ try{aud.pause()}catch(e){} aud=WGAudio.play(u); aud.onended=function(){cb&&cb()}; aud.onerror=function(){cb&&cb()}; aud.play().catch(function(){cb&&cb()}) }) }
+function ac(){ try{ AC=AC||new (window.AudioContext||window.webkitAudioContext)(); if(AC.state==='suspended') AC.resume() }catch(e){} return AC }
+function tone(f1,f2,d,vol,type){ if(muted||!ac())return; var o=AC.createOscillator(),g=AC.createGain(),t=AC.currentTime; o.type=type||'sine'; o.frequency.setValueAtTime(f1,t); o.frequency.exponentialRampToValueAtTime(f2,t+d); g.gain.setValueAtTime(.0001,t); g.gain.exponentialRampToValueAtTime(vol||.1,t+.01); g.gain.exponentialRampToValueAtTime(.0001,t+d); o.connect(g); g.connect(AC.destination); o.start(t); o.stop(t+d+.02) }
+function knock(){ tone(260,180,.12,.18,'triangle'); setTimeout(function(){ tone(520,780,.18,.08) },90) } /* חלק עץ שנכנס למקום: נקישה רכה וצליל שמח */
+/* ---------- לוח ---------- */
+function layout(){ var B=SET.boards[bi], n=B.length, br=board.getBoundingClientRect(), tr=tray.getBoundingClientRect(), sr=stage.getBoundingClientRect();
+  var cols=n<=2?n:n<=4?2:3, rows=Math.ceil(n/cols), cw=br.width/cols, ch=br.height/rows, s=Math.min(cw,ch)*.86;
+  slots.forEach(function(sl,i){ var c=i%cols, r=Math.floor(i/cols), sc=B[i].scale||1; sl.w=s*sc; sl.x=br.left-sr.left+c*cw+(cw-sl.w)/2; sl.y=br.top-sr.top+r*ch+(ch-sl.w)/2; Object.assign(sl.el.style,{left:sl.x+'px',top:sl.y+'px',width:sl.w+'px',height:sl.w+'px'}) });
+  var tc=n<=3?n:Math.ceil(n/2), trs=Math.ceil(n/tc), tw=tr.width/tc, th=tr.height/trs, ts=Math.min(tw,th)*.82;
+  pieces.forEach(function(p){ if(p.done){ var sl=slots[p.i]; Object.assign(p.el.style,{left:sl.x+'px',top:sl.y+'px',width:sl.w+'px',height:sl.w+'px'}); return }
+    var k=p.home, c=k%tc, r=Math.floor(k/tc), w=ts*Math.min(1.15,(B[p.i].scale||1)); p.hx=tr.left-sr.left+c*tw+(tw-w)/2; p.hy=tr.top-sr.top+r*th+(th-w)/2; p.w=w; if(!p.el.classList.contains('drag')) Object.assign(p.el.style,{left:p.hx+'px',top:p.hy+'px',width:w+'px',height:w+'px'}) }) }
+function build(){ var B=SET.boards[bi]; [].slice.call(stage.querySelectorAll('.slot,.piece')).forEach(function(e){e.remove()}); slots=[]; pieces=[]; placed=0; idle=0;
+  B.forEach(function(it,i){ var s=document.createElement('div'); s.className='slot'; s.innerHTML='<img src="art/'+it.img+'.png" alt="">'; stage.appendChild(s); slots.push({el:s,i:i}) });
+  var order=B.map(function(_,i){return i}).sort(function(){return Math.random()-.5});
+  B.forEach(function(it,i){ var p=document.createElement('div'); p.className='piece'; p.innerHTML='<img src="art/'+it.img+'.png" alt="'+it.word+'"><span class="knob"></span>'; stage.appendChild(p); var P={el:p,i:i,home:order.indexOf(i),done:false}; pieces.push(P); drag(P) });
+  dots(); requestAnimationFrame(layout) }
+function dots(){ var h=''; for(var i=0;i<SET.boards.length;i++) h+='<i class="'+(i<bi?'on':'')+'"></i>'; document.getElementById('dots').innerHTML=h }
+/* ---------- גרירה קלה מאוד ---------- */
+function drag(P){ var el=P.el, ox=0, oy=0, sx=0, sy=0;
+  el.addEventListener('pointerdown',function(e){ if(P.done) return; e.preventDefault(); touched=true; ac(); el.setPointerCapture(e.pointerId); idle=0; clearHints(); el.classList.remove('back'); el.classList.add('drag'); var r=el.getBoundingClientRect(); ox=e.clientX-r.left; oy=e.clientY-r.top; tone(420,520,.06,.05) });
+  el.addEventListener('pointermove',function(e){ if(!el.classList.contains('drag')) return; var sr=stage.getBoundingClientRect(); el.style.left=(e.clientX-sr.left-ox)+'px'; el.style.top=(e.clientY-sr.top-oy)+'px';
+    var sl=slots[P.i], cx=e.clientX-sr.left-ox+P.w/2, cy=e.clientY-sr.top-oy+P.w/2; if(Math.hypot(cx-(sl.x+sl.w/2),cy-(sl.y+sl.w/2))<sl.w*.55) drop(P) });
+  function up(e){ if(!el.classList.contains('drag')) return; el.classList.remove('drag'); var sr=stage.getBoundingClientRect(), sl=slots[P.i], r=el.getBoundingClientRect(), cx=r.left-sr.left+r.width/2, cy=r.top-sr.top+r.height/2;
+    if(Math.hypot(cx-(sl.x+sl.w/2),cy-(sl.y+sl.w/2))<sl.w*.75) drop(P); else { el.classList.add('back'); el.style.left=P.hx+'px'; el.style.top=P.hy+'px'; el.style.width=P.w+'px'; el.style.height=P.w+'px' } }
+  el.addEventListener('pointerup',up); el.addEventListener('pointercancel',up) }
+function drop(P){ if(P.done) return; P.done=true; var el=P.el, sl=slots[P.i]; el.classList.remove('drag'); el.classList.add('placed'); Object.assign(el.style,{left:sl.x+'px',top:sl.y+'px',width:sl.w+'px',height:sl.w+'px'}); sl.el.style.opacity='.0';
+  knock(); var it=SET.boards[bi][P.i], w=document.getElementById('word'); w.textContent=it.word; w.classList.remove('show'); void w.offsetWidth; w.classList.add('show'); say(it.say||it.word); placed++;
+  if(placed>=pieces.length) setTimeout(next,1500) }
+function next(){ bi++; [523,659,784,1047].forEach(function(f,i){ setTimeout(function(){ tone(f,f*1.003,.45,.07) },i*120) });
+  if(bi>=SET.boards.length){ dots(); ov.classList.remove('hidden'); card.innerHTML='<div class="row">'+SET.boards.map(function(b){return '<img src="art/'+b[0].img+'.png" alt="">'}).join('')+'</div><h2>'+SET.done+'</h2><button class="btn" id="go">מְשַׂחֲקִים שׁוּב</button>';
+    document.getElementById('go').onclick=function(){ ov.classList.add('hidden'); bi=0; build() }; say(SET.done); try{ window.WGEnd&&(WGEnd.replay=function(){ document.getElementById('go').click() },WGEnd()) }catch(e){} return }
+  build() }
+/* ---------- רמז: אחרי כמה שניות בלי משחק ---------- */
+function clearHints(){ stage.querySelectorAll('.wiggle,.glow').forEach(function(e){e.classList.remove('wiggle','glow')}) }
+setInterval(function(){ if(!SET||!ov.classList.contains('hidden')) return; idle++; if(idle===6){ var p=pieces.filter(function(x){return !x.done})[0]; if(p){ p.el.classList.add('wiggle'); slots[p.i].el.classList.add('glow') } } },1000);
+document.getElementById('spk').onclick=function(){ touched=true; ac(); say(SET.insSay||SET.ins) };
+document.getElementById('mute').onclick=function(){ muted=!muted; document.getElementById('muteX').style.display=muted?'':'none'; if(muted) try{aud.pause()}catch(e){} };
+document.getElementById('fs').onclick=function(){ var d=document.documentElement; if(document.fullscreenElement) document.exitFullscreen(); else (d.requestFullscreen||d.webkitRequestFullscreen||function(){}).call(d) };
+addEventListener('resize',function(){ SET&&layout() });
+window.__W=function(){ return {bi:bi,boards:SET.boards.length,placed:placed,n:pieces.length,pieces:pieces.map(function(p){ var r=p.el.getBoundingClientRect(), s=slots[p.i].el.getBoundingClientRect(); return {done:p.done,px:r.left+r.width/2,py:r.top+r.height/2,sx:s.left+s.width/2,sy:s.top+s.height/2} }),over:!ov.classList.contains('hidden')} };
+fetch('sets/'+(Q.get('set')||'firstwords')+'.json?v=1').then(function(r){return r.json()}).then(function(s){ SET=s; document.title=s.title; document.getElementById('ins').textContent=s.ins; ov.classList.add('hidden'); build() });
+})();
+</script>
+<script src="../end-fs.js"></script>
+</body>
+</html>

@@ -5,7 +5,7 @@
   var H = location.hostname;
   var qs = new URLSearchParams(location.search);
   if (/^(localhost|127\.0\.0\.1)$/.test(H) && !qs.has('wgtest')) return;
-  var okHost = function (h) { return /(^|\.)talkwithkids\.co\.il$/.test(h) || /(^|\.)(wixusercontent\.com|filesusr\.com|usrfiles\.com|wix\.com|wixsite\.com|editorx\.io|wixstudio\.com)$/.test(h) };
+  var okHost = function (h) { return h === H || /^(localhost|127\.0\.0\.1)$/.test(h) || /(^|\.)talkwithkids\.co\.il$/.test(h) || /(^|\.)(wixusercontent\.com|filesusr\.com|usrfiles\.com|wix\.com|wixsite\.com|editorx\.io|wixstudio\.com)$/.test(h) };
   var ok = false;
   try { ok = sessionStorage.getItem('wgok') === '1' } catch (e) {}
   if (!ok) { try { ok = (+localStorage.getItem('wg-member-until') || 0) > Date.now() } catch (e) {} }
