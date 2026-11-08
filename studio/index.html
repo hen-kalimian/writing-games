@@ -109,6 +109,23 @@ main{max-width:760px;margin:0 auto}
 .bhead .bclose{font:600 12px Rubik,Arial;border:1.5px solid var(--mint-deep);background:var(--mint-wash);color:#2f8f6f;border-radius:14px;padding:3px 12px;cursor:pointer}
 .bhead .bclose[hidden]{display:none}
 .g.pk img{display:block;width:100%;height:120px;object-fit:cover;object-position:top}
+/* 8.11.26: לשוניות לא גמורות באדום פסטלי עדין, גמורות בירוק ובסוף; קבוצה גמורה מכווצת גם את תצוגת המשחק; חיפוש */
+.tabs button.todo{background:#FDE8E8;border-color:#F3B3B3;color:#A8474D}
+.tabs button.todo.on{background:#F9CFCF;border-color:#E88C92;color:#8E2F36}
+.tabs button.fin{background:var(--mint-wash);border-color:var(--mint-deep);color:#2f8f6f}
+.tabs button.fin.on{background:var(--mint);border-color:var(--mint-deep);color:#1f6f52}
+.grp.gdone .games,.grp.gdone .when,.grp.gdone .mini-game{display:none}
+.search{max-width:760px;margin:10px auto 0;display:flex;flex-direction:column;gap:6px;align-items:center}
+.search .sbox{position:relative;width:100%;max-width:520px}
+.search input{width:100%;font:500 16px Rubik,Arial;border:2px solid var(--sky);border-radius:22px;padding:10px 40px 10px 16px;color:var(--ink);background:#fff;direction:rtl}
+.search input:focus{outline:none;border-color:var(--sky-deep)}
+.search .sx{position:absolute;top:50%;inset-inline-start:8px;transform:translateY(-50%);border:0;background:var(--sky-wash);color:#2f6f93;border-radius:50%;width:26px;height:26px;cursor:pointer;font:600 14px Rubik,Arial;display:none;padding:0}
+.search.has .sx{display:block}
+.search .chips{display:flex;gap:6px;flex-wrap:wrap;justify-content:center}
+.search .chips button{font:600 13px Rubik,Arial;border:1.5px solid var(--sky);background:#fff;color:var(--ink);border-radius:16px;padding:4px 12px;cursor:pointer}
+.search .chips button.on{background:var(--sky);border-color:var(--sky-deep);color:#1f5878}
+.tile .srcl{font-size:11px;color:var(--muted);text-align:center;line-height:1.3;margin:0 0 2px}
+.rescount{text-align:center;color:var(--muted);font-size:14px;margin:8px 0}
 </style>
 </head>
 <body>
@@ -119,6 +136,7 @@ main{max-width:760px;margin:0 auto}
   <div class="cnt" id="cnt"></div>
 </header>
 <div class="tip" id="tip">טיפ להקלטה נקייה: חדר שקט, הטלפון במרחק כף יד מהפה, ושנייה של שקט לפני ואחרי שמדברים (אני חותכת את השקט לבד).</div>
+<div class="search" id="search"><div class="sbox"><input id="q" type="search" placeholder="חיפוש הקלטה (מילה, הנחיה, הברה...)" autocomplete="off" enterkeyhint="search"><button type="button" class="sx" id="sx" title="ניקוי חיפוש">✕</button></div><div class="chips" id="chips"><button type="button" data-f="all" class="on">הכול</button><button type="button" data-f="todo">חסרות</button><button type="button" data-f="done">הוקלטו</button></div></div>
 <nav class="tabs" id="tabs"></nav>
 <main id="main"></main>
 <div id="modal"><div class="box"><div class="top"><span id="mt"></span><span><button class="x" id="mo" type="button">פתיחה בלשונית</button> <button class="x" id="mx" type="button">סגירה</button></span></div><iframe id="mf" allow="autoplay; fullscreen"></iframe></div></div>
@@ -149,11 +167,28 @@ let D, HEN = {}, sent = store.get(SENT, {}), sec = store.get('hen-studio-sec', '
 const [d, h] = await Promise.all([fetch('items.json?v=' + Date.now()).then(r => r.json()), fetch('../play/assets/hen/index.json?v=' + Date.now()).then(r => r.ok ? r.json() : {}).catch(() => ({}))]);
 D = d; HEN = h;
 /*__CONT (חן, 3.11.26): משפטים עם המשך חוזרים להקלטה עם שלוש נקודות*/try { const rd = await fetch('redo.json?v=' + Date.now()).then(r => r.ok ? r.json() : null); if (rd) { D.items.forEach(it => { if (rd.ids.includes(it.id)) { it.sec = 'cont'; it.redo = rd.ts; it.nik0 = it.nik || it.text; it.nik = (it.nik || it.text) + '...'; it.text = it.text + '...'; } }); if (!store.get('hen-studio-cont', 0)) { sec = 'cont'; store.set('hen-studio-cont', 1); } } } catch (e) {}
+const G0 = 1; // 8.11.26: נפתח תמיד על הלשונית הראשונה שעוד חסר בה (לפי העדיפות), ראו orderedSecs
 const G = Object.fromEntries(D.games.map(g => [g.n, g]));
 
 function status(it) { return HEN[it.k] && HEN[it.k] > (it.redo || 0) && (!sent[it.id] || HEN[it.k] >= sent[it.id]) ? 'done' : sent[it.id] ? 'sent' : ''; }
 function progress() { const n = D.items.filter(i => status(i)).length; $('bar').style.width = (100 * n / D.items.length) + '%'; $('cnt').textContent = 'הוקלטו ' + n + ' מתוך ' + D.items.length; }
-function tabs() { $('tabs').innerHTML = SECS.map(s => { const all = D.items.filter(i => i.sec === s.id), n = all.filter(i => status(i)).length; return '<button type="button" data-s="' + s.id + '" class="' + (s.id === sec ? 'on' : '') + '">' + s.name + ' (' + n + '/' + all.length + ')</button>' }).join(''); }
+/* 8.11.26 (חן): עדיפות הקלטה. קודם ההנחיות עצמן במשחקים לתוכנית, אחר כך התשובות והמילים, ובסוף חבילות התוכן. לשוניות שהושלמו (ירוקות) יורדות לסוף */
+const PRIO = ['cont', 'kb', 'qs', 'more', 'new', 'all', 'names', 'syl', 'words', 'pics', 'answers', 'packgen', 'packs'];
+const byPrio = (a, b) => PRIO.indexOf(a.s.id) - PRIO.indexOf(b.s.id);
+function orderedSecs() { const l = SECS.map(s => { const all = D.items.filter(i => i.sec === s.id); return { s, all: all.length, n: all.filter(i => status(i)).length }; }).filter(x => x.all); return [...l.filter(x => x.n < x.all).sort(byPrio), ...l.filter(x => x.n >= x.all).sort(byPrio)]; }
+function tabs() { $('tabs').innerHTML = orderedSecs().map(x => '<button type="button" data-s="' + x.s.id + '" class="' + (x.n >= x.all ? 'fin' : 'todo') + (x.s.id === sec ? ' on' : '') + '">' + x.s.name + ' (' + x.n + '/' + x.all + ')</button>').join(''); }
+let Q = '', QF = 'all';
+const norm = t => String(t || '').replace(/[֑-ׇ]/g, '').replace(/\.{2,}|…/g, '').replace(/\s+/g, ' ').trim().toLowerCase();
+const secName = it => (SECS.find(s => s.id === it.sec) || {}).name || '';
+function searchHtml() {
+  const toks = norm(Q).split(' ').filter(Boolean);
+  let l = D.items.filter(it => { const hay = norm((it.nik0 || it.nik || '') + ' ' + (it.text || '') + ' ' + (it.grpName || '')) + ' ' + String(it.k || '').toLowerCase(); return toks.every(t => hay.includes(t)); });
+  if (QF === 'todo') l = l.filter(i => !status(i)); else if (QF === 'done') l = l.filter(i => status(i));
+  l.sort((a, b) => (status(a) ? 1 : 0) - (status(b) ? 1 : 0) || PRIO.indexOf(a.sec) - PRIO.indexOf(b.sec));
+  const MAX = 80, shown = l.slice(0, MAX);
+  return '<div class="rescount">' + (l.length ? 'נמצאו ' + l.length + ' הקלטות' + (l.length > MAX ? ' (מוצגות ' + MAX + ' הראשונות, צמצמי את החיפוש)' : '') + '. הקלטות שכבר הוקלטו נשארות ניתנות להקלטה מחדש.' : 'לא נמצאה הקלטה כזו. נסי מילה קצרה יותר.') + '</div><div class="tiles">' + shown.map(tile).join('') + '</div>';
+}
+function updGrps() { document.querySelectorAll('.grp').forEach(g => { const b = g.querySelectorAll('.batch'); g.classList.toggle('gdone', b.length > 0 && [...b].every(x => x.querySelector('.bmini'))); }); }
 const esc = t => String(t).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 const opened = {}, saved = {};
 const canPlay = it => !!((takes && takes[it.id]) || saved[it.id] || HEN[it.k]);
@@ -163,6 +198,7 @@ function tile(it) {
   const st = status(it), gs = (it.games || []).filter(n => G[n]), long = (it.nik || '').length > 34;
   const txt = st === 'done' ? 'בקול שלך במשחקים' : st === 'sent' ? 'נשמר, ייכנס בעוד כמה דקות' : '';
   return '<section class="item tile ' + st + (long ? ' wide' : '') + '" id="' + it.id + '">' +
+    (Q.trim() ? '<div class="srcl">' + esc(secName(it)) + '</div>' : '') +
     (it.img ? '<img class="pimg" loading="lazy" src="../play/assets/' + it.img + '" alt="">' : '') +
     '<div class="nik">' + esc(it.nik) + '</div>' +
     /* חן, 30.10.26: "יש צלילים ממתינים שכבר הקלטתי". בּ/ב, כּ/כ, פּ/פ נראים כמעט אותו דבר, אז כתוב אם יש דגש */
@@ -195,19 +231,25 @@ function packsHtml() { return groupBy('packs', i => i.grp).map(([k, l]) => '<div
 function groupHtml(sec) {
   return groupBy(sec, i => (i.games || [])[0]).map(([n, l]) => { const g = G[n]; const gu = g && (g.u || '../play/index.html?' + g.q); return '<div class="grp">' + (g ? '<div class="gname">' + esc(g.title) + '</div><iframe class="mini-game" loading="lazy" src="' + gu + '" title="' + esc(g.title) + '"></iframe>' : '') + batches(sec + n, l) + '</div>'; }).join('');
 }
-function render() { tabs(); progress(); const s = SECS.find(x => x.id === sec) || SECS[0]; $('main').innerHTML = '<p class="secnote">' + s.note + '</p>' + (s.id === 'syl' ? sylHtml() : s.id === 'packs' ? packsHtml() : s.id === 'answers' || s.id === 'pics' ? groupHtml(s.id) : batches(s.id, D.items.filter(i => i.sec === s.id))); }
+function render() {
+  if (!orderedSecs().some(x => x.s.id === sec)) sec = (orderedSecs()[0] || { s: SECS[0] }).s.id;
+  tabs(); progress(); $('search').classList.toggle('has', !!Q);
+  if (Q.trim()) { $('main').innerHTML = searchHtml(); return; }
+  const s = SECS.find(x => x.id === sec) || SECS[0]; $('main').innerHTML = '<p class="secnote">' + s.note + '</p>' + (s.id === 'syl' ? sylHtml() : s.id === 'packs' ? packsHtml() : s.id === 'answers' || s.id === 'pics' ? groupHtml(s.id) : batches(s.id, D.items.filter(i => i.sec === s.id))); updGrps();
+}
 function busyBatch(bid) { const el = document.getElementById(bid); return !!(el && el.querySelector('.btn.rec.live')) || BATCH[bid].ids.some(id => auto[id] || takes[id]); }
 // כל כמה שניות: קבוצה שהושלמה נסגרת (אלא אם פתחת אותה בכוונה), ובקבוצה פתוחה שהושלמה מופיע כפתור "סגירת הקבוצה"
-function syncBatches() { Object.keys(BATCH).forEach(bid => { const el = document.getElementById(bid); if (!el) return; const done = BATCH[bid].ids.every(id => status(D.items.find(i => i.id === id))); const cb = el.querySelector('.bclose'); if (cb) cb.hidden = !done; const bc = el.querySelector('.bcnt'); if (bc) bc.textContent = BATCH[bid].ids.filter(id => status(D.items.find(i => i.id === id))).length + ' מתוך ' + BATCH[bid].ids.length + ' הוקלטו'; if (done && !openedB[bid] && !busyBatch(bid)) collapseBatch(bid); }); }
+function syncBatches() { Object.keys(BATCH).forEach(bid => { const el = document.getElementById(bid); if (!el) return; const done = BATCH[bid].ids.every(id => status(D.items.find(i => i.id === id))); const cb = el.querySelector('.bclose'); if (cb) cb.hidden = !done; const bc = el.querySelector('.bcnt'); if (bc) bc.textContent = BATCH[bid].ids.filter(id => status(D.items.find(i => i.id === id))).length + ' מתוך ' + BATCH[bid].ids.length + ' הוקלטו'; if (done && !openedB[bid] && !busyBatch(bid)) collapseBatch(bid); }); updGrps(); }
 // סוגרים קבוצה שהושלמה בלי להזיז את מה שמתחתיה: מחשבים מחדש את המיקום כדי שכפתור ההקלטה ישאר בדיוק איפה שהוא
 function collapseBatch(bid) {
   const el = document.getElementById(bid); if (!el || openedB[bid] || !BATCH[bid]) return;
   if (!BATCH[bid].ids.every(id => status(D.items.find(i => i.id === id)))) return;
   const live = document.querySelector('.btn.rec.live'), anchor = (live && live.closest('.tile')) || el.nextElementSibling || el.parentElement.nextElementSibling;
   const y0 = anchor ? anchor.getBoundingClientRect().top : 0;
-  el.outerHTML = batchHtml(bid);
+  el.outerHTML = batchHtml(bid); updGrps();
   if (anchor && anchor.isConnected) scrollBy(0, anchor.getBoundingClientRect().top - y0);
 }
+{ const f = orderedSecs().find(x => x.n < x.all); if (f) sec = f.s.id; }
 render();
 
 // ===== הקלטה =====
@@ -250,9 +292,11 @@ async function save(id) {
 function play(src) { player.pause(); player.src = src; player.currentTime = 0; player.play().catch(() => {}); }
 document.addEventListener('click', e => {
   const bc = e.target.closest('[data-bclose]'); if (bc) { delete openedB[bc.dataset.bclose]; collapseBatch(bc.dataset.bclose); return; }
-  const bo = e.target.closest('[data-bopen]'); if (bo) { const bid = bo.dataset.bopen; openedB[bid] = 1; document.getElementById(bid).outerHTML = batchHtml(bid); return; }
+  const bo = e.target.closest('[data-bopen]'); if (bo) { const bid = bo.dataset.bopen; openedB[bid] = 1; document.getElementById(bid).outerHTML = batchHtml(bid); updGrps(); return; }
   const t = e.target.closest('button'); if (!t) return;
-  if (t.dataset.s) { stopRec(); sec = t.dataset.s; store.set('hen-studio-sec', sec); render(); scrollTo(0, 0); return; }
+  if (t.id === 'sx') { Q = ''; $('q').value = ''; render(); return; }
+  if (t.dataset.f) { QF = t.dataset.f; document.querySelectorAll('#chips button').forEach(b => b.classList.toggle('on', b.dataset.f === QF)); render(); return; }
+  if (t.dataset.s) { stopRec(); Q = ''; $('q').value = ''; sec = t.dataset.s; store.set('hen-studio-sec', sec); render(); scrollTo(0, 0); return; }
   if (t.dataset.gl) { const it0 = D.items.find(i => i.id === t.dataset.gl); const g1 = (it0.games || []).filter(n => G[n]); if (g1.length === 1) { const g = G[g1[0]]; $('mt').textContent = g.title; const gu = g.u || '../play/index.html?' + g.q; $('mf').src = gu; $('mo').onclick = () => open(gu, '_blank'); $('modal').classList.add('on'); return; } $('glt').textContent = 'נשמע ב: ' + it0.nik; $('glb').innerHTML = (it0.games || []).map(n => G[n]).filter(Boolean).map(g => '<button type="button" class="g" data-g="' + g.n + '">' + '<img loading="lazy" src="' + (g.th || 'th2/' + g.n + '.jpg') + '" alt="">' + '<span>' + esc(g.title) + '</span></button>').join(''); $('glm').classList.add('on'); return; }
   if (t.id === 'glx') { $('glm').classList.remove('on'); return; }
   if (t.dataset.g) { $('glm').classList.remove('on'); const g = G[t.dataset.g]; $('mt').textContent = g.title; const gu = g.u || '../play/index.html?' + g.q; $('mf').src = gu; $('mo').onclick = () => open(gu, '_blank'); $('modal').classList.add('on'); return; }
@@ -264,7 +308,8 @@ document.addEventListener('click', e => {
   else if (t.dataset.a === 'mine') play('../play/assets/hen/' + it.k + '.mp3?v=' + HEN[it.k]);
   else if (t.dataset.a === 'tts') play('../play/assets/tts/' + it.k + '.mp3');
 });
-setInterval(() => { if (!rec) syncBatches(); }, 3000);
+setInterval(() => { if (!rec && !Q.trim()) syncBatches(); }, 3000);
+let qt = 0; $('q').addEventListener('input', () => { clearTimeout(qt); qt = setTimeout(() => { if (rec) stopRec(); Q = $('q').value; render(); }, 200); });
 window.__studio = { openedB, BATCH, syncBatches, busyBatch, status: it => status(it), D };
 setTimeout(() => client().catch(() => {}), 1500); // טעינה מוקדמת, כדי שהשמירה הראשונה תהיה מהירה
 $('glm').addEventListener('click', e => { if (e.target.id === 'glm') $('glx').click(); });
