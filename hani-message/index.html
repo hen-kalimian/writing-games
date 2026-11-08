@@ -11,7 +11,23 @@
   :root { --pink:#f9c9d8; --pink-soft:#fdeaf0; --fuchsia:#d6336c; --mint:#d8f3e8; --sky:#dcefff; --gold:#b8892b; --ink:#2b2b33; }
   * { box-sizing: border-box; }
   body { margin:0; font-family:'Rubik','Open Sans',Arial,sans-serif; color:var(--ink); background:linear-gradient(180deg,var(--pink-soft),#fff 40%,var(--sky)); min-height:100vh; }
-  main { max-width:640px; margin:0 auto; padding:24px 16px 48px; }
+  main { max-width:1100px; margin:0 auto; padding:24px 16px 48px; }
+  .daybox { margin:0 0 34px; }
+  .dayhead { text-align:center; font-size:24px; font-weight:600; color:var(--ink); margin:0 0 12px; padding:10px 14px; background:#fff; border-radius:16px; border:2px solid var(--pink); }
+  .dayhead small { display:block; font-size:14px; font-weight:500; color:#777; margin-top:2px; }
+  .cols { display:grid; grid-template-columns:1fr 1fr; gap:18px; align-items:start; }
+  .col { min-width:0; }
+  .ghead { text-align:center; font-size:21px; font-weight:600; line-height:1.35; padding:12px 10px; border-radius:16px 16px 0 0; margin:0; }
+  .ghead.club { background:var(--pink); color:#8c1d4a; border:2px solid var(--pink); }
+  .ghead.prep { background:var(--mint); color:#1d6b4a; border:2px solid #9ad8bc; }
+  .ghead.train { background:var(--sky); color:#245a8d; border:2px solid #a9cdf0; }
+  .ghead small { display:block; font-size:14px; font-weight:500; opacity:.85; }
+  .col .card { border-radius:0 0 18px 18px; border-top:0; margin-bottom:14px; }
+  .col.prep .card { border-color:#9ad8bc; }
+  .col.train .card { border-color:#a9cdf0; }
+  .nomsg { text-align:center; color:#999; padding:18px 10px; border:2px dashed #e5d5da; border-radius:0 0 18px 18px; border-top:0; }
+  .full { grid-column:1 / -1; }
+  @media (max-width:760px) { .cols { grid-template-columns:1fr; } }
   h1 { text-align:center; font-size:26px; margin:8px 0 4px; color:var(--gold); font-weight:600; }
   .sub { text-align:center; margin:0 0 20px; color:#666; font-size:15px; }
   .card { background:#fff; border-radius:18px; padding:18px; box-shadow:0 4px 18px rgba(214,51,108,.10); border:2px solid var(--pink); margin-bottom:22px; }
@@ -80,10 +96,12 @@ function linkified(cls, text) {
   return d;
 }
 
-function render(m, today, isStale) {
+function render(m, today, isStale, compact) {
   const card = el('div', 'card');
-  card.appendChild(el('p', 'when', 'ההודעה של ' + dayText(m.forDate) + (m.sendTime ? ', בשעה ' + m.sendTime : '')));
-  if (m.group) card.appendChild(el('p', 'group', m.group + (m.label ? ' · ' + m.label : '')));
+  if (!compact) {
+    card.appendChild(el('p', 'when', 'ההודעה של ' + dayText(m.forDate) + (m.sendTime ? ', בשעה ' + m.sendTime : '')));
+    if (m.group) card.appendChild(el('p', 'group', m.group + (m.label ? ' · ' + m.label : '')));
+  } else if (m.label) card.appendChild(el('p', 'group', m.label));
   if (m.updated) card.appendChild(el('p', 'stamp', 'נכתבה ועודכנה: ' + m.updated));
   const bn = el('div', 'banner');
   if (isStale) { bn.className += ' old'; bn.textContent = 'שימי לב: זו הודעה של ' + dayText(m.forDate) + ', לא של היום. ההודעה החדשה עדיין לא עלתה, אל תעתיקי את זו.'; }
@@ -111,14 +129,43 @@ function render(m, today, isStale) {
     const today = todayIL();
     // always the four nearest messages from today on; when a message's day passes, the next one takes its place by itself
     const upcoming = all.filter(m => m.forDate >= today).sort((a, b) => a.forDate.localeCompare(b.forDate) || (a.sendTime || '').localeCompare(b.sendTime || ''));
-    let shown = upcoming.slice(0, 6).map(m => [m, false]);
-    if (!shown.length) {
+    // one box per date (the nearest three dates); inside it two columns, mom club on the right and the prep-for-first-grade group on the left, each under its own big colored heading
+    const groupKey = m => m.kind === 'prep' ? 'prep' : m.kind === 'wednesday' ? 'train' : 'club';
+    const GROUPS = { club: ['מועדון האימהות', 'הודעה לקבוצת הוואטסאפ של מועדון האימהות'], prep: ['הכנה לכיתה א\' ולימוד קריאה', 'הודעה לקבוצת הוואטסאפ של מתענייני ההכנה לכיתה א\''], train: ['תוכנית ההכשרה', 'הודעה לקבוצת הוואטסאפ של תוכנית ההכשרה'] };
+    let dates = [...new Set(upcoming.map(m => m.forDate))].slice(0, 3);
+    let stale = false;
+    if (!dates.length) {
       const last = all.slice().sort((a, b) => b.forDate.localeCompare(a.forDate))[0];
-      if (last) shown = [[last, true]];
+      if (last) { dates = [last.forDate]; stale = true; }
     }
-    document.getElementById('sub').textContent = shown.length ? 'ההודעות הקרובות. בכל יום ראשון יש שתי הודעות להעתקה: אחת למועדון האימהות ואחת לקבוצת ההכנה לכיתה א\' ולימוד קריאה. הדף מתעדכן לבד, ובחצות ההודעה שעבר יומה מוחלפת בהבאה' : '';
-    if (!shown.length) app.innerHTML = '<div class="card empty">אין כרגע הודעה. כשתהיה, תגיע תזכורת בוואטסאפ.</div>';
-    shown.forEach(([m, stale]) => app.appendChild(render(m, today, stale)));
+    document.getElementById('sub').textContent = dates.length ? 'בכל יום ראשון יש שתי הודעות להעתקה, אחת לכל קבוצה. התאריך הקרוב למעלה, והבא מתחתיו. הדף מתעדכן לבד ובחצות התאריך שעבר מוחלף בבא' : '';
+    if (!dates.length) app.innerHTML = '<div class="card empty">אין כרגע הודעה. כשתהיה, תגיע תזכורת בוואטסאפ.</div>';
+    dates.forEach((d, i) => {
+      const box = el('div', 'daybox');
+      const hd = el('h2', 'dayhead', dayText(d));
+      hd.appendChild(el('small', null, stale ? 'ההודעה האחרונה שיש' : d === today ? 'היום' : i === 0 ? 'התאריך הקרוב' : 'התאריך הבא'));
+      box.appendChild(hd);
+      const cols = el('div', 'cols');
+      const day = all.filter(m => m.forDate === d).sort((a, b) => (b.id === 'prep-intro') - (a.id === 'prep-intro'));
+      ['club', 'prep'].forEach(k => {
+        const col = el('div', 'col ' + k);
+        const g = el('h3', 'ghead ' + k, GROUPS[k][0]); g.appendChild(el('small', null, GROUPS[k][1]));
+        col.appendChild(g);
+        const mine = day.filter(m => groupKey(m) === k);
+        if (mine.length) mine.forEach(m => col.appendChild(render(m, today, stale, true)));
+        else col.appendChild(el('div', 'nomsg', 'אין הודעה לקבוצה הזאת בתאריך הזה'));
+        cols.appendChild(col);
+      });
+      const tr = day.filter(m => groupKey(m) === 'train');
+      if (tr.length) {
+        const col = el('div', 'col train full');
+        const g = el('h3', 'ghead train', GROUPS.train[0]); g.appendChild(el('small', null, GROUPS.train[1])); col.appendChild(g);
+        tr.forEach(m => col.appendChild(render(m, today, stale, true)));
+        cols.appendChild(col);
+      }
+      box.appendChild(cols);
+      app.appendChild(box);
+    });
   } catch (e) {
     document.getElementById('sub').textContent = '';
     app.innerHTML = '<div class="card empty">לא הצלחתי לטעון את ההודעות כרגע. אפשר לנסות לרענן את הדף.</div>';
