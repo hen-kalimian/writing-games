@@ -198,8 +198,17 @@ function render(m, today, isStale, compact) {
       const a = cols.children[0].querySelector('.msg'), b = cols.children[1].querySelector('.msg');
       if (!a || !b) return;
       [a, b].forEach(x => { x.style.fontSize = ''; x.style.lineHeight = ''; x.querySelectorAll('a.lnk').forEach(l => { l.style.fontSize = ''; }); });
+      // first widen the taller column a little (by measured height), then shrink its text for what is left
+      let wa = 1, wb = 1;
+      for (let i = 0; i < 24; i++) {
+        cols.style.gridTemplateColumns = wa + 'fr ' + wb + 'fr';
+        const ha = a.offsetHeight, hb = b.offsetHeight;
+        if (Math.abs(ha - hb) <= Math.max(ha, hb) * 0.05) break;
+        if (ha > hb) wa += 0.05; else wb += 0.05;
+        if (Math.max(wa, wb) > 1.6) break;
+      }
       const tall = a.offsetHeight >= b.offsetHeight ? a : b, other = tall === a ? b : a;
-      let fs = parseFloat(getComputedStyle(tall).fontSize); const min = fs * 0.72;
+      let fs = parseFloat(getComputedStyle(tall).fontSize); const min = fs * 0.78;
       while (tall.offsetHeight > other.offsetHeight + 4 && fs > min) {
         fs -= 0.5; tall.style.fontSize = fs + 'px'; tall.style.lineHeight = '1.55';
         tall.querySelectorAll('a.lnk').forEach(l => { l.style.fontSize = (fs * 0.92) + 'px'; });
