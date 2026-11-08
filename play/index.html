@@ -12,6 +12,12 @@
 .a-mole.msym{display:flex!important;flex-wrap:wrap;justify-content:center;gap:8px;max-width:min(560px,96vw);margin-left:auto;margin-right:auto}
 .a-mole.msym>.hole{flex:0 0 calc((100% - (var(--mc) - 1)*8px)/var(--mc));max-width:calc((100% - (var(--mc) - 1)*8px)/var(--mc))}
 .pspk{position:absolute!important;top:4px!important;left:4px!important;width:26px!important;height:26px!important;padding:3px!important;z-index:5!important;background:rgba(255,255,255,.92)!important;border-radius:50%!important;box-shadow:0 0 0 2px #FBC5D6!important}.pspk svg{width:100%;height:100%}
+/*__QUNI (חן, 8.11.26): כל כרטיסי התשובות באותו גודל, גם כשיש תמונה ליד אות כתובה*/
+.arena.a-quiz,.arena.a-tv,.arena.a-find{grid-auto-rows:1fr}
+.arena.a-quiz>.it.q,.arena.a-tv>.it.q,.arena.a-find>.it.q{height:100%;display:flex}
+.arena.a-quiz>.it.q>.card,.arena.a-tv>.it.q>.card,.arena.a-find>.it.q>.card{flex:1 1 auto;width:100%;height:100%}
+.arena.g22>.it.q>.card.opt{height:clamp(110px,18vh,170px)!important;min-height:0!important;max-height:none!important}
+.arena.g22>.it.q>.card.opt .t{max-height:100%}
 </style>
 <script>document.addEventListener('touchmove',function(e){var t=e.target;if(t&&t.closest&&t.closest('.arena.play,.trainarena,.psboard,.tray,.pcard,.chip,.cbox,.drag,[style*="touch-action:none"]'))e.preventDefault()},{passive:false});
 /*__ACS*/(function(){var O=window.AudioContext||window.webkitAudioContext,S=null,gest=false;if(!O)return;function F(){if(!S){S=new O();window.__AC=S}return S}F.prototype=O.prototype;window.AudioContext=F;window.webkitAudioContext=F;
@@ -955,6 +961,6 @@ var __booted=false;function __go(){if(__booted)return;__booted=true;__boot()}if(
 })();
 </script>
 <script src="../end-fs.js"></script>
-<script>/*4 תשובות בתמונות: פריסה 2 על 2 (חן 31.10.26)*/new MutationObserver(function(){var dd=window.__ww&&__ww.D();if(dd&&/^clr/.test(dd.id||''))document.documentElement.classList.add('clrg');document.querySelectorAll('.arena.a-quiz,.arena.a-tv,.arena.a-find').forEach(function(a){if(a.classList.contains('multi')&&!a.classList.contains('a-quiz'))return;var k=a.children,g=k.length===4&&[].every.call(k,function(c){return c.querySelector('img')});if(a.classList.contains('g22')!==g)a.classList.toggle('g22',g)})}).observe(document.documentElement,{childList:true,subtree:true});</script>
+<script>/*4 תשובות בתמונות: פריסה 2 על 2 (חן 31.10.26)*/new MutationObserver(function(){var dd=window.__ww&&__ww.D();if(dd&&/^clr/.test(dd.id||''))document.documentElement.classList.add('clrg');document.querySelectorAll('.arena.a-quiz,.arena.a-tv,.arena.a-find').forEach(function(a){if(a.classList.contains('multi')&&!a.classList.contains('a-quiz'))return;var k=a.children,g=k.length===4;/*חן 8.11.26: 'גודל אחיד לכרטיסיות התשובות, 2 על 2' גם כשחלק מהתשובות תמונה וחלק אות*/if(a.classList.contains('g22')!==g)a.classList.toggle('g22',g)})}).observe(document.documentElement,{childList:true,subtree:true});</script>
 </body>
 </html>
