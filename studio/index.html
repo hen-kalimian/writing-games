@@ -290,6 +290,18 @@ async function save(id) {
   } catch (e) { takes[id] = blob; setSt(id, e.message === 'long' ? 'ההקלטה ארוכה מדי. נסי שוב קצת יותר קצר' : 'השמירה לא הצליחה. בדקי שיש אינטרנט ולחצי שוב על שמירה', 'err'); console.error(e); }
 }
 function play(src) { player.pause(); player.src = src; player.currentTime = 0; player.play().catch(() => {}); }
+/* 8.11.26 (חן, iPhone): הקלטה שנשמרה זה עתה לא התנגנה. הסיבות באייפון: המיקרופון עדיין פתוח (האודיו יוצא חלש או בכלל לא), וקובץ ההקלטה הגולמי לפעמים לא מתנגן באלמנט רגיל. לכן: משחררים את המיקרופון, מנגנים באלמנט חדש, ואם נכשל מפענחים ומשמיעים דרך AudioContext */
+function releaseMic() { try { if (stream) { stream.getTracks().forEach(t => t.stop()); } } catch (e) {} stream = null; }
+let actx = null;
+function playBlob(bl) {
+  if (rec) return; releaseMic(); player.pause();
+  const AC = window.AudioContext || window.webkitAudioContext; let ctx = null; try { actx = actx || new AC(); ctx = actx; ctx.resume && ctx.resume(); } catch (e) {}
+  const viaCtx = async () => { if (!ctx) return; try { const buf = await ctx.decodeAudioData(await bl.arrayBuffer()); const s = ctx.createBufferSource(); s.buffer = buf; s.connect(ctx.destination); s.start(0); } catch (e) { console.error(e); } };
+  const a = new Audio(); player = a; let fell = false; const fb = () => { if (!fell) { fell = true; viaCtx(); } };
+  a.onerror = fb; a.src = URL.createObjectURL(bl); a.load();
+  const pr = a.play(); if (pr && pr.catch) pr.catch(fb);
+  setTimeout(() => { if (!fell && a.paused && !a.ended && a.currentTime === 0) fb(); }, 1200);
+}
 document.addEventListener('click', e => {
   const bc = e.target.closest('[data-bclose]'); if (bc) { delete openedB[bc.dataset.bclose]; collapseBatch(bc.dataset.bclose); return; }
   const bo = e.target.closest('[data-bopen]'); if (bo) { const bid = bo.dataset.bopen; openedB[bid] = 1; document.getElementById(bid).outerHTML = batchHtml(bid); updGrps(); return; }
@@ -303,14 +315,14 @@ document.addEventListener('click', e => {
   if (t.id === 'mx') { $('modal').classList.remove('on'); $('mf').src = 'about:blank'; return; }
   const s = t.closest('.item'); if (!s) return; const id = s.id, it = D.items.find(i => i.id === id);
   if (t.dataset.a === 'rec') startRec(id);
-  else if (t.dataset.a === 'play') { const bl = takes[id] || saved[id]; if (bl) play(URL.createObjectURL(bl)); else if (HEN[it.k]) play('../play/assets/hen/' + it.k + '.mp3?v=' + HEN[it.k]); }
+  else if (t.dataset.a === 'play') { const bl = takes[id] || saved[id]; if (bl) playBlob(bl); else if (HEN[it.k]) play('../play/assets/hen/' + it.k + '.mp3?v=' + HEN[it.k]); }
   else if (t.dataset.a === 'save') { if (auto[id]) { clearInterval(auto[id]); delete auto[id]; } save(id); }
   else if (t.dataset.a === 'mine') play('../play/assets/hen/' + it.k + '.mp3?v=' + HEN[it.k]);
   else if (t.dataset.a === 'tts') play('../play/assets/tts/' + it.k + '.mp3');
 });
 setInterval(() => { if (!rec && !Q.trim()) syncBatches(); }, 3000);
 let qt = 0; $('q').addEventListener('input', () => { clearTimeout(qt); qt = setTimeout(() => { if (rec) stopRec(); Q = $('q').value; render(); }, 200); });
-window.__studio = { openedB, BATCH, syncBatches, busyBatch, status: it => status(it), D };
+window.__studio = { playBlob, getPlayer: () => player, openedB, BATCH, syncBatches, busyBatch, status: it => status(it), D };
 setTimeout(() => client().catch(() => {}), 1500); // טעינה מוקדמת, כדי שהשמירה הראשונה תהיה מהירה
 $('glm').addEventListener('click', e => { if (e.target.id === 'glm') $('glx').click(); });
 $('modal').addEventListener('click', e => { if (e.target.id === 'modal') $('mx').click(); });
