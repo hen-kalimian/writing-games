@@ -1,0 +1,314 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>הצ'קליסט שלי בתוכנית ההכשרה</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --mint:#CDEFE2; --mint-deep:#7CC9B0; --mint-wash:#EEF9F5;
+  --sky:#BFE3F4; --sky-deep:#6FAFD2; --sky-wash:#EFF8FD;
+  --pink:#F9D4DF; --pink-deep:#E98FAB;
+  --ink:#4B5B69; --muted:#7A8995; --white:#fff; --bg:#FBFDFE;
+}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%}
+body{background:var(--bg);color:var(--ink);font-family:Rubik,'Open Sans',Arial,sans-serif;line-height:1.35;padding:10px;-webkit-text-size-adjust:100%;overflow:hidden}
+.wrap{max-width:640px;margin:0 auto;height:100%;display:flex;flex-direction:column;gap:8px}
+.sketch{border:2px solid var(--ink);border-radius:255px 18px 225px 18px/18px 225px 18px 255px}
+.sketch-soft{border:2px solid var(--ink);border-radius:18px 225px 18px 255px/225px 18px 255px 18px}
+
+.top{display:flex;align-items:center;justify-content:space-between;gap:8px;flex:none}
+h1{white-space:nowrap;font-size:17px;line-height:1.2;margin:0;font-weight:700}
+.acct{font-size:12px;color:var(--muted);text-align:left}
+.acct span{display:none}
+.loginbtn{background:var(--sky);color:var(--ink);font:inherit;font-weight:600;font-size:11.5px;padding:3px 8px;white-space:nowrap;cursor:pointer}
+.link{background:none;border:0;font:inherit;font-size:12px;color:var(--muted);text-decoration:underline;cursor:pointer}
+
+.stepper{display:flex;justify-content:center;gap:8px;flex:none}
+.dot{width:34px;height:34px;display:grid;place-items:center;background:#fff;font:inherit;font-weight:700;font-size:15px;color:var(--ink);cursor:pointer;padding:0}
+.dot.sketch{border-radius:50% 46% 52% 48%/48% 52% 46% 50%}
+.dot.done{background:var(--mint-deep);color:#fff}
+.dot.cur{background:var(--sky);box-shadow:0 0 0 2px var(--sky-wash),0 0 0 4px var(--sky-deep)}
+.dot.cur.done{background:var(--mint-deep)}
+.dot:focus-visible{outline:3px solid var(--sky-deep);outline-offset:2px}
+
+.slide{background:var(--white);padding:10px 12px;flex:1;min-height:0;display:flex;flex-direction:column;gap:6px;animation:slidein .25s ease}
+@keyframes slidein{from{opacity:0}to{opacity:1}}
+.slide.done{background:var(--mint-wash)}
+.slide-head{display:flex;align-items:center;gap:10px;flex:none}
+.slide-head strong{flex:1;min-width:0;font-size:15px;line-height:1.25}
+.bar{height:9px;background:var(--sky-wash);border:2px solid var(--ink);border-radius:999px;overflow:hidden;position:relative;width:70px;flex:none}
+.bar>i{position:absolute;inset:0 auto 0 0;right:0;left:auto;width:0;background:linear-gradient(90deg,var(--mint-deep),var(--sky-deep));transition:width .4s ease;border-radius:999px}
+.pct{flex:none;min-width:38px;text-align:center;font-weight:700;font-size:13px}
+.slide-body{flex:1;min-height:0;display:flex;flex-direction:column;justify-content:space-evenly;overflow-y:auto}
+.row{border-top:2px dashed var(--sky);padding:4px 0}
+.row:first-child{border-top:0}
+.row h3{margin:0 0 2px;font-size:13.5px;font-weight:600;line-height:1.25}
+.chips{display:flex;flex-wrap:wrap;gap:4px 16px}
+.chk{display:flex;align-items:center;gap:7px;padding:3px 0;cursor:pointer;font-size:14px;-webkit-tap-highlight-color:transparent}
+.chk input{position:absolute;opacity:0;width:1px;height:1px}
+.box{flex:none;width:24px;height:24px;border:2px solid var(--ink);border-radius:7px 10px 6px 11px/10px 6px 11px 7px;background:#fff;display:grid;place-items:center;transition:background .2s,transform .15s}
+.box svg{width:16px;height:16px;stroke:var(--ink);stroke-width:3.2;fill:none;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:26;stroke-dashoffset:26;transition:stroke-dashoffset .3s ease}
+.chk input:checked + .box{background:var(--mint)}
+.chk input:checked + .box svg{stroke-dashoffset:0}
+.chk input:focus-visible + .box{outline:3px solid var(--sky-deep);outline-offset:2px}
+.chk:active .box{transform:scale(.9)}
+.chk input:checked ~ span.t{color:var(--muted)}
+
+.bottom{display:flex;align-items:center;justify-content:space-between;gap:8px;flex:none}
+.nav,.save button{background:var(--sky);color:var(--ink);font:inherit;font-weight:600;font-size:15px;padding:8px 18px;cursor:pointer}
+.nav:hover{background:#A9D8EE}
+.nav[disabled]{opacity:.35;cursor:default}
+.save{display:flex;flex-direction:column;align-items:center;gap:2px}
+.save button{background:var(--mint);display:inline-flex;align-items:center;gap:6px;font-weight:700}
+.save button:hover{background:#BDE8D8}
+.save button svg{width:18px;height:18px;stroke:var(--ink);stroke-width:3.4;fill:none;stroke-linecap:round;stroke-linejoin:round}
+#saved{min-height:14px;font-size:11.5px;color:var(--muted);text-align:center}
+#warn{display:none;position:fixed;inset:auto 10px 60px;background:var(--pink);padding:8px 14px;font-size:13px;text-align:center;z-index:70}
+
+.confetti{position:fixed;top:-20px;pointer-events:none;opacity:0;z-index:50;animation:fall linear forwards}
+@keyframes fall{0%{opacity:1;transform:translateY(0) rotate(0)}85%{opacity:1}100%{opacity:0;transform:translateY(105vh) rotate(260deg)}}
+#banner{position:fixed;inset:auto 14px 70px;max-width:520px;margin:0 auto;background:#fff;padding:10px 16px;text-align:center;font-weight:600;font-size:15px;z-index:60;display:none;box-shadow:0 8px 24px rgba(75,91,105,.18)}
+@media(prefers-reduced-motion:reduce){.slide{animation:none}.confetti{display:none}.bar>i,.box svg{transition:none}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <h1>צ'קליסט ההתקדמות שלי</h1>
+    <div id="acct" class="acct"></div>
+  </div>
+  <main id="list" style="display:contents"></main>
+  <div id="warn" class="sketch-soft">נראה שהדפדפן הזה לא מאפשר לשמור. ההתקדמות תישאר רק כל עוד הדף פתוח. כדאי לפתוח את הקישור בדפדפן הרגיל.</div>
+</div>
+<div id="banner" class="sketch" role="status"></div>
+
+<script>
+/* ===== התוכן: אבני דרך ונושאים (מתוך התוכניות "הכשרה מקצועית" ו"הכשרה עסקית") ===== */
+const MILESTONES = [
+  { id: 'm1', title: 'יסודות לימוד האותיות והכתיבה', rows: [
+    { t: 'שיעור 1 · האותיות, התפתחות, מיפוי והקניה ראשונית', c: ['צפיתי בשיעור', 'משימת המיפוי בוצעה'] },
+    { t: 'שיעור 2 · האותיות, מטרות ופעילויות להטמעה', c: ['צפיתי בשיעור', 'המשימה בוצעה'] },
+    { t: 'שיעור 3 · התפתחות הכתיבה וגרפומוטוריקה', c: ['צפיתי בשיעור', 'המשימה בוצעה'] },
+    { t: 'סיכום', c: ['סיכמתי את שיעורים 1 עד 3', 'שיתפתי בקבוצת הוואטסאפ'] } ] },
+  { id: 'm2', title: 'העמקת הידע: מודעות פונולוגית וקריאה', rows: [
+    { t: 'שיעור 4 · מודעות פונולוגית', c: ['צפיתי בשיעור', 'המשימה בוצעה'] },
+    { t: 'שיעור 5 · התפתחות הקריאה והכתיבה', c: ['צפיתי בשיעור', 'המשימה בוצעה'] },
+    { t: 'שיעור 6 · מעבר מהברות למילים ולקריאה שוטפת', c: ['צפיתי בשיעור', 'המשימה בוצעה'] },
+    { t: 'סיכום', c: ['סיכמתי את שיעורים 4 עד 6', 'שיתפתי בקבוצת הוואטסאפ'] } ] },
+  { id: 'm3', title: 'הרחבת תחומי ההתמחות: חשבון ומיפוי', rows: [
+    { t: 'שיעור 7 · מוכנות בחשבון, ספירה, מנייה והספרות', c: ['צפיתי בשיעור', 'המשימה בוצעה'] },
+    { t: 'שיעור 8 · מוכנות בחשבון, הרצף, חיבור וחיסור', c: ['צפיתי בשיעור', 'המשימה בוצעה'] },
+    { t: 'שיעור 9 · מיפוי בשיטת קוראים בקלות', c: ['צפיתי בשיעור', 'המיפוי בוצע'] },
+    { t: 'סיכום', c: ['סיכמתי את שיעורים 7 עד 9', 'שיתפתי בקבוצת הוואטסאפ'] } ] },
+  { id: 'm4', title: 'ניהול קבוצה: סיום ההכשרה המקצועית', rows: [
+    { t: 'שיעור 10 · מבנה השיעור וחוברת המערכים', c: ['צפיתי בשיעור', 'המשימה בוצעה'] },
+    { t: 'שיעור 11 · כלים להתמודדות עם אתגרים בקבוצה', c: ['צפיתי בשיעור', 'המשימה בוצעה'] },
+    { t: 'שיעור 12 · בינה מלאכותית ליצירת חומרי למידה', c: ['צפיתי בשיעור', 'המשימה בוצעה'] },
+    { t: 'שיעורי בונוס', c: ['פיצוח שגיאות כתיב', 'מוכנות חברתית רגשית'] },
+    { t: 'סיכום', c: ['סיכמתי את שיעורים 10 עד 12', 'שיתפתי בקבוצת הוואטסאפ'] } ] },
+  { id: 'm5', title: 'בניית העסק', rows: [
+    { t: 'איך מתחילים ואיך משווקים ברשתות', c: ['צפיתי בהדרכה', 'המשימה בוצעה'] },
+    { t: 'פרסום ממומן', c: ['צפיתי בהדרכה', 'המשימה בוצעה'] },
+    { t: 'פתיחת עסק והנהלת חשבונות', c: ['צפיתי בהדרכה', 'המשימה בוצעה'] },
+    { t: 'הקמת דף נחיתה ואתר משלך', c: ['צפיתי בהדרכה', 'המשימה בוצעה'] },
+    { t: 'תמחור ומכירות', c: ['צפיתי בהדרכה', 'המשימה בוצעה'] },
+    { t: 'עיצוב בקאנבה', c: ['צפיתי בהדרכה', 'המשימה בוצעה'] },
+    { t: 'הורים כמשווקים', c: ['צפיתי בהדרכה', 'המשימה בוצעה'] } ] },
+  { id: 'm6', title: 'הגשת העבודה המסכמת ופתיחת קבוצה', rows: [
+    { t: 'עבודה מסכמת', c: ['הגשתי את העבודה המסכמת'] },
+    { t: 'קבוצה ראשונה', c: ['פתחתי את הקבוצה הראשונה שלי'] } ] }
+];
+const KEY = 'hen-training-checklist-v3';
+const CHECK = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l5 5L19 7"/></svg>';
+
+/* ===== שמירה בדפדפן (LocalStorage), עם גיבוי בזיכרון אם הדפדפן חוסם ===== */
+let store = { checks: {}, cur: 0 }, canSave = true;
+function load() {
+  try { const raw = localStorage.getItem(KEY); if (raw) { const j = JSON.parse(raw); store.checks = j.checks || {}; store.cur = j.cur || 0; } }
+  catch (e) { canSave = false; }
+}
+/* ===== שמירה בחשבון (חן, 4.10.26: "שיעבוד גם מדפדפן אחר, אותו יוזר") =====
+   התחברות עם המשתמש של האתר (ויקס), וההתקדמות נשמרת בטבלה בוויקס לפי המשתמשת. בלי התחברות נשארת שמירה בדפדפן. */
+const CLIENT_ID = '058da38e-a911-4b84-876e-e5efedfa9ae9', COLLECTION = 'ChecklistProgress';
+const REDIRECT = 'https://hen-kalimian.github.io/writing-games/checklist/';
+const TOK = 'hen-ck-wix-tokens', OA = 'hen-ck-wix-oauth';
+let wix = null, cloud = false, cloudItem = null, cloudT = null;
+async function sdk() {
+  if (wix) return wix;
+  const [{ createClient, OAuthStrategy }, { items }] = await Promise.all([import('https://esm.sh/@wix/sdk@1.21.16'), import('https://esm.sh/@wix/data@1.0.525')]);
+  let tokens; try { tokens = JSON.parse(localStorage.getItem(TOK) || 'null'); } catch (e) {}
+  wix = createClient({ auth: OAuthStrategy({ clientId: CLIENT_ID, ...(tokens ? { tokens } : {}) }), modules: { items } });
+  return wix;
+}
+const keepTokens = () => { try { if (wix) localStorage.setItem(TOK, JSON.stringify(wix.auth.getTokens())); } catch (e) {} };
+function cloudStatus(msg, loggedIn) {
+  $('acct').innerHTML = loggedIn
+    ? '<button type="button" id="logout" class="link">מחוברת · התנתקות</button>'
+    : '<button type="button" id="login" class="loginbtn sketch-soft">התחברות לשמירה בחשבון</button>';
+}
+async function cloudLoad() {
+  try {
+    const c = await sdk();
+    const r = await c.items.query(COLLECTION).find();
+    keepTokens();
+    cloudItem = r.items.find(x => x.title === 'progress') || null;   // בטבלה יש גם פריטים של דף המיפוי, לכן מזהים לפי כותרת
+    cloud = true;
+    if (cloudItem) { const s = JSON.parse(cloudItem.data || '{}'); store.checks = s.checks || {}; }
+    else cloudSave(true);   // הפעם הראשונה בחשבון: מעבירים לשם את מה שכבר סומן
+    render();
+    cloudStatus('', true);
+  } catch (e) {
+    cloud = false; localStorage.removeItem(TOK); wix = null;
+    cloudStatus('', false);
+  }
+}
+async function cloudSaveNow() {
+  if (!cloud) return false;
+  try {
+    const c = await sdk(), data = JSON.stringify({ checks: store.checks });
+    if (cloudItem) cloudItem = await c.items.update(COLLECTION, { ...cloudItem, data });
+    else cloudItem = await c.items.insert(COLLECTION, { title: 'progress', data });
+    keepTokens(); return true;
+  } catch (e) { return false; }
+}
+function cloudSave(now) {
+  if (!cloud) return;
+  clearTimeout(cloudT);
+  cloudT = setTimeout(cloudSaveNow, now ? 0 : 600);
+}
+async function startLogin() {
+  const c = await sdk();
+  const od = c.auth.generateOAuthData(REDIRECT, REDIRECT);
+  localStorage.setItem(OA, JSON.stringify(od));
+  const { authUrl } = await c.auth.getAuthUrl(od);
+  location.href = authUrl + '&lang=he';
+}
+async function doLogin(btn) {
+  btn.disabled = true;
+  btn.textContent = 'עוברת להתחברות...';
+  try { await startLogin(); }
+  catch (err) { btn.disabled = false; btn.textContent = 'לא הצלחתי, אפשר לנסות שוב'; }
+}
+async function finishLoginIfReturned() {
+  if (!/[#?&]code=/.test(location.hash + location.search)) return false;
+  try {
+    const c = await sdk(), od = JSON.parse(localStorage.getItem(OA) || 'null');
+    const r = c.auth.parseFromUrl(); if (!od || !r.code) return false;
+    const tokens = await c.auth.getMemberTokens(r.code, r.state, od);
+    c.auth.setTokens(tokens); keepTokens(); localStorage.removeItem(OA);
+    history.replaceState(null, '', location.pathname);
+    return true;
+  } catch (e) { history.replaceState(null, '', location.pathname); return false; }
+}
+function persist() {
+  cloudSave();
+  try { localStorage.setItem(KEY, JSON.stringify({ checks: store.checks, cur: store.cur, at: Date.now() })); return true; }
+  catch (e) { canSave = false; document.getElementById('warn').style.display = 'block'; return false; }
+}
+
+/* ===== תצוגה ===== */
+const $ = id => document.getElementById(id);
+const ids = m => { const r = []; m.rows.forEach((w, ri) => w.c.forEach((_, ci) => r.push(m.id + '-' + ri + '-' + ci))); return r; };
+function esc(s) { return String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c])); }
+const isDone = m => ids(m).every(x => store.checks[x]);
+const pctOf = m => { const a = ids(m); return Math.round(100 * a.filter(x => store.checks[x]).length / a.length); };
+function render() {
+  store.cur = Math.max(0, Math.min(MILESTONES.length - 1, store.cur | 0));
+  const mi = store.cur, m = MILESTONES[mi], pct = pctOf(m), n = MILESTONES.length;
+  const saveBtnHtml = cloud
+    ? '<button id="saveBtn" class="sketch" type="button"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M6 17l7 7L26 8"/></svg>שמירה</button>'
+    : '<button id="saveBtn" class="sketch" type="button" data-login="1"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M14 7l11 9-11 9"/><path d="M5 16h19"/></svg>שמירה והתחברות לאתר לשמירת הצ׳קליסט</button>';
+  const savedDefaultHtml = cloud ? '' : 'ייפתח חלון ההתחברות הרשמי של האתר (לפעמים מוצג באנגלית, זה תקין)';
+  $('list').innerHTML =
+    '<nav class="stepper" aria-label="שלבי ההכשרה">' + MILESTONES.map((x, i) =>
+      '<button type="button" class="dot sketch' + (i === mi ? ' cur' : '') + (isDone(x) ? ' done' : '') + '" data-go="' + i + '" aria-label="שלב ' + (i + 1) + (isDone(x) ? ' (הושלם)' : '') + '"' + (i === mi ? ' aria-current="step"' : '') + '>' + (i + 1) + '</button>').join('') + '</nav>' +
+    '<section class="slide sketch' + (isDone(m) ? ' done' : '') + '" id="' + m.id + '">' +
+      '<div class="slide-head"><strong>' + esc(m.title) + '</strong>' +
+      '<div class="bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="' + pct + '"><i style="width:' + pct + '%"></i></div>' +
+      '<span class="pct">' + pct + '%</span></div>' +
+      '<div class="slide-body">' + m.rows.map((w, ri) => '<div class="row"><h3>' + esc(w.t) + '</h3><div class="chips">' + w.c.map((t, ci) => cell(m.id + '-' + ri + '-' + ci, t)).join('') + '</div></div>').join('') + '</div>' +
+    '</section>' +
+    '<div class="bottom">' +
+      '<button type="button" class="nav sketch-soft" data-step="-1"' + (mi === 0 ? ' disabled' : '') + '>הקודם</button>' +
+      '<div class="save">' + saveBtnHtml + '<div id="saved" role="status" aria-live="polite">' + savedDefaultHtml + '</div></div>' +
+      '<button type="button" class="nav sketch-soft" data-step="1"' + (mi === n - 1 ? ' disabled' : '') + '>הבא</button>' +
+    '</div>';
+  update(true);
+}
+function go(i) { store.cur = i; persist(); render(); }
+function cell(id, text) {
+  return '<label class="chk"><input type="checkbox" data-id="' + id + '"' + (store.checks[id] ? ' checked' : '') + '><span class="box">' + CHECK + '</span><span class="t">' + esc(text) + '</span></label>';
+}
+
+/* ===== חגיגת סיום שלב ===== */
+let wasDone = {};
+function update(silent) {
+  MILESTONES.forEach(m => {
+    const now = isDone(m);
+    if (!silent && now && !wasDone[m.id]) celebrate('סיימת שלב! ' + m.title, true);
+    wasDone[m.id] = now;
+  });
+}
+function confetti(n) {
+  const cols = ['#CDEFE2', '#BFE3F4', '#F9D4DF', '#FFFFFF', '#7CC9B0', '#E98FAB'];
+  for (let i = 0; i < n; i++) {
+    const c = document.createElement('div'), s = 9 + Math.random() * 10;
+    c.className = 'confetti';
+    c.style.cssText = 'left:' + (Math.random() * 98) + '%;width:' + s + 'px;height:' + s + 'px;background:' + cols[i % cols.length] + ';border:1.6px solid #4B5B69;border-radius:' + (i % 3 ? '50%' : '3px') + ';animation-duration:' + (1.3 + Math.random() * .9) + 's;animation-delay:' + (Math.random() * .25) + 's';
+    document.body.appendChild(c); setTimeout(() => c.remove(), 2800);
+  }
+}
+let bannerT;
+function celebrate(msg, big) {
+  confetti(big ? 46 : 18);
+  const b = $('banner'); b.textContent = (big ? '🎉 ' : '⭐ ') + msg; b.style.display = 'block';
+  clearTimeout(bannerT); bannerT = setTimeout(() => { b.style.display = 'none'; }, big ? 3600 : 2200);
+}
+
+/* ===== אירועים ===== */
+$('list').addEventListener('change', e => {
+  const cb = e.target.closest('input[data-id]'); if (!cb) return;
+  if (cb.checked) store.checks[cb.dataset.id] = 1; else delete store.checks[cb.dataset.id];
+  persist();
+  const m = MILESTONES[store.cur], pct = pctOf(m), sec = $(m.id), done = isDone(m);
+  sec.querySelector('.bar > i').style.width = pct + '%';
+  sec.querySelector('.bar').setAttribute('aria-valuenow', pct);
+  sec.querySelector('.pct').textContent = pct + '%';
+  sec.classList.toggle('done', done);
+  document.querySelector('.dot.cur').classList.toggle('done', done);
+  update(false);
+});
+$('list').addEventListener('click', e => {
+  const d = e.target.closest('[data-go]'); if (d) return go(+d.dataset.go);
+  const s = e.target.closest('[data-step]'); if (s && !s.disabled) go(store.cur + +s.dataset.step);
+});
+$('list').addEventListener('click', e => {
+  const btn = e.target.closest('#saveBtn'); if (!btn) return;
+  if (btn.dataset.login) doLogin(btn); else saveNow();
+});
+function saveNow() {
+  const ok = persist();
+  if (cloud) { $('saved').textContent = 'שומרת...'; cloudSaveNow().then(okc => { $('saved').textContent = okc ? 'נשמר בחשבון ✓' : 'לא הצלחתי לשמור בחשבון. אפשר לנסות שוב.'; }); confetti(10); return; }
+  $('saved').textContent = ok ? 'נשמר ✓' : 'לא הצלחתי לשמור בדפדפן הזה.';
+  if (ok) confetti(10);
+}
+load(); render();
+if (!canSave) $('warn').style.display = 'block';
+document.addEventListener('click', async e => {
+  if (e.target.id === 'login') doLogin(e.target);
+  if (e.target.id === 'logout') { cloud = false; cloudItem = null; wix = null; localStorage.removeItem(TOK); store = { checks: {}, cur: 0 }; try { localStorage.removeItem(KEY); } catch (er) {} render(); cloudStatus('', false); }
+});
+(async () => {
+  cloudStatus('', false);
+  const returned = await finishLoginIfReturned();
+  if (returned) { let back = null; try { back = localStorage.getItem('hen-return'); localStorage.removeItem('hen-return'); } catch (e) {} if (back && back.indexOf('/writing-games/mapping/') === 0) { location.replace(back); return; } }   // חזרה לדף המיפוי אחרי התחברות
+  if (returned || localStorage.getItem(TOK)) { $('acct').firstChild && ($('acct').firstChild.textContent = 'מתחברת...'); await cloudLoad(); }
+})();
+</script>
+</body>
+</html>
