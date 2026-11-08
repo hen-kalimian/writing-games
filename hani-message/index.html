@@ -181,10 +181,7 @@ function render(m, today, isStale, compact) {
         const r = Math.max(lc, lp) / Math.min(lc, lp), longIdx = lp > lc ? 1 : 0;
         const wide = Math.min(1.45, 1 + (r - 1) * 0.3), w = [1, 1]; w[longIdx] = wide;
         cols.style.gridTemplateColumns = w[0] + 'fr ' + w[1] + 'fr';
-        const base = innerWidth <= 760 ? 13 : 17;
-        const fs = Math.max(base * 0.76, base / Math.pow(r, 0.4));
-        cols.children[longIdx].querySelectorAll('.msg').forEach(x => { x.style.fontSize = fs.toFixed(1) + 'px'; x.style.lineHeight = '1.55'; });
-        cols.children[longIdx].querySelectorAll('.msg a.lnk').forEach(x => { x.style.fontSize = (fs * 0.92).toFixed(1) + 'px'; });
+        cols.dataset.fit = '1';
       }
       const tr = day.filter(m => groupKey(m) === 'train');
       if (tr.length) {
@@ -196,6 +193,21 @@ function render(m, today, isStale, compact) {
       box.appendChild(cols);
       app.appendChild(box);
     });
+    // fit: the text of whichever column is taller shrinks a little until both messages end on about the same line (never below ~72% of the normal size)
+    const fitAll = () => document.querySelectorAll('.cols[data-fit]').forEach(cols => {
+      const a = cols.children[0].querySelector('.msg'), b = cols.children[1].querySelector('.msg');
+      if (!a || !b) return;
+      [a, b].forEach(x => { x.style.fontSize = ''; x.style.lineHeight = ''; x.querySelectorAll('a.lnk').forEach(l => { l.style.fontSize = ''; }); });
+      const tall = a.offsetHeight >= b.offsetHeight ? a : b, other = tall === a ? b : a;
+      let fs = parseFloat(getComputedStyle(tall).fontSize); const min = fs * 0.72;
+      while (tall.offsetHeight > other.offsetHeight + 4 && fs > min) {
+        fs -= 0.5; tall.style.fontSize = fs + 'px'; tall.style.lineHeight = '1.55';
+        tall.querySelectorAll('a.lnk').forEach(l => { l.style.fontSize = (fs * 0.92) + 'px'; });
+      }
+    });
+    fitAll();
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(fitAll);
+    addEventListener('resize', fitAll);
   } catch (e) {
     document.getElementById('sub').textContent = '';
     app.innerHTML = '<div class="card empty">לא הצלחתי לטעון את ההודעות כרגע. אפשר לנסות לרענן את הדף.</div>';
