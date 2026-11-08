@@ -15,8 +15,12 @@
   .daybox { margin:0 0 34px; }
   .dayhead { text-align:center; font-size:24px; font-weight:600; color:var(--ink); margin:0 0 12px; padding:10px 14px; background:#fff; border-radius:16px; border:2px solid var(--pink); }
   .dayhead small { display:block; font-size:14px; font-weight:500; color:#777; margin-top:2px; }
-  .cols { display:grid; grid-template-columns:1fr 1fr; gap:18px; align-items:start; }
-  .col { min-width:0; }
+  .cols { display:grid; grid-template-columns:1fr 1fr; gap:18px; align-items:stretch; }
+  .col { min-width:0; display:flex; flex-direction:column; }
+  /* both messages of a date end on the same line: the cards stretch to the taller one and the copy buttons sit at the bottom */
+  .col .card { flex:1; display:flex; flex-direction:column; }
+  .col .card .row { margin-top:auto; padding-top:14px; }
+  .col .nomsg { flex:1; }
   .ghead { text-align:center; font-size:21px; font-weight:600; line-height:1.35; padding:12px 10px; border-radius:16px 16px 0 0; margin:0; }
   .ghead.club { background:var(--pink); color:#8c1d4a; border:2px solid var(--pink); }
   .ghead.prep { background:var(--mint); color:#1d6b4a; border:2px solid #9ad8bc; }
@@ -156,7 +160,8 @@ function render(m, today, isStale, compact) {
     dates.forEach((d, i) => {
       const box = el('div', 'daybox');
       const hd = el('h2', 'dayhead', dayText(d));
-      hd.appendChild(el('small', null, stale ? 'ההודעה האחרונה שיש' : d === today ? 'היום' : i === 0 ? 'התאריך הקרוב' : 'התאריך הבא'));
+      const diff = Math.round((Date.parse(d + 'T12:00:00Z') - Date.parse(today + 'T12:00:00Z')) / 864e5);
+      hd.appendChild(el('small', null, stale ? 'ההודעה האחרונה שיש' : diff <= 0 ? 'היום' : diff === 1 ? 'מחר' : diff === 2 ? 'בעוד יומיים' : 'בעוד ' + diff + ' ימים'));
       box.appendChild(hd);
       const cols = el('div', 'cols');
       const day = all.filter(m => m.forDate === d).sort((a, b) => (b.id === 'prep-intro') - (a.id === 'prep-intro'));
