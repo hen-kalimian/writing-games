@@ -27,7 +27,20 @@
   .col.train .card { border-color:#a9cdf0; }
   .nomsg { text-align:center; color:#999; padding:18px 10px; border:2px dashed #e5d5da; border-radius:0 0 18px 18px; border-top:0; }
   .full { grid-column:1 / -1; }
-  @media (max-width:760px) { .cols { grid-template-columns:1fr; } }
+  /* mobile too: always two columns side by side, mom club on the right, prep group on the left (Hen, 8.11.26) */
+  @media (max-width:760px) {
+    main { padding:14px 6px 36px; }
+    h1 { font-size:21px; } .sub { font-size:13px; margin-bottom:12px; }
+    .dayhead { font-size:17px; padding:8px 6px; } .dayhead small { font-size:12px; }
+    .cols { gap:6px; }
+    .ghead { font-size:15px; padding:9px 4px; border-radius:12px 12px 0 0; } .ghead small { font-size:11px; }
+    .col .card { padding:8px; border-radius:0 0 12px 12px; margin-bottom:8px; }
+    .when { font-size:15px; } .group { font-size:12px; margin-bottom:6px; } .stamp { font-size:11px; margin-bottom:6px; }
+    .banner { font-size:12px; padding:7px 6px; margin-bottom:8px; border-radius:10px; }
+    .msg { font-size:13px; line-height:1.55; padding:7px; } .msg a.lnk { font-size:11px; }
+    button { font-size:14px; padding:10px 8px; min-width:0; width:100%; border-radius:10px; }
+    .nomsg { font-size:12px; padding:12px 4px; }
+  }
   h1 { text-align:center; font-size:26px; margin:8px 0 4px; color:var(--gold); font-weight:600; }
   .sub { text-align:center; margin:0 0 20px; color:#666; font-size:15px; }
   .card { background:#fff; border-radius:18px; padding:18px; box-shadow:0 4px 18px rgba(214,51,108,.10); border:2px solid var(--pink); margin-bottom:22px; }
