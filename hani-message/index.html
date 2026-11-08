@@ -174,6 +174,18 @@ function render(m, today, isStale, compact) {
         else col.appendChild(el('div', 'nomsg', 'אין הודעה לקבוצה הזאת בתאריך הזה'));
         cols.appendChild(col);
       });
+      // the longer message gets a slightly wider column and a slightly smaller text, so both end on about the same line (Hen, 8.11.26)
+      const lenOf = k => day.filter(m => groupKey(m) === k).reduce((s, m) => s + (m.text || '').length, 0);
+      const lc = lenOf('club'), lp = lenOf('prep');
+      if (lc && lp && Math.max(lc, lp) / Math.min(lc, lp) > 1.15) {
+        const r = Math.max(lc, lp) / Math.min(lc, lp), longIdx = lp > lc ? 1 : 0;
+        const wide = Math.min(1.45, 1 + (r - 1) * 0.3), w = [1, 1]; w[longIdx] = wide;
+        cols.style.gridTemplateColumns = w[0] + 'fr ' + w[1] + 'fr';
+        const base = innerWidth <= 760 ? 13 : 17;
+        const fs = Math.max(base * 0.76, base / Math.pow(r, 0.4));
+        cols.children[longIdx].querySelectorAll('.msg').forEach(x => { x.style.fontSize = fs.toFixed(1) + 'px'; x.style.lineHeight = '1.55'; });
+        cols.children[longIdx].querySelectorAll('.msg a.lnk').forEach(x => { x.style.fontSize = (fs * 0.92).toFixed(1) + 'px'; });
+      }
       const tr = day.filter(m => groupKey(m) === 'train');
       if (tr.length) {
         const col = el('div', 'col train full');
