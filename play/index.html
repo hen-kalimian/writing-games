@@ -16,7 +16,7 @@
 .arena.a-quiz,.arena.a-tv,.arena.a-find{grid-auto-rows:1fr}
 .arena.a-quiz>.it.q,.arena.a-tv>.it.q,.arena.a-find>.it.q{height:100%;display:flex}
 .arena.a-quiz>.it.q>.card,.arena.a-tv>.it.q>.card,.arena.a-find>.it.q>.card{flex:1 1 auto;width:100%;height:100%}
-.arena.g22>.it.q>.card.opt{height:clamp(110px,18vh,170px)!important;min-height:0!important;max-height:none!important}
+.arena.g22>.it.q>.card.opt,.arena.a-quiz:not(.multi)>.it.q>.card.opt,.arena.a-tv:not(.multi)>.it.q>.card.opt,.arena.a-find:not(.multi)>.it.q>.card.opt{height:clamp(110px,18vh,170px)!important;min-height:0!important;max-height:none!important}
 .arena.g22>.it.q>.card.opt .t{max-height:100%}
 </style>
 <script>document.addEventListener('touchmove',function(e){var t=e.target;if(t&&t.closest&&t.closest('.arena.play,.trainarena,.psboard,.tray,.pcard,.chip,.cbox,.drag,[style*="touch-action:none"]'))e.preventDefault()},{passive:false});
@@ -402,7 +402,7 @@ function rounds(multi){var R=[],k=D.kind,pool=[];
   else if(k==='sort'){var hs=D.groups.map(function(g){return g.h});D.groups.forEach(function(g,gi){g.items.forEach(function(o){R.push({p:o,gi:gi,ok:[g.h],bad:hs.filter(function(h,i){return i!==gi}).slice(0,3)})})})}
   else if(k==='memory'&&D.items){D.items.forEach(function(o){if(o.t&&o.i)R.push({p:{t:o.t,s:o.s},ok:[{i:o.i,s:o.s}],bad:[]})})}
   var p2=[];R.forEach(function(r){if(!r.multi&&!r.bin)p2=p2.concat(r.ok)});
-  R.forEach(function(r){if(!r.multi&&!r.bin&&r.bad.length<3){var sk=key(r.p||{}),ex=r.ok.concat(r.bad),sb=[];R.forEach(function(q){if(q!==r&&key(q.p||{})===sk){ex=ex.concat(q.ok);sb=sb.concat(q.bad)}});r.bad=r.bad.concat(distract(ex,sb.concat(p2),3-r.bad.length))}});
+  /*__OWNOPTS (חן, 8.11.26): כשנקבע מספר תשובות במשחק (D.opts) ויש לשאלה מספיק תשובות משלה, לא משלימים משאלות אחרות*/R.forEach(function(r){if(!r.multi&&!r.bin&&r.bad.length<3&&!(D.opts&&r.bad.length>=D.opts-1)){var sk=key(r.p||{}),ex=r.ok.concat(r.bad),sb=[];R.forEach(function(q){if(q!==r&&key(q.p||{})===sk){ex=ex.concat(q.ok);sb=sb.concat(q.bad)}});r.bad=r.bad.concat(distract(ex,sb.concat(p2),3-r.bad.length))}});
   return R.filter(function(r){return r.ok.length&&r.bad.length>=1})}
 /* גרירה: פריסה אורכית, עמודה של יעדים ועמודה של פריטים לגרירה, מלאות לגובה המסך */
 function uniq(P){var seen={};return P.filter(function(p){var k=((p.a&&p.a.t)||'')+'|'+((p.b&&p.b.t)||'');var kb=(p.b&&p.b.t&&!p.b.i)?'B'+p.b.t:null,ka=(p.a&&p.a.t&&!p.a.i)?'A'+p.a.t:null;if((kb&&seen[kb])||(ka&&seen[ka]))return false;if(kb)seen[kb]=1;if(ka)seen[ka]=1;return true})}
