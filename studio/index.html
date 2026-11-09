@@ -151,7 +151,7 @@ let secret = (location.hash.match(/k=([\w-]+)/) || [])[1] || store.get(KEYS, '')
 if (secret) { store.set(KEYS, secret); if (location.hash) history.replaceState(null, '', location.pathname + location.search); }
 if (!secret) { $('main').innerHTML = '<div class="lock">האולפן נפתח רק מהקישור האישי ששלחתי לך.</div>'; $('tabs').remove(); $('tip').remove(); throw 0; }
 
-const SECS = [{ id: 'cont', name: 'משפטים עם המשך', note: 'משפטים שאחריהם נשמעים אות, מספר או מילה, למשל "כתבו את האות...". שלוש הנקודות מסמנות אינטונציה של המשך. עד שתקליטי שוב, נשארת ההקלטה הקודמת.' }, { id: 'new', name: 'חדש להקלטה', note: 'מילים והנחיות שמשחקים חדשים צריכים. עד שתקליטי, נשמע קול ממוחשב, ואחרי ההקלטה הקול שלך נכנס לבד.' },
+const SECS = [{ id: 'noisy', name: 'הקלטות עם רעש רקע', note: 'הקלטות שנשמע בהן רעש ברקע (זוהו אוטומטית). כדאי להקליט אותן שוב בחדר שקט. עד שתקליטי שוב, נשארת ההקלטה הקודמת.' }, { id: 'cont', name: 'משפטים עם המשך', note: 'משפטים שאחריהם נשמעים אות, מספר או מילה, למשל "כתבו את האות...". שלוש הנקודות מסמנות אינטונציה של המשך. עד שתקליטי שוב, נשארת ההקלטה הקודמת.' }, { id: 'new', name: 'חדש להקלטה', note: 'מילים והנחיות שמשחקים חדשים צריכים. עד שתקליטי, נשמע קול ממוחשב, ואחרי ההקלטה הקול שלך נכנס לבד.' },
   { id: 'packgen', name: 'משפטים כלליים לכל החבילות', note: 'משפטים שחוזרים בכמה חבילות תוכן (מתחילים, לשלב הבא, אספו את הכול). מקליטים פעם אחת, וההקלטה נכנסת לכל החבילות, גם לחבילות הבאות.' },
   { id: 'packs', name: 'משחקי חבילות התוכן', note: 'כל מה שנשמע במשחקים של חבילות התוכן, לפי תאריך החבילה: מהפורסמות ועד העתידיות (חבילה חדשה נכנסת לכאן אוטומטית כשהיא נבנית). כל קבוצה היא חבילה אחת.' },
   { id: 'kb', name: 'הנחיות במשחקים', note: 'כל ההנחיות הקצרות במשחקים, קוראים בקלות קודם. כל הנחיה נכנסת לכל המשחקים שמופיעים מתחתיה (גם למשחקים נוספים עם אותה הנחיה). לחיצה על משחק פותחת אותו.' },
@@ -167,13 +167,14 @@ let D, HEN = {}, sent = store.get(SENT, {}), sec = store.get('hen-studio-sec', '
 const [d, h] = await Promise.all([fetch('items.json?v=' + Date.now()).then(r => r.json()), fetch('../play/assets/hen/index.json?v=' + Date.now()).then(r => r.ok ? r.json() : {}).catch(() => ({}))]);
 D = d; HEN = h;
 /*__CONT (חן, 3.11.26): משפטים עם המשך חוזרים להקלטה עם שלוש נקודות*/try { const rd = await fetch('redo.json?v=' + Date.now()).then(r => r.ok ? r.json() : null); if (rd) { D.items.forEach(it => { if (rd.ids.includes(it.id)) { it.sec = 'cont'; it.redo = rd.ts; it.nik0 = it.nik || it.text; it.nik = (it.nik || it.text) + '...'; it.text = it.text + '...'; } }); if (!store.get('hen-studio-cont', 0)) { sec = 'cont'; store.set('hen-studio-cont', 1); } } } catch (e) {}
+/* 9.11.26: הקלטות עם רעש רקע (noisy.json, נמדד אוטומטית) חוזרות להקלטה מחדש עד שמגיעה הקלטה חדשה */try { const nz = await fetch('noisy.json?v=' + Date.now()).then(r => r.ok ? r.json() : null); if (nz) D.items.forEach(it => { if (nz.ids.includes(it.id) && it.sec !== 'cont') { it.sec = 'noisy'; it.redo = nz.ts; } }); } catch (e) {}
 const G0 = 1; // 8.11.26: נפתח תמיד על הלשונית הראשונה שעוד חסר בה (לפי העדיפות), ראו orderedSecs
 const G = Object.fromEntries(D.games.map(g => [g.n, g]));
 
 function status(it) { return HEN[it.k] && HEN[it.k] > (it.redo || 0) && (!sent[it.id] || HEN[it.k] >= sent[it.id]) ? 'done' : sent[it.id] ? 'sent' : ''; }
 function progress() { const n = D.items.filter(i => status(i)).length; $('bar').style.width = (100 * n / D.items.length) + '%'; $('cnt').textContent = 'הוקלטו ' + n + ' מתוך ' + D.items.length; }
 /* 8.11.26 (חן): עדיפות הקלטה. קודם ההנחיות עצמן במשחקים לתוכנית, אחר כך התשובות והמילים, ובסוף חבילות התוכן. לשוניות שהושלמו (ירוקות) יורדות לסוף */
-const PRIO = ['cont', 'kb', 'qs', 'more', 'new', 'all', 'names', 'syl', 'words', 'pics', 'answers', 'packgen', 'packs'];
+const PRIO = ['noisy', 'cont', 'kb', 'qs', 'more', 'new', 'all', 'names', 'syl', 'words', 'pics', 'answers', 'packgen', 'packs'];
 const byPrio = (a, b) => PRIO.indexOf(a.s.id) - PRIO.indexOf(b.s.id);
 function orderedSecs() { const l = SECS.map(s => { const all = D.items.filter(i => i.sec === s.id); return { s, all: all.length, n: all.filter(i => status(i)).length }; }).filter(x => x.all); return [...l.filter(x => x.n < x.all).sort(byPrio), ...l.filter(x => x.n >= x.all).sort(byPrio)]; }
 function tabs() { $('tabs').innerHTML = orderedSecs().map(x => '<button type="button" data-s="' + x.s.id + '" class="' + (x.n >= x.all ? 'fin' : 'todo') + (x.s.id === sec ? ' on' : '') + '">' + x.s.name + ' (' + x.n + '/' + x.all + ')</button>').join(''); }
