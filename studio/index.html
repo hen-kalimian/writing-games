@@ -262,8 +262,8 @@ async function startRec(id) {
   if (rec) { stopRec(); if (recItem === id) return; }
   if (auto[id]) { clearInterval(auto[id]); delete auto[id]; }
   try { stream = stream && stream.active ? stream : await navigator.mediaDevices.getUserMedia({ audio: { echoCancellation: false, noiseSuppression: true, autoGainControl: true, channelCount: 1 } }); }
-  catch (e) { setSt(id, 'צריך לאשר לדפדפן להשתמש במיקרופון, ואז ללחוץ שוב על הקלטה', 'err'); return; }
-  player.pause(); chunks = []; recItem = id;
+  catch (e) { stream = null; setSt(id, 'המיקרופון לא נפתח. באייפון: לחצי על aA בשורת הכתובת, הגדרות אתר, מיקרופון, אפשר, ורענני. (' + (e && e.name || '') + ')', 'err'); return; }
+  try { if (navigator.audioSession) navigator.audioSession.type = 'play-and-record'; } catch (e) {} player.pause(); chunks = []; recItem = id;
   rec = new MediaRecorder(stream, MIME ? { mimeType: MIME, audioBitsPerSecond: 128000 } : undefined);
   rec.ondataavailable = e => e.data.size && chunks.push(e.data);
   rec.onstop = () => { const b = new Blob(chunks, { type: rec.mimeType || MIME || 'audio/mp4' }); takes[id] = b; const s = document.getElementById(id); const pb = s && s.querySelector('[data-a=play]'); if (pb) pb.disabled = false; let left = 3; const msg = n => 'נשמר בעוד ' + n + '... או "מחדש"'; setSt(id, msg(left)); auto[id] = setInterval(() => { left--; if (left > 0) setSt(id, msg(left)); else { clearInterval(auto[id]); delete auto[id]; save(id); } }, 1000); rec = null; };
@@ -295,7 +295,7 @@ function play(src) { player.pause(); player.src = src; player.currentTime = 0; p
 function releaseMic() { try { if (stream) { stream.getTracks().forEach(t => t.stop()); } } catch (e) {} stream = null; }
 let actx = null;
 function playBlob(bl) {
-  if (rec) return; releaseMic(); player.pause();
+  if (rec) return; try { if (navigator.audioSession) navigator.audioSession.type = 'playback'; } catch (e) {} player.pause();
   const AC = window.AudioContext || window.webkitAudioContext; let ctx = null; try { actx = actx || new AC(); ctx = actx; ctx.resume && ctx.resume(); } catch (e) {}
   const viaCtx = async () => { if (!ctx) return; try { const buf = await ctx.decodeAudioData(await bl.arrayBuffer()); const s = ctx.createBufferSource(); s.buffer = buf; s.connect(ctx.destination); s.start(0); } catch (e) { console.error(e); } };
   const a = new Audio(); player = a; let fell = false; const fb = () => { if (!fell) { fell = true; viaCtx(); } };
