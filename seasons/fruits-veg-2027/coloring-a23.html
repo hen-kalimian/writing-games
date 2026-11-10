@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
 <meta name="robots" content="noindex,nofollow">
-<title>צוֹבְעִים פֵּרוֹת וִירָקוֹת</title>
+<title>צוֹבְעִים אֶת הַיְרָקוֹת</title>
 <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@500;600;700;800;900&family=Open+Sans:wght@500;700&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
@@ -53,12 +53,12 @@ h1 b{color:#EF406E;font-weight:900}
 
 <div class="wrap">
  <div class="top"><span class="brand">חן קלימיאן - לדבר עם ילדים</span><span class="icos"><button class="ico" id="mute" aria-label="השתקה"></button><button class="ico" id="full" aria-label="מסך מלא"><svg viewBox="0 0 24 24" fill="none" stroke="#5F8DB5" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg></button></span></div>
- <h1>צוֹבְעִים פֵּרוֹת וִירָקוֹת</h1>
+ <h1>צוֹבְעִים אֶת הַיְרָקוֹת</h1>
  <div class="pots" id="pots"></div>
  <div id="boardbox" class="noscroll"><canvas id="cv"></canvas></div>
  <div class="row"><button class="btn small" id="clear">מַתְחִילִים מֵחָדָשׁ</button></div>
 </div>
-<script>window.__ON="<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"#5F8DB5\" stroke-width=\"2.4\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M4 9v6h4l5 4V5L8 9H4z\" fill=\"#B7CDE0\"/><path d=\"M16.5 8.5a5 5 0 010 7M19 6a8.5 8.5 0 010 12\"/></svg>";window.__OFF="<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"#B8236B\" stroke-width=\"2.4\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M4 9v6h4l5 4V5L8 9H4z\" fill=\"#FDE1EA\"/><path d=\"M17 9l5 6M22 9l-5 6\"/></svg>";window.AUDIO={"אֵיפֹה הַתַּפּוּז?":"audio/25e0f6944c.mp3","אֵיפֹה הַלִּימוֹן?":"audio/07c991c23e.mp3","אֵיפֹה יֵשׁ הַרְבֵּה גְּזָרִים?":"audio/673fff6cd6.mp3","אֵיפֹה הַכְּרוּב?":"audio/bc1948705a.mp3","מִי לֹא מַתְאִים?":"audio/3b9604ab63.mp3","אֵיפֹה יֵשׁ הַרְבֵּה לִימוֹנִים?":"audio/b40cfda45a.mp3","אֵיפֹה הַגֶּזֶר?":"audio/7f627db982.mp3","מִי הֲכִי גָּדוֹל?":"audio/55f31e749c.mp3","אֵיפֹה יֵשׁ הַרְבֵּה תַּפּוּזִים?":"audio/cee123aed3.mp3","מִי הֲכִי קָטָן?":"audio/9631855adf.mp3","אֵיפֹה יֵשׁ הַרְבֵּה כְּרוּבִים?":"audio/658d83c8ca.mp3","אֵיפֹה הַשֶּׁמֶשׁ?":"audio/2191b1b17e.mp3","אִסְפוּ אֶת הַכֹּל":"audio/6613d0a313.mp3","מַחְלִיקִים אֶת הָאֶצְבַּע עַל הַמָּבוֹךְ, אוֹ לוֹחֲצִים עַל הַחִצִּים":"audio/20aebb8dc3.mp3","מַתְחִילִים":"audio/7a0df9680d.mp3","לַשָּׁלָב הַבָּא":"audio/65f3082ec2.mp3","לְשַׂחֵק שׁוּב":"audio/6885c665ee.mp3","כָּל הַכָּבוֹד! אֲסַפְתֶּם הַכֹּל":"audio/ba82474a1e.mp3","בַּחֹרֶף גָּדֵל אֶצְלֵנוּ בָּאָרֶץ הַרְבֵּה פְּרִי הָדָר כְּמוֹ תַּפּוּז וְלִימוֹן":"audio/d41b5ae8a6.mp3","בַּגִּנָּה גְּדֵלִים גַּם גֶּזֶר, כְּרוּב וּכְרוּבִית":"audio/17497d985b.mp3","פֵּרוֹת וִירָקוֹת בְּכַמָּה צְבָעִים עוֹזְרִים לָנוּ לִגְדֹּל וְלִהְיוֹת בְּרִיאִים":"audio/21cbcaa12a.mp3","לוֹחֲצִים כְּדֵי לִקְפֹּץ":"audio/734bd12eaa.mp3","עוֹד פַּעַם":"audio/81b88a90a6.mp3","כָּל הַכָּבוֹד! סִיַּמְתֶּם אֶת כָּל הַשְּׁלָבִים":"audio/19522d7b89.mp3","תַּפּוּזִים":"audio/796e44d4d4.mp3","תַּפּוּז":"audio/dfcb730a1a.mp3","לִימוֹנִים":"audio/7d15cf0fda.mp3","לִימוֹן":"audio/52f71e42fc.mp3","גְּזָרִים":"audio/06049ea094.mp3","גֶּזֶר":"audio/edcc9be079.mp3","חֲצִילִים":"audio/8777fc167b.mp3","חָצִיל":"audio/e655d48e18.mp3","יְרָקוֹת בְּרִיאִים":"audio/cc7515e93d.mp3","תֶּרֶד":"audio/b5b9993863.mp3","מְלָפְפוֹן":"audio/f5e76f0413.mp3"};</script>
+<script>window.__ON="<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"#5F8DB5\" stroke-width=\"2.4\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M4 9v6h4l5 4V5L8 9H4z\" fill=\"#B7CDE0\"/><path d=\"M16.5 8.5a5 5 0 010 7M19 6a8.5 8.5 0 010 12\"/></svg>";window.__OFF="<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"#B8236B\" stroke-width=\"2.4\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M4 9v6h4l5 4V5L8 9H4z\" fill=\"#FDE1EA\"/><path d=\"M17 9l5 6M22 9l-5 6\"/></svg>";window.AUDIO={"אֵיפֹה הַתַּפּוּז?":"audio/25e0f6944c.mp3","אֵיפֹה הַלִּימוֹן?":"audio/07c991c23e.mp3","אֵיפֹה הַגֶּזֶר?":"audio/7f627db982.mp3","אֵיפֹה הַכְּרוּב?":"audio/bc1948705a.mp3","אֵיפֹה יֵשׁ הַרְבֵּה תַּפּוּזִים?":"audio/cee123aed3.mp3","מִי הֲכִי גָּדוֹל?":"audio/55f31e749c.mp3","מִי הֲכִי קָטָן?":"audio/9631855adf.mp3","מִי לֹא מַתְאִים?":"audio/3b9604ab63.mp3","אֵיפֹה יֵשׁ הַרְבֵּה לִימוֹנִים?":"audio/b40cfda45a.mp3","אֵיפֹה הַשֶּׁמֶשׁ?":"audio/2191b1b17e.mp3","אִסְפוּ אֶת הַכֹּל":"audio/6613d0a313.mp3","מַחְלִיקִים אֶת הָאֶצְבַּע עַל הַמָּבוֹךְ, אוֹ לוֹחֲצִים עַל הַחִצִּים":"audio/20aebb8dc3.mp3","מַתְחִילִים":"audio/7a0df9680d.mp3","לַשָּׁלָב הַבָּא":"audio/65f3082ec2.mp3","לְשַׂחֵק שׁוּב":"audio/6885c665ee.mp3","כָּל הַכָּבוֹד! אֲסַפְתֶּם הַכֹּל":"audio/ba82474a1e.mp3","לוֹחֲצִים כְּדֵי לִקְפֹּץ":"audio/734bd12eaa.mp3","עוֹד פַּעַם":"audio/81b88a90a6.mp3","כָּל הַכָּבוֹד! סִיַּמְתֶּם אֶת כָּל הַשְּׁלָבִים":"audio/19522d7b89.mp3","עַגְבָנִיָּה":"audio/06ea0d78a7.mp3","גֶּזֶר":"audio/edcc9be079.mp3","מְלָפְפוֹן":"audio/f5e76f0413.mp3","פִּלְפֵּל":"audio/20c9b76b21.mp3","תַּפּוּז":"audio/dfcb730a1a.mp3","כְּרוּבִית":"audio/af2217c1a8.mp3"};</script>
 <script>
 (function(){
 var muted=false;
@@ -89,8 +89,8 @@ var __HEN=null;try{fetch('../../play/assets/hen/index.json?v='+Date.now()).then(
 function __hk(t){t=(t||'').replace(/\s+/g,' ').trim();var h=2166136261;for(var i=0;i<t.length;i++){h^=t.charCodeAt(i);h=Math.imul(h,16777619)>>>0}return ('0000000'+h.toString(16)).slice(-8)}
 function __henSrc(t){if(!__HEN)return null;var k=__hk(t);return __HEN[k]?'../../play/assets/hen/'+k+'.mp3?v='+__HEN[k]:null}
 var cur=null;
-window.say=function(text){
- if(muted)return;var src=__henSrc(text)||(window.AUDIO||{})[text];if(!src)return;
+window.say=function(text,_n){
+ if(muted)return;/*חן 10.11.26: מחכים לרשימת ההקלטות של חן לפני שמשמיעים, כדי שלא יישמע קול ממוחשב במקום הקול שלה*/if(!__HEN&&(_n||0)<20){setTimeout(function(){window.say(text,(_n||0)+1)},150);return}var src=__henSrc(text)||(window.AUDIO||{})[text];if(!src)return;
  try{if(cur){cur.pause()}}catch(e){}
  try{cur=new Audio(src);var p=cur.play();if(p&&p.catch)p.catch(function(){})}catch(e){}
 };
@@ -121,7 +121,7 @@ document.addEventListener('touchmove',function(e){if(e.target.closest&&e.target.
 })();
 </script>
 <script>
-var CFG={"mode":"free","k":0,"minArea":0,"brush":0.034,"colors":[{"name":"ירוק","hex":"#6DBF73"},{"name":"חום","hex":"#A9744A"},{"name":"כתום","hex":"#F29B38"},{"name":"אדום","hex":"#E0584F"},{"name":"צהוב","hex":"#F2C94C"}]};
+var CFG={"mode":"free","k":0,"minArea":0,"brush":0.034,"colors":[{"name":"כתום","hex":"#F29B38"},{"name":"צהוב","hex":"#F2C94C"},{"name":"ירוק","hex":"#6DBF73"},{"name":"אדום","hex":"#E0584F"},{"name":"סגול","hex":"#8E6BBF"}]};
 var PALFREE=["#E0584F","#F29B38","#F2C94C","#9CCB5E","#4FB38C","#6FA8D6","#8E6BBF","#F59BB5","#A9744A","#3A2A20","#FFFFFF"];
 var BRUSH=CFG.brush;
 window.wireTop();

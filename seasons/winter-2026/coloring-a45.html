@@ -99,8 +99,8 @@ var __HEN=null;try{fetch('../../play/assets/hen/index.json?v='+Date.now()).then(
 function __hk(t){t=(t||'').replace(/\s+/g,' ').trim();var h=2166136261;for(var i=0;i<t.length;i++){h^=t.charCodeAt(i);h=Math.imul(h,16777619)>>>0}return ('0000000'+h.toString(16)).slice(-8)}
 function __henSrc(t){if(!__HEN)return null;var k=__hk(t);return __HEN[k]?'../../play/assets/hen/'+k+'.mp3?v='+__HEN[k]:null}
 var cur=null;
-window.say=function(text){
- if(muted)return;var src=__henSrc(text)||(window.AUDIO||{})[text];if(!src)return;
+window.say=function(text,_n){
+ if(muted)return;/*חן 10.11.26: מחכים לרשימת ההקלטות של חן לפני שמשמיעים, כדי שלא יישמע קול ממוחשב במקום הקול שלה*/if(!__HEN&&(_n||0)<20){setTimeout(function(){window.say(text,(_n||0)+1)},150);return}var src=__henSrc(text)||(window.AUDIO||{})[text];if(!src)return;
  try{if(cur){cur.pause()}}catch(e){}
  try{cur=new Audio(src);var p=cur.play();if(p&&p.catch)p.catch(function(){})}catch(e){}
 };

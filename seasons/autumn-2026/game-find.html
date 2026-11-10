@@ -109,8 +109,8 @@ var __HEN=null;try{fetch('../../play/assets/hen/index.json?v='+Date.now()).then(
 function __hk(t){t=(t||'').replace(/\s+/g,' ').trim();var h=2166136261;for(var i=0;i<t.length;i++){h^=t.charCodeAt(i);h=Math.imul(h,16777619)>>>0}return ('0000000'+h.toString(16)).slice(-8)}
 function __henSrc(t){if(!__HEN)return null;var k=__hk(t);return __HEN[k]?'../../play/assets/hen/'+k+'.mp3?v='+__HEN[k]:null}
 var cur=null;
-window.say=function(text){
- if(muted)return;var src=__henSrc(text)||(window.AUDIO||{})[text];if(!src)return;
+window.say=function(text,_n){
+ if(muted)return;/*חן 10.11.26: מחכים לרשימת ההקלטות של חן לפני שמשמיעים, כדי שלא יישמע קול ממוחשב במקום הקול שלה*/if(!__HEN&&(_n||0)<20){setTimeout(function(){window.say(text,(_n||0)+1)},150);return}var src=__henSrc(text)||(window.AUDIO||{})[text];if(!src)return;
  try{if(cur){cur.pause()}}catch(e){}
  try{cur=new Audio(src);var p=cur.play();if(p&&p.catch)p.catch(function(){})}catch(e){}
 };
@@ -152,7 +152,7 @@ function rep(a,n){var h='';for(var i=0;i<n;i++)h+=D.arts[a];return h}
 function render(){
   var r=D.rounds[order[idx]];var cards=[];
   var dots='';for(var i=0;i<order.length;i++)dots+='<i class="'+(i<=idx?'on':'')+'"></i>';$('dots').innerHTML=dots;
-  $('qtext').textContent=r.say;$('qspk').setAttribute('data-say',r.say);
+  $('qtext').textContent=r.say;$('qspk').setAttribute('data-say',r.say);/*חן 10.11.26: השאלה נשמעת לבד בקול של חן, מיד בתחילת המשחק ובכל שאלה*/clearTimeout(window.__aq);window.__aq=setTimeout(function(){window.say&&window.say(r.say)},450);
   if(r.kind==='big'||r.kind==='small'){
     var a=D.arts[r.art];
     cards=['<button class="opt big" data-ok="'+(r.kind==='big'?1:0)+'">'+a+'</button>','<button class="opt small" data-ok="'+(r.kind==='small'?1:0)+'">'+a+'</button>'];
