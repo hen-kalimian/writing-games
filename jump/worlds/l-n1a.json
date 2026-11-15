@@ -1,0 +1,80 @@
+{
+ "title": "הַטִּפָּה בַּגֶּשֶׁם",
+ "intro": "אוֹסְפִים רַק אֶת הַסִּפְרָה שֶׁשּׁוֹמְעִים",
+ "hero": "drop",
+ "heroFlip": false,
+ "sky": [
+  "#B9C8D8",
+  "#E8EEF4"
+ ],
+ "ground": [
+  "#8DBF97",
+  "#C9D3C4"
+ ],
+ "hazard": "water",
+ "bubble": "#DDF1FB",
+ "decor": [
+  "umbrella-blue",
+  "boot-red",
+  "umbrella-red",
+  "umbrella-pink"
+ ],
+ "hills": [
+  "#A8BCCB",
+  "#94AABB"
+ ],
+ "clouds": "cloud-rain",
+ "cloudN": 5,
+ "weather": "rain",
+ "sun": false,
+ "names": "num",
+ "done": "כָּל הַכָּבוֹד! סִיַּמְתֶּם אֶת כָּל הַשְּׁלָבִים",
+ "levels": [
+  {
+   "goal": "אִסְפוּ רַק אֶת הַסִּפְרָה 0",
+   "goalSay": [
+    "אִסְפוּ רַק אֶת הַסִּפְרָה",
+    "אֶפֶס"
+   ],
+   "show": [
+    "0"
+   ],
+   "good": [
+    "0"
+   ],
+   "bad": [
+    "1",
+    "7",
+    "8",
+    "9"
+   ],
+   "count": 5,
+   "bads": 3,
+   "pits": 2,
+   "stairs": 1
+  },
+  {
+   "goal": "אִסְפוּ רַק אֶת הַסִּפְרָה 1",
+   "goalSay": [
+    "אִסְפוּ רַק אֶת הַסִּפְרָה",
+    "אַחַת"
+   ],
+   "show": [
+    "1"
+   ],
+   "good": [
+    "1"
+   ],
+   "bad": [
+    "0",
+    "7",
+    "8",
+    "9"
+   ],
+   "count": 5,
+   "bads": 4,
+   "pits": 2,
+   "stairs": 1
+  }
+ ]
+}
