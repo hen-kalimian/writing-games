@@ -121,8 +121,8 @@ document.addEventListener('touchmove',function(e){if(e.target.closest&&e.target.
 })();
 </script>
 <script>
-var CFG={"mode":"numbers","k":5,"minArea":1500,"brush":0.022,"colors":[{"name":"כחול","hex":"#6FA8D6"},{"name":"תכלת","hex":"#8ECAE6"},{"name":"אפור","hex":"#B5B5B5"},{"name":"צהוב","hex":"#F2C94C"},{"name":"אדום","hex":"#E0584F"}]};
-var PALFREE=["#E0584F","#F29B38","#F2C94C","#9CCB5E","#4FB38C","#6FA8D6","#8E6BBF","#F59BB5","#A9744A","#3A2A20","#FFFFFF"];
+var CFG={"mode":"numbers","k":8,"minArea":1500,"brush":0.022,"colors":[{"name":"כחול","hex":"#2F80ED"},{"name":"צהוב","hex":"#FFD93B"},{"name":"ירוק","hex":"#3FAE49"},{"name":"אדום","hex":"#E53935"},{"name":"כתום","hex":"#FF8A1F"},{"name":"תכלת","hex":"#8ECAE6"},{"name":"אפור","hex":"#B5B5B5"},{"name":"ורוד","hex":"#F59BB5"}]};
+var PALFREE=["#E53935","#FF8A1F","#FFD93B","#3FAE49","#9CCB5E","#2F80ED","#8EC9F0","#8E6BBF","#F59BB5","#A9744A","#3A2A20","#FFFFFF"];
 var BRUSH=CFG.brush;
 window.wireTop();
 var PAL=CFG.mode==='free'?PALFREE:CFG.colors.slice(0,CFG.k).map(function(c){return c.hex}).concat(['#FFFFFF']);
