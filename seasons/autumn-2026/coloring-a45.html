@@ -262,13 +262,28 @@ function move(e){
   lx=p[0];ly=p[1];schedule();
   var n=Date.now();if(n-lastSnd>180){lastSnd=n;window.SFX.step()}
 }
-function up(){drawing=false}
+/*חן 15.11.26: ב-90% צבוע, שאר הציור מתמלא לבד בצבעי האזורים וחוגגים, כמו בשאר המשחקים*/
+var finished=false;
+function coverage(){var d=paint.data,tot=0,on=0;for(var i=0;i<W*H;i++){if(label[i]){tot++;if(d[i*4+3])on++}}return tot?on/tot:0}
+function autoFinish(){
+  var d=paint.data,tally={},best={};
+  for(var i=0;i<W*H;i++){var r=label[i];if(!r||!d[i*4+3])continue;var k=d[i*4]+','+d[i*4+1]+','+d[i*4+2];var t=tally[r]||(tally[r]={});t[k]=(t[k]||0)+1;if(!best[r]||t[k]>t[best[r]])best[r]=k}
+  var fb=PAL.filter(function(c){return c!=='#FFFFFF'});
+  for(var j=0;j<W*H;j++){
+    var g=label[j];if(!g||d[j*4+3])continue;
+    var c=best[g]?best[g].split(',').map(Number):hex(fb[g%fb.length]);
+    var o=j*4;d[o]=c[0];d[o+1]=c[1];d[o+2]=c[2];d[o+3]=255;
+  }
+  render();
+  try{window.SFX.fan();window.SFX.cheer();window.WGEnd&&window.WGEnd();window.confetti(260);setTimeout(function(){window.confetti(160)},700)}catch(x){}
+}
+function up(){var was=drawing;drawing=false;if(was&&ready&&!finished&&coverage()>=.9){finished=true;autoFinish()}}
 cv.addEventListener('pointerdown',function(e){e.preventDefault();down(e)});
 cv.addEventListener('pointermove',function(e){if(drawing){e.preventDefault();move(e)}});
 cv.addEventListener('pointerup',up);cv.addEventListener('pointercancel',up);cv.addEventListener('pointerleave',up);
 cv.addEventListener('touchstart',function(e){e.preventDefault()},{passive:false});
 cv.addEventListener('touchmove',function(e){e.preventDefault()},{passive:false});
-function clearAll(){if(!ready)return;paint.data.fill(0);render()}
+function clearAll(){if(!ready)return;finished=false;paint.data.fill(0);render()}
 var lastC=0;
 function clr(){var n=Date.now();if(n-lastC<400)return;lastC=n;clearAll()}
 document.getElementById('clear').addEventListener('pointerup',clr);document.getElementById('clear').addEventListener('click',clr);
