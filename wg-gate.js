@@ -5,6 +5,8 @@
   var H = location.hostname;
   var qs = new URLSearchParams(location.search);
   if (/^(localhost|127\.0\.0\.1)$/.test(H) && !qs.has('wgtest')) return;
+  /* משחקי דוגמה ציבוריים (חן, 15.11.26): נפתחים לכולן בלי התחברות, כדי לשלוח ללקוחות. להוסיף כאן עוד מזהי משחק לפי בקשה */
+  if (/\/games\/(g4yir)\//.test(location.pathname) && !qs.has('wgtest')) return;
   var okHost = function (h) { return h === H || /^(localhost|127\.0\.0\.1)$/.test(h) || /(^|\.)talkwithkids\.co\.il$/.test(h) || /(^|\.)(wixusercontent\.com|filesusr\.com|usrfiles\.com|wix\.com|wixsite\.com|editorx\.io|wixstudio\.com)$/.test(h) };
   var ok = false;
   try { ok = sessionStorage.getItem('wgok') === '1' } catch (e) {}
