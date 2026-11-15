@@ -152,13 +152,13 @@ async function save() {
     const audio = await b64(tk.blob); if (audio.length > 2400000) throw new Error('long');
     const c = await client();
     // הקלטה ארוכה נשמרת בכמה שורות (מגבלת גודל לשורה). כל חלק מתחיל במכפלה של 4 כדי שאפשר יהיה לפענח כל חלק לבד
-    const CH = 380000, n = Math.ceil(audio.length / CH), take = Date.now().toString(36);
+    const CH = 380000, n = Math.ceil(audio.length / CH), takeId = Date.now().toString(36);
     for (let i = 0; i < n; i++) {
       if (n > 1) setSt('שומרת... חלק ' + (i + 1) + ' מתוך ' + n);
-      for (let tr = 0; ; tr++) { try { await c.items.insert(COL, { title: secret, itemId: id, k: id, text: 'vid off=' + tk.off.toFixed(3) + ' take=' + take + ' part=' + (i + 1) + '/' + n, mime: tk.blob.type, audio: audio.slice(i * CH, (i + 1) * CH), synced: false }); break; } catch (er) { if (tr >= 2) throw er; setSt('מנסה לשמור שוב...'); await new Promise(r => setTimeout(r, 1500)); } }
+      for (let tr = 0; ; tr++) { try { await c.items.insert(COL, { title: secret, itemId: id, k: id, text: 'vid off=' + tk.off.toFixed(3) + ' take=' + takeId + ' part=' + (i + 1) + '/' + n, mime: tk.blob.type, audio: audio.slice(i * CH, (i + 1) * CH), synced: false }); break; } catch (er) { if (tr >= 2) throw er; setSt('מנסה לשמור שוב...'); await new Promise(r => setTimeout(r, 1500)); } }
     }
     sent[id] = Date.now(); store.set(SENT, sent); take = null; setSt('נשמר. כל הכבוד!', 'ok'); controls('saved'); home();
-  } catch (e) { setSt(e.message === 'long' ? 'ההקלטה ארוכה מדי לשמירה' : 'השמירה לא הצליחה. בדקי שיש אינטרנט ולחצי "שמירה עכשיו"', 'err'); controls('done'); }
+  } catch (e) { console.error('save failed', e && (e.message || JSON.stringify(e)), e && e.details ? JSON.stringify(e.details) : ''); setSt(e.message === 'long' ? 'ההקלטה ארוכה מדי לשמירה' : 'השמירה לא הצליחה. בדקי שיש אינטרנט ולחצי "שמירה עכשיו"', 'err'); controls('done'); }
 }
 document.addEventListener('click', async e => {
   const id = e.target.id; if (!id) return;
