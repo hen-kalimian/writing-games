@@ -140,7 +140,7 @@ $('ico').innerHTML=D.arts.item;$('ico').firstChild.setAttribute('width','26');
 var cv=$('cv'),cx=cv.getContext('2d');
 var L=0,cols,rows,cell,grid,items,left,pl,clouds,tick=0,anim=null,running=false,startCell;
 var imgs={};
-function loadImg(key,svg){return new Promise(function(res){var im=new Image();im.onload=function(){imgs[key]=im;res()};im.src='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(svg.replace('<svg ','<svg width="100" height="100" '))})}
+function loadImg(key,svg){return new Promise(function(res){var im=new Image();im.onload=function(){imgs[key]=im;res()};im.src='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(svg.replace('<svg ','<svg width="512" height="512" ')/*חן 15.11.26: איורים חדים, לא מפוקסלים*/)})}
 Promise.all([loadImg('player',D.arts.player),loadImg('item',D.arts.item),loadImg('enemy',D.arts.enemy)]).then(function(){ready=true});
 var ready=false;
 var seed=7;function rnd(){seed=(seed*16807)%2147483647;return (seed-1)/2147483646}
@@ -164,7 +164,7 @@ function genMaze(c,r){
 function size(){
   var b=$('board').getBoundingClientRect();var w=b.width,h=b.height;
   cell=Math.floor(Math.min(w/cols,h/rows));if(cell<10)cell=10;
-  cv.width=cell*cols;cv.height=cell*rows;cv.style.width=cv.width+'px';cv.style.height=cv.height+'px';
+  var dpr=Math.min(3,window.devicePixelRatio||1);cv.width=Math.round(cell*cols*dpr);cv.height=Math.round(cell*rows*dpr);cv.style.width=(cell*cols)+'px';cv.style.height=(cell*rows)+'px';cx.setTransform(dpr,0,0,dpr,0,0);cx.imageSmoothingEnabled=true;cx.imageSmoothingQuality='high';
 }
 function setLevel(n){
   L=n;var lv=D.levels[L];cols=lv.cols;rows=lv.rows;seed=11+L*37+Math.floor(Math.random()*50);
@@ -220,7 +220,7 @@ function draw(){
   /*חן 15.11.26: פריט בהיר (רוח, ענן) על רקע לבן לא נראה. מאחורי כל פריט ודמות עיגול צבעוני רך עם מסגרת*/
   function disc(cxp,cyp,r,fill,ring){cx.beginPath();cx.arc(cxp,cyp,r,0,6.2832);cx.fillStyle=fill;cx.fill();cx.lineWidth=Math.max(2,cell*.06);cx.strokeStyle=ring;cx.stroke()}
   for(var k in items){var p=k.split(',');var ix0=p[0]*cell+(cell-s*.7)/2,iy0=p[1]*cell+(cell-s*.7)/2;disc(ix0+s*.35,iy0+s*.35,s*.44,'#CFE8F7','#6FA8D6');cx.drawImage(imgs.item,ix0,iy0,s*.7,s*.7)}
-  clouds.forEach(function(c){c.px+=(c.x-c.px)*.25;c.py+=(c.y-c.py)*.25;disc(c.px*cell+cell*.5,c.py*cell+cell*.5,cell*.42,'#FBD9D6','#EF406E');cx.drawImage(imgs.enemy,c.px*cell+cell*.1,c.py*cell+cell*.1,cell*.8,cell*.8)});
+  clouds.forEach(function(c){c.px+=(c.x-c.px)*.25;c.py+=(c.y-c.py)*.25;disc(c.px*cell+cell*.5,c.py*cell+cell*.5,cell*.46,'#FFF7F8','#EF406E');cx.save();cx.filter='saturate(3) brightness(.8) contrast(1.2)';cx.drawImage(imgs.enemy,c.px*cell+cell*.04,c.py*cell+cell*.04,cell*.92,cell*.92);cx.restore()/*חן 15.11.26: לא הבינו שזו רוח. רקע בהיר, איור גדול וקווים בולטים*/});
   pl.px+=(pl.x-pl.px)*.35;pl.py+=(pl.y-pl.py)*.35;
   if(flash>0){flash--;if(flash%2)cx.globalAlpha=.35}
   cx.save();if(pl.f<0){cx.translate(pl.px*cell+cell*.94,pl.py*cell+cell*.06);cx.scale(-1,1);cx.drawImage(imgs.player,0,0,cell*.88,cell*.88)}else{cx.drawImage(imgs.player,pl.px*cell+cell*.06,pl.py*cell+cell*.06,cell*.88,cell*.88)}cx.restore();cx.globalAlpha=1;

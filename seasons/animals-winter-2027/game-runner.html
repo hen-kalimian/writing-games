@@ -63,7 +63,7 @@ h1 b{color:#EF406E;font-weight:900}
  <div class="top"><span class="brand">חן קלימיאן - לדבר עם ילדים</span><span class="icos"><button class="ico" id="mute" aria-label="השתקה"></button><button class="ico" id="full" aria-label="מסך מלא"><svg viewBox="0 0 24 24" fill="none" stroke="#5F8DB5" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg></button></span></div>
  <div class="hud"><span class="goal" id="goal"></span><span class="hearts" id="hearts"></span></div>
  <div class="prog" id="prog"></div>
- <div id="stage" class="noscroll"><canvas id="cv" width="800" height="500"></canvas><div class="pop" id="pop"><span id="popPic"></span><b id="popWord"></b></div></div>
+ <div id="stage" class="noscroll"><canvas id="cv" width="1600" height="1000"></canvas><div class="pop" id="pop"><span id="popPic"></span><b id="popWord"></b></div></div>
  <div class="overlay" id="intro"><div class="card"><div class="pic" id="introPic"></div><h2>הַחֲסִידָה בְּדֶרֶךְ לְיִשְׂרָאֵל</h2><p>לוֹחֲצִים כְּדֵי לִקְפֹּץ <button class="spk" type="button" data-say="לוֹחֲצִים כְּדֵי לִקְפֹּץ" aria-label="להשמיע"><svg viewBox="0 0 24 24" fill="none" stroke="#5F8DB5" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9v6h4l5 4V5L8 9H4z" fill="#B7CDE0"/><path d="M16.5 8.5a5 5 0 010 7M19 6a8.5 8.5 0 010 12"/></svg></button></p><button class="btn" id="go">מַתְחִילִים</button></div></div>
  <div class="overlay hidden" id="lvl"><div class="card"><div class="pic" id="lvlPic"></div><h2 id="lvlTitle"></h2><p><span id="lvlText"></span> <button class="spk hidden" id="lvlSpk" type="button" data-say="" aria-label="להשמיע"><svg viewBox="0 0 24 24" fill="none" stroke="#5F8DB5" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9v6h4l5 4V5L8 9H4z" fill="#B7CDE0"/><path d="M16.5 8.5a5 5 0 010 7M19 6a8.5 8.5 0 010 12"/></svg></button></p><button class="btn" id="lvlBtn"></button></div></div>
 </div>
@@ -134,9 +134,9 @@ var D={"levels":[{"goal":"טִפּוֹת גֶּשֶׁם","need":4,"targets":[{"a
 var $=function(i){return document.getElementById(i)};
 window.wireTop();
 $('introPic').innerHTML=D.arts.player;
-var cv=$('cv'),cx=cv.getContext('2d'),W=800,H=500,GROUND=420;
+var cv=$('cv'),cx=(function(){var c=cv.getContext('2d');c.scale(2,2);c.imageSmoothingQuality='high';return c})(),W=800,H=500,GROUND=420;
 var imgs={},ready=false,total=0,loaded=0;
-Object.keys(D.arts).forEach(function(k){total++;var im=new Image();im.onload=function(){imgs[k]=im;loaded++;if(loaded===total)ready=true};im.src='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(D.arts[k].replace('<svg ','<svg width="100" height="100" '))});
+Object.keys(D.arts).forEach(function(k){total++;var im=new Image();im.onload=function(){imgs[k]=im;loaded++;if(loaded===total)ready=true};im.src='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(D.arts[k].replace('<svg ','<svg width="512" height="512" ')/*חן 15.11.26: איורים חדים*/)});
 var L=0,state='idle',hero,objs,puddles,got,hearts,t,speed,spawnT,fallers=[],lock=0,lvl;
 function reset(){
   lvl=D.levels[L];speed=lvl.speed;got=0;hearts=3;t=0;spawnT=0;objs=[];puddles=[];lock=0;
