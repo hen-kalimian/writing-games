@@ -14,7 +14,7 @@ h1{margin:0;font:800 24px Rubik,Arial}h1 span{color:var(--pink)}
 .sub{color:var(--muted);margin:6px auto 0;max-width:560px;font-size:15px}
 .back{display:inline-block;margin:10px 0 0;color:#b8236b;font-weight:700;text-decoration:none}
 h2{font:700 17px Rubik,Arial;margin:22px 0 8px;color:#b8236b}
-.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;max-width:640px;margin:0 auto}
+.grid{display:grid;grid-template-columns:1fr;gap:10px;max-width:640px;margin:0 auto}
 .tile{background:#fff;border:2px solid var(--pink-line);border-radius:18px;padding:12px;text-align:center;cursor:pointer;font:inherit;color:inherit;position:relative}
 .tile b{display:block;font-size:16px}.tile small{color:var(--muted)}
 .tile.done{background:#effaf5;border-color:var(--mint)}.tile.done::after{content:"✓ הוקלט";position:absolute;top:6px;inset-inline-start:8px;font-size:12px;color:var(--mint-deep);font-weight:700}
@@ -73,8 +73,8 @@ async function load() {
 function home() {
   $('main').innerHTML = signs.map(s => {
     const sc = data[s.code].scenes, g = st => sc.filter(x => x.stage === st);
-    const tiles = list => '<div class="grid">' + list.map(x => `<button class="tile ${sent[x.id] ? 'done' : ''}" data-id="${x.id}"><b>${x.title.replace(/^שלב \d: /, '')}</b><small>${Math.round(x.dur)} שניות</small></button>`).join('') + '</div>';
-    return `<h2>${s.name}</h2><h2 style="margin-top:6px">שלב 1: הברות (מילה אחרי מילה)</h2>${tiles(g(1))}<h2>שלב 2: פירמידות</h2>${tiles(g(2))}`;
+    const tiles = list => '<div class="grid">' + list.map(x => `<button class="tile ${sent[x.id] ? 'done' : ''}" data-id="${x.id}"><b>${x.title}</b><small>כ-${Math.round(x.dur)} שניות ברצף</small></button>`).join('') + '</div>';
+    return `<h2>${s.name}</h2>${tiles(sc)}`;
   }).join('');
 }
 document.addEventListener('click', e => { const t = e.target.closest('.tile'); if (t) openScene(t.dataset.id); });
@@ -149,9 +149,14 @@ async function client() {
 async function save() {
   if (!take) return; clearInterval(autoT); const tk = take, id = cur.id; setSt('שומרת...');
   try {
-    const audio = await b64(tk.blob); if (audio.length > 480000) throw new Error('long');
+    const audio = await b64(tk.blob); if (audio.length > 2400000) throw new Error('long');
     const c = await client();
-    for (let tr = 0; ; tr++) { try { await c.items.insert(COL, { title: secret, itemId: id, k: id, text: 'vid off=' + tk.off.toFixed(3), mime: tk.blob.type, audio, synced: false }); break; } catch (er) { if (tr >= 2) throw er; setSt('מנסה לשמור שוב...'); await new Promise(r => setTimeout(r, 1500)); } }
+    // הקלטה ארוכה נשמרת בכמה שורות (מגבלת גודל לשורה). כל חלק מתחיל במכפלה של 4 כדי שאפשר יהיה לפענח כל חלק לבד
+    const CH = 380000, n = Math.ceil(audio.length / CH), take = Date.now().toString(36);
+    for (let i = 0; i < n; i++) {
+      if (n > 1) setSt('שומרת... חלק ' + (i + 1) + ' מתוך ' + n);
+      for (let tr = 0; ; tr++) { try { await c.items.insert(COL, { title: secret, itemId: id, k: id, text: 'vid off=' + tk.off.toFixed(3) + ' take=' + take + ' part=' + (i + 1) + '/' + n, mime: tk.blob.type, audio: audio.slice(i * CH, (i + 1) * CH), synced: false }); break; } catch (er) { if (tr >= 2) throw er; setSt('מנסה לשמור שוב...'); await new Promise(r => setTimeout(r, 1500)); } }
+    }
     sent[id] = Date.now(); store.set(SENT, sent); take = null; setSt('נשמר. כל הכבוד!', 'ok'); controls('saved'); home();
   } catch (e) { setSt(e.message === 'long' ? 'ההקלטה ארוכה מדי לשמירה' : 'השמירה לא הצליחה. בדקי שיש אינטרנט ולחצי "שמירה עכשיו"', 'err'); controls('done'); }
 }
