@@ -92,7 +92,7 @@ function buildTrack(){ segs=[];
   for(var i=20;i<segs.length;i+=4){ var side=i%8?1:-1; segs[i].sp.push({k:W.props[Math.floor(Math.random()*W.props.length)],off:side*(1.45+Math.random()*1.1)});
     if(Math.random()<.5) segs[i+2]&&segs[i+2].sp.push({k:W.props[Math.floor(Math.random()*W.props.length)],off:-side*(1.5+Math.random()*1.2)}) } }
 /* ---------- מצב המשחק ---------- */
-var pos=0, speed=0, MAXS=2600, laneI=1, px=0, need=10, got=0, time=60, state='intro', clock=0, slow=0, shake=0, finishAt=-1, nextSpawn=0, carCol='#EF406E', car=null, last10=-1, parts=[];
+/*__SLOW15 (חן, 15.11.26: "קושי להעביר את הרכב למקום המתאים", "להאט בכל התבניות"): יותר זמן לעבור נתיב*/var pos=0, speed=0, MAXS=1900, laneI=1, px=0, need=10, got=0, time=60, state='intro', clock=0, slow=0, shake=0, finishAt=-1, nextSpawn=0, carCol='#EF406E', car=null, last10=-1, parts=[];
 function spawnRow(){ // שורה חדשה לפני הנהג: צליל נכון, צליל אחר או משלוח, בנתיבים שונים
   var si=Math.floor((pos+SEG*70)/SEG), s=segs[si]; if(!s||finishAt>=0) return;
   var lanes=[0,1,2].sort(function(){return Math.random()-.5}), r=Math.random();
