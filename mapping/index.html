@@ -1732,7 +1732,7 @@ function sigBlock(m) {
 }
 function sigCard(m) {
   ensureSig(m);
-  return `<div class="card noprint sigcard"><h2>חתימת הבודקת</h2><p class="note">כותבות כאן את השם המלא בכתב יד, ומתחתיו חותמות. הם ייכנסו לדוח.</p><div class="sigpads">${pad('sg.n', 220, 'שם מלא בכתב יד')}${pad('sg.s', 220, 'חתימה')}</div><div class="row"><button class="btn solid" type="button" data-act="sigDone">הוספה לדוח</button></div></div>`;
+  return `<div class="card noprint sigcard"><h2>חתימת הבודקת</h2><p class="note">כותבות כאן את השם המלא בכתב יד, ומתחתיו חותמות. הם ייכנסו לדוח.</p><div class="sigpads">${pad('sg.n', 220, 'שם מלא בכתב יד')}${pad('sg.s', 220, 'חתימה')}</div><div class="row"><button class="btn solid" type="button" data-act="wzSigDone">הוספה לדוח</button></div></div>`;
 }
 function padOut(m, path, h, label) {
   const pm = (m.pm && m.pm[path]) || {}, mode = pm.mode || 'draw';
@@ -2040,7 +2040,7 @@ function wzAct(a, b, m) {
   else if (a === 'wzBd') { ensureKb(m); if (m.bd.rows.length < 3 && !m.bd.rows.some(r => r.k === b.dataset.k)) { m.bd.rows.push({ k: b.dataset.k, ok: 0, note: '' }); keep(() => {}); } }
   else if (a === 'wzBdOk') { const r = m.bd.rows[+b.dataset.i]; keep(() => { r.ok = r.ok ? 0 : 1; }); }
   else if (a === 'wzBdRm') { const i = +b.dataset.i; keep(() => { m.bd.rows.splice(i, 1); m.bd.d.splice(i, 1); m.bd.d.push([]); }); }
-  else if (a === 'sigDone') { touch(m, 'map:' + m.id); renderMap(); toast('החתימה נוספה לדוח'); }
+  else if (a === 'wzSigDone') { touch(m, 'map:' + m.id); renderMap(); toast('החתימה נוספה לדוח'); }
   else if (a === 'wzShow') { window.__thinkT = true; m.wz.on = true; m.wz.phase = 'think'; touch(m, 'map:' + m.id); renderMap(); window.scrollTo(0, 0); setTimeout(() => { window.__thinkT = false; if (curMap() === m && m.wz.phase === 'think') { m.wz.phase = 'sum'; m.completed = true; touch(m, 'map:' + m.id); renderMap(); window.scrollTo(0, 0); } }, 2300); }
   else if (a === 'wzEdit') { m.wz.phase = null; m.wz.step = IDX(m, 'fin'); touch(m, 'map:' + m.id); renderMap(); window.scrollTo(0, 0); }
   else if (a === 'wzDone') { m.wz.on = false; m.wz.phase = null; touch(m, 'map:' + m.id); renderMap(); window.scrollTo(0, 0); }
