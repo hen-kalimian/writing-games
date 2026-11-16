@@ -567,6 +567,49 @@ body.pal .gt.done{background:#c9efdc;border-color:#7fcfb0;color:#1f6b4a}
 }
 
 .btn.erb.on{background:#ffe3a8;border-color:#e0a82e;color:#6b4300;box-shadow:0 0 0 3px #fff3c9}
+
+.sigpads .modes,.sigpads .wrhint,.sigpads .fsx,.sigpads [data-act=padfs]{display:none!important}
+.sigpads{display:grid;grid-template-columns:1fr 1fr;gap:12px}@media(max-width:700px){.sigpads{grid-template-columns:1fr}}
+.sig2{display:flex;gap:18px;align-items:flex-end;justify-content:space-between;margin-top:14px}.sig2 .sg{flex:1;display:flex;flex-direction:column;gap:2px;border-bottom:1.5px solid #888;padding-bottom:2px}.sig2 .sg img,.sig2 .sg canvas,.sig2 .sg svg{max-height:90px;max-width:100%;height:auto;width:auto}.sig2 .lbl{font-size:.75rem;color:#555}
+
+/* 16.11.26: כספת מונפשת: מרחוק, התקרבות, הקשת קוד על הדלת, התרחקות, פתיחה, מתנה, כפיים וקונפטי */
+.vstage{padding:10px 12px!important}
+.vstage h2{margin:4px 0;font-size:1.3rem}.vstage .vault-got{display:flex;align-items:center;gap:8px;justify-content:center;flex-wrap:wrap;margin:2px 0}.vstage .vault-got b{font-size:.85rem}.vstage .vault-got .vbox{width:34px;height:38px;font-size:1.2rem}.vstage .vnote{margin:2px 0 6px;font-size:.85rem}
+.vscene{--S:min(clamp(260px,calc(100vh - 330px),620px),92vw);position:relative;width:min(100%,var(--S));height:var(--S);margin:0 auto;overflow:hidden;border-radius:26px;background:radial-gradient(circle at 50% 38%,#fff 0%,#fdeef3 48%,#e8f7f0 100%);border:2px solid #fbd5e1}
+.vcam{position:absolute;left:50%;top:50%;width:var(--S);height:var(--S);transform-origin:49.25% 50.75%;perspective:1100px;--k:1.5;transform:translate(-49.25%,-50.75%) scale(var(--k))}
+.vcam.final{--k:.84}.vcam.near{--k:1.5}
+.vcam img.vbody,.vcam img.vdoorimg{position:absolute;inset:0;width:100%;height:100%;display:block;pointer-events:none}
+.vint{position:absolute;inset:0;clip-path:circle(31% at 49.25% 50.75%);background:radial-gradient(circle at 50% 60%,#fffbe8 0%,#ffe9b5 42%,#fbc5d6 100%);box-shadow:inset 0 0 40px rgba(239,64,110,.25)}
+.vdoor{position:absolute;inset:0;clip-path:circle(31.6% at 49.25% 50.75%);transform-origin:17.75% 50%;backface-visibility:hidden}
+.vcam.final .vdoor{transform:rotateY(78deg)}
+.vgift{position:absolute;left:49.25%;top:50.75%;width:31%;height:auto;transform:translate(-50%,-50%) scale(.2);opacity:0}
+.vcam.final .vgift{transform:translate(-50%,-122%) scale(1.12);opacity:1}
+.vpanel{position:absolute;left:29%;top:40%;width:41%;height:37%;container-type:size;display:flex;flex-direction:column;gap:2.5cqh;padding:3cqh 4cqw;box-sizing:border-box;background:rgba(255,255,255,.62);backdrop-filter:blur(4px);border:2px solid #fbc5d6;border-radius:14px}
+.vslots{display:flex;gap:3cqw;justify-content:center;height:17cqh}
+.vslot{flex:1;max-width:19cqw;border:2px solid #fbc5d6;border-radius:8px;background:#fff;display:grid;place-items:center;font:800 13cqh Rubik,Arial,sans-serif;color:#b8236b}.vslot.on{background:#fde1ea}
+.vkeys{flex:1;display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(4,1fr);gap:2cqh 3cqw;min-height:0}
+.vkeys .vk{border:2px solid #fbc5d6;background:#fff;border-radius:9px;font:800 11cqh Rubik,Arial,sans-serif;color:#b8236b;padding:0;cursor:pointer;display:grid;place-items:center;height:auto}
+.vkeys .vk:active{background:#fde1ea}.vkeys .vk.go{background:#EF406E;border-color:#EF406E;color:#fff}.vkeys .vk.del{background:#e8f7f0;border-color:#9fe3c8;color:#2a7f62}
+.vscene.bad .vslots{animation:shake .4s}
+.vscene .confetti{opacity:0;z-index:5}
+@keyframes vzoom{from{transform:translate(-49.25%,-50.75%) scale(.3)}to{transform:translate(-49.25%,-50.75%) scale(1.5)}}
+.vcam.zoomin{animation:vzoom 2.4s cubic-bezier(.55,.05,.25,1) both}
+.vcam.zoomin .vpanel{animation:vshow .5s 2s both}
+@keyframes vshow{from{opacity:0}to{opacity:1}}
+@keyframes vback{from{transform:translate(-49.25%,-50.75%) scale(1.5)}to{transform:translate(-49.25%,-50.75%) scale(.84)}}
+.vcam.playing{animation:vback 1.9s .15s ease-in-out both}
+@keyframes vopen{from{transform:rotateY(0)}to{transform:rotateY(78deg)}}
+.vcam.playing .vdoor{animation:vopen 1.5s .6s ease-in-out both}
+@keyframes vgift{0%{transform:translate(-50%,-50%) scale(.2);opacity:0}25%{opacity:1}65%{transform:translate(-50%,-150%) scale(1.25)}100%{transform:translate(-50%,-122%) scale(1.12);opacity:1}}
+.vcam.playing .vgift{animation:vgift 1.5s 1.9s cubic-bezier(.3,1.3,.5,1) both}
+.vcam.playing .confetti{animation:vshow .01s 1.9s forwards}.vcam.final .confetti{opacity:0}
+@keyframes vwin{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.vstage.open .vwin{animation:vwin .6s 3.2s both}
+.kidbar{display:flex;align-items:center;gap:12px;padding:7px 14px;background:linear-gradient(90deg,#fff 0%,#fdeef3 100%);border-bottom:1.5px solid var(--line)}
+.kbtrack{flex:1;height:16px;border-radius:12px;background:#f3e3ea;overflow:hidden;box-shadow:inset 0 1px 3px rgba(0,0,0,.1)}.kbfill{height:100%;border-radius:12px;background:linear-gradient(90deg,#fbc5d6,#EF406E);transition:width .5s}
+.kbstars{display:flex;gap:4px;direction:ltr}.kbs{font-size:1.5rem;color:#e6b9c8;line-height:1}.kbs.on{color:#f5b301;text-shadow:0 0 6px #ffe08a}
+.exbox{background:#fff;border:2px solid #fbc5d6;border-radius:18px;padding:10px 16px;text-align:center}.exh{font:800 .8rem Rubik,Arial;color:#B8236B;letter-spacing:.02em}.exq{font:700 1.15rem/1.45 Rubik,Arial,sans-serif;color:#2b3138;margin:2px 0}.exn{font-size:.82rem;color:#5b6670;background:#fdeef3;border-radius:10px;padding:5px 10px;margin-top:6px}
+@media(max-height:760px){.exbox{padding:6px 12px}.exq{font-size:1rem}.exn{font-size:.75rem;padding:3px 8px}.kidbar{padding:4px 12px}.kbtrack{height:12px}.kbs{font-size:1.2rem}.vscene{--S:min(clamp(240px,calc(100vh - 380px),620px),92vw)}}
 </style>
 </head>
 <body class="pal">
@@ -574,15 +617,15 @@ body.pal .gt.done{background:#c9efdc;border-color:#7fcfb0;color:#1f6b4a}
   <header class="top noprint">
     <div>
       <h1 id="pageTitle">מיפוי בזמן אמת</h1>
-      <div class="note" id="pageSub">מיפוי בשיטת קוראים בקלות: לילדי גן חובה ולילדי כיתות א׳-ב׳</div>
+      <div class="note" id="pageSub">מיפוי בשיטת קוראים בקלות: מגן חובה ועד אמצע כיתה א׳, ומסוף כיתה א׳ ועד כיתה ג׳</div>
     </div>
     <div class="acct" id="acct"></div>
     <img class="toplogo" src="img/logo.png" alt="חן קלימיאן - לדבר עם ילדים">
   </header>
   <nav class="tabs noprint" role="tablist">
     <button type="button" class="tab" role="tab" id="tabStart" data-tab="start">מיפוי חדש</button>
-    <button type="button" class="tab" role="tab" id="tabMap" data-tab="map">מיפויי גן חובה</button>
-    <button type="button" class="tab" role="tab" id="tabKb" data-tab="kb">מיפויי א׳-ב׳</button>
+    <button type="button" class="tab" role="tab" id="tabMap" data-tab="map">מיפויי גן חובה עד אמצע א׳</button>
+    <button type="button" class="tab" role="tab" id="tabKb" data-tab="kb">מיפויי סוף א׳ עד ג׳</button>
     <button type="button" class="tab" role="tab" id="tabKids" data-tab="kids">מעקב התקדמות</button>
   </nav>
   <main id="main" class="wrap" style="gap:16px"></main>
@@ -732,7 +775,7 @@ function kbp(m) {
 function kbSheetHtml(m) {
   const K = kbp(m);
   return `<div class="sheet" id="sheet">
-  <div class="title">מיפוי לילדי כיתות א׳-ב׳</div>
+  <div class="title">מיפוי מסוף כיתה א׳ ועד כיתה ג׳</div>
   <div class="sub">בשיטת קוראים בקלות · חן קלימיאן, לדבר עם ילדים</div>
   ${K.meta}
   ${K.hint}
@@ -792,7 +835,7 @@ function sheetHtml(m) {
   const P = lp(m);
   return `<div class="sheet" id="sheet">
   <div class="title">דף מלווה מיפוי – הכנה לכיתה א׳</div>
-  <div class="sub">מיפוי לילדי גן חובה · שיעור 9 בהכשרה המקצועית · חן קלימיאן, לדבר עם ילדים</div>
+  <div class="sub">מיפוי מגן חובה ועד אמצע כיתה א׳ · שיעור 9 בהכשרה המקצועית · חן קלימיאן, לדבר עם ילדים</div>
   ${P.meta}
   ${P.parents}
   <div class="grid2">
@@ -811,7 +854,7 @@ function renderMap() {
   const list = mapsOf(kind).sort((a, b) => b.u - a.u), m = curMap();
   let h = (m && m.wz && m.wz.on) ? '' : `<div class="card noprint"><div class="row"><button type="button" class="btn" data-tab="start">למסך הראשי</button><button type="button" class="btn" data-tab="prev">מיפויים קודמים</button></div></div>`;
   if (!m) {
-    h += `<div class="card noprint"><h2>עוד אין מיפוי</h2><p class="note">${kind === 'kb' ? 'לחצי על "מיפוי חדש" כדי לפתוח את המיפוי לילדי כיתות א׳-ב׳: אותיות, ניקוד, כתיבה בהכתבה, קריאה בקול, קריאת מילות תפל וסיכום.' : 'לחצי על "מיפוי חדש" כדי לפתוח את הדף. הוא מיפוי לילדי גן חובה לפי קובץ המיפוי של שיעור 9: שיחת הורים, ארבע משימות וסיכום.'}</p><div><button class="btn solid" type="button" data-act="newMap" data-kind="${kind}">מיפוי חדש</button></div></div>`;
+    h += `<div class="card noprint"><h2>עוד אין מיפוי</h2><p class="note">${kind === 'kb' ? 'לחצי על "מיפוי חדש" כדי לפתוח את המיפוי מסוף כיתה א׳ ועד כיתה ג׳: אותיות, ניקוד, כתיבה בהכתבה, קריאה בקול, קריאת מילות תפל וסיכום.' : 'לחצי על "מיפוי חדש" כדי לפתוח את הדף. הוא מיפוי מגן חובה ועד אמצע כיתה א׳ לפי קובץ המיפוי של שיעור 9: שיחת הורים, ארבע משימות וסיכום.'}</p><div><button class="btn solid" type="button" data-act="newMap" data-kind="${kind}">מיפוי חדש</button></div></div>`;
   } else {
     if (m.wz && m.wz.on) h += wizScreen(m); else {
     h += wizEntry(m);
@@ -902,7 +945,7 @@ async function exportPng() {
     const A = document.createElement('canvas'); A.width = 1588; A.height = 2246;
     const g = A.getContext('2d'); g.fillStyle = '#fff'; g.fillRect(0, 0, A.width, A.height);
     const k = Math.min(A.width / c.width, A.height / c.height); g.drawImage(c, (A.width - c.width * k) / 2, 0, c.width * k, c.height * k);
-    A.toBlob(b => { const a = document.createElement('a'); a.href = URL.createObjectURL(b); a.download = (m.kind === 'kb' ? 'מיפוי כיתות א-ב ' : 'מיפוי גן חובה ') + name + ' ' + fmt(m.date) + '.png'; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 4000); toast('התמונה נשמרה'); }, 'image/png');
+    A.toBlob(b => { const a = document.createElement('a'); a.href = URL.createObjectURL(b); a.download = (m.kind === 'kb' ? 'מיפוי סוף א עד ג ' : 'מיפוי גן חובה עד אמצע א ') + name + ' ' + fmt(m.date) + '.png'; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 4000); toast('התמונה נשמרה'); }, 'image/png');
   } catch (e) { sh.classList.remove('fixed'); toast('לא הצלחתי לשמור תמונה. אפשר להדפיס ולשמור כ-PDF'); }
 }
 
@@ -1223,7 +1266,8 @@ document.addEventListener('click', async e => {
 /* ===================== מיפוי מודרך: שקופיות, תפריט צד, כספת ===================== */
 const GSLIDES = [['parents', 'שיחת הורים'], ['intro', 'הכספת'], ['t1', 'משימה 1: כתיבת שם'], ['t2', 'משימה 2: כתיבה פונטית'], ['t3', 'משימה 3: חשבון'], ['lw', 'אותיות שלב 1: כתיבה'], ['ln', 'אותיות שלב 2: שיום'], ['lp', 'אותיות שלב 3: זיהוי'], ['t4', 'פעילות 4: לומדים יחד משהו חדש'], ['vault', 'פתיחת הכספת'], ['fin', 'סיכום ומסקנות']];
 const KSLIDES = [['parents', 'שיחת הורים'], ['kp', 'כתיב פונטי'], ['knw', 'קריאת מילות תפל'], ['ksy', 'קריאת הברות'], ['kbd', 'כתיבה עם ניקוד'], ['kr', 'קריאה בקול'], ['kl', 'אותיות'], ['kn', 'ניקוד: סימון כללי'], ['fin', 'סיכום ומסקנות']];
-const TASKKEYS = ['t1', 't2', 't3', 't4'];   /* כל משימה נותנת ספרה אחת לכספת, לפי הסדר */
+const VAULT_CODE = '13579';   /* קוד קבוע לכל הילדים; בכל משימה הילד מקבל ספרה אחת לפי הסדר */
+const TASKKEYS = ['t1', 't2', 't3', 'lt', 't4'];   /* כל משימה נותנת ספרה אחת לכספת, לפי הסדר */
 const KTASKS = ['k1', 'k2', 'k3', 'k4'];
 const TK = m => (m && m.kind === 'kb' && m.kbv) ? KTASKS : TASKKEYS;
 const kbPath = m => { const letters = m.kr1 === 'hard'; return { letters, low: letters || m.kr2 === 'hard' }; };
@@ -1264,7 +1308,8 @@ function ensureLt(m) {
   return m.lt;
 }
 function ensureVault(m) {
-  if (!m.vault) m.vault = { code: [0, 0, 0, 0].map(() => Math.floor(Math.random() * 10)).join(''), input: '', opened: false };
+  if (!m.vault) m.vault = { code: '', input: '', opened: false };
+  m.vault.code = VAULT_CODE.slice(0, TK(m).length);
   return m.vault;
 }
 function ensureKb(m) {
@@ -1353,11 +1398,31 @@ function mkRow(cur, act, attrs, set) {
   return `<div class="mkrow">${(set || MKS).map(x => `<button type="button" class="mk${cur === x[0] ? ' on v' + x[0] : ''}" data-act="${act}" data-v="${x[0]}" ${attrs}>${x[1]} <small>${x[2]}</small></button>`).join('')}</div>`;
 }
 let WZ_NAV = false, WZ_HINT = false;
+const EXT = 'כתיבה בטאבלט עם עט ייעודי בלבד, או כתיבה עם עיפרון על דף ולאחר מכן לצלם.';
+const EXS = {
+  intro: ['מחכה לך כאן הפתעה בתוך כספת! כדי לפתוח אותה צריך קוד. בכל משימה שנעשה ביחד תקבל/י ספרה אחת.'],
+  t1: ['שמעתי שאת/ה יודע/ת לכתוב את השם שלך. זה נכון? אני רוצה לראות!', EXT],
+  t2: ['עכשיו אגיד לך מילה, ואת/ה תכתוב/י אותה כמו שאת/ה שומע/ת. נתחיל מהצליל הראשון.', EXT],
+  t3: ['בוא/י נראה מה את/ה כבר יודע/ת במספרים. נספור יחד, ואז יהיו לי כמה משימות בשבילך.'],
+  lw: ['אגיד לך אות, ואת/ה תכתוב/י אותה. אם אין לך זיכרון ממנה, זה בסדר גמור, פשוט נמשיך.', EXT],
+  ln: ['עכשיו אראה לך אותיות, ואת/ה תגיד/י לי איך קוראים לכל אחת.'],
+  lp: ['אגיד שם של אות, ואת/ה תצביע/י על האות הנכונה.'],
+  t4: ['עכשיו נלמד יחד משהו חדש. אסביר לך, ואז תנסה/י בעצמך.'],
+  vault: ['הגיע הרגע! תקיש/י את הקוד על הכספת, ונראה מה מחכה בפנים.']
+};
+function examBox(m, key) {
+  const t = EXS[key]; if (!t) return '';
+  return `<div class="exbox noprint"><div class="exh">הנחיית הבודקת</div><div class="exq">"${esc(t[0])}"</div>${t[1] ? `<div class="exn"><b>הנחיה לבודקת:</b> ${esc(t[1])}</div>` : ''}</div>`;
+}
+function kidBar(m) {
+  const tk = TK(m), done = m.wz.done || {}, got = tk.filter(k => done[k]).length, pct = Math.round(got / tk.length * 100);
+  return `<div class="kidbar noprint" aria-label="ההתקדמות שלך"><div class="kbtrack"><div class="kbfill" style="width:${Math.max(4, pct)}%"></div></div><div class="kbstars">${tk.map(k => `<span class="kbs${done[k] ? ' on' : ''}">${done[k] ? '★' : '☆'}</span>`).join('')}</div></div>`;
+}
 function wrapLayout(m, inner) {
   const sl = ST(m), w = m.wz, sum = w.phase === 'sum' || w.phase === 'think', pct = Math.round(Object.keys(w.done || {}).length / sl.length * 100);
   const title = sum ? 'דף סיכום' : sl[w.step][1];
   return `<div class="wzlayout"><div class="wztop noprint"><button type="button" class="btn sm" data-act="wzMenu">☰ שקופיות</button><div class="wztt"><b>${esc(title)}</b><span>${sum ? '' : (w.step + 1) + ' מתוך ' + sl.length}</span><i style="width:${pct}%"></i></div><button type="button" class="btn sm${WZ_HINT ? ' solid' : ''}" data-act="wzHints">הנחיות לבוחנת</button><img class="wzlogo" src="img/logo.png" alt="חן קלימיאן - לדבר עם ילדים"></div>
-    <div class="wzbody">${wizNav(m)}<div class="wzmain${WZ_HINT || sum ? ' show' : ''}">${inner}<div class="rights noprint">כל הזכויות שמורות לחן קלימיאן</div></div></div></div>`;
+    ${sum ? '' : kidBar(m)}<div class="wzbody">${wizNav(m)}<div class="wzmain${WZ_HINT || sum ? ' show' : ''}">${inner}<div class="rights noprint">כל הזכויות שמורות לחן קלימיאן</div></div></div></div>`;
 }
 
 /* ===== כספת ===== */
@@ -1374,24 +1439,35 @@ function applause() {
   } catch (e) {}
 }
 function vaultPic() { return emo('img/vault.png', 'vpic', '🔐'); }
-function vaultSlide(m) {
-  const v = ensureVault(m), done = m.wz.done || {}, got = TK(m).filter(k => done[k]).length;
-  const shown = [0, 1, 2, 3].map(i => `<span class="vbox${i < v.input.length ? ' on' : ''}">${i < v.input.length ? v.input[i] : ''}</span>`).join('');
-  if (v.opened) return `<div class="card vaultcard open"><div class="confetti" aria-hidden="true">${confettiHtml(70)}</div>${vaultPic()}<div class="vdisp">${v.code.split('').map(c => `<span class="vbox on">${c}</span>`).join('')}</div>${emo('img/gift.png', 'vpic', '🎁')}<h2>זכית בהפתעה! כל הכבוד!</h2><p>הכספת נפתחה.</p><div class="note noexp noprint" style="font-size:.8rem">לבוחנת: הכיני לילד/ה הפתעה קטנה, מדליה, עוגייה או כל הפתעה אחרת.</div>${m.kind === 'kb' ? '' : '<div class="row noprint" style="justify-content:center"><button type="button" class="btn" data-act="wzNotes">השלמת הערות שחסרות</button></div>'}</div>`;
-  return `<div class="card vaultcard"><h2>פותחים את הכספת</h2>${vaultPic()}
-    <p class="note">${got < 4 ? 'הילד/ה קיבל/ה ' + got + ' ספרות מתוך 4. אפשר להמשיך גם כך.' : 'כל ארבע הספרות נאספו. מקישים את הקוד לפי הסדר שבו התקבלו.'}</p>
-    <div class="vault-got"><b>הספרות שקיבלת (לפי הסדר)</b><div class="vdisp">${TK(m).map((k, i) => `<span class="vbox">${done[k] ? v.code[i] : ''}</span>`).join('')}</div></div>
-    <div class="vdisp ${v.bad ? 'bad' : ''}">${shown}</div>
-    <div class="vpad">${[1, 2, 3, 4, 5, 6, 7, 8, 9].map(d => `<button type="button" class="vk" data-act="wzKey" data-d="${d}">${d}</button>`).join('')}<button type="button" class="vk" data-act="wzKey" data-d="del">מחיקה</button><button type="button" class="vk" data-act="wzKey" data-d="0">0</button><button type="button" class="vk go" data-act="wzKey" data-d="ok">פתיחה</button></div></div>`;
+let VS = { mid: null, seen: false, anim: false, open: false };
+const VKEYS = () => [1, 2, 3, 4, 5, 6, 7, 8, 9].map(d => `<button type="button" class="vk" data-act="wzKey" data-d="${d}">${d}</button>`).join('') + `<button type="button" class="vk del" data-act="wzKey" data-d="del" aria-label="מחיקה">⌫</button><button type="button" class="vk" data-act="wzKey" data-d="0">0</button><button type="button" class="vk go" data-act="wzKey" data-d="ok" aria-label="פתיחה">✓</button>`;
+function vaultScene(m, v, mode) {
+  const N = TK(m).length, shown = Array.from({ length: N }, (_, i) => `<span class="vslot${i < v.input.length || mode !== 'near' ? ' on' : ''}">${mode !== 'near' ? v.code[i] : (i < v.input.length ? v.input[i] : '')}</span>`).join('');
+  const cls = mode === 'near' ? (VS.anim ? 'zoomin' : 'near') : (VS.open ? 'playing' : 'final');
+  return `<div class="vscene${v.bad ? ' bad' : ''}"><div class="vcam ${cls}">
+    <img class="vbody" src="img/vault.png" alt=""><div class="vint"></div>${emo('img/gift.png', 'vgift', '🎁')}
+    <div class="vdoor"><img class="vdoorimg" src="img/vault.png" alt=""><div class="vpanel"><div class="vslots" dir="ltr">${shown}</div><div class="vkeys" dir="ltr">${VKEYS()}</div></div></div>
+    ${mode !== 'near' ? `<div class="confetti" aria-hidden="true">${confettiHtml(80)}</div>` : ''}
+  </div></div>`;
 }
-const DIGW = ['אפס ספרות', 'ספרה אחת', 'שתי ספרות', 'שלוש ספרות', 'ארבע ספרות'];
+function vaultSlide(m) {
+  const v = ensureVault(m), done = m.wz.done || {}, tk = TK(m), N = tk.length, got = tk.filter(k => done[k]).length;
+  if (VS.mid !== m.id || !VS.seen) { VS = { mid: m.id, seen: true, anim: !v.opened, open: false }; if (!v.opened) setTimeout(() => { VS.anim = false; }, 2800); }
+  const strip = `<div class="vault-got"><b>הספרות שקיבלת (לפי הסדר)</b><div class="vdisp" dir="ltr">${tk.map((k, i) => `<span class="vbox">${done[k] ? v.code[i] : ''}</span>`).join('')}</div></div>`;
+  if (v.opened) return `<div class="card vaultcard open vstage">${vaultScene(m, v, 'open')}<h2 class="vwin">זכית בהפתעה! כל הכבוד!</h2><p class="vwin">הכספת נפתחה.</p><div class="note noexp noprint" style="font-size:.8rem">לבוחנת: הכיני לילד/ה הפתעה קטנה, מדליה, עוגייה או כל הפתעה אחרת.</div>${m.kind === 'kb' ? '' : '<div class="row noprint" style="justify-content:center"><button type="button" class="btn" data-act="wzNotes">השלמת הערות שחסרות</button></div>'}</div>`;
+  return `<div class="card vaultcard vstage"><h2>פותחים את הכספת</h2>${strip}
+    <p class="note vnote">${got < N ? 'הילד/ה קיבל/ה ' + got + ' ספרות מתוך ' + N + '. אפשר להמשיך גם כך.' : 'כל הספרות נאספו. מקישים את הקוד על הכספת לפי הסדר שבו התקבלו.'}</p>
+    ${vaultScene(m, v, 'near')}</div>`;
+}
+const DIGW = ['אפס ספרות', 'ספרה אחת', 'שתי ספרות', 'שלוש ספרות', 'ארבע ספרות', 'חמש ספרות'];
+const NUMW = n => ({ 4: 'ארבע', 5: 'חמש' }[n] || String(n));
 function showDigit(m, idx, cb) {
   const v = ensureVault(m), done = m.wz.done || {}, tk = TK(m), n = tk.filter(k => done[k]).length;
-  const boxes = [0, 1, 2, 3].map(i => `<span class="vbox${i === idx ? ' on new' : (done[tk[i]] ? ' on' : '')}">${i === idx || done[tk[i]] ? v.code[i] : ''}</span>`).join('');
+  const boxes = tk.map((_, i) => i).map(i => `<span class="vbox${i === idx ? ' on new' : (done[tk[i]] ? ' on' : '')}">${i === idx || done[tk[i]] ? v.code[i] : ''}</span>`).join('');
   const o = document.createElement('div'); o.className = 'digitpop';
   const cols = ['#EF406E', '#FBC5D6', '#9fe3c8', '#9ad7f5', '#ffd966', '#c9a7f0'];
   const conf = Array.from({ length: 56 }, () => `<i style="left:${Math.random() * 100}%;background:${cols[Math.floor(Math.random() * cols.length)]};animation-delay:${(Math.random() * 1.2).toFixed(2)}s;animation-duration:${(2.2 + Math.random() * 2).toFixed(2)}s;transform:rotate(${Math.floor(Math.random() * 360)}deg)"></i>`).join('');
-  o.innerHTML = `<div class="confetti" aria-hidden="true">${conf}</div><div class="dp">${vaultPic()}<div class="dpt">כל הכבוד! קיבלת ספרה לכספת</div><div class="vdisp dpbox">${boxes}</div><div class="note dpc">${n < 4 ? DIGW[n] + ' מתוך 4' : 'כל 4 הספרות נאספו!'}</div><button type="button" class="btn solid dpgo">לשלב הבא</button></div>`;
+  o.innerHTML = `<div class="confetti" aria-hidden="true">${conf}</div><div class="dp">${vaultPic()}<div class="dpt">כל הכבוד! קיבלת ספרה לכספת</div><div class="vdisp dpbox">${boxes}</div><div class="note dpc">${n < tk.length ? DIGW[n] + ' מתוך ' + tk.length : 'כל ' + tk.length + ' הספרות נאספו!'}</div><button type="button" class="btn solid dpgo">לשלב הבא</button></div>`;
   document.body.appendChild(o);
   o.querySelector('.dpgo').addEventListener('click', () => { o.remove(); cb(); });
 }
@@ -1514,7 +1590,7 @@ function ovDetail(m, k) {
 function ovScreen(m) {
   const w = m.wz, done = w.done || {}, v = ensureVault(m), isD = s => OVSTEPS.find(x => x[0] === s)[3].every(q => done[q]);
   const next = OVSTEPS.find(x => !x[3].every(q => done[q])), got = TASKKEYS.filter(k => done[k]).length;
-  const boxes = [0, 1, 2, 3].map(i => `<span class="vbox${done[TASKKEYS[i]] ? ' on' : ''}">${done[TASKKEYS[i]] ? v.code[i] : ''}</span>`).join('');
+  const boxes = TASKKEYS.map((_, i) => `<span class="vbox${done[TASKKEYS[i]] ? ' on' : ''}">${done[TASKKEYS[i]] ? v.code[i] : ''}</span>`).join('');
   const rows = OVSTEPS.map(x => {
     const dn = isD(x[0]), cur = next && next[0] === x[0], first = x[3].find(q => !done[q]) || x[3][0];
     const st = x[2] != null ? (x[2] + 1) + '. ' : '';
@@ -1523,7 +1599,7 @@ function ovScreen(m) {
   }).join('');
   const goI = next ? IDX(m, next[3].find(q => !done[q]) || next[3][0]) : IDX(m, 'vault');
   return `<div class="card"><div class="row"><button type="button" class="btn" data-tab="prev">חזרה לרשימת המיפויים</button></div></div>
-    <div class="card"><h2>${esc(m.name || 'מיפוי')}: איפה אנחנו עומדים</h2><p class="note">${fmt(m.date)} · ${DIGW[got]} מתוך 4 נאספו בכספת</p>
+    <div class="card"><h2>${esc(m.name || 'מיפוי')}: איפה אנחנו עומדים</h2><p class="note">${fmt(m.date)} · ${DIGW[got]} מתוך ${TASKKEYS.length} נאספו בכספת</p>
     <div class="vdisp" style="direction:ltr">${boxes}</div>
     ${rows}
     <div class="row"><button type="button" class="btn solid" data-act="wzOvGo" data-i="${goI}">${next ? 'להמשך המיפוי מ' + esc(next[1]) : 'לפתיחת הכספת והסיכום'}</button></div></div>`;
@@ -1536,7 +1612,7 @@ function wizScreen(m) {
   if (w.phase === 'think' && !window.__thinkT) { w.phase = 'sum'; m.completed = true; }
   if (w.phase === 'think') return wrapLayout(m, `<div class="card think"><div class="thinkface">🤔</div><h2>מכינה את דף הסיכום...</h2><div class="dots"><i></i><i></i><i></i></div></div>`);
   if (w.phase === 'sum') {
-    if (w.view === 'report') return wrapLayout(m, reportHtml(m) + `<div class="card noprint"><h2>הדפסת דו״ח סיכום מיפוי</h2><div class="actions"><button class="btn solid" type="button" data-act="print">הדפסה או שמירה כ-PDF</button><button class="btn" type="button" data-act="png">שמירה כקובץ תמונה A4</button></div>
+    if (w.view === 'report') return wrapLayout(m, sigCard(m) + reportHtml(m) + `<div class="card noprint"><h2>הדפסת דו״ח סיכום מיפוי</h2><div class="actions"><button class="btn solid" type="button" data-act="print">הדפסה או שמירה כ-PDF</button><button class="btn" type="button" data-act="png">שמירה כקובץ תמונה A4</button></div>
       <p class="note">הדו״ח כתוב לפי מה שסומן והוקלד במיפוי, ומתעדכן לבד אם משנים משהו בשקופיות.</p>
       <div class="row"><button class="btn quiet" type="button" data-act="wzNotes">השלמת הערות שחסרות</button><button class="btn quiet" type="button" data-act="wzRepBack">חזרה לדף המיפוי</button><button class="btn quiet" type="button" data-act="wzEdit">חזרה לעריכה</button></div></div>`);
     return wrapLayout(m, summaryHtml(m) + `<div class="card noprint"><h2>הדפסה ושמירה</h2><div class="actions"><button class="btn solid" type="button" data-act="wzRep">לדו״ח סיכום מיפוי בכתב (דף נפרד להדפסה)</button><button class="btn solid" type="button" data-act="png">שמירת דף המיפוי כתמונה A4 (עמוד אחד)</button><button class="btn" type="button" data-act="print">הדפסת דף המיפוי (עמוד אחד) או שמירה כ-PDF</button></div>
@@ -1548,10 +1624,10 @@ function wizScreen(m) {
   if (key === 'intro') {
     const v = ensureVault(m);
     body = `<div class="card vaultintro"><h2>בכספת מחכה הפתעה</h2>${vaultPic()}
-      <p class="vq">מה יש בכספת? כדי לפתוח אותה צריך קוד של 4 ספרות. בכל משימה שנעשה ביחד תקבל/י ספרה אחת. בסוף תקיש/י את הקוד ותפתח/י את הכספת.</p>
-      <div class="digits">${[0, 1, 2, 3].map(j => `<span class="vbox">?</span>`).join('')}</div>
+      <p class="vq">מה יש בכספת? כדי לפתוח אותה צריך קוד של ${TK(m).length} ספרות. בכל משימה שנעשה ביחד תקבל/י ספרה אחת. בסוף תקיש/י את הקוד ותפתח/י את הכספת.</p>
+      <div class="digits">${TK(m).map(j => `<span class="vbox">?</span>`).join('')}</div>
       <div class="vpad" aria-hidden="true">${[1, 2, 3, 4, 5, 6, 7, 8, 9].map(d => `<span class="vk">${d}</span>`).join('')}<span class="vk"></span><span class="vk">0</span><span class="vk"></span></div>
-      <div class="note noexp noprint">לבוחנת: הקוד נקבע אוטומטית ומופיע בתפריט הצד לפי מה שהילד/ה צבר/ה. כל משימה מהארבע נותנת ספרה אחת. בסוף הילד/ה מקיש/ה ארבע ספרות, והפתעה מחכה בפנים.</div></div>`;
+      <div class="note noexp noprint">לבוחנת: הקוד נקבע אוטומטית ומופיע בתפריט הצד לפי מה שהילד/ה צבר/ה. כל משימה נותנת ספרה אחת (בסך הכול ${TK(m).length}). בסוף הילד/ה מקיש/ה את הקוד על הכספת עצמה, והפתעה מחכה בפנים.</div></div>`;
     ctl = wizControls(m, { nextLabel: 'מתחילים' });
   } else if (key === 'parents') body = `<div class="card"><h2>פרטי הילד/ה</h2>${P.meta}</div><div class="card">${m.kind === 'kb' ? `<div class="panel"><h3>תובנות משיחת ההורים</h3>${ta('parents', m, true)}</div>` : P.parents}</div>`;
   else if (key === 't4') body = `<div class="card learncard"><h2>פעילות 4</h2><p class="vq">לומדים יחד משהו חדש</p>${emo('img/learn.png', 'vpic learnpic', '👩‍🏫')}<div class="lhint"><b>לבוחנת:</b> אם הכול היה קל לילד/ה, למדי אותו/ה לקרוא סימן ניקוד חדש לפי שיטת קוראים בקלות. אם היה מאתגר, בחרי מספר, אות או סימן ניקוד ראשוני ולמדי אותו/ה לפי שיטת אותיות בקלות.</div></div><div class="card"><div class="note noexp noprint">בשלב הזה הבוחנת מלמדת חומר חדש לפי הצורך של הילד/ה, ורק רושמת מה לימדה ואיך הילד/ה הגיב/ה. זה נכנס לסיכום.</div>${P.t4}</div>`;
@@ -1608,7 +1684,7 @@ function wizScreen(m) {
     body = `<div class="card"><h2>סיכום ומסקנות</h2><p class="note">מלאי את הסיכום, המלצות להמשך ושם הבוחנת. אחר כך לחצי על "דף סיכום להדפסה" בתפריט הצד.</p>${sumHtml(m)}${m.examiner ? `<div class="note">הבוחנת: ${esc(m.examiner)}</div>` : `<div class="field"><label>שם הבוחנת</label>${tx('examiner', m)}</div>`}</div>`;
     ctl = wizControls(m, { next: 'wzShow', nextLabel: 'הצג סיכום' });
   }
-  return wrapLayout(m, body + ctl);
+  return wrapLayout(m, examBox(m, key) + body + ctl);
 }
 
 /* ===== דף הסיכום ===== */
@@ -1633,6 +1709,17 @@ function strokeImg(st, W, H, rh) {
   g.strokeStyle = '#2b3138'; g.lineWidth = Math.max(2, W / 110); g.lineCap = 'round'; g.lineJoin = 'round';
   st.forEach(s => { g.beginPath(); s.forEach((pt, i) => { const x = pt[0] / 1000 * W, y = pt[1] / 1000 * H; if (i) g.lineTo(x, y); else g.moveTo(x, y); }); if (s.length === 1) g.lineTo(s[0][0] / 1000 * W + 0.1, s[0][1] / 1000 * H); g.stroke(); });
   return `<img class="sImg" src="${c.toDataURL('image/png')}" alt="">`;
+}
+/* 16.11.26: חתימת הבודקת: שם מלא בכתב יד וחתימה, נכנסים לדוח */
+function ensureSig(m) { if (!m.sg) m.sg = { n: [], s: [] }; return m.sg; }
+function sigBlock(m) {
+  const g = m.sg || {}, has = a => a && a.length, w = 320;
+  if (!has(g.n) && !has(g.s)) return '<div class="sign"><span>חתימת הבודקת: ____________________</span></div>';
+  return '<div class="sign sig2"><div class="sg"><span class="lbl">שם הבודקת:</span>' + (has(g.n) ? strokeImg(g.n, w, 90, dhOf(m, 'sg.n') || 220) : '<i>' + esc(m.examiner || '') + '</i>') + '</div><div class="sg"><span class="lbl">חתימה:</span>' + (has(g.s) ? strokeImg(g.s, w, 90, dhOf(m, 'sg.s') || 220) : '____________') + '</div></div>';
+}
+function sigCard(m) {
+  ensureSig(m);
+  return `<div class="card noprint sigcard"><h2>חתימת הבודקת</h2><p class="note">כותבות כאן את השם המלא בכתב יד, ומתחתיו חותמות. הם ייכנסו לדוח.</p><div class="sigpads">${pad('sg.n', 220, 'שם מלא בכתב יד')}${pad('sg.s', 220, 'חתימה')}</div><div class="row"><button class="btn solid" type="button" data-act="sigDone">הוספה לדוח</button></div></div>`;
 }
 function padOut(m, path, h, label) {
   const pm = (m.pm && m.pm[path]) || {}, mode = pm.mode || 'draw';
@@ -1711,10 +1798,10 @@ function reportHtml(m) {
   secs.push(sec('הערות הבוחנת תוך כדי המיפוי', other));
   secs.push(sec('סיכום, מטרות והמלצות', sums));
   const doneN = (m.kind === 'kb' ? KTASKS : TASKKEYS).filter(k => (w.done || {})[k]).length;
-  return '<div class="sheet repsheet" id="sheet"><div class="title">דו״ח סיכום מיפוי</div><div class="sub">' + (m.kind === 'kb' ? 'כיתות א׳-ב׳ · בשיטת קוראים בקלות' : 'הכנה לכיתה א׳ · גן חובה') + ' · חן קלימיאן, לדבר עם ילדים</div>' +
-    '<div class="rdet"><div><b>שם הבודקת:</b> ' + esc(m.examiner) + '</div><div><b>תאריך:</b> ' + fmt(m.date) + '</div><div><b>שם הילד/ה:</b> ' + esc(m.name) + '</div><div><b>גיל:</b> ' + esc(m.age) + '</div><div><b>מסגרת חינוכית:</b> ' + esc(m.school) + '</div><div><b>משימות שהושלמו:</b> ' + doneN + ' מתוך 4</div></div>' +
+  return '<div class="sheet repsheet" id="sheet"><div class="title">דו״ח סיכום מיפוי</div><div class="sub">' + (m.kind === 'kb' ? 'מסוף כיתה א׳ ועד כיתה ג׳ · בשיטת קוראים בקלות' : 'מגן חובה ועד אמצע כיתה א׳') + ' · חן קלימיאן, לדבר עם ילדים</div>' +
+    '<div class="rdet"><div><b>שם הבודקת:</b> ' + esc(m.examiner) + '</div><div><b>תאריך:</b> ' + fmt(m.date) + '</div><div><b>שם הילד/ה:</b> ' + esc(m.name) + '</div><div><b>גיל:</b> ' + esc(m.age) + '</div><div><b>מסגרת חינוכית:</b> ' + esc(m.school) + '</div><div><b>משימות שהושלמו:</b> ' + doneN + ' מתוך ' + (m.kind === 'kb' ? KTASKS : TASKKEYS).length + '</div></div>' +
     (w.stopped ? '<div class="rsec"><h3>הערה</h3><ul><li>המיפוי הופסק בשקופית "' + esc((ST(m)[IDX(m, w.stopped)] || ['', w.stopped])[1]) + '" כי ' + GN('הילד', 'הילדה') + ' ' + GN('התקשה', 'התקשתה') + '. הדו״ח כולל את מה שבוצע עד אז.</li></ul></div>' : '') +
-    secs.join('') + '<div class="sign"><span>חתימת הבודקת: ____________________</span></div><div class="rights">כל הזכויות שמורות לחן קלימיאן</div></div>';
+    secs.join('') + sigBlock(m) + '<div class="rights">כל הזכויות שמורות לחן קלימיאן</div></div>';
 }
 function summaryHtml(m) {
   if (m.kind === 'kb') return summaryKb(m);
@@ -1729,8 +1816,8 @@ function summaryHtml(m) {
   const lres = lt ? `<div class="lsum">${lt.L.map(l => `<div class="lres"><div class="lbig">${l}</div><div class="lline">כתיבה <b class="${stCls(lt.wr[l])}">${SYMX[lt.wr[l]] || '○'}</b></div><div class="lline">שם האות <b class="${stCls(lt.nm[l])}">${lt.wr[l] === 1 && !lt.nm[l] ? '—' : (SYMX[lt.nm[l]] || '○')}</b></div><div class="lline">זיהוי <b class="${lt.pt[l] === 1 ? 'g' : lt.pt[l] === 3 ? 'x' : ''}">${!lt.pt[l] && (lt.wr[l] === 1 || lt.nm[l] === 1) ? '—' : (lt.pt[l] === 1 ? '✓' : lt.pt[l] === 3 ? '✗' : '○')}</b></div>${strokeImg(lt.d[l], 110, 70, dhOf(m, 'lt.d.' + l))}</div>`).join('')}</div>` : '<div class="note">לא בוצע שלב אותיות</div>';
   return `<div class="sheet sumsheet" id="sheet">
   <div class="title">סיכום מיפוי: הכנה לכיתה א׳</div>
-  <div class="sub">מיפוי לילדי גן חובה · חן קלימיאן, לדבר עם ילדים</div>
-  <div class="sdet"><div><b>שם:</b> ${esc(m.name)}</div><div><b>גיל:</b> ${esc(m.age)}</div><div><b>תאריך:</b> ${fmt(m.date)}</div><div><b>מסגרת:</b> ${esc(m.school)}</div><div><b>הבוחנת:</b> ${esc(m.examiner)}</div><div><b>משימות שהושלמו:</b> ${doneN} מתוך 4${m.vault && m.vault.opened ? ' · הכספת נפתחה' : ''}</div></div>
+  <div class="sub">מיפוי מגן חובה ועד אמצע כיתה א׳ · חן קלימיאן, לדבר עם ילדים</div>
+  <div class="sdet"><div><b>שם:</b> ${esc(m.name)}</div><div><b>גיל:</b> ${esc(m.age)}</div><div><b>תאריך:</b> ${fmt(m.date)}</div><div><b>מסגרת:</b> ${esc(m.school)}</div><div><b>הבוחנת:</b> ${esc(m.examiner)}</div><div><b>משימות שהושלמו:</b> ${doneN} מתוך ${TASKKEYS.length}${m.vault && m.vault.opened ? ' · הכספת נפתחה' : ''}</div></div>
   ${w.stopped ? `<div class="stopnote">המיפוי הופסק בשקופית "${esc((ST(m)[IDX(m, w.stopped)] || ['', w.stopped])[1])}" כי הילד/ה התקשה. הנתונים כוללים את מה שבוצע עד אז.</div>` : ''}
   ${m.parents ? `<div class="panel"><h3>תובנות משיחת ההורים</h3><div class="sNote">${esc(m.parents)}</div></div>` : ''}
   <div class="grid2">
@@ -1765,9 +1852,9 @@ function summaryKb(m) {
     p.low ? `<div class="panel"><h3><span class="num n4">4</span>קריאת הברות</h3><div class="sline">${esc(an.text)}</div>${sylT}${txt('הערות', (m.wn || {}).ksy)}</div>` : `<div class="panel"><h3><span class="num n4">4</span>כתיבה עם ניקוד</h3>${bd || '<div class="note">לא בוצע</div>'}</div>`
   ];
   return `<div class="sheet sumsheet" id="sheet">
-  <div class="title">סיכום מיפוי: כיתות א׳-ב׳</div>
+  <div class="title">סיכום מיפוי: מסוף כיתה א׳ ועד כיתה ג׳</div>
   <div class="sub">בשיטת קוראים בקלות · חן קלימיאן, לדבר עם ילדים</div>
-  <div class="sdet"><div><b>שם:</b> ${esc(m.name)}</div><div><b>גיל:</b> ${esc(m.age)}</div><div><b>תאריך:</b> ${fmt(m.date)}</div><div><b>מסגרת:</b> ${esc(m.school)}</div><div><b>הבוחנת:</b> ${esc(m.examiner)}</div><div><b>משימות שהושלמו:</b> ${doneN} מתוך 4${m.vault && m.vault.opened ? ' · הכספת נפתחה' : ''}</div></div>
+  <div class="sdet"><div><b>שם:</b> ${esc(m.name)}</div><div><b>גיל:</b> ${esc(m.age)}</div><div><b>תאריך:</b> ${fmt(m.date)}</div><div><b>מסגרת:</b> ${esc(m.school)}</div><div><b>הבוחנת:</b> ${esc(m.examiner)}</div><div><b>משימות שהושלמו:</b> ${doneN} מתוך ${KTASKS.length}${m.vault && m.vault.opened ? ' · הכספת נפתחה' : ''}</div></div>
   ${w.stopped ? `<div class="stopnote">המיפוי הופסק בשקופית "${esc((ST(m)[IDX(m, w.stopped)] || ['', w.stopped])[1])}" כי הילד/ה התקשה. הנתונים כוללים את מה שבוצע עד אז.</div>` : ''}
   ${m.parents ? `<div class="panel"><h3>תובנות משיחת ההורים</h3><div class="sNote">${esc(m.parents)}</div></div>` : ''}
   <div class="panel conc"><h3>מסלול המיפוי</h3><div class="sline">${esc(route)}</div></div>
@@ -1793,7 +1880,7 @@ function summaryKbOld(m) {
   const bd = m.bd.rows.map((r, i) => `<div class="bdsum"><div class="bdsl">${emo('img/bd-' + r.k + '.png', 'bdi sm', bdOf(r.k)[2])}<b>${bdOf(r.k)[1]}</b> ${r.ok ? '<span class="g">✓ תקין</span>' : ''}</div>${padOut(m, 'bd.d.' + i, 220)}${txt('הערות', r.note)}</div>`).join('');
   const recs = (m.s && m.s.r ? SR.filter((x, i) => m.s.r[i]) : []);
   return `<div class="sheet sumsheet" id="sheet">
-  <div class="title">סיכום מיפוי: כיתות א׳-ב׳</div>
+  <div class="title">סיכום מיפוי: מסוף כיתה א׳ ועד כיתה ג׳</div>
   <div class="sub">בשיטת קוראים בקלות · חן קלימיאן, לדבר עם ילדים</div>
   <div class="sdet"><div><b>שם:</b> ${esc(m.name)}</div><div><b>גיל:</b> ${esc(m.age)}</div><div><b>תאריך:</b> ${fmt(m.date)}</div><div><b>מסגרת:</b> ${esc(m.school)}</div><div><b>הבוחנת:</b> ${esc(m.examiner)}</div></div>
   ${w.stopped ? `<div class="stopnote">המיפוי הופסק בשקופית "${esc((ST(m)[IDX(m, w.stopped)] || ['', w.stopped])[1])}" כי הילד/ה התקשה. הנתונים כוללים את מה שבוצע עד אז.</div>` : ''}
@@ -1830,13 +1917,13 @@ function renderNew() {
     <div class="field"><label for="st_gender">ילד או ילדה (לניסוח הדו״ח)</label><select id="st_gender"><option value="">לא צוין</option><option value="ילדה">ילדה</option><option value="ילד">ילד</option></select></div>
     <div class="field"><label for="st_exam">שם הבוחנת</label><input type="text" id="st_exam" maxlength="40" value="${esc(d.examiner || '')}"></div></div>
     <h3>בחרי רמה ולחצי להתחלת המיפוי</h3>
-    <div class="startbtns"><button type="button" class="bigbtn" data-act="startMap" data-kind="l9"><b>מיפוי לילדי גן חובה</b><span>כספת הפתעות, חומר חדש, כתיבת שם, כתיבה פונטית, חשבון ואותיות</span></button>
-    <button type="button" class="bigbtn" data-act="startMap" data-kind="kb"><b>מיפוי לילדי כיתות א׳-ב׳</b><span>כתיב פונטי, ואז לפי הקושי: אותיות או קריאה, וכספת הפתעות</span></button></div></div>`;
+    <div class="startbtns"><button type="button" class="bigbtn" data-act="startMap" data-kind="l9"><b>מיפוי מגן חובה ועד אמצע כיתה א׳</b><span>כספת הפתעות, חומר חדש, כתיבת שם, כתיבה פונטית, חשבון ואותיות</span></button>
+    <button type="button" class="bigbtn" data-act="startMap" data-kind="kb"><b>מיפוי מסוף כיתה א׳ ועד כיתה ג׳</b><span>כתיב פונטי, ואז לפי הקושי: אותיות או קריאה, וכספת הפתעות</span></button></div></div>`;
 }
 function renderPrev() {
   const all = S.maps.filter(x => !x.del).sort((a, b) => (b.date || '').localeCompare(a.date || '') || (b.u || 0) - (a.u || 0));
   const dn = all.filter(isDone), op = all.filter(x => !isDone(x)), list = PREV === 'done' ? dn : op;
-  const row = x => { let prog = ''; if (!isDone(x) && x.wz) { try { prog = ' · שקופית ' + (x.wz.step + 1) + ' מתוך ' + ST(x).length; } catch (e) {} } return `<button type="button" class="prow" data-act="openMap" data-id="${x.id}"><b>${esc(x.name || 'ילד/ה ללא שם')}</b><span>${x.kind === 'kb' ? 'כיתות א׳-ב׳' : 'גן חובה'} · ${fmt(x.date)}${prog}</span></button>`; };
+  const row = x => { let prog = ''; if (!isDone(x) && x.wz) { try { prog = ' · שקופית ' + (x.wz.step + 1) + ' מתוך ' + ST(x).length; } catch (e) {} } return `<button type="button" class="prow" data-act="openMap" data-id="${x.id}"><b>${esc(x.name || 'ילד/ה ללא שם')}</b><span>${x.kind === 'kb' ? 'סוף א׳ עד ג׳' : 'גן חובה עד אמצע א׳'} · ${fmt(x.date)}${prog}</span></button>`; };
   $('main').innerHTML = `<div class="card noprint"><div class="row"><button type="button" class="btn" data-tab="start">חזרה למסך הראשי</button></div></div>
     <div class="card" id="prevList"><h2>מיפויים קודמים</h2><div class="ptabs" role="tablist"><button type="button" role="tab" class="ptab${PREV === 'done' ? ' on' : ''}" data-act="prevTab" data-v="done">מיפויים שהושלמו (${dn.length})</button><button type="button" role="tab" class="ptab${PREV === 'open' ? ' on' : ''}" data-act="prevTab" data-v="open">מיפויים שלא הושלמו (${op.length})</button></div>
     <div class="plist">${list.length ? list.map(row).join('') : '<p class="note">אין כאן מיפויים עדיין.</p>'}</div></div>`;
@@ -1872,7 +1959,12 @@ function wzGo(m, step) {
   if (key === 'lp' && step > prevStep && m.lt) { lpSync(m.lt); if (!m.lt.order.length) { m.wz.done.lp = true; m.wz.step = Math.min(ST(m).length - 1, m.wz.step + 1); key = ST(m)[m.wz.step][0]; } }
   if (key === 'lw' || key === 'ln' || key === 'lp') ensureLt(m);
   if (key === 'vault') ensureVault(m);
+  const LET = ['lw', 'ln', 'lp'], prevKey = (ST(m)[prevStep] || [''])[0];
+  let awardLt = false;
+  if (!m.kbv && m.kind !== 'kb' && LET.includes(prevKey) && !LET.includes(key) && step > prevStep && !m.wz.done.lt) { m.wz.done.lt = true; awardLt = true; }
+  if (key === 'vault') VS.seen = false;
   touch(m, 'map:' + m.id); renderMap(); window.scrollTo(0, 0);
+  if (awardLt) showDigit(m, TK(m).indexOf('lt'), () => {});
   if (key === 'lw') sayAsk('w', m.lt.L[m.lt.i]);
   else if (key === 'lp') { lpSync(m.lt); if (m.lt.pi < m.lt.order.length) sayAsk('p', m.lt.order[m.lt.pi]); }
 }
@@ -1922,10 +2014,10 @@ function wzAct(a, b, m) {
   }
   else if (a === 'wzPreset') { keep(() => { m.lt.sig = null; lpSync(m.lt); }); sayAsk('p', m.lt.order[0]); }
   else if (a === 'wzKey') {
-    const v = ensureVault(m), d = b.dataset.d;
+    const v = ensureVault(m), d = b.dataset.d, N = TK(m).length, tryOpen = () => { if (v.input === v.code) { v.opened = true; VS.open = true; setTimeout(() => { VS.open = false; }, 8000); setTimeout(applause, 1900); markDone(); } else { v.input = ''; v.bad = true; } };
     if (d === 'del') v.input = v.input.slice(0, -1);
-    else if (d === 'ok') { if (v.input === v.code) { v.opened = true; markDone(); applause(); } else { v.input = ''; v.bad = true; } }
-    else if (v.input.length < 4) { v.input += d; v.bad = false; }
+    else if (d === 'ok') tryOpen();
+    else if (v.input.length < N) { v.input += d; v.bad = false; if (v.input.length === N) tryOpen(); }
     keep(() => {});
     if (v.bad) setTimeout(() => { v.bad = false; }, 700);
   }
@@ -1935,6 +2027,7 @@ function wzAct(a, b, m) {
   else if (a === 'wzBd') { ensureKb(m); if (m.bd.rows.length < 3 && !m.bd.rows.some(r => r.k === b.dataset.k)) { m.bd.rows.push({ k: b.dataset.k, ok: 0, note: '' }); keep(() => {}); } }
   else if (a === 'wzBdOk') { const r = m.bd.rows[+b.dataset.i]; keep(() => { r.ok = r.ok ? 0 : 1; }); }
   else if (a === 'wzBdRm') { const i = +b.dataset.i; keep(() => { m.bd.rows.splice(i, 1); m.bd.d.splice(i, 1); m.bd.d.push([]); }); }
+  else if (a === 'sigDone') { touch(m, 'map:' + m.id); renderMap(); toast('החתימה נוספה לדוח'); }
   else if (a === 'wzShow') { window.__thinkT = true; m.wz.on = true; m.wz.phase = 'think'; touch(m, 'map:' + m.id); renderMap(); window.scrollTo(0, 0); setTimeout(() => { window.__thinkT = false; if (curMap() === m && m.wz.phase === 'think') { m.wz.phase = 'sum'; m.completed = true; touch(m, 'map:' + m.id); renderMap(); window.scrollTo(0, 0); } }, 2300); }
   else if (a === 'wzEdit') { m.wz.phase = null; m.wz.step = IDX(m, 'fin'); touch(m, 'map:' + m.id); renderMap(); window.scrollTo(0, 0); }
   else if (a === 'wzDone') { m.wz.on = false; m.wz.phase = null; touch(m, 'map:' + m.id); renderMap(); window.scrollTo(0, 0); }
