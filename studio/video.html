@@ -73,7 +73,7 @@ async function load() {
 }
 function home() {
   $('main').innerHTML = signs.map(s => {
-    const sc = data[s.code].scenes, g = st => sc.filter(x => x.stage === st);
+    const sc = data[s.code].scenes.filter(x => !x.hidden), g = st => sc.filter(x => x.stage === st);
     const tiles = list => '<div class="grid">' + list.map(x => `<button class="tile ${sent[x.id] ? 'done' : ''}" data-id="${x.id}"><b>${x.title}</b><small>כ-${Math.round(x.dur)} שניות ברצף</small></button>`).join('') + '</div>';
     return `<h2>${s.name}</h2>${tiles(sc)}`;
   }).join('');
@@ -170,7 +170,7 @@ document.addEventListener('click', async e => {
   if (id === 'bStop') running = false;
   if (id === 'bSave') save();
   if (id === 'bPlay' && take) { clearInterval(autoT); try { if (navigator.audioSession) navigator.audioSession.type = 'playback'; } catch (e) {} const a = new Audio(URL.createObjectURL(take.blob)); a.play().catch(() => setSt('ההשמעה לא עבדה', 'err')); setSt('מנגן... (השמירה האוטומטית נעצרה, לחצי "שמירה עכשיו" כשרוצה)'); }
-  if (id === 'bNext') { const sc = data[signOf(cur)].scenes, i = sc.findIndex(x => x.id === cur.id); if (i + 1 < sc.length) openScene(sc[i + 1].id); else $('close').click(); }
+  if (id === 'bNext') { const sc = data[signOf(cur)].scenes.filter(x => !x.hidden), i = sc.findIndex(x => x.id === cur.id); if (i + 1 < sc.length) openScene(sc[i + 1].id); else $('close').click(); }
   if (id === 'close') { running = false; cancelAnimationFrame(raf); clearInterval(autoT); try { if (rec && rec.state === 'recording') rec.stop(); } catch (e) {} try { stream && stream.getTracks().forEach(t => t.stop()); } catch (e) {} stream = null; $('stage').classList.remove('on'); home(); }
 });
 window.__vid = { data: () => data, openScene, play, getTake: () => take };
