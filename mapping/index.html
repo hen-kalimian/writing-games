@@ -565,6 +565,8 @@ body.pal .gt.done{background:#c9efdc;border-color:#7fcfb0;color:#1f6b4a}
 .vaultcard:not(.open) .vk{height:min(54px,6vh)!important;font-size:1.5rem}
 .vaultintro .vpic,.vaultcard:not(.open) .vpic{width:min(420px,80%,36vh)!important}
 }
+
+.btn.erb.on{background:#ffe3a8;border-color:#e0a82e;color:#6b4300;box-shadow:0 0 0 3px #fff3c9}
 </style>
 </head>
 <body class="pal">
@@ -652,13 +654,14 @@ const ta = (p, m, ruled, ph) => `<textarea data-p="${p}" class="${ruled ? 'ruled
 const PM = [['draw', 'כתיבה על המסך'], ['photo', 'צילום או העלאת תמונה'], ['note', 'הערה בלבד']];
 const WRHINT = '<div class="wrhint noprint noexp">מומלץ לכתוב בכלי כתיבה לטאבלט (עט מגע). אם אין, אפשר לכתוב בדף עם עיפרון ולצלם או להעלות את התמונה.</div>';
 function pwH(extra) { const portrait = innerWidth < 620 && innerHeight > innerWidth, w = innerWidth - (portrait ? 120 : 210), hh = innerHeight - (portrait ? 295 : 185) - (extra || 0); return Math.max(320, Math.min(1700, Math.round(1000 * hh / Math.max(200, w)))); }
+const ERASE = {};
 function pad(p, h, label) {
   const m = curMap(), pm = (m && m.pm && m.pm[p]) || { mode: 'draw' }, mode = pm.mode || 'draw';
   const lb = label ? `<span class="lbl">${esc(label)}</span>` : '';
   const modes = `<div class="modes noprint noexp">${PM.map(x => `<button type="button" class="mdb${x[0] === mode ? ' on' : ''}" data-act="padmode" data-d="${p}" data-mode="${x[0]}">${x[1]}</button>`).join('')}</div>`;
   if (mode === 'photo') return `<div class="pad">${lb}${modes}${pm.img ? `<img class="pimg" alt="תמונה של מה שהילד/ה כתב/ה" src="${pm.img}">` : '<div class="pimg empty">עוד אין תמונה</div>'}<div class="tools noprint"><button type="button" class="btn sm" data-act="padcam" data-d="${p}">פתיחת מצלמה</button><button type="button" class="btn sm quiet" data-act="padgal" data-d="${p}">העלאת תמונה</button>${pm.img ? `<button type="button" class="btn sm quiet" data-act="padrm" data-d="${p}">הסרת התמונה</button>` : ''}</div></div>`;
   if (mode === 'note') return `<div class="pad">${lb}${modes}<textarea class="ruled" data-pn="${p}" placeholder="כתבי כאן מה הילד/ה כתב/ה ואיך הוא/היא כתב/ה">${esc(pm.note || '')}</textarea></div>`;
-  return `<div class="pad">${lb}${modes}${WRHINT}<button type="button" class="btn sm fsx noprint" data-act="padfsx">סגירה וחזרה</button><canvas class="dc" data-d="${p}" data-h="${h}" style="--h:${h}" width="1000" height="${h}"></canvas><div class="tools noprint"><button type="button" class="btn sm" data-act="padfs" data-d="${p}">מסך מלא לרוחב</button><button type="button" class="btn sm quiet" data-act="undo" data-d="${p}">בטלי קו אחרון</button><button type="button" class="btn sm quiet" data-act="clr" data-d="${p}">נקי הכול</button></div></div>`;
+  return `<div class="pad">${lb}${modes}${WRHINT}<button type="button" class="btn sm fsx noprint" data-act="padfsx">סגירה וחזרה</button><canvas class="dc" data-d="${p}" data-h="${h}" style="--h:${h}" width="1000" height="${h}"></canvas><div class="tools noprint"><button type="button" class="btn sm" data-act="padfs" data-d="${p}">מסך מלא לרוחב</button><button type="button" class="btn sm quiet" data-act="undo" data-d="${p}">בטלי קו אחרון</button><button type="button" class="btn sm erb${ERASE[p] ? ' on' : ''}" data-act="erase" data-d="${p}">מחק</button><button type="button" class="btn sm quiet" data-act="clr" data-d="${p}">נקי הכול</button></div></div>`;
 }
 const ex = (p, m, title) => `<div class="panel" style="gap:6px"><b style="font-size:.9rem">${title}</b><div class="ex">${tx(p + '.0', m)}<span>+</span>${tx(p + '.1', m)}<span>=</span>${tx(p + '.2', m)}</div><div class="field"><label>פתרון מלא:</label>${tx(p + '.3', m)}</div></div>`;
 
@@ -853,16 +856,29 @@ function initCanvases() { document.querySelectorAll('canvas.dc').forEach(drawCan
 function closePadFs() { document.querySelectorAll('.pad.fs').forEach(x => x.classList.remove('fs')); document.body.classList.remove('padfs'); try { if (document.fullscreenElement) document.exitFullscreen(); } catch (e) {} try { screen.orientation.unlock(); } catch (e) {} }
 document.addEventListener('keydown', e => { if (e.key === 'Escape') closePadFs(); });
 document.addEventListener('fullscreenchange', () => { if (!document.fullscreenElement) { document.querySelectorAll('.pad.fs').forEach(x => x.classList.remove('fs')); document.body.classList.remove('padfs'); } });
+/* 16.11.26: מחק ללוח הכתיבה: מוחק רק את החלק שהמחק נוגע בו, ושאר הקו נשאר */
+function eraseAt(cv, x, y) {
+  const m = curMap(); if (!m) return; const R = 26, arr = getP(m, cv.dataset.d), out = []; let hit = false;
+  arr.forEach(st => {
+    const dense = []; st.forEach((pt, i) => { if (i) { const a = st[i - 1], d = Math.hypot(pt[0] - a[0], pt[1] - a[1]), n = Math.max(1, Math.ceil(d / 5)); for (let k = 1; k <= n; k++) dense.push([a[0] + (pt[0] - a[0]) * k / n, a[1] + (pt[1] - a[1]) * k / n]); } else dense.push(pt.slice()); });
+    let seg = [];
+    dense.forEach(pt => { if (Math.hypot(pt[0] - x, pt[1] - y) < R) { hit = true; if (seg.length) out.push(seg); seg = []; } else seg.push(pt.map(Math.round)); });
+    if (seg.length) out.push(seg);
+  });
+  if (!hit) return; setP(m, cv.dataset.d, out); drawCanvas(cv);
+}
 let cur = null;
 document.addEventListener('pointerdown', e => {
   const cv = e.target.closest && e.target.closest('canvas.dc'); if (!cv) return;
   e.preventDefault(); cv.setPointerCapture(e.pointerId);
   const r = cv.getBoundingClientRect();
+  if (ERASE[cv.dataset.d]) { cur = { cv, erase: true }; eraseAt(cv, (e.clientX - r.left) / r.width * 1000, (e.clientY - r.top) / r.height * 1000); return; }
   cur = { cv, pts: [[Math.round((e.clientX - r.left) / r.width * 1000), Math.round((e.clientY - r.top) / r.height * 1000)]] };
   const m = curMap(); getP(m, cv.dataset.d).push(cur.pts); if (!m.dh) m.dh = {}; m.dh[cv.dataset.d] = +cv.dataset.h || 600; drawCanvas(cv);
 });
 document.addEventListener('pointermove', e => {
   if (!cur) return; const r = cur.cv.getBoundingClientRect();
+  if (cur.erase) { eraseAt(cur.cv, (e.clientX - r.left) / r.width * 1000, (e.clientY - r.top) / r.height * 1000); return; }
   const x = Math.round((e.clientX - r.left) / r.width * 1000), y = Math.round((e.clientY - r.top) / r.height * 1000), l = cur.pts[cur.pts.length - 1];
   if (Math.abs(x - l[0]) + Math.abs(y - l[1]) < 3) return;
   cur.pts.push([x, y]); drawCanvas(cur.cv);
@@ -1067,6 +1083,7 @@ document.addEventListener('click', e => {
   else if (a.indexOf('wz') === 0 || a.indexOf('pw') === 0) { wzAct(a, b, m); }
   else if (a === 'print') { window.print(); }
   else if (a === 'png') { exportPng(); }
+  else if (a === 'erase') { const d = b.dataset.d; ERASE[d] = !ERASE[d]; document.querySelectorAll('button[data-act="erase"]').forEach(x => { if (x.dataset.d === d) x.classList.toggle('on', !!ERASE[d]); }); document.querySelectorAll('canvas.dc').forEach(c => { if (c.dataset.d === d) c.style.cursor = ERASE[d] ? 'cell' : ''; }); toast(ERASE[d] ? 'מחק פועל: עברי עם האצבע על מה שרוצים למחוק. לחצי שוב על מחק כדי לחזור לכתיבה' : 'חזרנו לכתיבה'); }
   else if (a === 'undo') { const s = strokes(b.dataset.d); if (s.length) { s.pop(); touch(m, 'map:' + m.id); drawCanvas(document.querySelector('canvas[data-d="' + b.dataset.d + '"]')); } }
   else if (a === 'clr') { sure(b, 'בטוחה? לחצי שוב כדי לנקות', () => { setP(m, b.dataset.d, []); touch(m, 'map:' + m.id); drawCanvas(document.querySelector('canvas[data-d="' + b.dataset.d + '"]')); }); }
   else if (a === 'lvl') { const k = b.dataset.lv; m.t2.lv = k; m.t2.w = LVL[k].w.map(x => x[0]); touch(m, 'map:' + m.id); const y = scrollY; renderMap(); scrollTo(0, y); }
@@ -1221,7 +1238,8 @@ function kbSlides(m) {
 const ST = m => (m.kind === 'kb' ? (m.kbv ? kbSlides(m) : KSLIDES) : GSLIDES);
 const IDX = (m, k) => ST(m).findIndex(x => x[0] === k);
 const MKS = [[1, '✓', 'כתב/ה נכון'], [2, '◐', 'בעזרה'], [3, '✗', 'לא הצליח/ה']];
-const SYMX = { 1: '✓', 2: '◐', 3: '✗' };
+const SYMX = { 1: '✓', 2: '◐', 3: '✗', 4: '↷' };
+const MKN = [[1, '✓', 'שיים/ה נכון'], [2, '◐', 'בעזרה'], [3, '✗', 'לא הצליח/ה']];
 const FINALS = { 'ך': 'כ', 'ם': 'מ', 'ן': 'נ', 'ף': 'פ', 'ץ': 'צ' };
 const ALLL = 'אבגדהוזחטיכלמנסעפצקרשת'.split('');
 const stripNik = t => String(t).replace(/[֑-ׇ]/g, '');
@@ -1286,7 +1304,7 @@ function measure(b) { const d = b.getChannelData(0), sr = b.sampleRate; let a = 
 async function playSeq(urls) {
   if (curAudio) { try { curAudio.pause(); } catch (e) {} }
   seqSrc.forEach(x => { try { x.stop(); } catch (e) {} }); seqSrc = [];
-  const bufs = await Promise.all(urls.map(loadBuf)); if (actx.state === 'suspended') await actx.resume();
+  const bufs = await Promise.all(urls.map(loadBuf)); if (actx.state === 'suspended') await Promise.race([actx.resume(), new Promise(r => setTimeout(r, 400))]); if (actx.state !== 'running') throw new Error('ctx');
   const ms = bufs.map(measure); let t = actx.currentTime + 0.04, end = t;
   const tgt = Math.max(0.05, Math.min(0.14, ms[0].rms * 1.0));   // מאזנים לעוצמה של ההנחיה (ההקלטה הראשונה)
   bufs.forEach((b, i) => { const m = ms[i], g = Math.min(6, tgt / m.rms, 0.95 / m.pk), src = actx.createBufferSource(), gn = actx.createGain(); src.buffer = b; gn.gain.value = g; src.connect(gn); gn.connect(actx.destination); const dur = m.e - m.s; src.start(t, m.s, dur); seqSrc.push(src); t += dur + 0.05; end = t; });
@@ -1331,8 +1349,8 @@ function wizControls(m, opts) {
   return `<div class="card noprint wzctl"><div class="row"><button class="btn" type="button" data-act="${opts.back || 'wzBack'}">חזרה</button>${opts.noNext ? '' : `<button class="btn solid" type="button" data-act="${opts.next || (isTask ? 'wzTask' : 'wzNext')}">${opts.nextLabel || (isTask ? 'סיימנו, קבלת ספרה לכספת' : 'סיימתי, המשך')}</button>`}</div>
     <div class="row"><button class="btn sm quiet" type="button" data-act="wzPause">שמירה ויציאה</button><button class="btn sm danger" type="button" data-act="wzStop">הילד/ה מתקשה, עצרי ועברי לסיכום</button></div>${isTask ? `<div class="row"><button class="btn sm quiet" type="button" data-act="wzSkip">דלג למשימה הבאה</button><button class="btn sm quiet" type="button" data-act="wzGive">תן ספרה לכספת למרות שהמשימה לא הושלמה</button></div>` : ''}</div>`;
 }
-function mkRow(cur, act, attrs) {
-  return `<div class="mkrow">${MKS.map(x => `<button type="button" class="mk${cur === x[0] ? ' on v' + x[0] : ''}" data-act="${act}" data-v="${x[0]}" ${attrs}>${x[1]} <small>${x[2]}</small></button>`).join('')}</div>`;
+function mkRow(cur, act, attrs, set) {
+  return `<div class="mkrow">${(set || MKS).map(x => `<button type="button" class="mk${cur === x[0] ? ' on v' + x[0] : ''}" data-act="${act}" data-v="${x[0]}" ${attrs}>${x[1]} <small>${x[2]}</small></button>`).join('')}</div>`;
 }
 let WZ_NAV = false, WZ_HINT = false;
 function wrapLayout(m, inner) {
@@ -1548,13 +1566,13 @@ function wizScreen(m) {
   } else if (key === 'lw' && !ensureLt(m).nofs) {
     const lt = ensureLt(m), n = lt.i, l = lt.L[n], cur = lt.wr[l] || 0, last = n >= lt.L.length - 1;
     body = `<div class="pwfull lwfull noprint"><div class="pwside lwside"><div class="lwn">אות ${n + 1} מתוך ${lt.L.length}</div><button class="btn mint sm" type="button" data-act="wzSay" data-kind="w" data-l="${l}">השמעה: כתבו את האות</button><div class="lwchip">לבוחנת: ${l} (${esc(stripNik(window.HenVoice ? HenVoice.letterName(l) : l))})</div></div>
-      <div class="pwboard">${pad('lt.d.' + l, pwH(175), '')}${mkRow(cur, 'wzMark', 'data-l="' + l + '"')}${cur ? '' : '<div class="lwhint">סמני איך היה כדי להמשיך לאות הבאה</div>'}<div class="pwbtns"><button type="button" class="btn sm quiet" data-act="wzLback">חזרה</button><button type="button" class="btn solid" data-act="wzLnext"${cur ? '' : ' disabled'}>${last ? 'לסיכום האותיות' : 'האות הבאה'}</button><button type="button" class="btn sm quiet" data-act="wzLfs">יציאה מהמסך המלא</button></div></div></div>`;
+      <div class="pwboard">${pad('lt.d.' + l, pwH(175), '')}${mkRow(cur, 'wzMark', 'data-l="' + l + '"')}${cur ? '' : '<div class="lwhint">סמני איך היה כדי להמשיך לאות הבאה</div>'}<div class="pwbtns"><button type="button" class="btn sm quiet" data-act="wzLback">חזרה</button><button type="button" class="btn sm danger" data-act="wzLskip">דלג, הילד/ה לא מעוניין/ת להמשיך</button><button type="button" class="btn solid" data-act="wzLnext"${cur ? '' : ' disabled'}>${last ? 'לסיכום האותיות' : 'האות הבאה'}</button><button type="button" class="btn sm quiet" data-act="wzLfs">יציאה מהמסך המלא</button></div></div></div>`;
     ctl = '';
   } else if (key === 'lw') {
     const lt = ensureLt(m), n = lt.i, l = lt.L[n], cur = lt.wr[l] || 0;
     body = `<div class="card"><div class="panel"><h3><span class="num n1">${n + 1}</span>כתיבת אות ${n + 1} מתוך ${lt.L.length}</h3>
       <div class="note">לחצי על "השמעה" כדי להשמיע לילד/ה "כתבו את האות...". הילד/ה כותב/ת במסגרת למטה, ואחר כך מסמנים. האות שנשמעת: <b>${l}</b> (${esc(stripNik(window.HenVoice ? HenVoice.letterName(l) : l))})</div>
-      <div class="row"><button class="btn mint" type="button" data-act="wzSay" data-kind="w" data-l="${l}">השמעה שוב: כתבו את האות</button><button class="btn" type="button" data-act="wzLfs">מסך כתיבה מלא</button></div>
+      <div class="row"><button class="btn mint" type="button" data-act="wzSay" data-kind="w" data-l="${l}">השמעה שוב: כתבו את האות</button><button class="btn" type="button" data-act="wzLfs">מסך כתיבה מלא</button><button class="btn sm danger" type="button" data-act="wzLskip">דלג, הילד/ה לא מעוניין/ת להמשיך</button></div>
       <div class="frame ${FRAMES[n % 4]}">${pad('lt.d.' + l, 320, '')}</div>
       ${mkRow(cur, 'wzMark', 'data-l="' + l + '"')}</div></div>` + wnField(m, 'lw' + n);
     ctl = wizControls(m, { back: 'wzLback', next: 'wzLnext', nextLabel: n < lt.L.length - 1 ? 'האות הבאה' : 'לשקופית הבאה' });
@@ -1563,7 +1581,7 @@ function wizScreen(m) {
     body = need.length ? `<div class="card"><div class="panel"><h3><span class="num n2">2</span>שיום: איך קוראים לאות?</h3>
       <div class="note">${lt.all ? 'כל האותיות.' : 'האותיות שלא הצליח/ה לכתוב.'} מראים לילד/ה את האותיות ושואלים: "אילו אותיות אתה רואה כאן?". לכל אות מסמנים אם נקראה בשמה. אם הכול נקרא נכון, אין צורך בשלב הזיהוי.</div>
       <div class="row"><button class="btn mint" type="button" data-act="wzSay" data-kind="n" data-l="">השמעת השאלה</button></div>
-      <div class="lngrid">${need.map(l => `<div class="lnc"><div class="lbig2">${l}</div>${mkRow(lt.nm[l] || 0, 'wzNm', 'data-l="' + l + '"')}</div>`).join('')}</div></div></div>` + wnField(m, 'ln')
+      <div class="lngrid">${need.map(l => `<div class="lnc"><div class="lbig2">${l}</div>${mkRow(lt.nm[l] || 0, 'wzNm', 'data-l="' + l + '"', MKN)}</div>`).join('')}</div></div></div>` + wnField(m, 'ln')
       : `<div class="card"><div class="panel"><h3><span class="num n2">2</span>שיום</h3><div class="note">הילד/ה כתב/ה את כל האותיות נכון, ולכן אין צורך לבדוק שיום וזיהוי.</div><div class="row"><button class="btn quiet" type="button" data-act="wzLall">בכל זאת לבדוק שיום וזיהוי של כל האותיות</button></div></div></div>`;
   } else if (key === 'lp') {
     const lt = ensureLt(m); lpSync(lt);
@@ -1641,11 +1659,12 @@ function reportHtml(m) {
   const wr = n => lt ? lt.L.filter(l => lt.wr[l] === n) : [], nm = n => lt ? lt.L.filter(l => lt.nm[l] === n) : [], pt = n => lt ? lt.L.filter(l => lt.pt[l] === n) : [];
   const letters = () => {
     if (!lt) return [];
-    const o = [], a1 = wr(1), a2 = wr(2), a3 = wr(3), n1 = nm(1), n2 = nm(2), n3 = nm(3), p1 = pt(1), p3 = pt(3);
+    const o = [], a1 = wr(1), a2 = wr(2), a3 = wr(3), a4 = wr(4), n1 = nm(1), n2 = nm(2), n3 = nm(3), p1 = pt(1), p3 = pt(3);
     if (a1.length) o.push(GN('זכר', 'זכרה') + ' ' + GN('וכתב', 'וכתבה') + ' ' + lets(a1));
     if (a2.length) o.push(GN('כתב', 'כתבה') + ' בעזרה ' + lets(a2));
     if (a3.length) o.push('לא ' + GN('הצליח', 'הצליחה') + ' לכתוב ' + lets(a3));
-    if (n1.length) o.push(GN('הצליח', 'הצליחה') + ' בשיום ' + (a1.length || a2.length || a3.length ? 'גם ' : '') + lets(n1));
+    if (a4.length) o.push(GN('דילג', 'דילגה') + ' על כתיבת ' + lets(a4) + ', כי ' + GN('לא היה', 'לא הייתה') + ' ' + GN('מעוניין', 'מעוניינת') + ' להמשיך');
+    if (n1.length) o.push(GN('הצליח', 'הצליחה') + ' בשיום ' + (a1.length || a2.length || a3.length || a4.length ? 'גם ' : '') + lets(n1));
     if (n2.length) o.push(GN('שיים', 'שיימה') + ' בעזרה ' + lets(n2));
     if (n3.length) o.push('לא ' + GN('שיים', 'שיימה') + ' ' + lets(n3));
     if (p1.length) o.push(GN('זיהה', 'זיהתה') + ' בהצבעה ' + lets(p1));
@@ -1846,8 +1865,11 @@ function openMap(id) {
 /* ===== פעולות ===== */
 function wzGo(m, step) {
   if (!m.wz.done) m.wz.done = {};
+  const prevStep = m.wz.step;
   m.wz.step = Math.max(0, Math.min(ST(m).length - 1, step)); m.wz.phase = null; m.wz.ov = false;
-  const key = ST(m)[m.wz.step][0];
+  let key = ST(m)[m.wz.step][0];
+  /* 16.11.26: אם אין אותיות לזיהוי (הכול נכתב או שויים נכון), עוברים הלאה במקום להיתקע בשקופית ריקה */
+  if (key === 'lp' && step > prevStep && m.lt) { lpSync(m.lt); if (!m.lt.order.length) { m.wz.done.lp = true; m.wz.step = Math.min(ST(m).length - 1, m.wz.step + 1); key = ST(m)[m.wz.step][0]; } }
   if (key === 'lw' || key === 'ln' || key === 'lp') ensureLt(m);
   if (key === 'vault') ensureVault(m);
   touch(m, 'map:' + m.id); renderMap(); window.scrollTo(0, 0);
@@ -1886,6 +1908,7 @@ function wzAct(a, b, m) {
   else if (a === 'wzMark') { const l = b.dataset.l, v = +b.dataset.v; keep(() => { if (m.lt.wr[l] === v) delete m.lt.wr[l]; else m.lt.wr[l] = v; }); }
   else if (a === 'wzNm') { const l = b.dataset.l, v = +b.dataset.v; keep(() => { if (m.lt.nm[l] === v) delete m.lt.nm[l]; else m.lt.nm[l] = v; }); }
   else if (a === 'wzLnext') { const lt = m.lt; if (!lt.wr[lt.L[lt.i]]) { toast('סמני קודם איך היה: כתב/ה נכון, בעזרה או לא הצליח/ה'); return; } if (lt.i < lt.L.length - 1) { lt.i++; touch(m, 'map:' + m.id); renderMap(); window.scrollTo(0, 0); sayAsk('w', lt.L[lt.i]); } else { markDone(); lt.rev = true; keep(() => {}); window.scrollTo(0, 0); } }
+  else if (a === 'wzLskip') { const lt = m.lt; lt.wr[lt.L[lt.i]] = 4; if (lt.i < lt.L.length - 1) { lt.i++; touch(m, 'map:' + m.id); renderMap(); window.scrollTo(0, 0); sayAsk('w', lt.L[lt.i]); } else { markDone(); lt.rev = true; keep(() => {}); window.scrollTo(0, 0); } }
   else if (a === 'wzLedit') { keep(() => { m.lt.i = +b.dataset.i; m.lt.rev = false; m.lt.nofs = false; }); }
   else if (a === 'wzLrevBack') { keep(() => { m.lt.i = m.lt.L.length - 1; m.lt.rev = false; }); }
   else if (a === 'wzLfin') { let to = m.wz.step + 1; if (!lNeedN(m.lt).length) { m.wz.done.ln = true; m.wz.done.lp = true; to += 2; } wzGo(m, to); }
