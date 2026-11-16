@@ -1307,7 +1307,7 @@ async function playSeq(urls) {
   const bufs = await Promise.all(urls.map(loadBuf)); if (actx.state === 'suspended') await Promise.race([actx.resume(), new Promise(r => setTimeout(r, 400))]); if (actx.state !== 'running') throw new Error('ctx');
   const ms = bufs.map(measure); let t = actx.currentTime + 0.04, end = t;
   const tgt = Math.max(0.05, Math.min(0.14, ms[0].rms * 1.0));   // מאזנים לעוצמה של ההנחיה (ההקלטה הראשונה)
-  bufs.forEach((b, i) => { const m = ms[i], g = Math.min(6, tgt / m.rms, 0.95 / m.pk), src = actx.createBufferSource(), gn = actx.createGain(); src.buffer = b; gn.gain.value = g; src.connect(gn); gn.connect(actx.destination); const dur = m.e - m.s; src.start(t, m.s, dur); seqSrc.push(src); t += dur + 0.05; end = t; });
+  bufs.forEach((b, i) => { const m = ms[i], g = Math.min(6, tgt * (i ? 1.15 : 1) / m.rms, 0.95 / m.pk), src = actx.createBufferSource(), gn = actx.createGain(); src.buffer = b; gn.gain.value = g; src.connect(gn); gn.connect(actx.destination); const dur = m.e - m.s; src.start(t, m.s, dur); seqSrc.push(src); t += dur + 0.05; end = t; });
   return new Promise(r => setTimeout(r, Math.max(0, (end - actx.currentTime) * 1000)));
 }
 async function sayAsk(kind, l) {
