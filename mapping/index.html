@@ -610,6 +610,18 @@ body.pal .gt.done{background:#c9efdc;border-color:#7fcfb0;color:#1f6b4a}
 .kbstars{display:flex;gap:4px;direction:ltr}.kbs{font-size:1.5rem;color:#e6b9c8;line-height:1}.kbs.on{color:#f5b301;text-shadow:0 0 6px #ffe08a}
 .exbox{background:#fff;border:2px solid #fbc5d6;border-radius:18px;padding:10px 16px;text-align:center}.exh{font:800 .8rem Rubik,Arial;color:#B8236B;letter-spacing:.02em}.exq{font:700 1.15rem/1.45 Rubik,Arial,sans-serif;color:#2b3138;margin:2px 0}.exn{font-size:.82rem;color:#5b6670;background:#fdeef3;border-radius:10px;padding:5px 10px;margin-top:6px}
 @media(max-height:760px){.exbox{padding:6px 12px}.exq{font-size:1rem}.exn{font-size:.75rem;padding:3px 8px}.kidbar{padding:4px 12px}.kbtrack{height:12px}.kbs{font-size:1.2rem}.vscene{--S:min(clamp(240px,calc(100vh - 380px),620px),92vw)}}
+
+/* מסך מלא לכספת */
+.vstage{display:block!important;padding:0!important;border:0!important;background:none!important;box-shadow:none!important;min-height:30px}
+.vstage .vscene{position:fixed!important;inset:0;width:auto;height:auto;border:0;border-radius:0;z-index:20;--S:min(calc(100vh - 8px),100vw)}
+.vhud{position:absolute;top:6px;left:0;right:0;z-index:8;display:flex;flex-direction:column;align-items:center;gap:4px;pointer-events:none}
+.vhq{background:rgba(255,255,255,.85);border:1.5px solid #fbc5d6;border-radius:14px;padding:3px 12px;font-size:.85rem;color:#2b3138;max-width:min(92vw,720px);text-align:center}.vhq b{color:#B8236B}
+.vdg{display:flex;gap:6px;direction:ltr}.vdg .vbox{width:34px;height:38px;font-size:1.2rem}
+.vbtns{position:absolute;bottom:10px;left:0;right:0;z-index:8;display:flex;gap:10px;justify-content:center}
+.vstage.open .vnext{animation:vwin .6s 3.4s both}
+.vwinbox{position:fixed;left:0;right:0;bottom:64px;z-index:9;text-align:center;pointer-events:none}.vwinbox h2{display:inline-block;background:rgba(255,255,255,.9);border:2px solid #fbc5d6;border-radius:18px;padding:6px 20px;font-size:1.5rem;color:#B8236B}
+.vstage .vnote{display:none}
+@media(max-width:620px) and (orientation:portrait){.vstage .vscene{--S:min(100vw,calc(100vh - 8px))}}
 </style>
 </head>
 <body class="pal">
@@ -1444,7 +1456,10 @@ const VKEYS = () => [1, 2, 3, 4, 5, 6, 7, 8, 9].map(d => `<button type="button" 
 function vaultScene(m, v, mode) {
   const N = TK(m).length, shown = Array.from({ length: N }, (_, i) => `<span class="vslot${i < v.input.length || mode !== 'near' ? ' on' : ''}">${mode !== 'near' ? v.code[i] : (i < v.input.length ? v.input[i] : '')}</span>`).join('');
   const cls = mode === 'near' ? (VS.anim ? 'zoomin' : 'near') : (VS.open ? 'playing' : 'final');
-  return `<div class="vscene${v.bad ? ' bad' : ''}"><div class="vcam ${cls}">
+  const tk = TK(m), done = m.wz.done || {};
+  const hud = `<div class="vhud noprint"><div class="vhq"><b>הנחיית הבודקת:</b> "${esc(EXS.vault[0])}"</div><div class="vdisp vdg" dir="ltr">${tk.map((k, i) => `<span class="vbox">${done[k] ? v.code[i] : ''}</span>`).join('')}</div></div>
+    <div class="vbtns noprint"><button type="button" class="btn sm" data-act="wzBack">חזרה</button>${mode !== 'near' ? '<button type="button" class="btn solid vnext" data-act="wzNext">סיימנו, לסיכום</button>' : ''}</div>`;
+  return `<div class="vscene${v.bad ? ' bad' : ''}">${hud}<div class="vcam ${cls}">
     <img class="vbody" src="img/vault.png" alt=""><div class="vint"></div>${emo('img/gift.png', 'vgift', '🎁')}
     <div class="vdoor"><img class="vdoorimg" src="img/vault.png" alt=""><div class="vpanel"><div class="vslots" dir="ltr">${shown}</div><div class="vkeys" dir="ltr">${VKEYS()}</div></div></div>
     ${mode !== 'near' ? `<div class="confetti" aria-hidden="true">${confettiHtml(80)}</div>` : ''}
@@ -1454,10 +1469,8 @@ function vaultSlide(m) {
   const v = ensureVault(m), done = m.wz.done || {}, tk = TK(m), N = tk.length, got = tk.filter(k => done[k]).length;
   if (VS.mid !== m.id || !VS.seen) { VS = { mid: m.id, seen: true, anim: !v.opened, open: false }; if (!v.opened) setTimeout(() => { VS.anim = false; }, 2800); }
   const strip = `<div class="vault-got"><b>הספרות שקיבלת (לפי הסדר)</b><div class="vdisp" dir="ltr">${tk.map((k, i) => `<span class="vbox">${done[k] ? v.code[i] : ''}</span>`).join('')}</div></div>`;
-  if (v.opened) return `<div class="card vaultcard open vstage">${vaultScene(m, v, 'open')}<h2 class="vwin">זכית בהפתעה! כל הכבוד!</h2><p class="vwin">הכספת נפתחה.</p><div class="note noexp noprint" style="font-size:.8rem">לבוחנת: הכיני לילד/ה הפתעה קטנה, מדליה, עוגייה או כל הפתעה אחרת.</div>${m.kind === 'kb' ? '' : '<div class="row noprint" style="justify-content:center"><button type="button" class="btn" data-act="wzNotes">השלמת הערות שחסרות</button></div>'}</div>`;
-  return `<div class="card vaultcard vstage"><h2>פותחים את הכספת</h2>${strip}
-    <p class="note vnote">${got < N ? 'הילד/ה קיבל/ה ' + got + ' ספרות מתוך ' + N + '. אפשר להמשיך גם כך.' : 'כל הספרות נאספו. מקישים את הקוד על הכספת לפי הסדר שבו התקבלו.'}</p>
-    ${vaultScene(m, v, 'near')}</div>`;
+  if (v.opened) return `<div class="card vaultcard open vstage">${vaultScene(m, v, 'open')}<div class="vwinbox"><h2 class="vwin">זכית בהפתעה! כל הכבוד!</h2></div><div class="note noexp noprint" style="font-size:.8rem">לבוחנת: הכיני לילד/ה הפתעה קטנה, מדליה, עוגייה או כל הפתעה אחרת.</div>${m.kind === 'kb' ? '' : '<div class="row noprint" style="justify-content:center"><button type="button" class="btn" data-act="wzNotes">השלמת הערות שחסרות</button></div>'}</div>`;
+  return `<div class="card vaultcard vstage">${vaultScene(m, v, 'near')}<p class="note vnote">${got < N ? 'הילד/ה קיבל/ה ' + got + ' ספרות מתוך ' + N + '. אפשר להמשיך גם כך.' : 'כל הספרות נאספו.'}</p></div>`;
 }
 const DIGW = ['אפס ספרות', 'ספרה אחת', 'שתי ספרות', 'שלוש ספרות', 'ארבע ספרות', 'חמש ספרות'];
 const NUMW = n => ({ 4: 'ארבע', 5: 'חמש' }[n] || String(n));
@@ -1684,7 +1697,7 @@ function wizScreen(m) {
     body = `<div class="card"><h2>סיכום ומסקנות</h2><p class="note">מלאי את הסיכום, המלצות להמשך ושם הבוחנת. אחר כך לחצי על "דף סיכום להדפסה" בתפריט הצד.</p>${sumHtml(m)}${m.examiner ? `<div class="note">הבוחנת: ${esc(m.examiner)}</div>` : `<div class="field"><label>שם הבוחנת</label>${tx('examiner', m)}</div>`}</div>`;
     ctl = wizControls(m, { next: 'wzShow', nextLabel: 'הצג סיכום' });
   }
-  return wrapLayout(m, examBox(m, key) + body + ctl);
+  return wrapLayout(m, (key === 'vault' ? '' : examBox(m, key)) + body + ctl);
 }
 
 /* ===== דף הסיכום ===== */
