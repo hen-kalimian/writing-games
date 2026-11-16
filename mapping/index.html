@@ -584,7 +584,7 @@ body.pal .gt.done{background:#c9efdc;border-color:#7fcfb0;color:#1f6b4a}
 .vcam.final .vdoor{transform:rotateY(78deg)}
 .vgift{position:absolute;left:49.25%;top:50.75%;width:31%;height:auto;transform:translate(-50%,-50%) scale(.2);opacity:0}
 .vcam.final .vgift{transform:translate(-50%,-122%) scale(1.12);opacity:1}
-.vpanel{position:absolute;left:29%;top:40%;width:41%;height:37%;container-type:size;display:flex;flex-direction:column;gap:2.5cqh;padding:3cqh 4cqw;box-sizing:border-box;background:rgba(255,255,255,.62);backdrop-filter:blur(4px);border:2px solid #fbc5d6;border-radius:14px}
+.vpanel{position:absolute;left:31%;top:40%;width:37.5%;height:35%;container-type:size;display:flex;flex-direction:column;gap:2.5cqh;padding:3cqh 4cqw;box-sizing:border-box;background:rgba(255,255,255,.62);backdrop-filter:blur(4px);border:2px solid #fbc5d6;border-radius:14px}
 .vslots{display:flex;gap:3cqw;justify-content:center;height:17cqh}
 .vslot{flex:1;max-width:19cqw;border:2px solid #fbc5d6;border-radius:8px;background:#fff;display:grid;place-items:center;font:800 13cqh Rubik,Arial,sans-serif;color:#b8236b}.vslot.on{background:#fde1ea}
 .vkeys{flex:1;display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(4,1fr);gap:2cqh 3cqw;min-height:0}
@@ -619,7 +619,7 @@ body.pal .gt.done{background:#c9efdc;border-color:#7fcfb0;color:#1f6b4a}
 .vdg{display:flex;gap:6px;direction:ltr}.vdg .vbox{width:34px;height:38px;font-size:1.2rem}
 .vbtns{position:absolute;bottom:10px;left:0;right:0;z-index:8;display:flex;gap:10px;justify-content:center}
 .vstage.open .vnext{animation:vwin .6s 3.4s both}
-.vwinbox{position:fixed;left:0;right:0;bottom:64px;z-index:9;text-align:center;pointer-events:none}.vwinbox h2{display:inline-block;background:rgba(255,255,255,.9);border:2px solid #fbc5d6;border-radius:18px;padding:6px 20px;font-size:1.5rem;color:#B8236B}
+.vwinbox{position:absolute;left:0;right:0;bottom:62px;z-index:9;text-align:center;pointer-events:none}.vwinbox h2{display:inline-block;background:rgba(255,255,255,.9);border:2px solid #fbc5d6;border-radius:18px;padding:6px 20px;font-size:1.5rem;color:#B8236B}
 .vstage .vnote{display:none}
 @media(max-width:620px) and (orientation:portrait){.vstage .vscene{--S:min(100vw,calc(100vh - 8px))}}
 </style>
@@ -1457,9 +1457,9 @@ function vaultScene(m, v, mode) {
   const N = TK(m).length, shown = Array.from({ length: N }, (_, i) => `<span class="vslot${i < v.input.length || mode !== 'near' ? ' on' : ''}">${mode !== 'near' ? v.code[i] : (i < v.input.length ? v.input[i] : '')}</span>`).join('');
   const cls = mode === 'near' ? (VS.anim ? 'zoomin' : 'near') : (VS.open ? 'playing' : 'final');
   const tk = TK(m), done = m.wz.done || {};
-  const hud = `<div class="vhud noprint"><div class="vhq"><b>הנחיית הבודקת:</b> "${esc(EXS.vault[0])}"</div><div class="vdisp vdg" dir="ltr">${tk.map((k, i) => `<span class="vbox">${done[k] ? v.code[i] : ''}</span>`).join('')}</div></div>
-    <div class="vbtns noprint"><button type="button" class="btn sm" data-act="wzBack">חזרה</button>${mode !== 'near' ? '<button type="button" class="btn solid vnext" data-act="wzNext">סיימנו, לסיכום</button>' : ''}</div>`;
-  return `<div class="vscene${v.bad ? ' bad' : ''}">${hud}<div class="vcam ${cls}">
+  const hud = `<div class="vhud noprint"><div class="vhq"><b>הנחיית הבודקת:</b> "${esc(EXS.vault[0])}"</div><div class="vdisp vdg" dir="ltr">${tk.map((k, i) => `<span class="vbox">${done[k] ? v.code[i] : ''}</span>`).join('')}</div></div>`;
+  const win = '<div class="vwinbox"><h2 class="vwin">זכית בהפתעה! כל הכבוד!</h2></div>';
+  return `<div class="vscene${v.bad ? ' bad' : ''}">${mode === 'near' ? hud : win}<div class="vbtns noprint"><button type="button" class="btn sm" data-act="wzBack">חזרה</button>${mode !== 'near' ? '<button type="button" class="btn solid vnext" data-act="wzNext">סיימנו, לסיכום</button>' : ''}</div><div class="vcam ${cls}">
     <img class="vbody" src="img/vault.png" alt=""><div class="vint"></div>${emo('img/gift.png', 'vgift', '🎁')}
     <div class="vdoor"><img class="vdoorimg" src="img/vault.png" alt=""><div class="vpanel"><div class="vslots" dir="ltr">${shown}</div><div class="vkeys" dir="ltr">${VKEYS()}</div></div></div>
     ${mode !== 'near' ? `<div class="confetti" aria-hidden="true">${confettiHtml(80)}</div>` : ''}
@@ -1469,7 +1469,7 @@ function vaultSlide(m) {
   const v = ensureVault(m), done = m.wz.done || {}, tk = TK(m), N = tk.length, got = tk.filter(k => done[k]).length;
   if (VS.mid !== m.id || !VS.seen) { VS = { mid: m.id, seen: true, anim: !v.opened, open: false }; if (!v.opened) setTimeout(() => { VS.anim = false; }, 2800); }
   const strip = `<div class="vault-got"><b>הספרות שקיבלת (לפי הסדר)</b><div class="vdisp" dir="ltr">${tk.map((k, i) => `<span class="vbox">${done[k] ? v.code[i] : ''}</span>`).join('')}</div></div>`;
-  if (v.opened) return `<div class="card vaultcard open vstage">${vaultScene(m, v, 'open')}<div class="vwinbox"><h2 class="vwin">זכית בהפתעה! כל הכבוד!</h2></div><div class="note noexp noprint" style="font-size:.8rem">לבוחנת: הכיני לילד/ה הפתעה קטנה, מדליה, עוגייה או כל הפתעה אחרת.</div>${m.kind === 'kb' ? '' : '<div class="row noprint" style="justify-content:center"><button type="button" class="btn" data-act="wzNotes">השלמת הערות שחסרות</button></div>'}</div>`;
+  if (v.opened) return `<div class="card vaultcard open vstage">${vaultScene(m, v, 'open')}<div class="note noexp noprint" style="font-size:.8rem">לבוחנת: הכיני לילד/ה הפתעה קטנה, מדליה, עוגייה או כל הפתעה אחרת.</div>${m.kind === 'kb' ? '' : '<div class="row noprint" style="justify-content:center"><button type="button" class="btn" data-act="wzNotes">השלמת הערות שחסרות</button></div>'}</div>`;
   return `<div class="card vaultcard vstage">${vaultScene(m, v, 'near')}<p class="note vnote">${got < N ? 'הילד/ה קיבל/ה ' + got + ' ספרות מתוך ' + N + '. אפשר להמשיך גם כך.' : 'כל הספרות נאספו.'}</p></div>`;
 }
 const DIGW = ['אפס ספרות', 'ספרה אחת', 'שתי ספרות', 'שלוש ספרות', 'ארבע ספרות', 'חמש ספרות'];
