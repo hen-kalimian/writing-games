@@ -332,7 +332,7 @@ canvas.dc{width:100%;display:block;border:1.5px dashed var(--pink-strong);border
 .wzlayout .btn.quiet{background:#fff;color:var(--muted)}
 .wzlayout .mdb.on,.wzlayout .lvl.on{background:var(--mint);border-color:var(--mint-ink)}
 .dp .vpic{width:min(190px,48vw)}
-.dp .dpbox{direction:rtl}
+.dp .dpbox{direction:ltr}
 .dp .vbox{width:60px;height:74px;font-size:2.4rem}
 .dp .vbox.new{animation:pop .7s;background:var(--pink-strong);color:#fff}
 .learncard{align-items:center;text-align:center}
@@ -547,6 +547,24 @@ body.pal .gt.done{background:#c9efdc;border-color:#7fcfb0;color:#1f6b4a}
 .npgrid{display:flex;flex-direction:column;gap:6px;text-align:start;max-height:60vh;overflow:auto}
 .npskip{border:0;background:none;color:var(--muted);text-decoration:underline;font-size:.95rem;padding:6px}
 @media print{.repsheet{border:0;padding:0;font-size:12.5px;gap:8px}.repsheet .rdet{border-color:#777}.sumsheet *{background-image:none!important}}
+
+/* 16.11.26: על מסך נמוך כל המסך (כספת, לוח מקשים, כפתורים) נכנס בלי שהסרגל התחתון יסתיר אותו */
+@media(max-height:860px){
+.wzbody{padding:6px 10px 6px}
+.wzmain{gap:8px}
+.wzmain>.card{padding:8px 14px}
+.wzctl{bottom:0!important;padding:6px 10px!important;gap:4px!important}
+.wzctl .row{gap:6px}
+.wzctl .btn{padding:7px 14px;font-size:.95rem}
+.wzctl .btn.sm{padding:4px 9px;font-size:.78rem}
+.vaultintro h2,.vaultcard:not(.open) h2{font-size:1.35rem}
+.vaultintro .vq,.vaultintro .note{font-size:.92rem;line-height:1.35}
+.vaultintro .vbox,.vaultcard:not(.open) .vdisp .vbox{width:min(62px,12vw);height:min(70px,8.5vh);font-size:2.1rem}
+.vaultintro .vk{height:min(52px,5.6vh)!important;font-size:1.3rem}
+.vaultintro .vpad,.vaultcard:not(.open) .vpad{gap:6px;grid-template-columns:repeat(3,min(86px,24vw))}
+.vaultcard:not(.open) .vk{height:min(54px,6vh)!important;font-size:1.5rem}
+.vaultintro .vpic,.vaultcard:not(.open) .vpic{width:min(420px,80%,36vh)!important}
+}
 </style>
 </head>
 <body class="pal">
@@ -1465,7 +1483,7 @@ function ovScreen(m) {
   const goI = next ? IDX(m, next[3].find(q => !done[q]) || next[3][0]) : IDX(m, 'vault');
   return `<div class="card"><div class="row"><button type="button" class="btn" data-tab="prev">חזרה לרשימת המיפויים</button></div></div>
     <div class="card"><h2>${esc(m.name || 'מיפוי')}: איפה אנחנו עומדים</h2><p class="note">${fmt(m.date)} · ${DIGW[got]} מתוך 4 נאספו בכספת</p>
-    <div class="vdisp" style="direction:rtl">${boxes}</div>
+    <div class="vdisp" style="direction:ltr">${boxes}</div>
     ${rows}
     <div class="row"><button type="button" class="btn solid" data-act="wzOvGo" data-i="${goI}">${next ? 'להמשך המיפוי מ' + esc(next[1]) : 'לפתיחת הכספת והסיכום'}</button></div></div>`;
 }
