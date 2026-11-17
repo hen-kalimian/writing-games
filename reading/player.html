@@ -48,7 +48,7 @@ const part=(location.search.match(/[?&]p=([12])/)||[])[1]||"";
 v.src=c+(part?"_s"+part:"")+".mp4";
 const SUB={1:"קריאת הברות ומילים",2:"קריאת משפטי פירמידה"};
 if(part==="1")document.getElementById("pyrline").style.display="none";
-if(part==="2")document.getElementById("pyrline").textContent="גם קריאת משפטי הפירמידה עוזרת לקריאה השוטפת.";
+if(part==="2")document.getElementById("pyrline").textContent="גם קריאת משפטי הפירמידה עוזרת לקריאה השוטפת. הקריאה חשובה לפני הפעילות, ולכן קוראים קודם ורק אחר כך ממשיכים למשחקים.";
 function fit(){const box=document.getElementById("box");const W=Math.max(200,Math.min(innerWidth-16,(innerHeight-16)/1.4167));box.style.width=W+"px";box.style.height=Math.round(W*1.4167)+"px"}
 fit();addEventListener("resize",fit);
 $('t1').textContent=NAMES[c]||'';if(SUB[part]){const s=document.createElement('div');s.className='sub';s.textContent=SUB[part];$('t1').after(s)}document.title=NAMES[c]||'סרטון קריאה';
