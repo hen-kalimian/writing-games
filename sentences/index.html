@@ -46,6 +46,18 @@ h1{margin:0;font:800 24px/1.25 Rubik,Arial;color:var(--deep)}
 .toast{position:fixed;left:50%;top:14px;transform:translateX(-50%);background:#2b3138;color:#fff;padding:9px 16px;border-radius:14px;font:700 15px Rubik,Arial;z-index:20;opacity:0;pointer-events:none;transition:opacity .2s}
 .toast.on{opacity:1}
 .note{margin:8px 2px 14px;font:500 14px/1.55 Rubik,Arial;color:#5b6570}
+
+.closed{background:var(--mint);border:2.5px solid #9fd8bf;border-radius:18px;padding:12px;margin:0 0 10px;display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;font:800 17px Rubik,Arial;color:#1b7f5c}
+.mine{flex:none;font:700 12px Rubik,Arial;background:var(--wash);color:var(--deep);border-radius:99px;padding:3px 9px}
+.del{flex:none;border:0;background:#fff;border:2px solid var(--line);color:var(--deep);border-radius:10px;width:32px;height:32px;font:800 16px Rubik,Arial;cursor:pointer}
+.addp{background:#fff;border:2.5px dashed var(--pink);border-radius:18px;padding:12px;margin:10px 0 14px}
+.addp h3{margin:0 0 6px;font:800 17px/1.35 Rubik,Arial;color:var(--deep)}
+.addp p{margin:0 0 8px;font:500 14px/1.5 Rubik,Arial;color:#5b6570}
+.addp textarea{width:100%;min-height:64px;border:2.5px solid var(--line);border-radius:14px;padding:10px;font:600 24px/1.5 'Open Sans',Rubik,Arial;direction:rtl;resize:vertical}
+.addp .w{min-height:20px;font:700 13.5px/1.4 Rubik,Arial;margin:6px 0}
+.addp .w.bad{color:#b3261e}.addp .w.good{color:#1b7f5c}
+.addp label{display:flex;gap:8px;align-items:center;font:600 15px Rubik,Arial;margin:4px 0 8px}
+.addp label input{width:20px;height:20px}
 </style>
 </head>
 <body>
@@ -53,35 +65,80 @@ h1{margin:0;font:800 24px/1.25 Rubik,Arial;color:var(--deep)}
 <div class="wrap">
 <header>
   <h1>בחירת משפטים לתרגול קריאה</h1>
-  <p class="sub">לכל סימן ניקוד ולכל רמה יש 30 משפטים. בחרי 18 מתוכם: מה שנבחר ישמש בכל משחקי הקריאה, כך שיהיה גיוון וגם חזרתיות בתרגול. השמירה אוטומטית.</p>
+  <p class="sub">לכל סימן ניקוד ולכל רמה יש 30 משפטים. בחרי 20 מתוכם: מה שנבחר ישמש בכל משחקי הקריאה, כך שיהיה גיוון וגם חזרתיות בתרגול. כשנבחרו 20 הרשימה נסגרת, ואפשר ללחוץ "עריכה". אם לא הגעת ל-20, אפשר להוסיף משפטים משלך בסוף הרשימה. השמירה אוטומטית.</p>
 </header>
 <div class="tabs" id="tabs"></div>
 <div class="lv" id="lv"></div>
-<div class="bar"><div class="cnt" id="cnt"></div><div class="btns"><button class="btn soft" id="fill">השלמה אוטומטית עד 18</button><button class="btn soft" id="clear">ניקוי</button></div></div>
-<div id="list"></div>
+<div class="bar"><div class="cnt" id="cnt"></div><div class="btns"><button class="btn soft" id="fill">השלמה אוטומטית עד 20</button><button class="btn soft" id="clear">ניקוי</button></div></div>
+<div id="list"></div><div id="addwrap"></div>
 <p class="note">בועית "בלי תמונה" ליד משפט אומרת שקשה לצייר אותו (למשל שלילה או שאלה). משפט כזה לא ישמש במשחקי "התאמת ציור", אבל כן בשאר המשחקים (סידור מילים, קריאה חוזרת ועוד).</p>
 </div>
 <div class="foot"><span class="st" id="st">טוען…</span><button class="btn soft" id="share">העתקת קישור להמשך במכשיר אחר</button></div>
 <script type="module">
 const SIGNS = [['kp','קמץ ופתח'],['sh','שווא'],['ch','חיריק'],['ho','חולם'],['tz','צירה וסגול'],['sk','שורוק וקובוץ']];
-const LVL = {1:['רמה 1','קצרים, רק סימן השיעור + קמץ ופתח'],2:['רמה 2','3 עד 6 מילים, כל הסימנים עד כאן']};
-const NEED = 18;
+const LVL = {1:['רמה 1','קצרים, רק סימן השיעור + קמץ ופתח'],2:['רמה 2','3 עד 6 מילים, כל הסימנים עד כאן + מילות הליבה']};
+const NEED = 20;
+const M = { patah:'ַ', qamats:'ָ', shva:'ְ', hiriq:'ִ', holam:'ֹ', tsere:'ֵ', segol:'ֶ', kubutz:'ֻ', dagesh:'ּ', shin:'ׁ', sin:'ׂ' };
+const ORDER = ['kp','sh','ch','ho','tz','sk'], OWN = { kp:['patah','qamats'], sh:['shva'], ch:['hiriq'], ho:['holam'], tz:['tsere','segol'], sk:['kubutz'] }, BASE = ['patah','qamats','dagesh','shin','sin'];
+function allowedMarks(sign, lvl) { const n = new Set(BASE); if (lvl === 1) OWN[sign].forEach(x => n.add(x)); else { for (const s of ORDER) { OWN[s].forEach(x => n.add(x)); if (s === sign) break } } return new Set([...n].map(x => M[x])) }
+function checkText(sign, lvl, text) {
+  const al = allowedMarks(sign, lvl), bad = new Set(), t = text.replace(/לֹא/g, '').replace(/אֶת/g, '').replace(/שֶׁל/g, '').replace(/(^|\s)וְ/g, '$1');
+  for (const ch of t) if (/[ְ-ׇ]/.test(ch) && !al.has(ch)) bad.add(ch);
+  const words = text.replace(/[.,?!:״"]/g, ' ').trim().split(/\s+/).filter(w => /[א-ת]/.test(w));
+  return { bad: [...bad], nw: words.length, noNik: words.filter(w => !/[ְ-ּ]/.test(w)) };
+}
+const NAMES = { 'ַ':'פתח','ָ':'קמץ','ְ':'שווא','ִ':'חיריק','ֹ':'חולם','ֵ':'צירה','ֶ':'סגול','ֻ':'קובוץ' };
 const $ = id => document.getElementById(id);
-let DATA = null, cur = { s: 'kp', l: 1 }, picks = {}, timers = {}, secret = '';
+let DATA = null, cur = { s: 'kp', l: 1 }, picks = {}, custom = {}, editing = {}, timers = {}, secret = '';
 const store = { get(k, d) { try { const v = localStorage.getItem(k); return v == null ? d : v } catch (e) { return d } }, set(k, v) { try { localStorage.setItem(k, v) } catch (e) {} } };
 const key = (s, l) => s + ':' + l;
-const toast = t => { const e = $('toast'); e.textContent = t; e.classList.add('on'); clearTimeout(toast.t); toast.t = setTimeout(() => e.classList.remove('on'), 1800) };
+const toast = t => { const e = $('toast'); e.textContent = t; e.classList.add('on'); clearTimeout(toast.t); toast.t = setTimeout(() => e.classList.remove('on'), 2200) };
 const setSt = (t, c) => { const e = $('st'); e.textContent = t; e.className = 'st ' + (c || '') };
-// מצב מקודד בקישור: לכל (סימן,רמה) מחרוזת של 30 תווים 0/1 בהקסה
-function encode() { return SIGNS.map(([s]) => [1, 2].map(l => { const set = new Set(picks[key(s, l)] || []); const arr = DATA[s]['l' + l]; let bits = arr.map(x => set.has(x.id) ? '1' : '0').join(''); bits = bits.padEnd(32, '0'); let h = ''; for (let i = 0; i < 32; i += 4) h += parseInt(bits.slice(i, i + 4), 2).toString(16); return h }).join('.')).join('-') }
-function decode(str) { try { const parts = str.split('-'); SIGNS.forEach(([s], i) => { const ls = (parts[i] || '').split('.'); [1, 2].forEach((l, j) => { const h = ls[j] || ''; let bits = ''; for (const c of h) bits += parseInt(c, 16).toString(2).padStart(4, '0'); const arr = DATA[s]['l' + l]; const ids = []; arr.forEach((x, k) => { if (bits[k] === '1') ids.push(x.id) }); if (ids.length) picks[key(s, l)] = ids }) }) } catch (e) {} }
-function persist() { store.set('sentpicks', JSON.stringify(picks)); history.replaceState(null, '', '#p=' + encode()) }
+const listOf = (s, l) => [...DATA[s]['l' + l], ...(custom[key(s, l)] || [])];
+const isClosed = k => (picks[k] || []).length >= NEED && !editing[k];
+function encode() {
+  const p = SIGNS.map(([s]) => [1, 2].map(l => { const set = new Set(picks[key(s, l)] || []); let bits = DATA[s]['l' + l].map(x => set.has(x.id) ? '1' : '0').join('').padEnd(32, '0'); let h = ''; for (let i = 0; i < 32; i += 4) h += parseInt(bits.slice(i, i + 4), 2).toString(16); return h }).join('.')).join('-');
+  const c = {}; for (const k in custom) if ((custom[k] || []).length) c[k] = custom[k].map(x => ({ id: x.id, t: x.t, p: x.p, o: (picks[k] || []).includes(x.id) ? 1 : 0 }));
+  return '#p=' + p + (Object.keys(c).length ? '&c=' + encodeURIComponent(JSON.stringify(c)) : '');
+}
+function decode(h) {
+  try {
+    const pm = h.match(/p=([0-9a-f.\-]+)/);
+    if (pm) pm[1].split('-').forEach((part, i) => { const s = SIGNS[i] && SIGNS[i][0]; if (!s) return; part.split('.').forEach((hx, j) => { const l = j + 1; let bits = ''; for (const c of hx) bits += parseInt(c, 16).toString(2).padStart(4, '0'); const ids = []; DATA[s]['l' + l].forEach((x, n) => { if (bits[n] === '1') ids.push(x.id) }); if (ids.length) picks[key(s, l)] = ids }) });
+    const cm = h.match(/[&#]c=([^&]+)/);
+    if (cm) { const c = JSON.parse(decodeURIComponent(cm[1])); for (const k in c) { custom[k] = c[k].map(x => ({ id: x.id, t: x.t, p: x.p })); c[k].forEach(x => { if (x.o) { picks[k] = picks[k] || []; if (!picks[k].includes(x.id)) picks[k].push(x.id) } }) } }
+  } catch (e) {}
+}
+function persist() { store.set('sentpicks2', JSON.stringify({ picks, custom })); history.replaceState(null, '', encode()) }
 function render() {
-  $('tabs').innerHTML = SIGNS.map(([s, n]) => { const c1 = (picks[key(s, 1)] || []).length, c2 = (picks[key(s, 2)] || []).length, full = c1 === NEED && c2 === NEED; return `<button class="tab ${cur.s === s ? 'on' : ''}" data-s="${s}">${n}<span class="bd ${full ? 'full' : ''}">${full ? '✓' : (c1 + c2) + '/36'}</span></button>` }).join('');
+  $('tabs').innerHTML = SIGNS.map(([s, n]) => { const c1 = (picks[key(s, 1)] || []).length, c2 = (picks[key(s, 2)] || []).length, full = c1 >= NEED && c2 >= NEED; return `<button class="tab ${cur.s === s ? 'on' : ''}" data-s="${s}">${n}<span class="bd ${full ? 'full' : ''}">${full ? '✓' : (c1 + c2) + '/' + NEED * 2}</span></button>` }).join('');
   $('lv').innerHTML = [1, 2].map(l => `<button class="lvb ${cur.l === l ? 'on' : ''}" data-l="${l}">${LVL[l][0]} · ${(picks[key(cur.s, l)] || []).length}/${NEED}<small>${LVL[l][1]}</small></button>`).join('');
-  const arr = DATA[cur.s]['l' + cur.l], set = new Set(picks[key(cur.s, cur.l)] || []);
-  $('cnt').textContent = `נבחרו ${set.size} מתוך ${NEED}`; $('cnt').className = 'cnt ' + (set.size === NEED ? 'ok' : '');
-  $('list').innerHTML = arr.map((x, i) => `<div class="row ${set.has(x.id) ? 'on' : ''}" data-id="${x.id}"><span class="num">${i + 1}</span><span class="ck">${set.has(x.id) ? '✓' : ''}</span><span class="tx">${x.t}</span>${x.p ? '' : '<span class="nopic">בלי תמונה</span>'}</div>`).join('');
+  const k = key(cur.s, cur.l), set = new Set(picks[k] || []), closed = isClosed(k), arr = listOf(cur.s, cur.l);
+  $('cnt').textContent = closed ? 'הרשימה סגורה ✓' : `נבחרו ${set.size} מתוך ${NEED}`; $('cnt').className = 'cnt ' + (set.size >= NEED ? 'ok' : '');
+  document.querySelector('.btns').style.display = closed ? 'none' : 'flex';
+  const rows = (closed ? arr.filter(x => set.has(x.id)) : arr).map((x, i) => `<div class="row ${set.has(x.id) ? 'on' : ''}" data-id="${x.id}" ${closed ? 'style="cursor:default"' : ''}><span class="num">${i + 1}</span><span class="ck">${set.has(x.id) ? '✓' : ''}</span><span class="tx">${x.t}</span>${x.p ? '' : '<span class="nopic">בלי תמונה</span>'}${x.id.startsWith('my-') ? '<span class="mine">שלי</span>' + (closed ? '' : '<button class="del" data-del="' + x.id + '" aria-label="מחיקה">✕</button>') : ''}</div>`).join('');
+  $('list').innerHTML = (closed ? `<div class="closed"><span>נבחרו ${NEED} משפטים. הרשימה סגורה</span><button class="btn" id="edit">עריכה</button></div>` : '') + rows;
+  if (closed) $('edit').onclick = () => { editing[k] = true; render() };
+  const left = NEED - set.size;
+  $('addwrap').innerHTML = closed ? '' : `<div class="addp"><h3>${left > 0 ? 'חסרים עוד ' + left + ' כדי להגיע ל-' + NEED + '. אפשר להוסיף משפטים משלך' : 'אפשר להוסיף משפט משלך'}</h3><p>כתבי משפט עם ניקוד מלא (${cur.l === 1 ? 'קצר, רק עם סימן השיעור וקמץ ופתח' : '3 עד 6 מילים, עם הסימנים שנלמדו עד כאן ומילות הליבה'}). הוא יבחר אוטומטית ויספר בתוך ה-${NEED}.</p><textarea id="mytx" placeholder="הַמִּשְׁפָּט שֶׁלִּי"></textarea><div class="w" id="myw"></div><label><input type="checkbox" id="mypic" checked> אפשר לצייר אותו</label><button class="btn" id="myadd">הוספה לרשימה</button></div>`;
+  if (!closed) { $('mytx').oninput = () => warn(); $('myadd').onclick = addMine; }
+}
+function warn() {
+  const v = $('mytx').value.trim(), w = $('myw'); if (!v) { w.textContent = ''; w.className = 'w'; return null }
+  const r = checkText(cur.s, cur.l, v), msg = [];
+  if (r.bad.length) msg.push('יש סימן שעוד לא נלמד: ' + r.bad.map(c => NAMES[c] || 'סימן').join(', '));
+  if (r.noNik.length) msg.push('חסר ניקוד במילים: ' + r.noNik.join(' '));
+  if (cur.l === 2 && (r.nw < 3 || r.nw > 6)) msg.push('ברמה 2 מקובל 3 עד 6 מילים (יש ' + r.nw + ')');
+  if (cur.l === 1 && r.nw > 4) msg.push('ברמה 1 מקובל משפט קצר (יש ' + r.nw + ' מילים)');
+  w.textContent = msg.length ? '⚠ ' + msg.join(' | ') : '✓ מתאים לסימנים ולרמה'; w.className = 'w ' + (msg.length ? 'bad' : 'good'); return msg;
+}
+function addMine() {
+  const v = $('mytx').value.trim(); if (!v) { toast('כתבי משפט קודם'); return }
+  const msg = warn(); if (msg && msg.length && !confirm('המשפט לא תואם לגמרי לכללים:\n' + msg.join('\n') + '\nלהוסיף בכל זאת?')) return;
+  const k = key(cur.s, cur.l); if ((picks[k] || []).length >= NEED) { toast('הרשימה מלאה. הורידי משפט כדי להוסיף'); return }
+  const id = 'my-' + cur.s + '-' + cur.l + '-' + Date.now(); (custom[k] = custom[k] || []).push({ id, t: v, p: $('mypic').checked ? 1 : 0 }); (picks[k] = picks[k] || []).push(id);
+  if (picks[k].length >= NEED) editing[k] = false;
+  persist(); render(); save(cur.s, cur.l); toast('נוסף ונבחר ✓');
 }
 let wix = null, items = null;
 async function cloud() { if (wix) return wix; const { createClient, OAuthStrategy } = await import('https://esm.sh/@wix/sdk@1.21.16'); const m = await import('https://esm.sh/@wix/data@1.0.525'); items = m.items; wix = createClient({ auth: OAuthStrategy({ clientId: '058da38e-a911-4b84-876e-e5efedfa9ae9' }), modules: { items } }); return wix }
@@ -89,37 +146,44 @@ async function save(s, l) {
   const k = key(s, l); clearTimeout(timers[k]); setSt('שומרת…');
   timers[k] = setTimeout(async () => {
     if (!secret) { setSt('נשמר במכשיר (חסר מפתח לענן)', 'err'); return }
-    try { const c = await cloud(); const ids = picks[k] || []; await c.items.insert('StudioRecordings', { title: secret, itemId: 'sentpick-' + s + '-' + l + '-' + Date.now(), k: 'sentpick:' + s + ':' + l, text: JSON.stringify(ids), mime: 'application/json', audio: '', synced: true }); setSt('נשמר ✓', 'ok') }
-    catch (e) { setSt('נשמר במכשיר, שמירה לענן נכשלה. אנסה שוב בשינוי הבא', 'err') }
+    try {
+      const c = await cloud(), ts = Date.now();
+      await c.items.insert('StudioRecordings', { title: secret, itemId: 'sentpick-' + s + '-' + l + '-' + ts, k: 'sentpick:' + s + ':' + l, text: JSON.stringify(picks[k] || []), mime: 'application/json', audio: '', synced: true });
+      await c.items.insert('StudioRecordings', { title: secret, itemId: 'sentcustom-' + s + '-' + l + '-' + ts, k: 'sentcustom:' + s + ':' + l, text: JSON.stringify(custom[k] || []), mime: 'application/json', audio: '', synced: true });
+      setSt('נשמר ✓', 'ok');
+    } catch (e) { setSt('נשמר במכשיר, שמירה לענן נכשלה. אנסה שוב בשינוי הבא', 'err') }
   }, 1200);
 }
 document.addEventListener('click', e => {
+  const d = e.target.closest('[data-del]');
+  if (d) { const id = d.dataset.del, k = key(cur.s, cur.l); custom[k] = (custom[k] || []).filter(x => x.id !== id); picks[k] = (picks[k] || []).filter(x => x !== id); persist(); render(); save(cur.s, cur.l); return }
   const t = e.target.closest('.tab,.lvb,.row'); if (!t) return;
   if (t.classList.contains('tab')) { cur.s = t.dataset.s; render(); scrollTo(0, 0); return }
   if (t.classList.contains('lvb')) { cur.l = +t.dataset.l; render(); return }
-  const k = key(cur.s, cur.l), a = picks[k] = picks[k] || [], id = t.dataset.id, i = a.indexOf(id);
-  if (i >= 0) a.splice(i, 1); else { if (a.length >= NEED) { toast('כבר נבחרו ' + NEED + '. הורידי משפט כדי לבחור אחר'); return } a.push(id) }
+  const k = key(cur.s, cur.l); if (isClosed(k)) return;
+  const a = picks[k] = picks[k] || [], id = t.dataset.id, i = a.indexOf(id);
+  if (i >= 0) a.splice(i, 1); else { if (a.length >= NEED) { toast('כבר נבחרו ' + NEED + '. הורידי משפט כדי לבחור אחר'); return } a.push(id); if (a.length >= NEED) { editing[k] = false; toast('הרשימה נסגרה ✓ (אפשר ללחוץ עריכה)') } }
   persist(); render(); save(cur.s, cur.l);
 });
-$('clear').onclick = () => { if (!(picks[key(cur.s, cur.l)] || []).length) return; if (!confirm('לנקות את הבחירה ברמה הזאת?')) return; picks[key(cur.s, cur.l)] = []; persist(); render(); save(cur.s, cur.l) };
+$('clear').onclick = () => { const k = key(cur.s, cur.l); if (!(picks[k] || []).length) return; if (!confirm('לנקות את הבחירה ברמה הזאת? (משפטים שכתבת נשארים ברשימה)')) return; picks[k] = []; persist(); render(); save(cur.s, cur.l) };
 $('fill').onclick = () => {
   const k = key(cur.s, cur.l), a = picks[k] = picks[k] || [], arr = DATA[cur.s]['l' + cur.l];
-  const rest = arr.filter(x => !a.includes(x.id)); const withPic = rest.filter(x => x.p), no = rest.filter(x => !x.p);
-  // מעדיפה משפטים שאפשר לצייר, ומגוונת: לוקחת בקפיצות
-  const pool = [...withPic, ...no]; let i = 0; while (a.length < NEED && pool.length) { const j = (i * 7) % pool.length; a.push(pool.splice(j, 1)[0].id); i++ }
-  persist(); render(); save(cur.s, cur.l);
+  const rest = arr.filter(x => !a.includes(x.id)); const pool = [...rest.filter(x => x.p), ...rest.filter(x => !x.p)]; let i = 0;
+  while (a.length < NEED && pool.length) { const j = (i * 7) % pool.length; a.push(pool.splice(j, 1)[0].id); i++ }
+  if (a.length >= NEED) editing[k] = false; persist(); render(); save(cur.s, cur.l);
 };
-$('share').onclick = async () => { const u = location.origin + location.pathname + '#p=' + encode(); try { await navigator.clipboard.writeText(u); toast('הקישור הועתק') } catch (e) { prompt('העתיקי את הקישור:', u) } };
+$('share').onclick = async () => { const u = location.origin + location.pathname + encode(); try { await navigator.clipboard.writeText(u); toast('הקישור הועתק') } catch (e) { prompt('העתיקי את הקישור:', u) } };
 (async () => {
   try {
     const hm = location.hash.match(/k=([\w-]+)/); secret = (hm || [])[1] || store.get('sentkey', ''); if (secret) store.set('sentkey', secret);
-    if(!secret){document.querySelector(".wrap").innerHTML="<header><h1>דף פרטי</h1><p class=\"sub\">הדף נפתח רק מהקישור האישי שנשלח אלייך.</p></header>";document.querySelector(".foot").style.display="none";return}
+    if (!secret) { document.querySelector('.wrap').innerHTML = '<header><h1>דף פרטי</h1><p class="sub">הדף נפתח רק מהקישור האישי שנשלח אלייך.</p></header>'; document.querySelector('.foot').style.display = 'none'; return }
     DATA = await (await fetch('sentences.json?v=' + Date.now())).json();
-    try { picks = JSON.parse(store.get('sentpicks', '{}')) } catch (e) { picks = {} }
-    const pm = location.hash.match(/p=([0-9a-f.\-]+)/); if (pm) decode(pm[1]);
-    persist(); render(); setSt(secret ? 'מוכן. כל בחירה נשמרת' : 'מוכן (שמירה במכשיר בלבד)', secret ? 'ok' : 'err');
+    try { const o = JSON.parse(store.get('sentpicks2', '{}')); picks = o.picks || {}; custom = o.custom || {} } catch (e) { picks = {}; custom = {} }
+    decode(location.hash);
+    persist(); render(); setSt('מוכן. כל בחירה נשמרת', 'ok');
   } catch (e) { setSt('שגיאה בטעינה', 'err'); document.getElementById('list').textContent = String(e) }
 })();
+
 </script>
 </body>
 </html>

@@ -12,7 +12,7 @@ export function allowed(sign, level) {
 }
 export function check(sign, level, text) {
   const al = allowed(sign, level); const bad = new Set();
-  const t = text.replace(/לֹא/g, '');            // מילת לא מותרת תמיד (חן כתבה אותה בדוגמאות)
+  const t = text.replace(/לֹא/g, '').replace(/אֶת/g, '').replace(/שֶׁל/g, '').replace(/(^|\s)וְ/g, '$1');            // מילות ליבה מותרות תמיד: לא, את, של, ו
   for (const ch of t) if (/[ְ-ׇ]/.test(ch) && !al.has(ch)) bad.add('U+' + ch.codePointAt(0).toString(16).toUpperCase());
   const words = text.replace(/[.,?!:״"]/g, ' ').trim().split(/\s+/);
   const hebWords = words.filter(w => /[א-ת]/.test(w));
