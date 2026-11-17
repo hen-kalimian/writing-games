@@ -47,7 +47,7 @@ html,body{touch-action:none;-webkit-user-select:none;user-select:none;margin:0;h
 .trophy{width:150px;height:150px;object-fit:contain;animation:shine 1.4s ease-in-out infinite}
 @keyframes shine{50%{transform:scale(1.08) rotate(4deg);filter:drop-shadow(0 0 16px #F2C94C)}}
 </style>
-</head>
+<style>#seqrow{direction:ltr;text-align:left;font:800 20px/1.25 Rubik,Arial,sans-serif;color:#B8236B;min-height:26px;padding:2px 12px;letter-spacing:4px;word-break:break-word}</style></head>
 <body>
 <div class="wrap">
  <div class="hud">
@@ -58,6 +58,7 @@ html,body{touch-action:none;-webkit-user-select:none;user-select:none;margin:0;h
   <button class="mute" id="mute" type="button" aria-label="מוזיקה"><svg viewBox="0 0 24 24"><path d="M9 17V5l10-2v12" stroke="#EF406E" stroke-width="2.2" fill="none" stroke-linejoin="round"/><circle cx="6.5" cy="17" r="2.6" fill="#EF406E"/><circle cx="16.5" cy="15" r="2.6" fill="#EF406E"/><path id="muteX" d="M3 3l18 18" stroke="#B8236B" stroke-width="2.4" stroke-linecap="round" style="display:none"/></svg></button>
   <button class="fs" id="fs" type="button" aria-label="מסך מלא"><svg viewBox="0 0 24 24" fill="none" stroke="#EF406E" stroke-width="2.2" stroke-linecap="round"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg></button>
  </div>
+ <div id="seqrow" style="display:none"></div>
  <div class="tbar" id="tbar"><i id="tbarI"></i></div>
  <div id="stage"><canvas id="cv"></canvas><div class="big10" id="big10"></div><div class="hint" id="hint"></div><button class="steer l" data-d="-1" type="button" aria-label="שמאלה"></button><button class="steer r" data-d="1" type="button" aria-label="ימינה"></button></div>
 </div>
@@ -93,7 +94,20 @@ function buildTrack(){ segs=[];
     if(Math.random()<.5) segs[i+2]&&segs[i+2].sp.push({k:W.props[Math.floor(Math.random()*W.props.length)],off:-side*(1.5+Math.random()*1.2)}) } }
 /* ---------- מצב המשחק ---------- */
 /*__SLOW15 (חן, 15.11.26: "קושי להעביר את הרכב למקום המתאים", "להאט בכל התבניות"): יותר זמן לעבור נתיב*/var pos=0, speed=0, MAXS=1900, laneI=1, px=0, need=10, got=0, time=60, state='intro', clock=0, slow=0, shake=0, finishAt=-1, nextSpawn=0, carCol='#EF406E', car=null, last10=-1, parts=[];
-function spawnRow(){ // שורה חדשה לפני הנהג: צליל נכון, צליל אחר או משלוח, בנתיבים שונים
+/*__RACESEQ (חן, 18.11.26): מירוץ לפי רצף: אותיות א-ת או ספרות לפי הסדר. רק פגיעה נכונה נשמעת ומתווספת למעלה משמאל לימין, הבלונים צמודים (שנייה בין אחד לשני), ושלוש פגיעות שגויות ברצף = "איפה X?"*/
+var miss=0,sqIdx=0,sqItems=[];
+function seqName(x){return W.names==='num'?(HenVoice.numberName(x)||x):(HenVoice.letterName(x)||x)}
+function spawnRowSeq(){var si=Math.floor((pos+SEG*70)/SEG),s=segs[si];if(!s||finishAt>=0)return;
+  sqItems=sqItems.filter(function(x){return !x.o.dead&&x.si*SEG>pos-SEG});
+  var want=W.seq[got];if(!sqItems.some(function(x){return x.o.t===want}))sqIdx=got;
+  var lanes=[0,1,2].sort(function(){return Math.random()-.5}),tt=W.seq[sqIdx],o={sq:1,t:tt,off:LANES[lanes[0]],ph:Math.random()*6};s.it.push(o);sqItems.push({o:o,si:si});
+  sqIdx++;if(sqIdx>=W.seq.length)sqIdx=got;
+  if(Math.random()<.4){var oth=W.seq.filter(function(x){return x!==tt&&x!==want});if(oth.length){var o2={sq:1,t:oth[Math.floor(Math.random()*oth.length)],off:LANES[lanes[1]],ph:Math.random()*6};s.it.push(o2);sqItems.push({o:o2,si:si})}}
+  if(Math.random()<.1)s.it.push({box:1,off:LANES[lanes[2]]})}
+function seqHit(o){var want=W.seq[got];
+  if(o.t===want){got++;miss=0;SFX.good();burst(VW/2,VH*.6);say(seqName(o.t));renderHud();if(got>=need&&finishAt<0){finishAt=Math.floor((pos+SEG*40)/SEG);state='finish';say(W.finishSay||'הִנֵּה קַו הַסִּיּוּם!')}}
+  else{miss++;if(miss>=3){miss=0;speak(['אֵיפֹה',seqName(want)])}}}
+function spawnRow(){ if(W.seq)return spawnRowSeq(); // שורה חדשה לפני הנהג: צליל נכון, צליל אחר או משלוח, בנתיבים שונים
   var si=Math.floor((pos+SEG*70)/SEG), s=segs[si]; if(!s||finishAt>=0) return;
   var lanes=[0,1,2].sort(function(){return Math.random()-.5}), r=Math.random();
   var hasG=Math.random()<.55; if(hasG) s.it.push({g:1,t:W.good[Math.floor(Math.random()*W.good.length)],off:LANES[lanes[0]],ph:Math.random()*6});
@@ -109,10 +123,11 @@ function step(dt){
   pos=Math.min(pos+speed*dt,trackLen-SEG*(DRAW+2))
   px+=(LANES[laneI]-px)*Math.min(1,dt*9);
   if(state==='play'){ time-=dt; var sec=Math.ceil(time); if(sec<=10&&sec!==last10&&sec>0){ last10=sec; big10(sec); SFX.tick() } if(time<=0) return timeUp(); }
-  nextSpawn-=speed*dt; if(nextSpawn<=0&&state==='play'){ spawnRow(); nextSpawn=SEG*(14+Math.random()*4) }
+  nextSpawn-=speed*dt; if(nextSpawn<=0&&state==='play'){ spawnRow(); nextSpawn=W.seq?Math.max(SEG*8,speed*1.0):SEG*(14+Math.random()*4) }
   // התנגשות: פריטים במקטע של הנהג
   var si=Math.floor((pos+SEG*2)/SEG); [si,si+1].forEach(function(j){ var s=segs[j]; if(s) s.it.forEach(function(o){ if(o.dead) return; if(Math.abs(o.off-px)<.3){ o.dead=1;
     if(o.box){ slow=1.6; shake=.4; SFX.bump(); burst(VW/2,VH*.7,'#C9A27A') }
+    else if(o.sq){ seqHit(o) }
     else if(o.g){ got++; SFX.good(); burst(VW/2,VH*.6); say(W.names==='num'?(HenVoice.numberName(o.t)||o.t):W.names==='syl'?o.t:W.names?(HenVoice.letterName(o.t)||o.t):o.t); renderHud(); if(got>=need&&finishAt<0){ finishAt=Math.floor((pos+SEG*40)/SEG); state='finish'; say(W.finishSay||'הִנֵּה קַו הַסִּיּוּם!') } }
     else { slow=.9; shake=.25; SFX.bump() } } }) });
   if(state==='finish'&&finishAt>=0&&Math.floor((pos+SEG*2)/SEG)>=finishAt) return win();
@@ -188,7 +203,7 @@ document.querySelectorAll('.steer').forEach(function(b){ b.addEventListener('poi
 document.addEventListener('touchmove',function(e){ e.preventDefault() },{passive:false});
 addEventListener('keydown',function(e){ if(e.key==='ArrowRight'){move(1);e.preventDefault()} if(e.key==='ArrowLeft'){move(-1);e.preventDefault()} if(e.key==='Enter'&&!ov.classList.contains('hidden')){var b=ov.querySelector('.btn');b&&b.click()} });
 /* ---------- מסכים ---------- */
-function renderHud(){ /* חן, 29.10.26: סרגל זמן שאוזל, ירוק > צהוב > כתום > אדום */ var fr=Math.max(0,Math.min(1,time/(W.time||60))), tb=document.getElementById('tbarI'); if(tb){ tb.style.width=(fr*100)+'%'; tb.style.background=fr>.6?'#7CC46A':fr>.35?'#F2C94C':fr>.15?'#F29B38':'#E0584F' } document.getElementById('count').textContent=Math.min(got,need)+' / '+need; var s=Math.max(0,Math.ceil(time)); document.getElementById('clock').textContent=Math.floor(s/60)+':'+('0'+s%60).slice(-2) }
+function renderHud(){ /* חן, 29.10.26: סרגל זמן שאוזל, ירוק > צהוב > כתום > אדום */ var fr=Math.max(0,Math.min(1,time/(W.time||60))), tb=document.getElementById('tbarI'); if(tb){ tb.style.width=(fr*100)+'%'; tb.style.background=fr>.6?'#7CC46A':fr>.35?'#F2C94C':fr>.15?'#F29B38':'#E0584F' } document.getElementById('count').textContent=Math.min(got,need)+' / '+need; var sr=document.getElementById('seqrow'); if(sr){ if(W.seq){ sr.style.display='block'; sr.textContent=W.seq.slice(0,Math.min(got,need)).join(' ')||'\u00A0' } else sr.style.display='none' } var s=Math.max(0,Math.ceil(time)); document.getElementById('clock').textContent=Math.floor(s/60)+':'+('0'+s%60).slice(-2) }
 setInterval(function(){ if(W) renderHud() },250);
 function big10(n){ var b=document.getElementById('big10'); b.textContent=n; b.style.display='block'; b.animate([{transform:'translateX(-50%) scale(1.4)',opacity:0},{transform:'translateX(-50%) scale(1)',opacity:1},{opacity:.0}],{duration:950}); setTimeout(function(){b.style.display='none'},900) }
 function spk(t){ return '<button class="spk" type="button" data-say="'+t+'" aria-label="להשמיע"><svg viewBox="0 0 24 24" fill="#EF406E"><path d="M4 9v6h4l5 4V5L8 9H4z"/><path d="M16 8.5a5 5 0 0 1 0 7" stroke="#EF406E" stroke-width="2" fill="none" stroke-linecap="round"/></svg></button>' }
@@ -197,12 +212,12 @@ function show(kind){ ov.classList.remove('hidden'); var h='';
   if(kind==='intro'){ var cars=W.cars||[]; h='<h2>'+W.title+'</h2><p>'+W.goal+' '+spk('__goal')+'</p><div class="big">'+W.show.map(function(t){return '<span>'+t+'</span>'}).join('')+'</div>'+(cars.length?'<p>'+(W.pick||'בַּחֲרוּ מְכוֹנִית')+'</p><div class="cars">'+cars.map(function(c,i){return '<button type="button" data-car="'+i+'"'+'><img src="art/'+(c.img||'car-'+String(c.color).slice(1).toLowerCase())+'.png" alt="">'+'</button>'}).join('')+'</div>':'<button class="btn" id="go">'+(W.start||'נוֹסְעִים')+'</button>');
     card.innerHTML=h; bind(start); card.querySelectorAll('[data-car]').forEach(function(b){ b.onclick=function(){ var c=cars[+b.getAttribute('data-car')]; car=c.img?c.img.replace(/^car_/,''):null; carCol=c.color||carCol; ov.classList.add('hidden'); start() } }); state='card'; return }
   if(kind==='win'){ /* חן, 29.10.26: "תפסתם את..." הקלטה אחת, ואחריה שם האות או הספרה בקול שלה */
-    var nm=W.names==='num'?HenVoice.numberName(W.show[0]):W.names==='syl'?W.show[0]:W.names?HenVoice.letterName(W.show[0]):'', CAUGHT='תְּפַסְתֶּם אֶת';
+    var nm=W.seq?'':W.names==='num'?HenVoice.numberName(W.show[0]):W.names==='syl'?W.show[0]:W.names?HenVoice.letterName(W.show[0]):'', CAUGHT='תְּפַסְתֶּם אֶת';
     var line=nm?CAUGHT+' '+(W.names==='num'?'הַסִּפְרָה ':W.names==='syl'?'הַצְּלִיל ':'הָאוֹת ')+W.show[0]:W.winSay;
     h='<img class="trophy" src="art/'+(W.trophy||'sun')+'.png" alt=""><h2>'+W.winTitle+'</h2><p>'+line+' '+spk(nm?'__win':W.winSay)+'</p><button class="btn" id="go">'+(W.replay||'נוֹסְעִים שׁוּב')+'</button>'; card.innerHTML=h; bind(function(){ show('intro') }); say(W.winTitle,function(){ if(nm) say(CAUGHT,function(){ say(nm) }); else say(W.winSay) }); try{window.WGEnd&&(WGEnd.replay=function(){var g=document.getElementById('go');g&&g.click()},WGEnd());}catch(e){} return }
   if(kind==='late'){ h='<h2>'+(W.lateTitle||'נִגְמַר הַזְּמַן')+'</h2><p>'+(W.late||'נְנַסֶּה שׁוּב?')+'</p><button class="btn" id="go">'+(W.again||'עוֹד נְסִיעָה')+'</button>'; card.innerHTML=h; bind(start); say(W.late||'נְנַסֶּה שׁוּב?'); return }
 }
-function start(){ buildTrack(); pos=0; speed=0; laneI=1; px=0; got=0; time=W.time||60; finishAt=-1; nextSpawn=SEG*20; last10=-1; slow=0; need=W.need||10; state='play'; renderHud(); document.getElementById('goal').textContent=W.goal; speak(W.goalSay||W.goal) }
+function start(){ buildTrack(); pos=0; speed=0; laneI=1; px=0; got=0; time=W.time||60; finishAt=-1; nextSpawn=SEG*20; last10=-1; slow=0; need=W.seq?W.seq.length:(W.need||10); miss=0; sqIdx=0; sqItems=[]; state='play'; renderHud(); document.getElementById('goal').textContent=W.goal; speak(W.goalSay||W.goal) }
 function timeUp(){ state='over'; setTimeout(function(){ show('late') },500) }
 function win(){ state='won'; SFX.win(); for(var i=0;i<6;i++) setTimeout(function(){ burst(rnd(VW*.2,VW*.8),rnd(VH*.2,VH*.5)) },i*150); setTimeout(function(){ show('win') },1300) }
 var hintT=0; function hideHint(){ if(hintT) return; hintT=1; setTimeout(function(){ document.getElementById('hint').classList.add('gone') },2500) }
@@ -211,7 +226,7 @@ document.getElementById('mute').onclick=function(){ muted=!muted; document.getEl
 document.getElementById('pause').onclick=function(){ if(state!=='play'&&state!=='finish') return; var was=state; state='pause'; try{aud.pause()}catch(e){} ov.classList.remove('hidden'); card.innerHTML='<h2>'+(W.paused||'הַמִּשְׂחָק עָצוּר')+'</h2><button class="btn" id="go">'+(W.resume||'מַמְשִׁיכִים')+'</button>'; bind(function(){ state=was }) };
 document.getElementById('fs').onclick=function(){ var d=document.documentElement; if(document.fullscreenElement) document.exitFullscreen(); else (d.requestFullscreen||d.webkitRequestFullscreen||function(){}).call(d) };
 window.__R=function(){ return {state:state,got:got,need:need,time:time,laneI:laneI,px:px,speed:speed,pos:pos,finishAt:finishAt,
-  near:(function(){ var out=[], b=Math.floor(pos/SEG); for(var n=2;n<26;n++){ var s=segs[(b+n)%segs.length]; s&&s.it.forEach(function(o){ if(!o.dead) out.push({n:n,g:o.g?1:0,box:o.box?1:0,lane:LANES.indexOf(o.off)}) }) } return out })() } };
+  near:(function(){ var out=[], b=Math.floor(pos/SEG); for(var n=2;n<26;n++){ var s=segs[(b+n)%segs.length]; s&&s.it.forEach(function(o){ if(!o.dead) out.push({n:n,g:o.g?1:0,box:o.box?1:0,lane:LANES.indexOf(o.off),t:o.t,sq:o.sq?1:0}) }) } return out })() } };
 fetch('worlds/'+(Q.get('w')||'spring')+'.json?v=1').then(function(r){return r.json()}).then(function(w){
   W=w; document.title=W.title; document.getElementById('hint').textContent=W.hint||'נוֹגְעִים מִיָּמִין אוֹ מִשְּׂמֹאל כְּדֵי לִפְנוֹת';
   var ks=['sun','cloud',W.obstacle||'cone'].concat(W.weather==='leaves'?['leaf-orange','leaf-yellow','leaf-red','leaf-brown']:[]).concat(W.props).concat((W.cars||[]).map(function(c){return c.img}).filter(Boolean)).concat(W.trophy?[W.trophy]:[]), n=0;
