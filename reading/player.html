@@ -20,19 +20,24 @@ video{position:absolute;inset:0;width:100%;height:100%;display:block;background:
 .card{position:relative;background:rgba(255,255,255,.62);backdrop-filter:blur(8px);border:2.5px solid var(--line);border-radius:22px;padding:18px 20px;max-width:92%}
 .card h1{margin:0 0 4px;font:800 26px/1.25 Rubik,Arial;color:var(--deep)}
 .card p{margin:0;font:700 17px/1.4 Rubik,Arial}
+.play,.hint,.btn{flex:none}
+.kick{font:800 30px/1.2 Rubik,Arial;color:var(--pink);margin:0 0 6px}
+.card .exp{font:600 15.5px/1.5 Rubik,Arial;margin:8px 0 0}
+.hint{position:relative;font:800 19px Rubik,Arial;color:var(--deep);background:rgba(255,255,255,.7);border-radius:14px;padding:4px 14px}
 .btn{position:relative;font:800 20px Rubik,Arial;border:0;border-radius:18px;padding:14px 26px;cursor:pointer;background:var(--pink);color:#fff;min-width:240px}
 .btn.soft{background:#fff;color:var(--deep);border:2.5px solid var(--line)}
 .play{width:92px;height:92px;border-radius:50%;padding:0;min-width:0;display:flex;align-items:center;justify-content:center}
 .play svg{width:40px;height:40px;fill:#fff;margin-inline-end:-4px}
 .sp{position:absolute;top:10px;inset-inline-start:10px;z-index:3;background:rgba(255,255,255,.85);border:2px solid var(--line);color:var(--deep);border-radius:14px;padding:3px 10px;font:800 14px Rubik,Arial;display:none}
+@media (max-width:380px){.ov{gap:8px;padding:10px}.card{padding:12px 14px}.kick{font-size:25px!important;margin:0 0 2px!important}.card h1{font-size:20px}.card .exp{font-size:13.5px!important;margin-top:5px!important}.play{width:68px;height:68px}.play svg{width:30px;height:30px}.hint{font-size:16px}}
 </style>
 </head>
 <body>
 <div class="wrap"><div class="box" id="box">
   <video id="v" playsinline preload="auto"></video>
   <div class="sp" id="sp">מהירות X2</div>
-  <div class="ov on" id="cover"><div class="card"><h1 id="t1"></h1><p>קוראים יחד עם חן</p></div><button class="btn play" id="go" aria-label="הפעלה"><svg viewBox="0 0 24 24"><path d="M6 3.5v17l15-8.5z"/></svg></button></div>
-  <div class="ov" id="end"><div class="card"><h1>כל הכבוד!</h1><p>רוצה לקרוא שוב?</p></div><button class="btn" id="again">לקרוא שוב</button><button class="btn soft" id="again2">לקרוא שוב במהירות כפולה X2</button></div>
+  <div class="ov on" id="cover"><div class="card"><div class="kick">קוראים עם חן</div><h1 id="t1"></h1><p class="exp">בפעילות זו הילד צריך לקרוא בקול רם יחד עם חן. זוהי קריאת מקהלה (קריאה בו זמנית) שמשפרת שטף קריאה.</p><p class="exp">גם קריאת משפטי הפירמידה עוזרת לקריאה השוטפת.</p></div><button class="btn play" id="go" aria-label="לחצו כדי להתחיל"><svg viewBox="0 0 24 24"><path d="M6 3.5v17l15-8.5z"/></svg></button><div class="hint">לחצו כדי להתחיל</div></div>
+  <div class="ov" id="end"><div class="card"><h1>כל הכבוד!</h1><p>רוצים לקרוא שוב?</p></div><button class="btn" id="again">קריאה חוזרת</button><button class="btn soft" id="again2">קריאה במהירות כפולה ×2</button></div>
 </div></div>
 <script>
 const NAMES={kp:'קמץ פתח - המקל של הרופא',sh:'שווא - הרמזור',ch:'חיריק - ביפ (הצופר)',ho:'חולם - אור',tz:'צירה סגול - עיניים',sk:'שורוק קובוץ - תות'};
