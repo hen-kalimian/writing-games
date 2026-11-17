@@ -1,0 +1,583 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>מיפוי בזמן אמת ומעקב התקדמות</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&family=Rubik:wght@500;700;800&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<style>
+:root{
+  --bg:#fff8fa; --card:#ffffff; --ink:#2b3138; --muted:#6b6f78; --line:#f3d3de;
+  --pink:#fde1ea; --pink2:#fbc5d6; --pink-strong:#d14175; --pink-deep:#b8236b;
+  --mint:#d3f0e1; --mint-ink:#1f6b4a; --sky:#d8ecfa; --sky-ink:#245e8c; --sun:#ffeeba; --sun-ink:#8a5a00;
+  --head:'Rubik','Open Sans',Arial,sans-serif; --body:'Open Sans','Rubik',Arial,sans-serif;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.5;padding:16px 16px 60px;-webkit-text-size-adjust:100%}
+.wrap{max-width:900px;margin:0 auto;display:flex;flex-direction:column;gap:16px}
+.wrap>*{min-width:0}
+#main.wrap{margin:0}
+h1,h2,h3{font-family:var(--head);font-weight:800;margin:0;text-wrap:balance}
+h1{font-size:1.55rem;color:var(--pink-deep)} h2{font-size:1.1rem} h3{font-size:1rem}
+.note{font-size:.85rem;color:var(--muted)}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible{outline:3px solid var(--pink-strong);outline-offset:2px}
+.top{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between}
+.acct{display:flex;flex-wrap:wrap;gap:8px;align-items:center;font-size:.85rem;color:var(--muted)}
+.btn{border:1.5px solid var(--pink-strong);background:var(--pink);color:var(--pink-deep);border-radius:14px;padding:9px 16px;font-weight:700}
+.btn.solid{background:var(--pink-strong);color:#fff}
+.btn.quiet{border-color:var(--line);background:transparent;color:var(--muted);font-weight:600}
+.btn.mint{border-color:var(--mint-ink);background:var(--mint);color:var(--mint-ink)}
+.btn.danger{border-color:#c0392b;color:#c0392b;background:transparent}
+.btn.sm{padding:5px 11px;font-size:.82rem;border-radius:11px}
+.tabs{display:flex;gap:8px}
+.tab{flex:1;border:1.5px solid var(--line);background:var(--card);border-radius:16px;padding:11px 8px;font-weight:800;font-family:var(--head);text-align:center}
+.tab.on{background:var(--pink);border-color:var(--pink-strong);color:var(--pink-deep)}
+.card{background:var(--card);border:1.5px solid var(--line);border-radius:22px;padding:16px;display:flex;flex-direction:column;gap:12px;min-width:0}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{border:1.5px solid var(--line);background:var(--card);border-radius:999px;padding:7px 15px;font-weight:600}
+.chip.on{background:var(--pink-strong);border-color:var(--pink-strong);color:#fff}
+.chip.add{border-style:dashed;color:var(--pink-deep)}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:end}
+.field{display:flex;flex-direction:column;gap:3px;min-width:0;flex:1 1 140px}
+.field>label,.lbl{font-size:.8rem;color:var(--muted);font-weight:600}
+input[type=text],input[type=date],input[type=number],textarea,select{font:inherit;color:var(--ink);background:#fff;border:1.5px solid var(--line);border-radius:11px;padding:8px 10px;width:100%;min-width:0}
+textarea{resize:vertical;min-height:64px}
+.ruled{background-image:repeating-linear-gradient(transparent,transparent 27px,#e7c3d1 28px);line-height:28px;padding:0 8px;background-color:#fff;min-height:84px}
+
+/* ===== דף המיפוי ===== */
+.sheet{background:#fff;border:2px solid var(--pink2);border-radius:22px;padding:16px;display:flex;flex-direction:column;gap:12px}
+.sheet .title{text-align:center;font-family:var(--head);font-weight:800;font-size:1.35rem;color:var(--pink-deep)}
+.sheet .sub{text-align:center;font-size:.82rem;color:var(--muted);margin-top:-8px}
+.meta{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px}
+.panel{border:1.5px solid var(--line);border-radius:16px;padding:12px;display:flex;flex-direction:column;gap:8px;min-width:0;background:#fff}
+.panel>h3{display:flex;align-items:center;gap:9px;font-size:1rem}
+.num{flex:none;width:30px;height:30px;border-radius:50%;display:grid;place-items:center;color:#fff;font-family:var(--head);font-weight:800}
+.n1{background:var(--pink-strong)} .n2{background:#3aa57a} .n3{background:#4a90c2} .n4{background:#d9a21b}
+.panel .field,.sum .field,.meta .field{flex:0 0 auto}
+.wrow{display:flex;gap:8px;align-items:flex-end}
+.wrow .field{width:92px;flex:none}
+.wrow .pad{flex:1;min-width:0}
+.grid2{display:grid;grid-template-columns:1fr;gap:12px}
+@media(min-width:760px){.grid2{grid-template-columns:1fr 1fr}}
+.cbs{display:flex;flex-direction:column;gap:5px}
+.cb{display:flex;align-items:center;gap:8px;cursor:pointer;font-size:.92rem}
+.cb input{position:absolute;opacity:0;width:1px;height:1px}
+.bx{flex:none;width:22px;height:22px;border:2px solid var(--ink);border-radius:6px;background:#fff;display:grid;place-items:center}
+.bx svg{width:15px;height:15px;stroke:var(--mint-ink);stroke-width:3.4;fill:none;stroke-linecap:round;stroke-linejoin:round;display:none}
+.cb input:checked+.bx{background:var(--mint)}
+.cb input:checked+.bx svg{display:block}
+.cb input:focus-visible+.bx{outline:3px solid var(--pink-strong);outline-offset:2px}
+.cbs.two{display:grid;grid-template-columns:1fr 1fr;gap:5px 10px}
+.sec{font-weight:700;font-size:.85rem;color:var(--pink-deep)}
+.pad{display:flex;flex-direction:column;gap:4px}
+canvas.dc{width:100%;display:block;border:1.5px dashed var(--pink-strong);border-radius:12px;background:#fffdfd;touch-action:none;cursor:crosshair}
+.tools{display:flex;gap:6px}
+.wordchips{display:flex;flex-wrap:wrap;gap:6px}
+.wc{border:1.5px solid var(--line);background:var(--sky);color:var(--sky-ink);border-radius:999px;padding:3px 12px;font-weight:700;font-size:.88rem}
+.wc.hard{background:var(--sun);color:var(--sun-ink)}
+.ex{display:grid;grid-template-columns:auto auto auto auto auto;gap:6px;align-items:center;justify-content:start;direction:ltr}
+.ex input{width:54px;text-align:center;font-size:1.2rem;padding:6px 2px}
+.ex span{font-weight:800;font-size:1.2rem}
+.sum{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:10px}
+.sum h3{font-size:.95rem;color:var(--pink-deep)}
+.actions{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.mapbar{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+
+/* מצב קבוע לייצוא לתמונה ולהדפסה: A4 */
+.sheet.fixed{width:1000px;border-radius:0;font-size:13.5px;padding:20px;gap:10px}
+.sheet.fixed .grid2{grid-template-columns:1fr 1fr}
+.sheet.fixed .meta{grid-template-columns:repeat(4,1fr)}
+.sheet.fixed .sum{grid-template-columns:repeat(4,1fr)}
+.sheet.fixed .tools,.sheet.fixed .noexp{display:none!important}
+.sheet.fixed .cb{font-size:13px}
+.sheet.fixed .panel{padding:9px;gap:6px}
+.sheet.fixed textarea{min-height:50px}
+.sheet.fixed .ruled{min-height:70px}
+.sheet.fixed .grid2{align-items:start}
+@media print{
+  @page{size:A4;margin:7mm}
+  body{background:#fff;padding:0}
+  .noprint,.tools,.noexp{display:none!important}
+  .wrap>*:not(#main){display:none!important}
+  .mapbar{display:none!important}
+  .sheet{border:0;border-radius:0;padding:0;width:100%;font-size:11.5px;gap:7px;box-shadow:none}
+  .grid2{grid-template-columns:1fr 1fr!important}
+  .meta{grid-template-columns:repeat(4,1fr)!important}
+  .sum{grid-template-columns:repeat(4,1fr)!important}
+  .panel{break-inside:avoid}
+  *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+}
+
+/* ===== מעקב ילדים ===== */
+.now{background:var(--pink);border-radius:18px;padding:12px 14px;display:flex;flex-direction:column;gap:3px}
+.now b{font-family:var(--head);font-size:1.1rem;color:var(--pink-deep)}
+.bars{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px}
+.bar{display:flex;flex-direction:column;gap:5px;font-size:.84rem}
+.bar .track{height:10px;border-radius:99px;background:var(--line);overflow:hidden}
+.bar .fill{height:100%;background:var(--pink-strong);border-radius:99px}
+.bar.done .fill{background:#3aa57a}
+.stabs{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px}
+.stab{flex:0 0 auto;border:1.5px solid var(--line);background:var(--card);border-radius:14px;padding:8px 14px;font-weight:700;white-space:nowrap}
+.stab.on{background:var(--pink);border-color:var(--pink-strong);color:var(--pink-deep)}
+.stab small{display:block;font-weight:400;color:var(--muted);font-size:.74rem}
+.legend{display:flex;flex-wrap:wrap;gap:12px;font-size:.82rem;color:var(--muted)}
+.dot{display:inline-block;width:14px;height:14px;border-radius:50%;vertical-align:-2px;margin-inline-end:5px;border:1.5px solid var(--line)}
+.items{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:8px}
+.item{display:flex;align-items:center;gap:10px;text-align:start;border:1.5px solid var(--line);background:var(--card);border-radius:14px;padding:9px 12px;min-width:0}
+.mark{flex:0 0 28px;height:28px;border-radius:50%;display:grid;place-items:center;font-weight:800;border:1.5px solid var(--line);color:var(--muted)}
+.s1{background:#ffe9b8;border-color:#8a5a00} .s1 .mark{background:#ffe9b8;color:#8a5a00;border-color:#8a5a00}
+.s2{background:var(--mint);border-color:var(--mint-ink)} .s2 .mark{background:var(--mint-ink);color:#fff;border-color:var(--mint-ink)}
+.lg{border:1.5px solid var(--line);border-radius:16px;padding:10px 12px;display:flex;flex-direction:column;gap:8px}
+.lg.done{background:#f2fbf6;border-color:var(--mint-ink)}
+.lg .hd{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between}
+.lg .hd b{font-family:var(--head)}
+.letters{display:flex;flex-wrap:wrap;gap:8px}
+.lt{font-family:var(--head);font-weight:800;font-size:1.5rem;border:1.5px solid var(--line);background:var(--card);border-radius:14px;width:54px;padding:6px 0;text-align:center}
+.lt.s1{background:#ffe9b8;color:#8a5a00} .lt.s2{background:var(--mint);color:var(--mint-ink)}
+.gt{border:1.5px solid var(--pink-strong);background:var(--pink);color:var(--pink-deep);border-radius:12px;padding:6px 12px;font-weight:700;font-size:.88rem}
+.gt.done{background:var(--mint-ink);border-color:var(--mint-ink);color:#fff}
+.matrix{width:100%;border-collapse:separate;border-spacing:6px}
+.matrix th{font-size:.82rem;color:var(--muted);font-weight:600;padding:2px}
+.matrix td.sign{font-weight:700;padding-inline-end:8px}
+.matrix td.sign span{font-family:var(--head);font-size:1.3rem;color:var(--pink-deep);margin-inline-end:8px}
+.cell{width:100%;min-height:42px;border:1.5px solid var(--line);background:var(--card);border-radius:12px;font-weight:800}
+.cell.s1{background:#ffe9b8;color:#8a5a00} .cell.s2{background:var(--mint);color:var(--mint-ink)}
+.scroll{overflow-x:auto}
+.entry{display:flex;gap:10px;align-items:flex-start;background:var(--bg);border-radius:14px;padding:9px 12px}
+.entry time{font-weight:700;color:var(--pink-deep);flex:0 0 auto;font-size:.86rem}
+.entry p{margin:0;flex:1;min-width:0;overflow-wrap:anywhere}
+.x{border:0;background:transparent;color:var(--muted);font-size:1.1rem;padding:0 4px}
+#toast{position:fixed;inset-inline:0;bottom:16px;display:flex;justify-content:center;pointer-events:none;z-index:50}
+#toast span{background:var(--ink);color:#fff;padding:9px 18px;border-radius:99px;font-weight:600;font-size:.9rem}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top noprint">
+    <div>
+      <h1>מיפוי בזמן אמת ומעקב התקדמות</h1>
+      <div class="note">שיעור 9, מיפוי בשיטת קוראים בקלות</div>
+    </div>
+    <div class="acct" id="acct"></div>
+  </header>
+  <nav class="tabs noprint" role="tablist">
+    <button type="button" class="tab" role="tab" id="tabMap" data-tab="map">מיפוי בזמן אמת</button>
+    <button type="button" class="tab" role="tab" id="tabKids" data-tab="kids">מעקב התקדמות ילדים</button>
+  </nav>
+  <main id="main" class="wrap" style="gap:16px"></main>
+  <section class="card noprint" aria-label="גיבוי">
+    <h2>גיבוי והעברה</h2>
+    <p class="note" id="backupNote"></p>
+    <div class="row"><button class="btn" id="copyBackup" type="button">העתיקי גיבוי של הכול</button></div>
+    <div class="field"><label for="restoreBox">לשחזור: הדביקי כאן גיבוי שהעתקת קודם</label><textarea id="restoreBox"></textarea></div>
+    <div class="row"><button class="btn" id="restoreBtn" type="button">שחזרי מהגיבוי</button></div>
+  </section>
+</div>
+<div id="toast" aria-live="polite"><span hidden></span></div>
+
+<script>
+/* ===================== נתונים ושמירה ===================== */
+const KEY = 'hen-mapping-v1';
+const COLL = 'ChecklistProgress', CLIENT_ID = '058da38e-a911-4b84-876e-e5efedfa9ae9';
+const REDIRECT = 'https://hen-kalimian.github.io/writing-games/checklist/';   // הכתובת היחידה שהחיבור לאתר מאשר
+const TOK = 'hen-ck-wix-tokens', OA = 'hen-ck-wix-oauth', RET = 'hen-return';
+const DOC_COPY = 'https://docs.google.com/document/d/1LfYGhJiEu2vFPrN10m3Wa2zykjhpgzyyfBu2aUdITwE/copy';
+let S = { maps: [], children: [], tab: 'map', mapId: null, childId: null, stage: 'num' };
+let mem = null;
+const $ = id => document.getElementById(id);
+const esc = s => String(s == null ? '' : s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const uid = () => 'x' + Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+function today() { const d = new Date(); return d.getFullYear() + '-' + ('0' + (d.getMonth() + 1)).slice(-2) + '-' + ('0' + d.getDate()).slice(-2); }
+function fmt(d) { if (!d) return ''; const p = d.split('-'); return p[2] + '.' + p[1] + '.' + p[0].slice(2); }
+function toast(t) { const e = $('toast').firstElementChild; e.textContent = t; e.hidden = false; clearTimeout(toast.h); toast.h = setTimeout(() => { e.hidden = true; }, 2400); }
+function load() {
+  try { const r = localStorage.getItem(KEY); if (r) { Object.assign(S, JSON.parse(r)); return; } } catch (e) {}
+  if (mem) Object.assign(S, mem);
+}
+function persist() { mem = S; try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) {} }
+const maps = () => S.maps.filter(m => !m.del);
+const kids = () => S.children.filter(c => !c.del);
+const curMap = () => S.maps.find(m => m.id === S.mapId && !m.del);
+const curKid = () => S.children.find(c => c.id === S.childId && !c.del);
+const dirty = new Set();
+function touch(item, key) { item.u = Date.now(); dirty.add(key); persist(); scheduleSync(); }
+
+function newMap(pre) {
+  const z = (n) => Array(n).fill(0);
+  return { id: uid(), u: Date.now(), name: (pre && pre.name) || '', age: (pre && pre.age) || '', date: today(), school: '', parents: '',
+    t1: { c: z(4), ask: '', note: '', draw: [] },
+    t2: { w: ['', '', ''], d: [[], [], []], t: ['', '', ''], note: '' },
+    t3: { c: z(6), e1: ['', '', '', ''], e2: ['', '', '', ''], note: '' },
+    t4: { q: '', c: z(10), how: '' },
+    s: { strong: '', hard: '', goals: '', recs: '', r: z(5), note: '' } };
+}
+function getP(o, p) { return p.split('.').reduce((a, k) => (a == null ? a : a[k]), o); }
+function setP(o, p, v) { const ks = p.split('.'); const last = ks.pop(); const t = ks.reduce((a, k) => a[k], o); t[last] = v; }
+
+/* ===================== טופס המיפוי ===================== */
+const T1 = ['מזהה אותיות בשם', 'משיים אותיות בשם', 'כותב את השם בעזרת תיווך', 'כותב את השם באופן עצמאי'];
+const T3 = ['ספירה', 'מנייה', 'כתיבת מספרים', 'התאמת כמות למספר', 'פותר תרגילי חיבור ללא המחשה', 'פותר בעיות מילוליות ללא המחשה'];
+const T4 = ['יכולת למידה', 'תגובה לתיווך', 'זיכרון', 'גמישות', 'קשב', 'יכולת הכללה', 'מוטיבציה', 'תסכול / הימנעות', 'מוכן להתנסות', 'מגלה רצון לנסות שוב'];
+const SR = ['קבוצה', 'פרטני', 'מעקב', 'ריפוי בעיסוק', 'הפניה נוספת'];
+const EASY = ['פרח', 'דגל', 'פנס'], HARD = ['חולצה', 'מסרק', 'מסמר'];
+const CHECK = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l5 5L19 7"/></svg>';
+const cb = (p, t, m) => `<label class="cb"><input type="checkbox" data-p="${p}"${getP(m, p) ? ' checked' : ''}><span class="bx">${CHECK}</span><span>${esc(t)}</span></label>`;
+const tx = (p, m, ph) => `<input type="text" data-p="${p}" value="${esc(getP(m, p))}"${ph ? ` placeholder="${esc(ph)}"` : ''}>`;
+const ta = (p, m, ruled, ph) => `<textarea data-p="${p}" class="${ruled ? 'ruled' : ''}"${ph ? ` placeholder="${esc(ph)}"` : ''}>${esc(getP(m, p))}</textarea>`;
+const pad = (p, h, label) => `<div class="pad">${label ? `<span class="lbl">${esc(label)}</span>` : ''}<canvas class="dc" data-d="${p}" data-h="${h}" width="1000" height="${h}"></canvas><div class="tools noprint"><button type="button" class="btn sm quiet" data-act="undo" data-d="${p}">בטלי קו אחרון</button><button type="button" class="btn sm quiet" data-act="clr" data-d="${p}">נקי הכול</button></div></div>`;
+const ex = (p, m, title) => `<div class="panel" style="gap:6px"><b style="font-size:.9rem">${title}</b><div class="ex">${tx(p + '.0', m)}<span>+</span>${tx(p + '.1', m)}<span>=</span>${tx(p + '.2', m)}</div><div class="field"><label>פתרון מלא:</label>${tx(p + '.3', m)}</div></div>`;
+
+function sheetHtml(m) {
+  return `<div class="sheet" id="sheet">
+  <div class="title">דף מלווה מיפוי – הכנה לכיתה א׳</div>
+  <div class="sub">שיעור 9 בהכשרה המקצועית · חן קלימיאן, לדבר עם ילדים</div>
+  <div class="meta">
+    <div class="field"><label>שם הילד/ה</label>${tx('name', m)}</div>
+    <div class="field"><label>גיל</label>${tx('age', m)}</div>
+    <div class="field"><label>תאריך</label><input type="date" data-p="date" value="${esc(m.date)}"></div>
+    <div class="field"><label>מסגרת חינוכית</label>${tx('school', m)}</div>
+  </div>
+  <div class="panel"><h3>תובנות משיחת ההורים</h3>${ta('parents', m, true)}</div>
+  <div class="grid2">
+    <div class="panel"><h3><span class="num n1">1</span>משימה 1 – כתיבת שם</h3>
+      <div class="note">הוראה: כתוב/כתבי לי את השם שלך. הילד/ה כותב/ת כאן באצבע או בעט מגע.</div>
+      ${pad('t1.draw', 380, 'כאן הילד/ה כותב/ת את השם')}
+      <div class="sec">מה הילד/ה מצליח/ה ללא קושי?</div>
+      <div class="cbs">${T1.map((t, i) => cb('t1.c.' + i, t, m)).join('')}</div>
+      <div class="field"><label>שאלה נלווית: אילו אותיות יש לך בשם?</label>${tx('t1.ask', m)}</div>
+      <div class="field"><label>הערות</label>${ta('t1.note', m, false)}</div>
+    </div>
+    <div class="panel"><h3><span class="num n2">2</span>משימה 2 – כתיבה פונטית</h3>
+      <div class="note">הוראה: כתוב/כתבי את המילים הבאות. בחרו 2-3 מילים מהאופציות:</div>
+      <div class="wordchips noexp"><span class="lbl">רמה קלה:</span>${EASY.map(w => `<button type="button" class="wc" data-act="word" data-w="${w}">${w}</button>`).join('')}<span class="lbl">רמה קשה:</span>${HARD.map(w => `<button type="button" class="wc hard" data-act="word" data-w="${w}">${w}</button>`).join('')}</div>
+      ${[0, 1, 2].map(i => `<div class="wrow"><div class="field"><label>מילה ${i + 1}</label>${tx('t2.w.' + i, m)}</div>${pad('t2.d.' + i, 230, 'הילד/ה כותב/ת כאן')}</div>`).join('')}
+      <div class="field"><label>הערות</label>${ta('t2.note', m, false)}</div>
+    </div>
+    <div class="panel"><h3><span class="num n3">3</span>משימה 3 – חשבון</h3>
+      <div class="sec">מה הילד/ה מצליח/ה ללא קושי?</div>
+      <div class="cbs">${T3.map((t, i) => cb('t3.c.' + i, t, m)).join('')}</div>
+      ${ex('t3.e1', m, 'פתרון תרגיל חיבור עד 10')}
+      ${ex('t3.e2', m, 'תרגיל חשבון עד 5')}
+      <div class="field"><label>הערות</label>${ta('t3.note', m, false)}</div>
+    </div>
+    <div class="panel"><h3><span class="num n4">4</span>משימה 4 – למידה חדשה בזמן אמת</h3>
+      <div class="sec">דוגמאות לשאלות למידה:</div>
+      <div class="chips noexp">${['פתח', 'קמץ', 'אות חדשה', 'אחר'].map(q => `<button type="button" class="wc" data-act="q" data-w="${q}">${q}</button>`).join('')}</div>
+      <div class="field"><label>מה לימדנו?</label>${tx('t4.q', m)}</div>
+      <div class="sec">מה בודקים?</div>
+      <div class="cbs two">${T4.map((t, i) => cb('t4.c.' + i, t, m)).join('')}</div>
+      <div class="field"><label>איך הילד/ה הגיב/ה?</label>${ta('t4.how', m, true)}</div>
+    </div>
+  </div>
+  <div class="panel"><h3>סיכום מיפוי</h3>
+    <div class="sum">
+      <div class="field"><h3>נקודות חוזק</h3>${ta('s.strong', m, true)}</div>
+      <div class="field"><h3>מוקדי קושי</h3>${ta('s.hard', m, true)}</div>
+      <div class="field"><h3>מטרות ראשוניות</h3>${ta('s.goals', m, true)}</div>
+      <div class="field"><h3>המלצות להורים</h3>${ta('s.recs', m, true)}</div>
+    </div>
+    <div class="sec">המלצות להמשך</div>
+    <div class="chips" style="gap:6px 18px">${SR.map((t, i) => cb('s.r.' + i, t, m)).join('')}</div>
+    <div class="field"><label>הערות</label>${ta('s.note', m, false)}</div>
+  </div>
+</div>`;
+}
+
+function renderMap() {
+  const list = maps().slice().sort((a, b) => b.u - a.u), m = curMap();
+  let h = `<div class="card noprint"><div class="mapbar">${list.map(x => `<button type="button" class="chip${x.id === S.mapId ? ' on' : ''}" data-act="pickMap" data-id="${x.id}">${esc(x.name || 'ילד/ה ללא שם')} · ${fmt(x.date)}</button>`).join('')}<button type="button" class="chip add" data-act="newMap">+ מיפוי חדש</button></div>`;
+  h += `<p class="note">כל מיפוי נשמר אוטומטית בזמן שאת כותבת. אפשר לעבור בין מיפויים של ילדים שונים בלי לאבד כלום.</p></div>`;
+  if (!m) {
+    h += `<div class="card noprint"><h2>עוד אין מיפוי</h2><p class="note">לחצי על "מיפוי חדש" כדי לפתוח את הדף. הוא בנוי לפי קובץ המיפוי של שיעור 9: שיחת הורים, ארבע משימות וסיכום.</p><div><button class="btn solid" type="button" data-act="newMap">מיפוי חדש</button></div></div>`;
+  } else {
+    h += sheetHtml(m);
+    h += `<div class="card noprint"><h2>שמירה והדפסה</h2><div class="actions">
+      <button class="btn solid" type="button" data-act="print">הדפסה או שמירה כ-PDF</button>
+      <button class="btn" type="button" data-act="png">שמירה כתמונה (גודל A4)</button>
+      <a class="btn mint" style="text-decoration:none" href="${DOC_COPY}" target="_blank" rel="noopener">פתיחת תבנית דוח סיכום להורים</a></div>
+      <p class="note">בחלון ההדפסה בוחרים "שמירה כ-PDF" כיעד. הדף יוצא על עמוד A4 אחד.<br>התבנית של הדוח להורים נפתחת כעותק משלך ב-Google Docs.</p>
+      <div class="row"><button class="btn danger sm" type="button" data-act="delMap" id="delMap">מחיקת המיפוי הזה</button></div></div>`;
+  }
+  $('main').innerHTML = h;
+  initCanvases();
+}
+
+/* ===== ציור ===== */
+function strokes(p) { const m = curMap(); return getP(m, p); }
+function drawCanvas(cv) {
+  const ctx = cv.getContext('2d'), W = cv.width, H = cv.height;
+  ctx.clearRect(0, 0, W, H);
+  ctx.strokeStyle = '#f0d9e2'; ctx.lineWidth = 2; ctx.setLineDash([10, 8]);
+  ctx.beginPath(); ctx.moveTo(30, H * 0.68); ctx.lineTo(W - 30, H * 0.68); ctx.stroke(); ctx.setLineDash([]);
+  ctx.strokeStyle = '#2b3138'; ctx.lineWidth = 7; ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+  (strokes(cv.dataset.d) || []).forEach(st => {
+    ctx.beginPath();
+    st.forEach((pt, i) => { const x = pt[0] / 1000 * W, y = pt[1] / 1000 * H; if (i) ctx.lineTo(x, y); else ctx.moveTo(x, y); });
+    if (st.length === 1) ctx.lineTo(st[0][0] / 1000 * W + 0.1, st[0][1] / 1000 * H);
+    ctx.stroke();
+  });
+}
+function initCanvases() { document.querySelectorAll('canvas.dc').forEach(drawCanvas); }
+let cur = null;
+document.addEventListener('pointerdown', e => {
+  const cv = e.target.closest && e.target.closest('canvas.dc'); if (!cv) return;
+  e.preventDefault(); cv.setPointerCapture(e.pointerId);
+  const r = cv.getBoundingClientRect();
+  cur = { cv, pts: [[Math.round((e.clientX - r.left) / r.width * 1000), Math.round((e.clientY - r.top) / r.height * 1000)]] };
+  const m = curMap(); getP(m, cv.dataset.d).push(cur.pts); drawCanvas(cv);
+});
+document.addEventListener('pointermove', e => {
+  if (!cur) return; const r = cur.cv.getBoundingClientRect();
+  const x = Math.round((e.clientX - r.left) / r.width * 1000), y = Math.round((e.clientY - r.top) / r.height * 1000), l = cur.pts[cur.pts.length - 1];
+  if (Math.abs(x - l[0]) + Math.abs(y - l[1]) < 3) return;
+  cur.pts.push([x, y]); drawCanvas(cur.cv);
+});
+function endStroke() { if (!cur) return; const m = curMap(); cur = null; if (m) touch(m, 'map:' + m.id); }
+document.addEventListener('pointerup', endStroke); document.addEventListener('pointercancel', endStroke);
+
+/* ===== ייצוא ===== */
+async function exportPng() {
+  const sh = $('sheet'); if (!sh) return;
+  if (typeof html2canvas !== 'function') { toast('הכלי לשמירת תמונה לא נטען. בדקי חיבור לאינטרנט ונסי שוב'); return; }
+  toast('מכינה תמונה...');
+  sh.classList.add('fixed'); await new Promise(r => setTimeout(r, 150));
+  try {
+    const c = await html2canvas(sh, { scale: 2, backgroundColor: '#ffffff', logging: false });
+    sh.classList.remove('fixed');
+    const m = curMap(), name = ((m && m.name) || 'ילד').replace(/[\\/:*?"<>|]/g, '');
+    const A = document.createElement('canvas'); A.width = 1588; A.height = 2246;
+    const g = A.getContext('2d'); g.fillStyle = '#fff'; g.fillRect(0, 0, A.width, A.height);
+    const k = Math.min(A.width / c.width, A.height / c.height); g.drawImage(c, (A.width - c.width * k) / 2, 0, c.width * k, c.height * k);
+    A.toBlob(b => { const a = document.createElement('a'); a.href = URL.createObjectURL(b); a.download = 'מיפוי ' + name + ' ' + fmt(m.date) + '.png'; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 4000); toast('התמונה נשמרה'); }, 'image/png');
+  } catch (e) { sh.classList.remove('fixed'); toast('לא הצלחתי לשמור תמונה. אפשר להדפיס ולשמור כ-PDF'); }
+}
+
+/* ===================== מעקב ילדים ===================== */
+const GROUPS = [['א', 'ב', 'ג', 'ד'], ['ה', 'ו', 'ז', 'ח'], ['ט', 'י', 'כ', 'ל'], ['מ', 'נ', 'ס', 'ע'], ['פ', 'צ', 'ק'], ['ר', 'ש', 'ת'], ['ך', 'ם', 'ן', 'ף', 'ץ']];
+const gname = (g, i) => i === 6 ? 'האותיות הסופיות' : 'קבוצה ' + (i + 1);
+const it = (pre, arr) => arr.map((l, i) => [pre + i, l]);
+const STAGES = [
+  { id: 'num', title: 'מספרים', sub: 'שלב 1', blocks: [{ t: 'מספרים וכמויות', items: it('n', ['סופר/ת בעל פה עד 10', 'סופר/ת בעל פה עד 20', 'מתאים/ה כמות למספר (1-5)', 'מתאים/ה כמות למספר (6-10)', 'מכיר/ה את הספרות 0-5', 'מכיר/ה את הספרות 6-10', 'כותב/ת ספרות', 'מבין/ה יותר, פחות ושווה', 'מבין/ה מה בא לפני ואחרי', 'מפרק/ת מספר לשני חלקים (עד 10)', 'חיבור בדוגמאות עד 10', 'חיסור בדוגמאות עד 10', 'מכיר/ה את המספרים 11-20']) }] },
+  { id: 'let', title: 'אותיות ומודעות פונולוגית', sub: 'שלב 2, במקביל', blocks: [
+    { t: 'מכיר/ה את האותיות: שם, צליל וצורה', lg: 'lr' }, { t: 'כותב/ת את האותיות', lg: 'lw' },
+    { t: 'חזרה ומבדק', items: [['lrev', 'חזרה על כל האותיות'], ['ltest', 'מבדק האותיות הדיגיטלי']] },
+    { t: 'מודעות פונולוגית', items: it('p', ['משחק היכרות וחריזה', 'מחלק/ת מילה להברות', 'מחבר/ת הברות למילה', 'מזהה צליל פותח', 'מזהה צליל סוגר', 'מזהה צליל באמצע המילה', 'מחלק/ת מילים לצלילים', 'מחבר/ת צלילים למילה', 'קשר אות-צליל', 'שיר צלילי האותיות', 'משמיט/ה או מחליף/ה צליל במילה']) }] },
+  { id: 'wr', title: 'כתיב פונטי', sub: 'שלב 3', blocks: [{ t: 'כתיבה לפי הצלילים', items: it('w', ['כותב/ת את הצליל הפותח של מילה', 'כותב/ת צליל פותח וצליל סוגר', 'כותב/ת מילה בת 2-3 צלילים', 'כותב/ת מילה בת 4 צלילים ויותר', 'כותב/ת מילה עם אותיות סופיות', 'כותב/ת הברות עם ניקוד', 'כותב/ת מילה עם ניקוד', 'כותב/ת משפט קצר בהכתבה', 'מזהה ומתקן/ת שגיאה בכתיבה של עצמו/ה']) }] },
+  { id: 'rd', title: 'קוראים בקלות', sub: 'שלב 4, כל סימן ניקוד', matrix: true,
+    signs: [['קמץ ופתח', 'אַ אָ'], ['שין שמאלית ודגש', 'שׂ ּ'], ['שווא', 'אְ'], ['חיריק', 'אִ'], ['חולם', 'אֹ'], ['צירה וסגול', 'אֵ אֶ'], ['שורוק וקובוץ', 'אוּ אֻ']], cols: [['syl', 'הברות'], ['wrd', 'מילים'], ['sen', 'משפטים']] },
+  { id: 'flu', title: 'קריאה שוטפת', sub: 'שלב 5', blocks: [{ t: 'משפטים, קטעים ושטף', items: it('f', ['קורא/ת משפט שלם בלי לפרק להברות', 'קורא/ת שני משפטים ברצף', 'קורא/ת קטע קצר מנוקד', 'קורא/ת בהטעמה ובהתאם לפיסוק', 'מבין/ה מה קרא/ה ועונה על שאלות', 'קורא/ת קטע מנוקד בשטף', 'קורא/ת אותיות כתב', 'קורא/ת מילים בלי ניקוד', 'קורא/ת קטע בלי ניקוד', 'קורא/ת בקול בביטחון ובהנאה']) }] }
+];
+const KEYLABEL = {};
+function stageKeys(st) {
+  const k = [];
+  if (st.matrix) st.signs.forEach(s => st.cols.forEach(c => { const key = 'rd.' + s[0] + '.' + c[0]; k.push(key); KEYLABEL[key] = 'סימן ' + s[0] + ': ' + c[1]; }));
+  else st.blocks.forEach(b => {
+    if (b.lg) GROUPS.forEach(g => g.forEach(l => { const key = b.lg + l; k.push(key); KEYLABEL[key] = (b.lg === 'lr' ? 'מכיר/ה את האות ' : 'כותב/ת את האות ') + l; }));
+    else b.items.forEach(i => { k.push(i[0]); KEYLABEL[i[0]] = i[1]; });
+  });
+  return k;
+}
+STAGES.forEach(st => { st.keys = stageKeys(st); });
+const STATES = ['עוד לא התחלנו', 'בתהליך', 'שולט/ת'], SYM = ['', '◐', '✓'];
+function stats(c, st) { let m = 0, p = 0; st.keys.forEach(k => { const v = c.marks[k] || 0; if (v === 2) m++; else if (v === 1) p++; }); return { total: st.keys.length, mast: m, prog: p, pct: Math.round((m + p / 2) / st.keys.length * 100) }; }
+function nowInfo(c) {
+  for (const st of STAGES) {
+    const next = st.keys.filter(k => (c.marks[k] || 0) !== 2);
+    if (next.length) { const first = st.keys.find(k => (c.marks[k] || 0) === 1) || next[0]; return { st, next: KEYLABEL[first], started: st.keys.some(k => (c.marks[k] || 0) > 0) }; }
+  }
+  return null;
+}
+function newKid(name) { return { id: uid(), u: Date.now(), name, age: '', start: today(), note: '', marks: {}, log: [] }; }
+function lgBlock(c, b) {
+  return `<h3>${esc(b.t)}</h3>` + GROUPS.map((g, i) => {
+    const all = g.every(l => (c.marks[b.lg + l] || 0) === 2), any = g.some(l => (c.marks[b.lg + l] || 0) > 0);
+    return `<div class="lg${all ? ' done' : ''}"><div class="hd"><b>${gname(g, i)}: ${g.join(' ')}</b><button type="button" class="gt${all ? ' done' : ''}" data-act="grp" data-pre="${b.lg}" data-i="${i}">${all ? 'הקבוצה הסתיימה ✓' : (any ? 'סמני שהקבוצה הסתיימה (בתהליך)' : 'סמני שהקבוצה הסתיימה')}</button></div>
+    <div class="letters">${g.map(l => { const v = c.marks[b.lg + l] || 0; return `<button type="button" class="lt s${v}" data-act="mark" data-k="${b.lg + l}" aria-label="${KEYLABEL[b.lg + l]}: ${STATES[v]}">${l}</button>`; }).join('')}</div></div>`;
+  }).join('');
+}
+function renderKids() {
+  const list = kids(), c = curKid();
+  let h = `<div class="card"><div class="chips">${list.map(x => `<button type="button" class="chip${x.id === S.childId ? ' on' : ''}" data-act="pickKid" data-id="${x.id}">${esc(x.name || 'ילד/ה')}</button>`).join('')}<button type="button" class="chip add" data-act="showAdd">+ ילד/ה חדש/ה</button></div>
+    <form id="addForm" class="row" hidden><div class="field"><label for="newName">שם פרטי או כינוי</label><input type="text" id="newName" autocomplete="off" maxlength="40"></div><button class="btn solid" type="submit">הוסיפי</button><button class="btn quiet" type="button" data-act="hideAdd">ביטול</button></form>
+    <p class="note">מומלץ לכתוב שם פרטי או כינוי בלבד. הוספת כרטיס חדש לא משנה את הכרטיסים הקיימים, כולם נשמרים.</p></div>`;
+  if (!c) { h += `<div class="card"><h2>עוד אין ילדים במעקב</h2><p class="note">לחצי על "ילד/ה חדש/ה" כדי לפתוח את הכרטיס הראשון.</p></div>`; $('main').innerHTML = h; return; }
+  const info = nowInfo(c);
+  h += `<div class="card"><div class="row"><div class="field"><label for="fName">שם</label><input type="text" id="fName" data-k="name" value="${esc(c.name)}" maxlength="40"></div><div class="field" style="flex-basis:90px"><label for="fAge">גיל</label><input type="text" id="fAge" data-k="age" value="${esc(c.age)}" maxlength="8"></div><div class="field"><label for="fStart">התחלנו לעבוד ב</label><input type="date" id="fStart" data-k="start" value="${esc(c.start)}"></div></div>
+    <div class="now">${info ? `<span class="note">איפה הוא/היא עכשיו</span><b>${info.started ? esc(info.st.sub + ': ' + info.st.title) : 'עוד לא התחלנו, מתחילים משלב 1: מספרים'}</b><span>${info.started ? 'הבא לתרגול' : 'הפריט הראשון'}: ${esc(info.next)}</span>` : '<b>סיימנו את כל השלבים. קריאה שוטפת!</b>'}</div>
+    <div class="bars">${STAGES.map(st => { const s = stats(c, st); return `<div class="bar${s.mast === s.total ? ' done' : ''}"><span><b>${esc(st.title)}</b> · ${s.mast} מתוך ${s.total}</span><div class="track"><div class="fill" style="width:${s.pct}%"></div></div></div>`; }).join('')}</div>
+    <div class="row"><button class="btn mint" type="button" data-act="mapFor">פתחי מיפוי לילד/ה הזה</button></div></div>`;
+  const st = STAGES.find(x => x.id === S.stage) || STAGES[0];
+  h += `<div class="card"><div class="stabs" role="tablist">${STAGES.map(x => `<button type="button" role="tab" class="stab${x.id === st.id ? ' on' : ''}" data-act="stage" data-id="${x.id}">${esc(x.title)}<small>${esc(x.sub)}</small></button>`).join('')}</div>
+    <div class="legend"><span>לחצי על פריט כדי לשנות מצב:</span><span><i class="dot"></i>עוד לא התחלנו</span><span><i class="dot" style="background:#ffe9b8"></i>בתהליך</span><span><i class="dot" style="background:var(--mint)"></i>שולט/ת</span></div>`;
+  if (st.matrix) {
+    h += `<div class="scroll"><table class="matrix"><thead><tr><th></th>${st.cols.map(x => `<th>${x[1]}</th>`).join('')}</tr></thead><tbody>${st.signs.map(s => `<tr><td class="sign"><span>${s[1]}</span>${s[0]}</td>${st.cols.map(x => { const k = 'rd.' + s[0] + '.' + x[0], v = c.marks[k] || 0; return `<td><button type="button" class="cell s${v}" data-act="mark" data-k="${esc(k)}" aria-label="${esc(KEYLABEL[k])}: ${STATES[v]}">${SYM[v] || '○'}</button></td>`; }).join('')}</tr>`).join('')}</tbody></table></div>`;
+  } else st.blocks.forEach(b => {
+    if (b.lg) h += lgBlock(c, b);
+    else h += `<h3>${esc(b.t)}</h3><div class="items">${b.items.map(i => { const v = c.marks[i[0]] || 0; return `<button type="button" class="item s${v}" data-act="mark" data-k="${i[0]}"><span class="mark">${SYM[v]}</span><span>${esc(i[1])}</span></button>`; }).join('')}</div>`;
+  });
+  h += `</div>`;
+  h += `<div class="card"><h2>מפגשים והערות</h2><div class="row"><div class="field" style="flex-basis:150px;flex-grow:0"><label for="lDate">תאריך</label><input type="date" id="lDate" value="${today()}"></div><div class="field" style="flex-basis:240px"><label for="lText">מה קרה היום?</label><input type="text" id="lText" maxlength="300" placeholder="מה הצליח, מה כדאי לתרגל"></div><button class="btn solid" type="button" data-act="addLog">הוסיפי</button></div>
+    <div style="display:flex;flex-direction:column;gap:8px">${c.log.length ? c.log.slice().sort((a, b) => a.d < b.d ? 1 : -1).map(e => `<div class="entry"><time>${fmt(e.d)}</time><p>${esc(e.t)}</p><button class="x" type="button" data-act="delLog" data-i="${c.log.indexOf(e)}" aria-label="מחיקת ההערה">✕</button></div>`).join('') : '<p class="note">עוד אין הערות. אחרי המפגש הבא אפשר לכתוב כאן שורה אחת.</p>'}</div></div>`;
+  h += `<div class="card"><h2>הערות כלליות על ${esc(c.name)}</h2><div class="field"><textarea id="fNote" data-k="note">${esc(c.note)}</textarea></div><div class="row"><button class="btn" type="button" data-act="copySum">העתיקי סיכום להורים</button><button class="btn danger" type="button" data-act="delKid" id="delKid">הסרת הכרטיס</button></div></div>`;
+  $('main').innerHTML = h;
+}
+function summary(c) {
+  let t = 'סיכום התקדמות: ' + c.name + (c.age ? ' (גיל ' + c.age + ')' : '') + '\n';
+  STAGES.forEach(st => { const s = stats(c, st); t += st.title + ': ' + s.mast + ' מתוך ' + s.total + (s.prog ? ' (עוד ' + s.prog + ' בתהליך)' : '') + '\n'; });
+  const done = GROUPS.map((g, i) => ({ g, i })).filter(x => x.g.every(l => (c.marks['lr' + l] || 0) === 2)).map(x => gname(x.g, x.i) + ' (' + x.g.join('') + ')');
+  if (done.length) t += 'קבוצות אותיות שהסתיימו: ' + done.join(', ') + '\n';
+  const n = nowInfo(c); t += n ? 'כרגע בשלב: ' + n.st.title + '. הבא לתרגול: ' + n.next : 'סיימנו את כל השלבים!';
+  const last = c.log.slice().sort((a, b) => a.d < b.d ? 1 : -1)[0]; if (last) t += '\nמהמפגש האחרון (' + fmt(last.d) + '): ' + last.t;
+  return t;
+}
+
+/* ===================== תצוגה ואירועים ===================== */
+function render() {
+  $('tabMap').classList.toggle('on', S.tab === 'map'); $('tabKids').classList.toggle('on', S.tab === 'kids');
+  $('tabMap').setAttribute('aria-selected', S.tab === 'map'); $('tabKids').setAttribute('aria-selected', S.tab === 'kids');
+  if (S.tab === 'map') { if (!curMap() && maps().length) S.mapId = maps().slice().sort((a, b) => b.u - a.u)[0].id; renderMap(); }
+  else { if (!curKid() && kids().length) S.childId = kids()[0].id; renderKids(); }
+  renderAcct();
+}
+function setTab(t) { S.tab = t; persist(); try { history.replaceState(null, '', '#' + t); } catch (e) {} render(); }
+function sure(btn, label, fn) {
+  if (btn.dataset.sure) { fn(); return; }
+  btn.dataset.sure = '1'; const old = btn.textContent; btn.textContent = label;
+  setTimeout(() => { if (btn.isConnected) { delete btn.dataset.sure; btn.textContent = old; } }, 4000);
+}
+function copyText(text, ok, fallbackEl) {
+  const fb = () => { if (fallbackEl) { fallbackEl.value = text; fallbackEl.focus(); fallbackEl.select(); toast('סימנתי את הטקסט, העתיקי אותו ידנית'); } };
+  if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(() => toast(ok), fb); else fb();
+}
+document.addEventListener('click', e => {
+  const t = e.target.closest('[data-tab]'); if (t) return setTab(t.dataset.tab);
+  const b = e.target.closest('[data-act]'); if (!b) return;
+  const a = b.dataset.act, m = curMap(), c = curKid();
+  if (a === 'newMap') { const x = newMap(); S.maps.push(x); S.mapId = x.id; touch(x, 'map:' + x.id); render(); window.scrollTo(0, 0); }
+  else if (a === 'pickMap') { S.mapId = b.dataset.id; persist(); render(); }
+  else if (a === 'print') { window.print(); }
+  else if (a === 'png') { exportPng(); }
+  else if (a === 'undo') { const s = strokes(b.dataset.d); if (s.length) { s.pop(); touch(m, 'map:' + m.id); drawCanvas(document.querySelector('canvas[data-d="' + b.dataset.d + '"]')); } }
+  else if (a === 'clr') { sure(b, 'בטוחה? לחצי שוב כדי לנקות', () => { setP(m, b.dataset.d, []); touch(m, 'map:' + m.id); drawCanvas(document.querySelector('canvas[data-d="' + b.dataset.d + '"]')); }); }
+  else if (a === 'word') { const w = b.dataset.w; const i = [0, 1, 2].find(k => !m.t2.w[k]); if (i == null) { toast('כבר נבחרו שלוש מילים'); return; } m.t2.w[i] = w; touch(m, 'map:' + m.id); document.querySelector('[data-p="t2.w.' + i + '"]').value = w; }
+  else if (a === 'q') { m.t4.q = (m.t4.q ? m.t4.q + ', ' : '') + b.dataset.w; touch(m, 'map:' + m.id); document.querySelector('[data-p="t4.q"]').value = m.t4.q; }
+  else if (a === 'delMap') { sure(b, 'בטוחה? לחצי שוב כדי למחוק את המיפוי של ' + (m.name || 'הילד/ה'), () => { m.del = true; touch(m, 'map:' + m.id); S.mapId = null; render(); toast('המיפוי נמחק'); }); }
+  else if (a === 'pickKid') { S.childId = b.dataset.id; persist(); renderKids(); }
+  else if (a === 'showAdd') { $('addForm').hidden = false; $('newName').focus(); }
+  else if (a === 'hideAdd') { $('addForm').hidden = true; }
+  else if (a === 'stage') { S.stage = b.dataset.id; persist(); renderKids(); }
+  else if (a === 'mark') { const k = b.dataset.k; const v = ((c.marks[k] || 0) + 1) % 3; if (v) c.marks[k] = v; else delete c.marks[k]; touch(c, 'children'); const y = scrollY; renderKids(); scrollTo(0, y); }
+  else if (a === 'grp') { const g = GROUPS[+b.dataset.i], pre = b.dataset.pre; const all = g.every(l => (c.marks[pre + l] || 0) === 2); g.forEach(l => { if (all) delete c.marks[pre + l]; else c.marks[pre + l] = 2; }); touch(c, 'children'); const y = scrollY; renderKids(); scrollTo(0, y); toast(all ? 'הסימון בוטל' : 'הקבוצה סומנה כשהסתיימה'); }
+  else if (a === 'addLog') { const tx_ = $('lText').value.trim(); if (!tx_) { toast('כתבי שורה קצרה לפני ההוספה'); return; } c.log.push({ d: $('lDate').value || today(), t: tx_ }); touch(c, 'children'); renderKids(); toast('ההערה נשמרה'); }
+  else if (a === 'delLog') { c.log.splice(+b.dataset.i, 1); touch(c, 'children'); renderKids(); }
+  else if (a === 'copySum') { copyText(summary(c), 'הסיכום הועתק. אפשר להדביק בהודעה להורים', $('fNote')); }
+  else if (a === 'delKid') { sure(b, 'בטוחה? לחצי שוב כדי להסיר את ' + c.name, () => { c.del = true; touch(c, 'children'); S.childId = null; render(); toast('הכרטיס הוסר'); }); }
+  else if (a === 'mapFor') { const x = newMap({ name: c.name, age: c.age }); S.maps.push(x); S.mapId = x.id; touch(x, 'map:' + x.id); setTab('map'); window.scrollTo(0, 0); }
+});
+document.addEventListener('input', e => {
+  const el = e.target, p = el.dataset.p;
+  if (p) { const m = curMap(); if (!m) return; setP(m, p, el.type === 'checkbox' ? (el.checked ? 1 : 0) : el.value); touch(m, 'map:' + m.id); if (p === 'name') { const chip = document.querySelector('.chip.on'); if (chip) chip.textContent = (el.value || 'ילד/ה ללא שם') + ' · ' + fmt(m.date); } return; }
+  const k = el.dataset.k; if (k) { const c = curKid(); if (!c) return; c[k] = el.value; touch(c, 'children'); if (k === 'name') { const chip = document.querySelector('.chip.on'); if (chip) chip.textContent = el.value || 'ילד/ה'; } }
+});
+document.addEventListener('submit', e => {
+  if (e.target.id !== 'addForm') return; e.preventDefault();
+  const n = $('newName').value.trim(); if (!n) { toast('כתבי שם פרטי או כינוי'); return; }
+  const c = newKid(n); S.children.push(c); S.childId = c.id; S.stage = 'num'; touch(c, 'children'); render(); toast('נפתח כרטיס חדש ל' + n);
+});
+$('copyBackup').addEventListener('click', () => copyText(JSON.stringify({ maps: S.maps, children: S.children }), 'הגיבוי הועתק. שמרי אותו במקום בטוח', $('restoreBox')));
+$('restoreBtn').addEventListener('click', () => {
+  try {
+    const d = JSON.parse($('restoreBox').value); if (!Array.isArray(d.maps) || !Array.isArray(d.children)) throw 0;
+    mergeLists(d.maps, d.children); persist(); render(); $('restoreBox').value = ''; toast('השחזור הצליח, הנתונים אוחדו עם מה שכבר קיים');
+  } catch (x) { toast('לא הצלחתי לקרוא את הגיבוי. הדביקי את כל הטקסט שהועתק'); }
+});
+function mergeLists(om, oc) {
+  const mg = (mine, other, key) => { const idx = {}; mine.forEach(x => idx[x.id] = x); other.forEach(x => { const l = idx[x.id]; if (!l) { mine.push(x); dirty.add(key(x)); } else if ((x.u || 0) > (l.u || 0)) { Object.assign(l, x); dirty.add(key(x)); } else if ((x.u || 0) < (l.u || 0)) dirty.add(key(x)); }); };
+  mg(S.maps, om, x => 'map:' + x.id); mg(S.children, oc, () => 'children'); scheduleSync();
+}
+
+/* ===================== שמירה בחשבון (חיבור לאתר) ===================== */
+let wix = null, cloud = false, citems = {}, syncT = null, syncState = '';
+async function sdk() {
+  if (wix) return wix;
+  const [{ createClient, OAuthStrategy }, { items }] = await Promise.all([import('https://esm.sh/@wix/sdk@1.21.16'), import('https://esm.sh/@wix/data@1.0.525')]);
+  let tokens; try { tokens = JSON.parse(localStorage.getItem(TOK) || 'null'); } catch (e) {}
+  wix = createClient({ auth: OAuthStrategy({ clientId: CLIENT_ID, ...(tokens ? { tokens } : {}) }), modules: { items } });
+  return wix;
+}
+const keepTokens = () => { try { if (wix) localStorage.setItem(TOK, JSON.stringify(wix.auth.getTokens())); } catch (e) {} };
+function renderAcct() {
+  $('acct').innerHTML = cloud
+    ? `<span>מחוברת · נשמר בחשבון${syncState ? ' · ' + syncState : ''}</span><button type="button" class="btn quiet sm" id="logout">התנתקות</button>`
+    : `<span>נשמר במכשיר הזה בלבד</span><button type="button" class="btn sm" id="login">התחברי כדי לשמור בכל המכשירים</button>`;
+  $('backupNote').innerHTML = cloud
+    ? 'כל מה שכתבת נשמר גם בחשבון שלך באתר, ואפשר לפתוח אותו מכל מחשב, טאבלט או טלפון באותה התחברות. גיבוי ידני הוא תוספת בטחון.'
+    : 'בלי התחברות הכול נשמר רק בדפדפן של המכשיר הזה. כדי לראות אותו גם במחשב, בטאבלט ובטלפון, לחצי על "התחברי" למעלה. אפשר גם להעתיק גיבוי ולהדביק אותו במכשיר אחר.';
+}
+function scheduleSync() { if (!cloud) return; clearTimeout(syncT); syncState = 'שומרת...'; renderAcctSoft(); syncT = setTimeout(flush, 1200); }
+function renderAcctSoft() { const s = $('acct').firstElementChild; if (s && cloud) s.textContent = 'מחוברת · נשמר בחשבון' + (syncState ? ' · ' + syncState : ''); }
+async function flush() {
+  if (!cloud || !dirty.size) { syncState = ''; renderAcctSoft(); return true; }
+  try {
+    const c = await sdk();
+    for (const key of [...dirty]) {
+      let data;
+      if (key === 'children') data = JSON.stringify({ children: S.children });
+      else { const m = S.maps.find(x => 'map:' + x.id === key); if (!m) { dirty.delete(key); continue; } data = JSON.stringify(m); }
+      if (citems[key]) citems[key] = await c.items.update(COLL, { ...citems[key], data });
+      else citems[key] = await c.items.insert(COLL, { title: key, data });
+      dirty.delete(key);
+    }
+    keepTokens(); syncState = 'נשמר ✓'; renderAcctSoft(); return true;
+  } catch (e) { syncState = 'לא הצלחתי לשמור, מנסה שוב'; renderAcctSoft(); clearTimeout(syncT); syncT = setTimeout(flush, 8000); return false; }
+}
+async function cloudLoad() {
+  try {
+    const c = await sdk();
+    let res = await c.items.query(COLL).limit(100).find(), all = res.items;
+    while (res.hasNext()) { res = await res.next(); all = all.concat(res.items); }
+    keepTokens(); cloud = true; citems = {};
+    const om = [], oc = [];
+    all.forEach(x => {
+      citems[x.title] = x;
+      try { const d = JSON.parse(x.data || '{}'); if (x.title === 'children') (d.children || []).forEach(k => oc.push(k)); else if ((x.title || '').startsWith('map:') && d.id) om.push(d); } catch (e) {}
+    });
+    mergeLists(om, oc);
+    // מה שקיים רק אצלי במכשיר עולה לחשבון
+    S.maps.forEach(m => { if (!citems['map:' + m.id]) dirty.add('map:' + m.id); });
+    if (S.children.length && !citems.children) dirty.add('children');
+    persist(); render(); flush();
+  } catch (e) { cloud = false; try { localStorage.removeItem(TOK); } catch (er) {} wix = null; renderAcct(); }
+}
+async function startLogin(btn) {
+  btn.disabled = true; btn.textContent = 'עוברת להתחברות...';
+  try {
+    const c = await sdk(), od = c.auth.generateOAuthData(REDIRECT, REDIRECT);
+    localStorage.setItem(OA, JSON.stringify(od));
+    localStorage.setItem(RET, location.pathname + location.hash);
+    const { authUrl } = await c.auth.getAuthUrl(od);
+    location.href = authUrl + '&lang=he';
+  } catch (e) { btn.disabled = false; btn.textContent = 'לא הצלחתי, אפשר לנסות שוב'; }
+}
+document.addEventListener('click', async e => {
+  if (e.target.id === 'login') startLogin(e.target);
+  if (e.target.id === 'logout') {
+    const ok = await flush();
+    if (!ok) { toast('עוד לא הכול נשמר בחשבון. נסי שוב בעוד רגע'); return; }
+    cloud = false; wix = null; citems = {}; try { localStorage.removeItem(TOK); localStorage.removeItem(KEY); } catch (er) {}
+    S = { maps: [], children: [], tab: S.tab, mapId: null, childId: null, stage: 'num' }; mem = null; render(); toast('התנתקת, והנתונים הוסרו מהמכשיר הזה (הם שמורים בחשבון)');
+  }
+});
+
+/* ===================== פתיחה ===================== */
+load();
+{ const h = (location.hash || '').slice(1); if (h === 'map' || h === 'kids') S.tab = h; }
+render();
+if (localStorage.getItem(TOK)) { $('acct').firstElementChild && ($('acct').firstElementChild.textContent = 'מתחברת...'); cloudLoad(); }
+</script>
+</body>
+</html>
