@@ -306,12 +306,22 @@ E.anagram=function(){var ps=D.pairs,i=0;total=ps.length;
     var h=el('div','');h.style.cssText='font-size:13px;opacity:.7';h.textContent='לחצו על משבצת כדי להחזיר אות';stage.appendChild(h)}
   show()};
 /* סידור מילים למשפט */
+/*__ORDERDRAG (חן, 18.11.26): "לא ניתן לגרור": סידור משפט בגרירה (ובהקשה כמו קודם), גם בנייד: גוררים מילה לתיבה, מסדרים מחדש בתוכה, וגוררים החוצה כדי להחזיר*/
 E.order=function(){var ps=D.pairs,i=0;total=ps.length;
   function show(){window.__ww.i=i;stage.innerHTML='';dots(ps.length,i);var p=ps[i],w=p.a.t.split(/\s+/).filter(Boolean),pos=[];
     var sl=el('div','slots');sl.style.cssText+=';min-height:90px;border:3px dashed #F8B9B6;border-radius:16px;padding:8px;width:100%;background:#fff;align-content:flex-start';stage.appendChild(sl);var tl=el('div','slots');
-    function render(){sl.innerHTML='';pos.forEach(function(t,k){var c=el('div','tile',esc(t.w));c.style.borderColor='#F8B9B6';c.onclick=function(){var x=pos.splice(k,1)[0];x.el.classList.remove('used');render()};sl.appendChild(c)})}
-    sh(w.map(function(x,k){return {w:x,k:k}})).forEach(function(o){var t=el('div','tile',esc(o.w));o.el=t;t.style.fontSize='22px';t.onclick=function(){if(t.classList.contains('used'))return;t.classList.add('used');pos.push(o);render();
-      if(pos.length==w.length){if(pos.map(function(x){return x.w}).join(' ')===w.join(' ')){good();after(function(){i++;if(i>=ps.length){dots(ps.length,ps.length);finish('')}else show()},1000)}else{bad();sl.style.animation='sh .35s';after(function(){sl.style.animation='';pos.forEach(function(x){x.el.classList.remove('used')});pos=[];render()},600)}}};tl.appendChild(t)});
+    function check(){if(pos.length!=w.length)return;if(pos.map(function(x){return x.w}).join(' ')===w.join(' ')){good();after(function(){i++;if(i>=ps.length){dots(ps.length,ps.length);finish('')}else show()},1000)}else{bad();sl.style.animation='sh .35s';after(function(){sl.style.animation='';pos.forEach(function(x){x.el.classList.remove('used')});pos=[];render()},600)}}
+    function insIdx(x,y,skip){var n=0;[].slice.call(sl.children).forEach(function(c){if(c===skip)return;var r=c.getBoundingClientRect(),cx=r.left+r.width/2,cy=r.top+r.height/2,tol=r.height/2;if(cy<y-tol||(Math.abs(cy-y)<=tol&&cx>x))n++});return n}
+    function dragify(node,o,fromSlot){node.style.touchAction='none';node.addEventListener('pointerdown',function(e){if(e.button>0)return;if(!fromSlot&&node.classList.contains('used'))return;
+      var sx=e.clientX,sy=e.clientY,moved=false,ghost=null,r0=node.getBoundingClientRect(),ox=e.clientX-r0.left,oy=e.clientY-r0.top;
+      function mv(ev){if(!moved&&Math.hypot(ev.clientX-sx,ev.clientY-sy)<8)return;if(!moved){moved=true;ghost=node.cloneNode(true);ghost.style.cssText+=';position:fixed;z-index:99;pointer-events:none;margin:0;width:'+r0.width+'px;box-shadow:0 8px 20px rgba(0,0,0,.25);transform:scale(1.06)';document.body.appendChild(ghost);node.style.opacity='.35'}ghost.style.left=(ev.clientX-ox)+'px';ghost.style.top=(ev.clientY-oy)+'px';ev.preventDefault()}
+      function up(ev){document.removeEventListener('pointermove',mv);document.removeEventListener('pointerup',up);document.removeEventListener('pointercancel',up);if(!moved)return;node.__nc=1;setTimeout(function(){node.__nc=0},80);ghost.remove();node.style.opacity='';
+        var sr=sl.getBoundingClientRect(),inside=ev.clientX>=sr.left-10&&ev.clientX<=sr.right+10&&ev.clientY>=sr.top-24&&ev.clientY<=sr.bottom+24;
+        if(fromSlot){var k=pos.indexOf(o);if(k<0)return;if(inside){var idx=insIdx(ev.clientX,ev.clientY,node);pos.splice(k,1);pos.splice(idx,0,o)}else{pos.splice(k,1);o.el.classList.remove('used')}render();check()}
+        else if(inside){o.el.classList.add('used');pos.splice(insIdx(ev.clientX,ev.clientY,null),0,o);render();check()}}
+      document.addEventListener('pointermove',mv,{passive:false});document.addEventListener('pointerup',up);document.addEventListener('pointercancel',up)})}
+    function render(){sl.innerHTML='';pos.forEach(function(t,k){var c=el('div','tile',esc(t.w));c.style.borderColor='#F8B9B6';c.onclick=function(){if(c.__nc)return;var x=pos.splice(pos.indexOf(t),1)[0];if(x)x.el.classList.remove('used');render()};dragify(c,t,true);sl.appendChild(c)})}
+    sh(w.map(function(x,k){return {w:x,k:k}})).forEach(function(o){var t=el('div','tile',esc(o.w));o.el=t;t.style.fontSize='22px';t.onclick=function(){if(t.__nc||t.classList.contains('used'))return;t.classList.add('used');pos.push(o);render();check()};dragify(t,o,false);tl.appendChild(t)});
     stage.appendChild(tl)}
   show()};
 /* מיון: פריט אחד בכל פעם אל הקבוצה הנכונה */
