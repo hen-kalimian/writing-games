@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>בחירת משפטים לתרגול קריאה</title>
+<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@500;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#2b3138;--pink:#ef406e;--wash:#fde1ea;--line:#fbc5d6;--deep:#b8236b;--mint:#d4efe2;--sky:#d3e8f8}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;background:linear-gradient(180deg,#fff,#fff7f9);font-family:Rubik,Arial,sans-serif;color:var(--ink)}
+.wrap{max-width:720px;margin:0 auto;padding:0 12px 90px}
+header{padding:16px 4px 6px}
+h1{margin:0;font:800 24px/1.25 Rubik,Arial;color:var(--deep)}
+.sub{margin:4px 0 0;font:500 15px/1.5 Rubik,Arial;color:#5b6570}
+.tabs{display:flex;gap:8px;overflow-x:auto;padding:12px 2px 8px;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tab{flex:none;border:2.5px solid var(--line);background:#fff;color:var(--deep);border-radius:16px;padding:9px 14px;font:800 16px Rubik,Arial;cursor:pointer;display:flex;gap:8px;align-items:center}
+.tab.on{background:var(--pink);border-color:var(--pink);color:#fff}
+.tab .bd{font:700 12.5px Rubik,Arial;background:var(--wash);color:var(--deep);border-radius:99px;padding:2px 8px}
+.tab.on .bd{background:rgba(255,255,255,.28);color:#fff}
+.tab .bd.full{background:var(--mint);color:#1b7f5c}
+.tab.on .bd.full{background:#fff;color:#1b7f5c}
+.lv{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:2px 0 10px}
+.lvb{border:2.5px solid var(--line);background:#fff;border-radius:16px;padding:10px 8px;text-align:center;cursor:pointer;font:800 16px Rubik,Arial;color:var(--deep)}
+.lvb small{display:block;font:500 12.5px/1.35 Rubik,Arial;color:#5b6570;margin-top:2px}
+.lvb.on{background:var(--wash);border-color:var(--pink)}
+.bar{position:sticky;top:0;z-index:5;background:rgba(255,250,251,.94);backdrop-filter:blur(8px);border:2.5px solid var(--line);border-radius:18px;padding:10px 12px;margin:0 0 10px;display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.cnt{font:800 20px Rubik,Arial;color:var(--deep)}
+.cnt.ok{color:#1b7f5c}
+.btns{display:flex;gap:8px;flex-wrap:wrap}
+.btn{border:0;border-radius:14px;padding:9px 14px;font:800 14.5px Rubik,Arial;cursor:pointer;background:var(--pink);color:#fff}
+.btn.soft{background:#fff;color:var(--deep);border:2.5px solid var(--line)}
+.row{display:flex;align-items:center;gap:12px;background:#fff;border:2.5px solid var(--line);border-radius:18px;padding:12px 12px;margin:0 0 8px;cursor:pointer;user-select:none}
+.row.on{background:var(--wash);border-color:var(--pink)}
+.ck{flex:none;width:30px;height:30px;border-radius:10px;border:3px solid var(--line);background:#fff;display:flex;align-items:center;justify-content:center;color:#fff;font:800 20px/1 Rubik,Arial}
+.row.on .ck{background:var(--pink);border-color:var(--pink)}
+.tx{flex:1;font:600 26px/1.5 'Open Sans',Rubik,Arial;color:#2b2b38}
+.nopic{flex:none;font:700 12px Rubik,Arial;background:var(--sky);color:#1f5f9a;border-radius:99px;padding:3px 9px}
+.num{flex:none;font:700 13px Rubik,Arial;color:#9aa3ad;width:22px;text-align:center}
+.foot{position:fixed;inset-inline:0;bottom:0;background:rgba(255,255,255,.96);border-top:2px solid var(--line);padding:9px 12px;display:flex;justify-content:center;gap:10px;align-items:center;z-index:6;font:700 14px Rubik,Arial}
+.st{color:#5b6570}
+.st.ok{color:#1b7f5c}
+.st.err{color:#b3261e}
+.toast{position:fixed;left:50%;top:14px;transform:translateX(-50%);background:#2b3138;color:#fff;padding:9px 16px;border-radius:14px;font:700 15px Rubik,Arial;z-index:20;opacity:0;pointer-events:none;transition:opacity .2s}
+.toast.on{opacity:1}
+.note{margin:8px 2px 14px;font:500 14px/1.55 Rubik,Arial;color:#5b6570}
+</style>
+</head>
+<body>
+<div class="toast" id="toast"></div>
+<div class="wrap">
+<header>
+  <h1>בחירת משפטים לתרגול קריאה</h1>
+  <p class="sub">לכל סימן ניקוד ולכל רמה יש 30 משפטים. בחרי 18 מתוכם: מה שנבחר ישמש בכל משחקי הקריאה, כך שיהיה גיוון וגם חזרתיות בתרגול. השמירה אוטומטית.</p>
+</header>
+<div class="tabs" id="tabs"></div>
+<div class="lv" id="lv"></div>
+<div class="bar"><div class="cnt" id="cnt"></div><div class="btns"><button class="btn soft" id="fill">השלמה אוטומטית עד 18</button><button class="btn soft" id="clear">ניקוי</button></div></div>
+<div id="list"></div>
+<p class="note">בועית "בלי תמונה" ליד משפט אומרת שקשה לצייר אותו (למשל שלילה או שאלה). משפט כזה לא ישמש במשחקי "התאמת ציור", אבל כן בשאר המשחקים (סידור מילים, קריאה חוזרת ועוד).</p>
+</div>
+<div class="foot"><span class="st" id="st">טוען…</span><button class="btn soft" id="share">העתקת קישור להמשך במכשיר אחר</button></div>
+<script type="module">
+const SIGNS = [['kp','קמץ ופתח'],['sh','שווא'],['ch','חיריק'],['ho','חולם'],['tz','צירה וסגול'],['sk','שורוק וקובוץ']];
+const LVL = {1:['רמה 1','קצרים, רק סימן השיעור + קמץ ופתח'],2:['רמה 2','3 עד 6 מילים, כל הסימנים עד כאן']};
+const NEED = 18;
+const $ = id => document.getElementById(id);
+let DATA = null, cur = { s: 'kp', l: 1 }, picks = {}, timers = {}, secret = '';
+const store = { get(k, d) { try { const v = localStorage.getItem(k); return v == null ? d : v } catch (e) { return d } }, set(k, v) { try { localStorage.setItem(k, v) } catch (e) {} } };
+const key = (s, l) => s + ':' + l;
+const toast = t => { const e = $('toast'); e.textContent = t; e.classList.add('on'); clearTimeout(toast.t); toast.t = setTimeout(() => e.classList.remove('on'), 1800) };
+const setSt = (t, c) => { const e = $('st'); e.textContent = t; e.className = 'st ' + (c || '') };
+// מצב מקודד בקישור: לכל (סימן,רמה) מחרוזת של 30 תווים 0/1 בהקסה
+function encode() { return SIGNS.map(([s]) => [1, 2].map(l => { const set = new Set(picks[key(s, l)] || []); const arr = DATA[s]['l' + l]; let bits = arr.map(x => set.has(x.id) ? '1' : '0').join(''); bits = bits.padEnd(32, '0'); let h = ''; for (let i = 0; i < 32; i += 4) h += parseInt(bits.slice(i, i + 4), 2).toString(16); return h }).join('.')).join('-') }
+function decode(str) { try { const parts = str.split('-'); SIGNS.forEach(([s], i) => { const ls = (parts[i] || '').split('.'); [1, 2].forEach((l, j) => { const h = ls[j] || ''; let bits = ''; for (const c of h) bits += parseInt(c, 16).toString(2).padStart(4, '0'); const arr = DATA[s]['l' + l]; const ids = []; arr.forEach((x, k) => { if (bits[k] === '1') ids.push(x.id) }); if (ids.length) picks[key(s, l)] = ids }) }) } catch (e) {} }
+function persist() { store.set('sentpicks', JSON.stringify(picks)); history.replaceState(null, '', '#p=' + encode()) }
+function render() {
+  $('tabs').innerHTML = SIGNS.map(([s, n]) => { const c1 = (picks[key(s, 1)] || []).length, c2 = (picks[key(s, 2)] || []).length, full = c1 === NEED && c2 === NEED; return `<button class="tab ${cur.s === s ? 'on' : ''}" data-s="${s}">${n}<span class="bd ${full ? 'full' : ''}">${full ? '✓' : (c1 + c2) + '/36'}</span></button>` }).join('');
+  $('lv').innerHTML = [1, 2].map(l => `<button class="lvb ${cur.l === l ? 'on' : ''}" data-l="${l}">${LVL[l][0]} · ${(picks[key(cur.s, l)] || []).length}/${NEED}<small>${LVL[l][1]}</small></button>`).join('');
+  const arr = DATA[cur.s]['l' + cur.l], set = new Set(picks[key(cur.s, cur.l)] || []);
+  $('cnt').textContent = `נבחרו ${set.size} מתוך ${NEED}`; $('cnt').className = 'cnt ' + (set.size === NEED ? 'ok' : '');
+  $('list').innerHTML = arr.map((x, i) => `<div class="row ${set.has(x.id) ? 'on' : ''}" data-id="${x.id}"><span class="num">${i + 1}</span><span class="ck">${set.has(x.id) ? '✓' : ''}</span><span class="tx">${x.t}</span>${x.p ? '' : '<span class="nopic">בלי תמונה</span>'}</div>`).join('');
+}
+let wix = null, items = null;
+async function cloud() { if (wix) return wix; const { createClient, OAuthStrategy } = await import('https://esm.sh/@wix/sdk@1.21.16'); const m = await import('https://esm.sh/@wix/data@1.0.525'); items = m.items; wix = createClient({ auth: OAuthStrategy({ clientId: '058da38e-a911-4b84-876e-e5efedfa9ae9' }), modules: { items } }); return wix }
+async function save(s, l) {
+  const k = key(s, l); clearTimeout(timers[k]); setSt('שומרת…');
+  timers[k] = setTimeout(async () => {
+    if (!secret) { setSt('נשמר במכשיר (חסר מפתח לענן)', 'err'); return }
+    try { const c = await cloud(); const ids = picks[k] || []; await c.items.insert('StudioRecordings', { title: secret, itemId: 'sentpick-' + s + '-' + l + '-' + Date.now(), k: 'sentpick:' + s + ':' + l, text: JSON.stringify(ids), mime: 'application/json', audio: '', synced: true }); setSt('נשמר ✓', 'ok') }
+    catch (e) { setSt('נשמר במכשיר, שמירה לענן נכשלה. אנסה שוב בשינוי הבא', 'err') }
+  }, 1200);
+}
+document.addEventListener('click', e => {
+  const t = e.target.closest('.tab,.lvb,.row'); if (!t) return;
+  if (t.classList.contains('tab')) { cur.s = t.dataset.s; render(); scrollTo(0, 0); return }
+  if (t.classList.contains('lvb')) { cur.l = +t.dataset.l; render(); return }
+  const k = key(cur.s, cur.l), a = picks[k] = picks[k] || [], id = t.dataset.id, i = a.indexOf(id);
+  if (i >= 0) a.splice(i, 1); else { if (a.length >= NEED) { toast('כבר נבחרו ' + NEED + '. הורידי משפט כדי לבחור אחר'); return } a.push(id) }
+  persist(); render(); save(cur.s, cur.l);
+});
+$('clear').onclick = () => { if (!(picks[key(cur.s, cur.l)] || []).length) return; if (!confirm('לנקות את הבחירה ברמה הזאת?')) return; picks[key(cur.s, cur.l)] = []; persist(); render(); save(cur.s, cur.l) };
+$('fill').onclick = () => {
+  const k = key(cur.s, cur.l), a = picks[k] = picks[k] || [], arr = DATA[cur.s]['l' + cur.l];
+  const rest = arr.filter(x => !a.includes(x.id)); const withPic = rest.filter(x => x.p), no = rest.filter(x => !x.p);
+  // מעדיפה משפטים שאפשר לצייר, ומגוונת: לוקחת בקפיצות
+  const pool = [...withPic, ...no]; let i = 0; while (a.length < NEED && pool.length) { const j = (i * 7) % pool.length; a.push(pool.splice(j, 1)[0].id); i++ }
+  persist(); render(); save(cur.s, cur.l);
+};
+$('share').onclick = async () => { const u = location.origin + location.pathname + '#p=' + encode(); try { await navigator.clipboard.writeText(u); toast('הקישור הועתק') } catch (e) { prompt('העתיקי את הקישור:', u) } };
+(async () => {
+  try {
+    const hm = location.hash.match(/k=([\w-]+)/); secret = (hm || [])[1] || store.get('sentkey', ''); if (secret) store.set('sentkey', secret);
+    if(!secret){document.querySelector(".wrap").innerHTML="<header><h1>דף פרטי</h1><p class=\"sub\">הדף נפתח רק מהקישור האישי שנשלח אלייך.</p></header>";document.querySelector(".foot").style.display="none";return}
+    DATA = await (await fetch('sentences.json?v=' + Date.now())).json();
+    try { picks = JSON.parse(store.get('sentpicks', '{}')) } catch (e) { picks = {} }
+    const pm = location.hash.match(/p=([0-9a-f.\-]+)/); if (pm) decode(pm[1]);
+    persist(); render(); setSt(secret ? 'מוכן. כל בחירה נשמרת' : 'מוכן (שמירה במכשיר בלבד)', secret ? 'ok' : 'err');
+  } catch (e) { setSt('שגיאה בטעינה', 'err'); document.getElementById('list').textContent = String(e) }
+})();
+</script>
+</body>
+</html>
