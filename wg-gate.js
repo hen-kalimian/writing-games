@@ -3,6 +3,7 @@
    שימו לב (גילוי נאות): הדף סטטי, ולכן זו הגנה מפני העברת קישורים, לא הגנה מוחלטת מפני מי שמתעקש ויודע לערוך קוד בדפדפן. */
 (function () {
   var H = location.hostname;
+  var MAPW = //mapping//.test(location.pathname);
   var qs = new URLSearchParams(location.search);
   if (/^(localhost|127\.0\.0\.1)$/.test(H) && !qs.has('wgtest')) return;
   /* משחקי דוגמה ציבוריים (חן, 15.11.26): נפתחים לכולן בלי התחברות, כדי לשלוח ללקוחות. להוסיף כאן עוד מזהי משחק לפי בקשה */
@@ -29,7 +30,7 @@
     'button,a.b{font:800 19px Rubik,Arial;color:#fff;background:#EF406E;border:0;border-radius:99px;padding:12px 30px;box-shadow:0 4px 0 #D14175;cursor:pointer;text-decoration:none;display:inline-block}' +
     'a.b.alt{background:#fff;color:#D14175;border:3px solid #F8B9B6;box-shadow:none;margin-top:12px}#msg{margin-top:14px;font-size:16px;color:#B8236B;min-height:22px}</style>';
   var bodyHtml = '' +
-    '<div class="w"><div class="c"><h1>המשחק הזה זמין למשתתפות התוכנית</h1><p id="t">כדי לשחק, התחברי לאתר עם המשתמש של התוכנית. מי שיש לה מנוי פעיל נכנסת מיד.</p>' +
+    '<div class="w"><div class="c"><h1>'+(MAPW?"כלי המיפוי זמין":"המשחק הזה זמין")+' למשתתפות התוכנית</h1><p id="t">'+(MAPW?"כדי להיכנס":"כדי לשחק")+', התחברי לאתר עם המשתמש של התוכנית. מי שיש לה מנוי פעיל נכנסת מיד.</p>' +
     '<button id="go" type="button">התחברות לתוכנית</button><div id="msg"></div><div><a class="b alt" href="https://www.talkwithkids.co.il/">לאתר של חן</a></div></div></div>' +
     '';
   var code = '' +
