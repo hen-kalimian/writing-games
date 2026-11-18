@@ -44,3 +44,43 @@
   var sc = document.createElement('script'); sc.type = 'module'; sc.textContent = code; document.body.appendChild(sc);
 
 })();
+
+/* __LETTERBIG (חן, 18.11.26): בכל מקום שכתוב שם של אות במילים ("האות גימל", "באות הא") מופיעה האות עצמה,
+   גדולה משאר המשפט ומודגשת במסגרת ורודה. רק על התצוגה; הקול נשאר כמו שהוא. */
+(function () {
+  try {
+    var M = '[\u0591-\u05C7]*';
+    var sp = function (w) { return w.split('').join(M) + M };
+    var NAMES = [['כף סופית', 'ך'], ['מם סופית', 'ם'], ['נון סופית', 'ן'], ['פא סופית', 'ף'], ['פה סופית', 'ף'], ['צדי סופית', 'ץ'], ['צדיק סופית', 'ץ'], ['שין ימנית', 'שׁ'], ['שין שמאלית', 'שׂ'],
+      ['אלף', 'א'], ['בית', 'ב'], ['גימל', 'ג'], ['דלת', 'ד'], ['הא', 'ה'], ['הי', 'ה'], ['ואו', 'ו'], ['וו', 'ו'], ['זין', 'ז'], ['חית', 'ח'], ['טית', 'ט'], ['יוד', 'י'], ['כף', 'כ'], ['למד', 'ל'], ['מם', 'מ'], ['נון', 'נ'],
+      ['סמך', 'ס'], ['עין', 'ע'], ['פא', 'פ'], ['פה', 'פ'], ['צדיק', 'צ'], ['צדי', 'צ'], ['קוף', 'ק'], ['ריש', 'ר'], ['שין', 'ש'], ['סין', 'שׂ'], ['תיו', 'ת'], ['תו', 'ת']];
+    var alt = NAMES.map(function (n) { return n[0].split(' ').map(sp).join('\\s+') }).join('|');
+    var RE = new RegExp('((?:^|[^\u05D0-\u05EA\u0591-\u05C7])(?:[\u05D4\u05D1\u05DC\u05DE\u05D5\u05E9]' + M + ')?' + sp('אות') + '(?:' + sp('יות') + ')?\\s+)(' + alt + ')(?![\u05D0-\u05EA])', 'g');
+    var strip = function (s) { return s.replace(/[֑-ׇ]/g, '').replace(/\s+/g, ' ') };
+    var MAP = {}; NAMES.forEach(function (n) { MAP[n[0]] = n[1] });
+    var css = '.wgL{display:inline-block;font-size:1.45em;font-weight:800;color:#B8236B;background:#FDE1EA;border:2px solid #F8B9B6;border-radius:.35em;padding:0 .24em;margin:0 .06em;line-height:1.15;vertical-align:middle;font-style:normal}';
+    var SKIP = /^(SCRIPT|STYLE|TEXTAREA|INPUT|NOSCRIPT|CODE)$/;
+    function fix(root) {
+      if (!root || !document.body) return;
+      var w = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, null), list = [], n;
+      while ((n = w.nextNode())) { var p = n.parentNode; if (!p || SKIP.test(p.nodeName) || (p.closest && (p.closest('.wgL') || p.closest('svg')))) continue; RE.lastIndex = 0; if (RE.test(n.nodeValue)) list.push(n) }
+      list.forEach(function (t) {
+        var s = t.nodeValue, out = document.createDocumentFragment(), last = 0, m; RE.lastIndex = 0;
+        while ((m = RE.exec(s))) {
+          var start = m.index + m[1].length; out.appendChild(document.createTextNode(s.slice(last, start)));
+          var g = MAP[strip(m[2])] || m[2]; var e = document.createElement('span'); e.className = 'wgL'; e.textContent = g; out.appendChild(e); last = start + m[2].length;
+        }
+        out.appendChild(document.createTextNode(s.slice(last)));
+        t.parentNode.replaceChild(out, t);
+      });
+    }
+    var queued = false;
+    function sched() { if (queued) return; queued = true; setTimeout(function () { queued = false; fix(document.body) }, 40) }
+    function start() {
+      if (!document.getElementById('wgLcss')) { var st = document.createElement('style'); st.id = 'wgLcss'; st.textContent = css; (document.head || document.documentElement).appendChild(st) }
+      fix(document.body);
+      try { new MutationObserver(sched).observe(document.body, { childList: true, subtree: true, characterData: true }) } catch (e) {}
+    }
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start); else start();
+  } catch (e) {}
+})();
