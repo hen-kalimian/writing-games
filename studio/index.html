@@ -186,13 +186,13 @@ function searchHtml() {
   const toks = norm(Q).split(' ').filter(Boolean);
   let l = D.items.filter(it => { const hay = norm((it.nik0 || it.nik || '') + ' ' + (it.text || '') + ' ' + (it.grpName || '')) + ' ' + String(it.k || '').toLowerCase(); return toks.every(t => hay.includes(t)); });
   if (QF === 'todo') l = l.filter(i => !status(i)); else if (QF === 'done') l = l.filter(i => status(i));
-  l.sort((a, b) => (status(a) ? 1 : 0) - (status(b) ? 1 : 0) || PRIO.indexOf(a.sec) - PRIO.indexOf(b.sec));
+  l.sort((a, b) => (LS[a.id] || 0) - (LS[b.id] || 0) || PRIO.indexOf(a.sec) - PRIO.indexOf(b.sec));
   const MAX = 80, shown = l.slice(0, MAX);
   return '<div class="rescount">' + (l.length ? 'נמצאו ' + l.length + ' הקלטות' + (l.length > MAX ? ' (מוצגות ' + MAX + ' הראשונות, צמצמי את החיפוש)' : '') + '. הקלטות שכבר הוקלטו נשארות ניתנות להקלטה מחדש.' : 'לא נמצאה הקלטה כזו. נסי מילה קצרה יותר.') + '</div><div class="tiles">' + shown.map(tile).join('') + '</div>';
 }
 function updGrps() { document.querySelectorAll('.grp').forEach(g => { const b = g.querySelectorAll('.batch'); g.classList.toggle('gdone', b.length > 0 && [...b].every(x => x.querySelector('.bmini'))); }); }
 const esc = t => String(t).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
-const opened = {}, saved = {};
+const opened = {}, saved = {}, LS = {};
 const canPlay = it => !!((takes && takes[it.id]) || saved[it.id] || HEN[it.k]);
 const CHECK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l5 5L19 7"/></svg>';
 const PLAY = '<svg viewBox="0 0 24 24" width="13" height="13"><path d="M7 5l12 7-12 7z" fill="currentColor"/></svg>';
@@ -218,6 +218,7 @@ function batchHtml(bid) {
   return '<div class="batch" id="' + bid + '" data-b="' + bid + '"><div class="bhead"><span>' + esc(B.label) + ' · <b class="bcnt">' + its.filter(i => status(i)).length + ' מתוך ' + its.length + ' הוקלטו</b>' + (all ? '' : ' · נסגרת לבד כשכולן מוקלטות') + '</span><button type="button" class="bclose" data-bclose="' + bid + '"' + (all ? '' : ' hidden') + '>סגירת הקבוצה</button></div><div class="tiles">' + its.map(tile).join('') + '</div></div>';
 }
 function batches(key, items) {
+  items = [...items].sort((a, b) => (LS[a.id] || 0) - (LS[b.id] || 0)); /* 18.11.26: מה שמחכה להקלטה למעלה, מה שהוקלט למטה, לפי המצב בטעינת העמוד (לא קופץ תוך כדי הקלטה) */
   let h = '';
   for (let i = 0; i < items.length; i += BN) {
     const bid = 'b_' + key.replace(/\W/g, '') + '_' + (i / BN), l = items.slice(i, i + BN);
@@ -227,7 +228,7 @@ function batches(key, items) {
   return h;
 }
 function gamesRow(l) { const gs = [...new Set(l.flatMap(i => i.games || []))].map(n => G[n]).filter(Boolean); return gs.length ? '<div class="when">מופיע ב-' + gs.length + ' משחקים</div><div class="games">' + gs.map(g => '<button type="button" class="g" data-g="' + g.n + '"><img loading="lazy" src="' + (g.th || 'th2/' + g.n + '.jpg') + '" alt=""><span>' + esc(g.title) + '</span></button>').join('') + '</div>' : ''; }
-function groupBy(sec, keyf) { const by = new Map(); D.items.filter(i => i.sec === sec).forEach(i => { const k = keyf(i); if (!by.has(k)) by.set(k, []); by.get(k).push(i); }); return [...by.entries()]; }
+function groupBy(sec, keyf) { const by = new Map(); D.items.filter(i => i.sec === sec).forEach(i => { const k = keyf(i); if (!by.has(k)) by.set(k, []); by.get(k).push(i); }); return [...by.entries()].sort((a, b) => (a[1].every(i => LS[i.id]) ? 1 : 0) - (b[1].every(i => LS[i.id]) ? 1 : 0)); }
 function sylHtml() { return groupBy('syl', i => i.grp).map(([k, l]) => '<div class="grp"><h3>' + esc(l[0].grpName) + '</h3>' + gamesRow(l) + batches('syl' + k, l) + '</div>').join(''); }
 function packsHtml() { return groupBy('packs', i => i.grp).map(([k, l]) => '<div class="grp pk"><h3>' + esc(l[0].grpName) + '</h3>' + gamesRow(l) + batches('pk' + k, l) + '</div>').join(''); }
 function groupHtml(sec) {
@@ -251,6 +252,7 @@ function collapseBatch(bid) {
   el.outerHTML = batchHtml(bid); updGrps();
   if (anchor && anchor.isConnected) scrollBy(0, anchor.getBoundingClientRect().top - y0);
 }
+D.items.forEach(i => { LS[i.id] = status(i) ? 1 : 0; }); /* תמונת מצב בטעינה, קובעת את הסדר בכל הלשוניות */
 { const f = orderedSecs().find(x => x.n < x.all); if (f) sec = f.s.id; }
 render();
 
