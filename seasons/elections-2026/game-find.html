@@ -54,6 +54,15 @@ h1 b{color:#EF406E;font-weight:900}
 .grid4{flex:1;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:12px;min-height:0}
 .grid4 .opt{min-height:0}
 .grid4 .opt svg{max-width:70%}
+/*__ROWOPTS: חן 15.11.26: כל התשובות בשורה אחת ולא בטור, ואיורים גדולים יותר*/
+.stage{flex-direction:row;align-items:center;justify-content:center;gap:10px}
+.stage>.grid4{align-self:stretch}
+.stage>.opt{flex:1 1 0;min-width:0;min-height:0;height:auto;max-height:100%;aspect-ratio:1/1.12;padding:6px;flex-wrap:wrap;align-content:center;gap:2%}
+.stage>.opt.opt svg{width:94%;height:auto;max-width:94%;max-height:none;aspect-ratio:1/1}
+.stage>.opt.opt:not(.one):not(.big):not(.small):not(.s3) svg{width:31%;max-width:31%}
+.stage>.opt.opt.small svg{width:46%;max-width:46%}
+.stage>.opt.opt.s3.mid svg{width:64%;max-width:64%}
+.stage>.opt.opt.s3.small svg{width:40%;max-width:40%}
 .opt.ok{box-shadow:0 0 0 6px #4FB38C,0 0 24px rgba(79,179,140,.5);animation:pop .5s}
 .opt.no{animation:shake .4s}
 @keyframes pop{50%{transform:scale(1.06)}}
@@ -66,16 +75,6 @@ h1 b{color:#EF406E;font-weight:900}
 .praise{position:absolute;left:50%;top:34%;transform:translate(-50%,-50%) scale(.6);opacity:0;background:#fff;border-radius:22px;padding:10px 22px;font-family:Rubik,sans-serif;font-weight:900;font-size:28px;color:#4FB38C;box-shadow:0 8px 24px rgba(79,179,140,.3),0 0 0 4px #D7F0E5;pointer-events:none;z-index:15;white-space:nowrap}
 .praise.show{animation:pr 1.2s ease forwards}
 @keyframes pr{0%{opacity:0;transform:translate(-50%,-50%) scale(.5)}20%{opacity:1;transform:translate(-50%,-50%) scale(1.05)}80%{opacity:1;transform:translate(-50%,-50%) scale(1)}100%{opacity:0;transform:translate(-50%,-50%) scale(.95)}}
-
-/*__ROWOPTS: חן 15.11.26: כל התשובות בשורה אחת ולא בטור, ואיורים גדולים יותר*/
-.stage{flex-direction:row;align-items:center;justify-content:center;gap:10px}
-.stage>.grid4{align-self:stretch}
-.stage>.opt{flex:1 1 0;min-width:0;min-height:0;height:auto;max-height:100%;aspect-ratio:1/1.12;padding:6px;flex-wrap:wrap;align-content:center;gap:2%}
-.stage>.opt.opt svg{width:94%;height:auto;max-width:94%;max-height:none;aspect-ratio:1/1}
-.stage>.opt.opt:not(.one):not(.big):not(.small):not(.s3) svg{width:31%;max-width:31%}
-.stage>.opt.opt.small svg{width:46%;max-width:46%}
-.stage>.opt.opt.s3.mid svg{width:64%;max-width:64%}
-.stage>.opt.opt.s3.small svg{width:40%;max-width:40%}
 </style>
 </head>
 <body>
