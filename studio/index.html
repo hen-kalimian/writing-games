@@ -189,6 +189,7 @@ const G = Object.fromEntries(D.games.map(g => [g.n, g]));
 /* 18.11.26 (חן): "מחיקת הקלטה" מחזירה את הכרטיס ל"הקלטה". del[id] = זמן המחיקה; הכרטיס נחשב מחוק עד שמגיעה הקלטה חדשה יותר. הסנכרון מעביר את הקובץ לארכיון ומוציא אותו מהמשחקים */
 const del = store.get('hen-studio-del', {});
 const isDel = it => !!(del[it.id] && !(sent[it.id] > del[it.id]) && !(HEN[it.k] > del[it.id]));
+/*__RESET (חן, 18.11.26): reset.json מחזיר כרטיסים להקלטה מחדש, גם אם בדפדפן שלה כתוב שהם כבר נשמרו*/try { const rs = await fetch('reset.json?v=' + Date.now()).then(r => r.ok ? r.json() : null); if (rs) { let ch = 0; rs.ids.forEach(id => { if (sent[id] && sent[id] < rs.ts) { delete sent[id]; ch = 1; } }); if (ch) store.set(SENT, sent); } } catch (e) {}
 function status(it) { if (isDel(it)) return ''; return HEN[it.k] && HEN[it.k] > (it.redo || 0) && (!sent[it.id] || HEN[it.k] >= sent[it.id]) ? 'done' : sent[it.id] ? 'sent' : ''; }
 function progress() { const n = D.items.filter(i => status(i)).length; $('bar').style.width = (100 * n / D.items.length) + '%'; $('cnt').textContent = 'הוקלטו ' + n + ' מתוך ' + D.items.length; }
 /* 8.11.26 (חן): עדיפות הקלטה. קודם ההנחיות עצמן במשחקים לתוכנית, אחר כך התשובות והמילים, ובסוף חבילות התוכן. לשוניות שהושלמו (ירוקות) יורדות לסוף */
