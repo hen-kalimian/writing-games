@@ -255,7 +255,7 @@ function star(x,y,r){ for(var i=0;i<10;i++){var a=i*Math.PI/5-Math.PI/2,rr2=i%2?
 function rr(x,y,w,h,r){ cx.beginPath(); cx.moveTo(x+r,y); cx.arcTo(x+w,y,x+w,y+h,r); cx.arcTo(x+w,y+h,x,y+h,r); cx.arcTo(x,y+h,x,y,r); cx.arcTo(x,y,x+w,y,r); cx.closePath() }
 function dImg(k,x,y,w,h,rot,al){ var im=img(k); if(!im) return; var a=im.width/im.height; if(a>w/h){var nh=w/a; y+=h-nh; h=nh} else {var nw=h*a; x+=(w-nw)/2; w=nw}
   cx.save(); if(al!=null) cx.globalAlpha=al; if(rot){cx.translate(x+w/2,y+h);cx.rotate(rot);cx.drawImage(im,-w/2,-h,w,h)} else cx.drawImage(im,x,y,w,h); cx.restore() }
-function loop(t){ var dt=Math.min(.033,(t-(tPrev||t))/1000); tPrev=t; step(dt); if(W&&door) draw(); requestAnimationFrame(loop) }
+function loop(t){ var dt=Math.min(.033,(t-(tPrev||t))/1000); tPrev=t; step(dt*.8); /* חן 19.11.26: "להאט ב-20% את קצב התקדמות הדמות" - כל התנועה איטית ב-20%, הקפיצה שומרת על אותה צורה ואותו מרחק */ if(W&&door) draw(); requestAnimationFrame(loop) }
 /* ---------- מסכים ---------- */
 var ov=document.getElementById('ov'), card=document.getElementById('card');
 function renderHearts(){ var h=''; for(var i=0;i<5;i++) h+='<i class="'+(i<lives?'':'off')+'"></i>'; document.getElementById('hearts').innerHTML=h }
