@@ -19,10 +19,13 @@
   function key(t) { t = String(t || '').replace(/\s+/g, ' ').trim(); var h = 2166136261; for (var i = 0; i < t.length; i++) { h ^= t.charCodeAt(i); h = Math.imul(h, 16777619) >>> 0 } return ('0000000' + h.toString(16)).slice(-8) }
   var LN = { 'א': 'אָלֶף', 'ב': 'בֵּית', 'ג': 'גִּימֶל', 'ד': 'דָּלֶת', 'ה': 'הֵא', 'ו': 'וָו', 'ז': 'זַיִן', 'ח': 'חֵית', 'ט': 'טֵית', 'י': 'יוֹד', 'כ': 'כָּף', 'ל': 'לָמֶד', 'מ': 'מֵם', 'נ': 'נוּן', 'ס': 'סָמֶךְ', 'ע': 'עַיִן', 'פ': 'פֵּא', 'צ': 'צָדִי', 'ק': 'קוֹף', 'ר': 'רֵישׁ', 'ש': 'שִׁין', 'ת': 'תָּו',
     'ך': 'כָּף סוֹפִית', 'ם': 'מֵם סוֹפִית', 'ן': 'נוּן סוֹפִית', 'ף': 'פֵּא סוֹפִית', 'ץ': 'צָדִי סוֹפִית' };
+  var SUP = {'א':'אלף - אווירון','ב':'בית - ברז','ג':'גימל - גיבור','ד':'דלת - דחליל','ה':'הא - הופ','ו':'וו - וופל','ז':'זין - זקן','ח':'חית - חדר','ט':'טית - טלפון','י':'יוד - קטנה','כ':'כף - כפכף','ל':'למד - לשון','מ':'מם - משולש','ם':'מם סופית - מרובע','נ':'נון - נו נו נו','ס':'סמך - סל','ע':'עין - עין','פ':'פא - פרח','צ':'צדי - צעק','ק':'קוף - קוף','ר':'ריש - רגל','ש':'שין - שיניים','ת':'תו - תרימי'};
   var NUM = ['אֶפֶס', 'אַחַת', 'שְׁתַּיִם', 'שָׁלוֹשׁ', 'אַרְבַּע', 'חָמֵשׁ', 'שֵׁשׁ', 'שֶׁבַע', 'שְׁמוֹנֶה', 'תֵּשַׁע', 'עֶשֶׂר', 'אַחַת עֶשְׂרֵה', 'שְׁתֵּים עֶשְׂרֵה', 'שְׁלוֹשׁ עֶשְׂרֵה', 'אַרְבַּע עֶשְׂרֵה', 'חֲמֵשׁ עֶשְׂרֵה', 'שֵׁשׁ עֶשְׂרֵה', 'שְׁבַע עֶשְׂרֵה', 'שְׁמוֹנֶה עֶשְׂרֵה', 'תְּשַׁע עֶשְׂרֵה', 'עֶשְׂרִים'];
   function url(text, fallback, cb) { load(function (h) { var k = find(text); cb(k ? base + 'play/assets/hen/' + k + '.mp3?v=' + h[k] : fallback) }) }
   function urlSync(text, fallback) { var k = find(text); return k ? base + 'play/assets/hen/' + k + '.mp3?v=' + HEN[k] : fallback }
   window.HenVoice = { key: key, load: load, url: url, urlSync: urlSync, letterName: function (l) { return LN[l] || '' }, numberName: function (n) { return NUM[+n] || '' },
-    letter: function (l, fb, cb) { url(LN[l] || l, fb, cb) }, number: function (n, fb, cb) { url(NUM[+n] || String(n), fb, cb) } };
+    /* __LETTERSUP (חן, 19.11.26): בערך פעם בשלוש האות נשמעת עם תומך הזיכרון שלה ('דלת - דחליל'), רק אם חן הקליטה את הצירוף; אחרת שם האות כרגיל */
+    letter: function (l, fb, cb) { var sp = SUP[l]; /* במיפוי ובמבדקים - בלי תומך, כדי לא לרמוז */ if (/\/mapping\/|test/i.test(location.pathname + location.search) || /מבדק|מיפוי/.test(document.title)) sp = ''; if (sp && Math.random() < .38) { load(function () { var k = find(sp); if (k) cb(base + 'play/assets/hen/' + k + '.mp3?v=' + HEN[k]); else url(LN[l] || l, fb, cb) }); return } url(LN[l] || l, fb, cb) },
+    letterSupport: function (l) { return SUP[l] || '' }, number: function (n, fb, cb) { url(NUM[+n] || String(n), fb, cb) } };
   load(function () {});
 })();
