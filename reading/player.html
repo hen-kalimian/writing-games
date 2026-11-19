@@ -33,12 +33,18 @@ video{position:absolute;inset:0;width:100%;height:100%;display:block;background:
 .play svg{width:40px;height:40px;fill:#fff;margin-inline-end:-4px}
 .sp{position:absolute;top:10px;inset-inline-start:10px;z-index:3;background:rgba(255,255,255,.85);border:2px solid var(--line);color:var(--deep);border-radius:14px;padding:3px 10px;font:800 14px Rubik,Arial;display:none}
 @media (max-width:380px){.sub{font-size:15px}.ov{gap:8px;padding:10px}.card{padding:12px 14px}.kick{font-size:25px!important;margin:0 0 2px!important}.card h1{font-size:20px}.card .exp{font-size:13.5px!important;margin-top:5px!important}.play{width:68px;height:68px}.play svg{width:30px;height:30px}.hint{font-size:16px}}
+.ctl{position:absolute;left:50%;transform:translateX(-50%);bottom:8px;z-index:4;display:none;direction:ltr;align-items:center;gap:6px;background:rgba(255,255,255,.72);backdrop-filter:blur(6px);border:2px solid var(--line);border-radius:999px;padding:3px 8px}
+.box.live .ctl{display:flex}
+.ctl button{width:30px;height:30px;border-radius:50%;border:0;background:var(--pink);color:#fff;font:800 15px/1 Rubik,Arial;cursor:pointer;padding:0;display:flex;align-items:center;justify-content:center}
+.ctl button svg{width:14px;height:14px;fill:#fff}
+.ctl .rt{min-width:44px;text-align:center;font:800 13px Rubik,Arial;color:var(--deep)}
 </style>
 </head>
 <body>
 <div class="wrap"><div class="box" id="box">
   <video id="v" playsinline preload="auto"></video>
   <div class="sp" id="sp">מהירות X2</div>
+  <div class="ctl" id="ctl"><button id="slow" aria-label="האט קצב">&minus;</button><span class="rt" id="rt">x1</span><button id="fast" aria-label="הגבר קצב">+</button><button id="pp" aria-label="עצור והמשך"><svg viewBox="0 0 24 24" id="ppi"><path d="M6 5h4v14H6zM14 5h4v14h-4z"/></svg></button></div>
   <div class="ov on" id="cover"><div class="card"><div class="kick">קוראים עם חן</div><h1 id="t1"></h1><p class="exp">בפעילות זו הילד צריך לקרוא בקול רם יחד עם חן. זוהי קריאת מקהלה (קריאה בו זמנית) שמשפרת שטף קריאה.</p><p class="exp" id="pyrline">גם קריאת משפטי הפירמידה עוזרת לקריאה השוטפת.</p></div><button class="btn play" id="go" aria-label="לחצו כדי להתחיל"><svg viewBox="0 0 24 24"><path d="M6 3.5v17l15-8.5z"/></svg></button><div class="hint">לחצו כדי להתחיל</div></div>
   <div class="ov" id="end"><div class="card"><h1>כל הכבוד!</h1><p>רוצים לקרוא שוב?</p></div><button class="btn" id="again">קריאה חוזרת</button><button class="btn soft" id="again2">קריאה במהירות כפולה ×2</button></div>
 </div></div>
@@ -59,6 +65,17 @@ function start(rate){$('cover').classList.remove('on');$('end').classList.remove
 $('go').onclick=()=>start(1);$('again').onclick=()=>start(1);$('again2').onclick=()=>start(2);
 v.addEventListener('ended',()=>{$('end').classList.add('on');$('sp').style.display='none'});
 v.addEventListener('click',()=>{v.paused?v.play():v.pause()});
+
+const RATES=[0.5,0.75,1,1.25,1.5,2];
+function setRate(r){v.playbackRate=r;v.defaultPlaybackRate=r;$('rt').textContent='x'+r;$('sp').style.display='none'}
+function live(on){$('box').classList.toggle('live',on)}
+function ppIcon(){$('ppi').innerHTML=v.paused?'<path d="M6 3.5v17l15-8.5z"/>':'<path d="M6 5h4v14H6zM14 5h4v14h-4z"/>'}
+$('slow').onclick=()=>{const i=RATES.indexOf(v.playbackRate);const j=i<0?2:Math.max(0,i-1);setRate(RATES[j])};
+$('fast').onclick=()=>{const i=RATES.indexOf(v.playbackRate);const j=i<0?2:Math.min(RATES.length-1,i+1);setRate(RATES[j])};
+$('pp').onclick=()=>{v.paused?v.play():v.pause()};
+v.addEventListener('play',ppIcon);v.addEventListener('pause',ppIcon);
+const _start=start;start=function(rate){_start(rate);setRate(rate);live(true)};
+v.addEventListener('ended',()=>live(false));
 </script>
 </body>
 </html>
