@@ -17,6 +17,8 @@ video{position:absolute;inset:0;width:100%;height:100%;display:block;background:
 #cover{background:#fde1ea center/cover no-repeat}
 #cover::before,#end::before{content:"";position:absolute;inset:0;background:rgba(255,250,251,.35);backdrop-filter:blur(3px)}
 #end{background:#fde1ea center/cover no-repeat}
+#cover,#end{background:linear-gradient(160deg,#fde1ea 0%,#fff5f8 45%,#e3f6ee 100%)}
+#cover::before,#end::before{display:none}
 .card{position:relative;background:rgba(255,255,255,.62);backdrop-filter:blur(8px);border:2.5px solid var(--line);border-radius:22px;padding:18px 20px;max-width:92%}
 .card h1{margin:0 0 4px;font:800 26px/1.25 Rubik,Arial;color:var(--deep)}
 .card p{margin:0;font:700 17px/1.4 Rubik,Arial}
@@ -51,8 +53,8 @@ if(part==="1")document.getElementById("pyrline").style.display="none";
 if(part==="2")document.getElementById("pyrline").textContent="גם קריאת משפטי הפירמידה עוזרת לקריאה השוטפת. הקריאה חשובה לפני הפעילות, ולכן קוראים קודם ורק אחר כך ממשיכים למשחקים.";
 function fit(){const box=document.getElementById("box");const W=Math.max(200,Math.min(innerWidth-16,(innerHeight-16)/1.4167));box.style.width=W+"px";box.style.height=Math.round(W*1.4167)+"px"}
 fit();addEventListener("resize",fit);
-$('t1').textContent=NAMES[c]||'';if(SUB[part]){const s=document.createElement('div');s.className='sub';s.textContent=SUB[part];$('t1').after(s)}document.title=NAMES[c]||'סרטון קריאה';
-const img='../studio/vid/'+c+(part==='2'?'_pyr.jpg':'_syl.jpg');$('cover').style.backgroundImage=$('end').style.backgroundImage='url('+img+')';
+const TITLES={1:'בואו נקרא יחד הברות ומילים',2:'בואו נקרא יחד מילים ומשפטים'};$('t1').textContent=TITLES[part]||NAMES[c]||'';{const s2=document.createElement('div');s2.className='sub';s2.textContent=NAMES[c]||'';$('t1').after(s2)}document.title=TITLES[part]||'סרטון קריאה';
+
 function start(rate){$('cover').classList.remove('on');$('end').classList.remove('on');v.playbackRate=rate;v.defaultPlaybackRate=rate;$('sp').style.display=rate>1?'block':'none';v.currentTime=0;v.play().catch(()=>{})}
 $('go').onclick=()=>start(1);$('again').onclick=()=>start(1);$('again2').onclick=()=>start(2);
 v.addEventListener('ended',()=>{$('end').classList.add('on');$('sp').style.display='none'});

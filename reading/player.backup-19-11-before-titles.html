@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>סרטון קריאה</title>
+<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@500;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#2b3138;--pink:#ef406e;--wash:#fde1ea;--line:#fbc5d6;--deep:#b8236b}
+*{box-sizing:border-box}
+html,body{margin:0;background:#fffafb;font-family:Rubik,Arial,sans-serif;color:var(--ink)}
+.wrap{margin:0 auto;padding:8px;display:flex;justify-content:center}
+.box{position:relative;border-radius:18px;overflow:hidden;background:#fff;box-shadow:0 8px 28px -12px rgba(43,49,56,.35);}
+video{position:absolute;inset:0;width:100%;height:100%;display:block;background:#fff}
+.ov{position:absolute;inset:0;display:none;align-items:center;justify-content:center;flex-direction:column;gap:14px;padding:16px;text-align:center}
+.ov.on{display:flex}
+#cover{background:#fde1ea center/cover no-repeat}
+#cover::before,#end::before{content:"";position:absolute;inset:0;background:rgba(255,250,251,.35);backdrop-filter:blur(3px)}
+#end{background:#fde1ea center/cover no-repeat}
+.card{position:relative;background:rgba(255,255,255,.62);backdrop-filter:blur(8px);border:2.5px solid var(--line);border-radius:22px;padding:18px 20px;max-width:92%}
+.card h1{margin:0 0 4px;font:800 26px/1.25 Rubik,Arial;color:var(--deep)}
+.card p{margin:0;font:700 17px/1.4 Rubik,Arial}
+.play,.hint,.btn{flex:none}
+.sub{font:800 17px/1.3 Rubik,Arial;color:var(--ink);margin:2px 0 0}
+.kick{font:800 30px/1.2 Rubik,Arial;color:var(--pink);margin:0 0 6px}
+.card .exp{font:600 15.5px/1.5 Rubik,Arial;margin:8px 0 0}
+.hint{position:relative;font:800 19px Rubik,Arial;color:var(--deep);background:rgba(255,255,255,.7);border-radius:14px;padding:4px 14px}
+.btn{position:relative;font:800 20px Rubik,Arial;border:0;border-radius:18px;padding:14px 26px;cursor:pointer;background:var(--pink);color:#fff;min-width:240px}
+.btn.soft{background:#fff;color:var(--deep);border:2.5px solid var(--line)}
+.play{width:92px;height:92px;border-radius:50%;padding:0;min-width:0;display:flex;align-items:center;justify-content:center}
+.play svg{width:40px;height:40px;fill:#fff;margin-inline-end:-4px}
+.sp{position:absolute;top:10px;inset-inline-start:10px;z-index:3;background:rgba(255,255,255,.85);border:2px solid var(--line);color:var(--deep);border-radius:14px;padding:3px 10px;font:800 14px Rubik,Arial;display:none}
+@media (max-width:380px){.sub{font-size:15px}.ov{gap:8px;padding:10px}.card{padding:12px 14px}.kick{font-size:25px!important;margin:0 0 2px!important}.card h1{font-size:20px}.card .exp{font-size:13.5px!important;margin-top:5px!important}.play{width:68px;height:68px}.play svg{width:30px;height:30px}.hint{font-size:16px}}
+</style>
+</head>
+<body>
+<div class="wrap"><div class="box" id="box">
+  <video id="v" playsinline preload="auto"></video>
+  <div class="sp" id="sp">מהירות X2</div>
+  <div class="ov on" id="cover"><div class="card"><div class="kick">קוראים עם חן</div><h1 id="t1"></h1><p class="exp">בפעילות זו הילד צריך לקרוא בקול רם יחד עם חן. זוהי קריאת מקהלה (קריאה בו זמנית) שמשפרת שטף קריאה.</p><p class="exp" id="pyrline">גם קריאת משפטי הפירמידה עוזרת לקריאה השוטפת.</p></div><button class="btn play" id="go" aria-label="לחצו כדי להתחיל"><svg viewBox="0 0 24 24"><path d="M6 3.5v17l15-8.5z"/></svg></button><div class="hint">לחצו כדי להתחיל</div></div>
+  <div class="ov" id="end"><div class="card"><h1>כל הכבוד!</h1><p>רוצים לקרוא שוב?</p></div><button class="btn" id="again">קריאה חוזרת</button><button class="btn soft" id="again2">קריאה במהירות כפולה ×2</button></div>
+</div></div>
+<script>
+const NAMES={kp:'קמץ פתח - המקל של הרופא',sh:'שווא - הרמזור',ch:'חיריק - ביפ (הצופר)',ho:'חולם - אור',tz:'צירה סגול - עיניים',sk:'שורוק קובוץ - תות'};
+const c=(location.search.match(/[?&]c=(\w+)/)||[])[1]||'kp';
+const v=document.getElementById('v'),$=id=>document.getElementById(id);
+const part=(location.search.match(/[?&]p=([12])/)||[])[1]||"";
+v.src=c+(part?"_s"+part:"")+".mp4";
+const SUB={1:"קריאת הברות ומילים",2:"קריאת משפטי פירמידה"};
+if(part==="1")document.getElementById("pyrline").style.display="none";
+if(part==="2")document.getElementById("pyrline").textContent="גם קריאת משפטי הפירמידה עוזרת לקריאה השוטפת. הקריאה חשובה לפני הפעילות, ולכן קוראים קודם ורק אחר כך ממשיכים למשחקים.";
+function fit(){const box=document.getElementById("box");const W=Math.max(200,Math.min(innerWidth-16,(innerHeight-16)/1.4167));box.style.width=W+"px";box.style.height=Math.round(W*1.4167)+"px"}
+fit();addEventListener("resize",fit);
+$('t1').textContent=NAMES[c]||'';if(SUB[part]){const s=document.createElement('div');s.className='sub';s.textContent=SUB[part];$('t1').after(s)}document.title=NAMES[c]||'סרטון קריאה';
+const img='../studio/vid/'+c+(part==='2'?'_pyr.jpg':'_syl.jpg');$('cover').style.backgroundImage=$('end').style.backgroundImage='url('+img+')';
+function start(rate){$('cover').classList.remove('on');$('end').classList.remove('on');v.playbackRate=rate;v.defaultPlaybackRate=rate;$('sp').style.display=rate>1?'block':'none';v.currentTime=0;v.play().catch(()=>{})}
+$('go').onclick=()=>start(1);$('again').onclick=()=>start(1);$('again2').onclick=()=>start(2);
+v.addEventListener('ended',()=>{$('end').classList.add('on');$('sp').style.display='none'});
+v.addEventListener('click',()=>{v.paused?v.play():v.pause()});
+</script>
+</body>
+</html>
