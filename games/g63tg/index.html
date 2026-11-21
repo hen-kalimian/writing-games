@@ -703,6 +703,9 @@ function renderA(s, t){
   const a = s.acts[0] || { shapes: [] };
   const ov = overlay();
   const seen = new Set(), n = a.shapes.length;
+  /*__AUTOADV21: אחרי שנלחצו כל הצורות עוברים לבד לשקף הבא, כמו בשאר סוגי השקפים (חן, 21.11.26). שקף תפריט עם קישורים נשאר בלחיצה */
+  let __fin = false; const __autoOK = n > 0 && a.shapes.every(q => q.link == null);
+  const __doFin = () => { if (__fin || t !== token) return; __fin = true; try { confetti(); cheer(); } catch (e) {} finishStep(t, 1800); };
   a.shapes.forEach((sh, j) => {
     const p = document.createElementNS(NS, 'path'); p.setAttribute('d', sh.d); __shT(p, sh);
     p.setAttribute('fill', 'rgba(0,0,0,0.001)'); p.setAttribute('stroke', 'rgba(0,0,0,0.001)'); p.setAttribute('stroke-width', 26); p.style.cursor = 'pointer';
@@ -712,8 +715,8 @@ function renderA(s, t){
       setTimeout(() => { p.setAttribute('stroke', 'rgba(0,0,0,0.001)'); p.setAttribute('fill', 'rgba(0,0,0,0.001)'); }, 800);
       ding(); const pt = toStage(e); popAt(pt.x, pt.y);
       seen.add(j);
-      say(sh.r1, () => { if (t !== token) return; if (sh.link != null) go(sh.link); });
-      if (seen.size >= n) setTimeout(() => finishStep(t, 0), 600);
+      say(sh.r1, () => { if (t !== token) return; if (sh.link != null) go(sh.link); else if (__autoOK && seen.size >= n) __doFin(); });
+      if (seen.size >= n) { if (__autoOK) setTimeout(__doFin, 5000); else setTimeout(() => finishStep(t, 0), 600); }
     });
     ov.appendChild(p);
   });
