@@ -9,9 +9,24 @@
   if (/\/games\/(g4yir)\//.test(location.pathname) && !qs.has('wgtest')) return;
   var okHost = function (h) { return h === H || /^(localhost|127\.0\.0\.1)$/.test(h) || /(^|\.)talkwithkids\.co\.il$/.test(h) || /(^|\.)(wixusercontent\.com|filesusr\.com|usrfiles\.com|wix\.com|wixsite\.com|editorx\.io|wixstudio\.com)$/.test(h) };
   var ok = false;
-  try { ok = sessionStorage.getItem('wgok') === '1' } catch (e) {}
-  if (!ok) { try { ok = (+localStorage.getItem('wg-member-until') || 0) > Date.now() } catch (e) {} }
-  if (!ok && !qs.has('wgtest')) {
+  /* כלי המיפוי (חן, 22.11.26): מוצר בתשלום, "המיפוי זה משהו אחר לגמרי". הוא נפתח רק מתוך הפאנל החדש בתשלום באתר של חן (הטמעה או קישור משם),
+     או אצל חן עצמה (דגל wg-owner שנקבע בדף הפרטי שלה). התחברות לתוכנית ומנוי פעיל אחר, כולל הכשרה, לא פותחים אותו.
+     מעקב ההתקדמות (progress) הוא כלי נפרד וחינמי לכל משתתפות ההכשרה, ולכן עובד כמו שאר המשחקים. */
+  var isMap = /\/mapping\//.test(location.pathname);
+  var isProg = /\/progress\//.test(location.pathname);
+  if (isMap) {
+    try { ok = localStorage.getItem('wg-owner') === '1' } catch (e) {}
+    if (!ok && !qs.has('wgtest')) {
+      var mh = [];
+      try { mh.push(new URL(document.referrer).hostname) } catch (e) {}
+      try { for (var j = 0; j < (location.ancestorOrigins || []).length; j++) mh.push(new URL(location.ancestorOrigins[j]).hostname) } catch (e) {}
+      ok = mh.some(function (h) { return /(^|\.)talkwithkids\.co\.il$/.test(h) || /(^|\.)(wixusercontent\.com|filesusr\.com|usrfiles\.com|wix\.com|wixsite\.com|editorx\.io|wixstudio\.com)$/.test(h) });
+    }
+    if (ok) return;
+  }
+  if (!isMap) { try { ok = sessionStorage.getItem('wgok') === '1' } catch (e) {} }
+  if (!ok && !isMap) { try { ok = (+localStorage.getItem('wg-member-until') || 0) > Date.now() } catch (e) {} }
+  if (!ok && !isMap && !qs.has('wgtest')) {
     var hosts = [];
     try { hosts.push(new URL(document.referrer).hostname) } catch (e) {}
     try { for (var i = 0; i < (location.ancestorOrigins || []).length; i++) hosts.push(new URL(location.ancestorOrigins[i]).hostname) } catch (e) {}
@@ -37,6 +52,8 @@
     'const $=id=>document.getElementById(id),msg=t=>{$("msg").textContent=t};' +
     'let sdk=null;async function client(){if(sdk)return sdk;const m=await import("https://esm.sh/@wix/sdk@1.21.16");sdk={m,c:m.createClient({auth:m.OAuthStrategy({clientId:CLIENT})})};return sdk}' +
     '$("go").onclick=async()=>{$("go").disabled=true;msg("עוברות להתחברות...");try{const s=await client();const od=s.c.auth.generateOAuthData(RET,RET);localStorage.setItem(OA,JSON.stringify(od));localStorage.setItem("wg-gate-back",BACK);const {authUrl}=await s.c.auth.getAuthUrl(od);(window.top||window).location.href=authUrl}catch(e){msg("לא הצלחנו לפתוח את ההתחברות, אפשר לנסות שוב");$("go").disabled=false}};';
+  if (isMap) { bodyHtml = '<div class="w"><div class="c"><h1>כלי המיפוי זמין בפאנל המיפוי בלבד</h1><p>הכלי נפתח מתוך הפאנל באתר של חן. התחברות לתוכנית אינה מספיקה כדי להיכנס אליו.</p><a class="b" href="https://www.talkwithkids.co.il/">לאתר של חן</a></div></div>'; code = ''; }
+  if (isProg) { bodyHtml = bodyHtml.replace('המשחק הזה זמין', 'מעקב ההתקדמות זמין').replace('כדי לשחק', 'כדי להיכנס'); }
     /* מחליפים את כל הדף בצומת חדש: שאר הדף המקורי ימשיך להיטען אל עץ מנותק, ולכן קוד המשחק והצלילים שלו לא ירוצו */
   var nh = document.createElement('html'); nh.setAttribute('lang', 'he'); nh.setAttribute('dir', 'rtl');
   nh.innerHTML = '<head>' + headHtml + '</head><body>' + bodyHtml + '</body>';
