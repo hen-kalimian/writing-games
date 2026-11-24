@@ -489,6 +489,23 @@ function ringBoxes(a, paths, s, k){
   });
   return out;
 }
+window.__READ24 = {"9":5000,"15":5000};
+/* __READ24: נעילת קריאה. בשקפי קריאה מסך ורוד שקוף חוסם לחיצה (5 שניות למילה או הברה, 8 לכמה מילים) ואז מתרומם */
+function readGate24(s){
+  const old = stage.querySelector('.rgate24'); if (old) old.remove();
+  const ms = window.__READ24 && window.__READ24[s.i]; if (!ms || new URLSearchParams(location.search).has('nogate')) return;
+  const g = document.createElement('div'); g.className = 'rgate24';
+  g.style.cssText = 'position:absolute;left:0;top:0;width:100%;height:100%;z-index:60;background:rgba(253,225,234,.2);cursor:not-allowed;transition:transform .55s ease-in,opacity .55s ease-in';
+  const lb = document.createElement('div'); lb.textContent = 'קוראים את התשובות...';
+  lb.style.cssText = 'position:absolute;left:50%;top:68%;transform:translateX(-50%);padding:5px 16px;border-radius:20px;background:rgba(255,255,255,.85);border:2px solid #FBC5D6;color:#B8236B;font:800 15px Rubik,sans-serif;white-space:nowrap';
+  const b = document.createElement('div'); b.style.cssText = 'position:absolute;left:50%;top:4px;transform:translateX(-50%);width:min(70%,260px);height:7px;border-radius:9px;background:#FBD9D6;overflow:hidden';
+  const f = document.createElement('div'); f.style.cssText = 'height:100%;width:100%;background:#EF406E;border-radius:9px;transition:width ' + ms + 'ms linear'; b.appendChild(f);
+  g.appendChild(lb); g.appendChild(b);
+  ['click', 'pointerdown', 'touchstart', 'mousedown'].forEach(ev => g.addEventListener(ev, e => { e.stopPropagation(); e.preventDefault(); }, { passive: false }));
+  stage.appendChild(g); const tk = token;
+  requestAnimationFrame(() => requestAnimationFrame(() => { f.style.width = '0'; }));
+  setTimeout(() => { g.style.transform = 'translateY(-100%)'; g.style.opacity = '.2'; setTimeout(() => g.remove(), 560); }, ms);
+}
 function renderQ(s, t){
   let im;
   if (s.layers){ renderLayers(s, t); im = stage; } else im = img(s);
@@ -504,6 +521,7 @@ function renderQ(s, t){
       p.setAttribute('fill', 'rgba(0,0,0,0.001)'); p.setAttribute('stroke', 'rgba(0,0,0,0.001)'); p.setAttribute('stroke-width', 40); p.setAttribute('stroke-linejoin', 'round');
       p.dataset.j = j; ov.appendChild(p); paths.push(p);
     });
+    readGate24(s);
     say(introOf(a), armIdle);
   }
   function armIdle(){ clearTimeout(idleT); idleT = setTimeout(() => { if (t === token){ const a = s.acts[k]; say((a.shapes[0] && a.shapes[0].idle) || a.idle || a.intro, armIdle); } }, 16000); }
