@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>סרטוני האותיות והספרות | חן קלימיאן</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Rubik:wght@500;700;800&display=swap" rel="stylesheet">
+<style>
+/* חן 25.11.26: בחירת אות או ספרה וצפייה בסרטון שלה, אחרי הסרטון חוזרים לבחירה. אפשר לעצור באמצע ולחזור לבחירה */
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;height:100%;font-family:Rubik,Arial,sans-serif;color:#4A2C3A;background:linear-gradient(160deg,#FDE1EA 0%,#FFF6F0 55%,#DDF5EA 100%);overflow:hidden}
+#app{height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:10px 12px;gap:12px}
+h2{margin:0;font-size:clamp(18px,4.4vw,26px);font-weight:800;color:#B8236B;text-align:center}
+.grid{display:flex;flex-wrap:wrap;justify-content:center;gap:12px;max-width:640px;width:100%}
+.card{position:relative;--per:4;width:min(130px,calc((min(100vw,640px) - 30px - (var(--per) - 1) * 10px) / var(--per)));aspect-ratio:1/1.05;border:3px solid #FBC5D6;background:#fff;border-radius:22px;font:800 clamp(52px,14vw,84px)/1 Rubik,Arial,sans-serif;color:#EF406E;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 5px 0 #FBC5D6;transition:transform .12s}
+.grid .card{--per:inherit}
+.card:active{transform:translateY(3px);box-shadow:0 2px 0 #FBC5D6}
+.card .tick{position:absolute;top:6px;left:8px;font-size:20px;color:#2FA37A;display:none}
+.card.done .tick{display:block}
+.card.done{border-color:#BFE8D6;box-shadow:0 5px 0 #BFE8D6}
+.pink{border:0;background:#EF57A4;color:#fff;font:800 clamp(15px,3.8vw,19px) Rubik,Arial,sans-serif;padding:12px 26px;border-radius:30px;cursor:pointer;box-shadow:0 4px 0 #C23F83}
+.pink:active{transform:translateY(2px);box-shadow:0 2px 0 #C23F83}
+.pink.soft{background:#fff;color:#B8236B;border:3px solid #FBC5D6;box-shadow:0 4px 0 #FBC5D6}
+#player{display:none;width:100%;max-width:700px;flex-direction:column;align-items:center;gap:10px}
+#player video,#player #yt{width:100%;max-height:calc(100vh - 110px);aspect-ratio:16/9;background:#000;border-radius:18px;border:3px solid #FBC5D6}
+#yt iframe{width:100%;height:100%;border:0;border-radius:15px}
+.bar{display:flex;justify-content:center;gap:10px;flex-wrap:wrap}
+</style>
+</head>
+<body>
+<div id="app">
+  <div id="choose"><h2 id="h"></h2></div>
+  <div class="grid" id="grid"></div>
+  <div class="bar" id="fullbar" style="display:none"><button class="pink" id="fullbtn"></button></div>
+  <div id="player">
+    <div class="bar"><button class="pink soft" id="back">חזרה לבחירה</button></div>
+    <video id="vid" controls playsinline preload="metadata"></video>
+    <div id="yt" style="display:none"></div>
+  </div>
+</div>
+<script>
+(function(){
+  var q = new URLSearchParams(location.search), key = q.get('s') || 'abgd';
+  var base = location.href.replace(/letter-videos\/.*$/, '');
+  var $ = function(i){ return document.getElementById(i); };
+  var done = {}, ytp = null, ytReady = null;
+  fetch('sets.json?v=1').then(function(r){ return r.json(); }).then(function(all){
+    var S = all[key]; if (!S) { $('h').textContent = 'לא נמצאו סרטונים'; return; }
+    var nums = S.kind === 'numbers';
+    $('h').textContent = nums ? 'בחרו ספרה לצפייה בסרטון' : 'בחרו אות לצפייה בסרטון';
+    var grid = $('grid'); grid.style.gap = '10px'; grid.style.setProperty('--per', Math.min(S.items.length, 5));
+    S.items.forEach(function(it){
+      if (!it.v) return;
+      var c = document.createElement('button'); c.className = 'card'; c.type = 'button'; c.setAttribute('aria-label', (nums ? 'הספרה ' : 'האות ') + it.l);
+      c.textContent = it.l; var t = document.createElement('span'); t.className = 'tick'; t.textContent = '✓'; c.appendChild(t);
+      c.onclick = function(){ playFile(it, c); };
+      grid.appendChild(c);
+    });
+    if (S.yt) { $('fullbar').style.display = ''; $('fullbtn').textContent = S.fullLabel || (nums ? 'כל הספרות ברצף' : 'כל האותיות ברצף'); if (!S.items.length) $('h').textContent = ''; $('fullbtn').onclick = playYT; }
+    function show(playing){ $('player').style.display = playing ? 'flex' : 'none'; $('choose').style.display = $('grid').style.display = playing ? 'none' : ''; $('fullbar').style.display = (!playing && S.yt) ? '' : 'none'; $('grid').style.display = playing ? 'none' : 'flex'; }
+    function stopAll(){ var v = $('vid'); try { v.pause(); } catch (e) {} v.removeAttribute('src'); v.load(); if (ytp && ytp.stopVideo) { try { ytp.stopVideo(); } catch (e) {} } $('yt').style.display = 'none'; }
+    function backToChoose(){ stopAll(); show(false); }
+    $('back').onclick = backToChoose;
+    function playFile(it, card){
+      var v = $('vid'); $('yt').style.display = 'none'; v.style.display = ''; show(true);
+      v.src = base + it.v; v.onended = function(){ done[it.l] = 1; card.classList.add('done'); backToChoose(); };
+      var p = v.play(); if (p && p.catch) p.catch(function(){});
+    }
+    function loadYT(cb){
+      if (window.YT && YT.Player) return cb();
+      var s = document.createElement('script'); s.src = 'https://www.youtube.com/iframe_api'; document.head.appendChild(s);
+      window.onYouTubeIframeAPIReady = cb;
+    }
+    function playYT(){
+      var v = $('vid'); try { v.pause(); } catch (e) {} v.style.display = 'none'; $('yt').style.display = 'block'; show(true);
+      loadYT(function(){
+        if (ytp && ytp.loadVideoById) { ytp.loadVideoById(S.yt); return; }
+        $('yt').innerHTML = '<div id="ytin"></div>';
+        ytp = new YT.Player('ytin', { videoId: S.yt, playerVars: { rel: 0, playsinline: 1, autoplay: 1 }, events: { onStateChange: function(e){ if (e.data === 0) backToChoose(); } } });
+      });
+    }
+  }).catch(function(){ $('h').textContent = 'הסרטונים לא נטענו, נסו לרענן'; });
+})();
+</script>
+</body>
+</html>

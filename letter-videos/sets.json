@@ -1,0 +1,261 @@
+{
+ "abgd": {
+  "title": "א ב ג ד",
+  "kind": "letters",
+  "yt": "MAPSLHEMiVs",
+  "items": [
+   {
+    "l": "א",
+    "v": "abgd/vid/v_alef.mp4"
+   },
+   {
+    "l": "ב",
+    "v": "abgd/vid/v_bet.mp4"
+   },
+   {
+    "l": "ג",
+    "v": "abgd/vid/v_gimel.mp4"
+   },
+   {
+    "l": "ד",
+    "v": "abgd/vid/v_dalet.mp4"
+   }
+  ]
+ },
+ "g4fs6": {
+  "title": "ה ו ז ח",
+  "kind": "letters",
+  "yt": "OJjnatZv278",
+  "items": [
+   {
+    "l": "ה",
+    "v": "vid/1a58a294671715.mp4"
+   },
+   {
+    "l": "ו",
+    "v": "vid/ecb2ed4cd01340.mp4"
+   },
+   {
+    "l": "ז",
+    "v": "vid/94223c67f5f00d.mp4"
+   },
+   {
+    "l": "ח",
+    "v": "vid/e9fc66dfeadfe4.mp4"
+   }
+  ]
+ },
+ "g4g75": {
+  "title": "ט י כ ל",
+  "kind": "letters",
+  "yt": "aRQ1krwyJQ4",
+  "items": [
+   {
+    "l": "ט",
+    "v": "vid/f042460c81578f.mp4"
+   },
+   {
+    "l": "י",
+    "v": "vid/14402daf6ebb48.mp4"
+   },
+   {
+    "l": "כ",
+    "v": "vid/afaacb9e170c2b.mp4"
+   },
+   {
+    "l": "ל",
+    "v": "vid/4e07318c75c82a.mp4"
+   }
+  ]
+ },
+ "g4gbm": {
+  "title": "מ נ ס ע",
+  "kind": "letters",
+  "yt": "3wnqR8j0Mtc",
+  "items": [
+   {
+    "l": "מ",
+    "v": "vid/fb60eaf34d6ad2.mp4"
+   },
+   {
+    "l": "נ",
+    "v": "vid/7f2d59c0a2be7c.mp4"
+   },
+   {
+    "l": "ס",
+    "v": "vid/38dac358b4a515.mp4"
+   },
+   {
+    "l": "ע",
+    "v": "vid/9d020138ca6169.mp4"
+   }
+  ]
+ },
+ "g4fgk": {
+  "title": "פ צ ק",
+  "kind": "letters",
+  "yt": "yR5wlu5LPg8",
+  "items": [
+   {
+    "l": "פ",
+    "v": "vid/47b113d06464d4.mp4"
+   },
+   {
+    "l": "צ",
+    "v": "vid/3e5789131d2a3e.mp4"
+   },
+   {
+    "l": "ק",
+    "v": "vid/dcbad459edff72.mp4"
+   }
+  ]
+ },
+ "g4fke": {
+  "title": "ר ש ת",
+  "kind": "letters",
+  "yt": "Iup3ruPVsMU",
+  "items": [
+   {
+    "l": "ר",
+    "v": "vid/cbf660ed98210e.mp4"
+   },
+   {
+    "l": "ש",
+    "v": "vid/2ffde3193c8b3d.mp4"
+   },
+   {
+    "l": "ת",
+    "v": "vid/9284c8817d8ce5.mp4"
+   }
+  ]
+ },
+ "g4mgh": {
+  "title": "0 1 7 8 9",
+  "kind": "numbers",
+  "yt": null,
+  "items": [
+   {
+    "l": "0",
+    "v": "vid/bc057e4efefaa1.mp4"
+   },
+   {
+    "l": "1",
+    "v": "vid/num1-chant.mp4"
+   },
+   {
+    "l": "7",
+    "v": "vid/022481db160709.mp4"
+   },
+   {
+    "l": "8",
+    "v": "vid/4ab46d4d31a9ae.mp4"
+   },
+   {
+    "l": "9",
+    "v": "vid/f210d75f394d36.mp4"
+   }
+  ]
+ },
+ "g4une": {
+  "title": "2 3 4 5 6",
+  "kind": "numbers",
+  "yt": null,
+  "items": [
+   {
+    "l": "2",
+    "v": "vid/91255476ca0415.mp4"
+   },
+   {
+    "l": "3",
+    "v": "vid/fa5f906c26dfae.mp4"
+   },
+   {
+    "l": "4",
+    "v": "vid/98d24b1f4e2aad.mp4"
+   },
+   {
+    "l": "5",
+    "v": "vid/9cb2e0218e1699.mp4"
+   },
+   {
+    "l": "6",
+    "v": "vid/9d51dc0d7c0b6e.mp4"
+   }
+  ]
+ },
+ "g5q0s": {
+  "title": "2 3 4",
+  "kind": "numbers",
+  "yt": null,
+  "items": [
+   {
+    "l": "2",
+    "v": "vid/91255476ca0415.mp4"
+   },
+   {
+    "l": "3",
+    "v": "vid/fa5f906c26dfae.mp4"
+   },
+   {
+    "l": "4",
+    "v": "vid/98d24b1f4e2aad.mp4"
+   }
+  ]
+ },
+ "g5q8b": {
+  "title": "5 6",
+  "kind": "numbers",
+  "yt": null,
+  "items": [
+   {
+    "l": "5",
+    "v": "vid/9cb2e0218e1699.mp4"
+   },
+   {
+    "l": "6",
+    "v": "vid/9d51dc0d7c0b6e.mp4"
+   }
+  ]
+ },
+ "g5q8c": {
+  "title": "0 1",
+  "kind": "numbers",
+  "yt": null,
+  "items": [
+   {
+    "l": "0",
+    "v": "vid/bc057e4efefaa1.mp4"
+   },
+   {
+    "l": "1",
+    "v": "vid/num1-chant.mp4"
+   }
+  ]
+ },
+ "g5q8f": {
+  "title": "7 8 9",
+  "kind": "numbers",
+  "yt": null,
+  "items": [
+   {
+    "l": "7",
+    "v": "vid/022481db160709.mp4"
+   },
+   {
+    "l": "8",
+    "v": "vid/4ab46d4d31a9ae.mp4"
+   },
+   {
+    "l": "9",
+    "v": "vid/f210d75f394d36.mp4"
+   }
+  ]
+ },
+ "finals": {
+  "title": "הסופיות",
+  "kind": "letters",
+  "yt": "j0LIYP3aqiM",
+  "items": [],
+  "fullLabel": "לצפייה בסרטון האותיות הסופיות"
+ }
+}
