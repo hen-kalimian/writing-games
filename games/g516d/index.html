@@ -460,10 +460,12 @@ function renderP(s, t){ main.classList.add('gest');
 
 /* ---------- חידון: לוחצים על התשובה הנכונה ---------- */
 let idleT = null;
+window.__RINGS24 = {"9:1:0":[[314,134,435,332],[625,134,746,374]],"9:5:0":[[314,134,435,332],[625,134,746,374]],"9:7:0":[[314,134,435,332],[625,134,746,374]]};
 /* __RINGS24: לכל תשובה נכונה עיגול משלה. צורה שמכילה כמה תשובות (גם אם מחוברות בגשר דק) מפוצלת לאזורים */
-function ringBoxes(a, paths){
+function ringBoxes(a, paths, s, k){
   const out = [], S = 10;
   paths.forEach((el, j) => {
+    const pre = window.__RINGS24 && window.__RINGS24[s.i + ':' + k + ':' + j]; if (pre){ pre.forEach(c => out.push(c)); return; }
     const b = a.shapes[j].bb, cells = new Set();
     for (let y = b[1]; y <= b[3]; y += S) for (let x = b[0]; x <= b[2]; x += S){ try { if (el.isPointInFill(new DOMPoint(x, y))) cells.add(Math.round(x / S) + ',' + Math.round(y / S)); } catch (e) {} }
     const core = new Map();
@@ -519,7 +521,7 @@ function renderQ(s, t){
       cheer(); popAt(h.p.x, h.p.y); confetti(16);
       // עיגול מסביב לתשובה הנכונה
       const ring = document.createElementNS(NS, 'g'); /* __RINGS24 */
-      const rboxes = ringBoxes(a, paths);
+      const rboxes = ringBoxes(a, paths, s, k);
       paths.forEach(pp => pp.remove()); paths = [];
       rboxes.forEach(bx => {
         const e3 = document.createElementNS(NS, 'ellipse'), ex = (bx[0] + bx[2]) / 2, ey = (bx[1] + bx[3]) / 2;
@@ -541,7 +543,7 @@ function renderQ(s, t){
       }
       let moved = false;
       const advance = () => { if (moved || t !== token) return; moved = true; k++; if (k < s.acts.length) { ring.remove(); startAct(); } else { confetti(); finishStep(t, 2000); } };
-      say(sh.r1 || stickerSnd, advance); setTimeout(advance, 25000);   // רשת ביטחון: ממשיכים גם אם ההקלטה נקטעה
+      if (sh.r1 || stickerSnd) say(sh.r1 || stickerSnd, advance); else setTimeout(advance, 1700); setTimeout(advance, 25000); /* __RINGHOLD24: בלי הקלטה העיגולים נשארים 1.7 שניות */   // רשת ביטחון: ממשיכים גם אם ההקלטה נקטעה
     } else {
       boop(); const tgt = s.layers ? stage : im; tgt.classList.remove('shake'); void tgt.getBoundingClientRect(); tgt.classList.add('shake');
       const sh = a.shapes[0]; if (sh && sh.r2) say(sh.r2, armIdle);
