@@ -459,6 +459,33 @@ function renderP(s, t){ main.classList.add('gest');
 
 /* ---------- חידון: לוחצים על התשובה הנכונה ---------- */
 let idleT = null;
+/* __RINGS24: לכל תשובה נכונה עיגול משלה. צורה שמכילה כמה תשובות (גם אם מחוברות בגשר דק) מפוצלת לאזורים */
+function ringBoxes(a, paths){
+  const out = [], S = 10;
+  paths.forEach((el, j) => {
+    const b = a.shapes[j].bb, cells = new Set();
+    for (let y = b[1]; y <= b[3]; y += S) for (let x = b[0]; x <= b[2]; x += S){ try { if (el.isPointInFill(new DOMPoint(x, y))) cells.add(Math.round(x / S) + ',' + Math.round(y / S)); } catch (e) {} }
+    const core = new Map();
+    cells.forEach(key => {
+      const c = key.split(',').map(Number); let ok = true;
+      for (let dx = -2; dx <= 2 && ok; dx++) for (let dy = -2; dy <= 2; dy++) if (!cells.has((c[0] + dx) + ',' + (c[1] + dy))){ ok = false; break; }
+      if (ok) core.set(key, c);
+    });
+    const seen = new Set(), comps = [];
+    core.forEach((c0, key) => {
+      if (seen.has(key)) return; seen.add(key);
+      const q = [key], box = [1e9, 1e9, -1e9, -1e9];
+      while (q.length){
+        const p = core.get(q.pop());
+        box[0] = Math.min(box[0], p[0]); box[1] = Math.min(box[1], p[1]); box[2] = Math.max(box[2], p[0]); box[3] = Math.max(box[3], p[1]);
+        for (let dx = -1; dx <= 1; dx++) for (let dy = -1; dy <= 1; dy++){ const nk = (p[0] + dx) + ',' + (p[1] + dy); if (core.has(nk) && !seen.has(nk)){ seen.add(nk); q.push(nk); } }
+      }
+      comps.push([box[0] * S - 20, box[1] * S - 20, box[2] * S + 20, box[3] * S + 20]);
+    });
+    if (comps.length > 1 && comps.length <= 6) comps.forEach(c => out.push(c)); else out.push(b);
+  });
+  return out;
+}
 function renderQ(s, t){
   let im;
   if (s.layers){ renderLayers(s, t); im = stage; } else im = img(s);
@@ -490,12 +517,17 @@ function renderQ(s, t){
       const sh = a.shapes[+h.el.dataset.j], b = sh.bb, cx = (b[0] + b[2]) / 2, cy = (b[1] + b[3]) / 2;
       cheer(); popAt(h.p.x, h.p.y); confetti(16);
       // עיגול מסביב לתשובה הנכונה
-      const ring = document.createElementNS(NS, 'ellipse');
-      ring.setAttribute('cx', cx); ring.setAttribute('cy', cy); ring.setAttribute('rx', Math.max(48, (b[2] - b[0]) / 2 + 18)); ring.setAttribute('ry', Math.max(48, (b[3] - b[1]) / 2 + 18));
-      ring.setAttribute('fill', 'none'); ring.setAttribute('stroke', '#EF406E'); ring.setAttribute('stroke-width', 9); ring.setAttribute('pointer-events', 'none');
-      ring.animate([{ opacity: 0, transform: 'scale(1.5)' }, { opacity: 1, transform: 'scale(1)' }], { duration: 350, easing: 'ease-out' });
-      ring.style.transformOrigin = cx + 'px ' + cy + 'px';
+      const ring = document.createElementNS(NS, 'g'); /* __RINGS24 */
+      const rboxes = ringBoxes(a, paths);
       paths.forEach(pp => pp.remove()); paths = [];
+      rboxes.forEach(bx => {
+        const e3 = document.createElementNS(NS, 'ellipse'), ex = (bx[0] + bx[2]) / 2, ey = (bx[1] + bx[3]) / 2;
+        e3.setAttribute('cx', ex); e3.setAttribute('cy', ey); e3.setAttribute('rx', Math.max(48, (bx[2] - bx[0]) / 2 + 18)); e3.setAttribute('ry', Math.max(48, (bx[3] - bx[1]) / 2 + 18));
+        e3.setAttribute('fill', 'none'); e3.setAttribute('stroke', '#EF406E'); e3.setAttribute('stroke-width', 9); e3.setAttribute('pointer-events', 'none');
+        e3.style.transformOrigin = ex + 'px ' + ey + 'px';
+        e3.animate([{ opacity: 0, transform: 'scale(1.5)' }, { opacity: 1, transform: 'scale(1)' }], { duration: 350, easing: 'ease-out' });
+        ring.appendChild(e3);
+      });
       ov.appendChild(ring);
       // מדבקה לכל תשובה נכונה (בחידון הדחליל)
       let stickerSnd = null;
