@@ -1,10 +1,94 @@
 {
- "updated": "2026-10-19T07:51:10.379Z",
+ "updated": "2026-11-25T12:52:27.127Z",
  "topics": [
+  {
+   "slug": "spring-2027",
+   "title": "אביב ופרחים 2027",
+   "icon": "kalanit",
+   "visible": false,
+   "due": "2027-03-03",
+   "keywords": "אביב ופרחים - 2027",
+   "buttons": [
+    {
+     "label": "לפעילויות אביב ופרחים 2027",
+     "link": "/premium-moms/spring"
+    }
+   ]
+  },
+  {
+   "slug": "family-2027",
+   "title": "משפחה וקהילה 2027",
+   "icon": "house",
+   "visible": false,
+   "due": "2027-02-17",
+   "keywords": "משפחה וקהילה - 2027",
+   "buttons": [
+    {
+     "label": "לפעילויות משפחה וקהילה 2027",
+     "link": "/premium-moms/family"
+    }
+   ]
+  },
+  {
+   "slug": "fruits-veg-2027",
+   "title": "פירות וירקות 2027",
+   "icon": "orange",
+   "visible": false,
+   "due": "2027-02-03",
+   "keywords": "פירות וירקות - 2027",
+   "buttons": [
+    {
+     "label": "לפעילויות פירות וירקות 2027",
+     "link": "/premium-moms/fruits-veg"
+    }
+   ]
+  },
+  {
+   "slug": "tu-bishvat-2027",
+   "title": "ט\"ו בשבט 2027",
+   "icon": "almond-blossom",
+   "visible": false,
+   "due": "2027-01-20",
+   "keywords": "ט\"ו בשבט - 2027",
+   "buttons": [
+    {
+     "label": "לפעילויות ט\"ו בשבט 2027",
+     "link": "/premium-moms/tu-bishvat"
+    }
+   ]
+  },
+  {
+   "slug": "animals-winter-2027",
+   "title": "בעלי חיים בחורף 2027",
+   "icon": "hedgehog",
+   "visible": false,
+   "due": "2027-01-06",
+   "keywords": "בעלי חיים בחורף - 2027",
+   "buttons": [
+    {
+     "label": "לפעילויות בעלי חיים בחורף 2027",
+     "link": "/premium-moms/animals-winter"
+    }
+   ]
+  },
+  {
+   "slug": "bialik-2026",
+   "title": "חיים נחמן ביאליק 2026",
+   "icon": "bird",
+   "visible": false,
+   "due": "2026-12-23",
+   "keywords": "חיים נחמן ביאליק - 2026",
+   "buttons": [
+    {
+     "label": "לפעילויות חיים נחמן ביאליק 2026",
+     "link": "/premium-moms/bialik"
+    }
+   ]
+  },
   {
    "slug": "winter-2026",
    "title": "חורף 2026",
-   "icon": "umbrella-pink",
+   "icon": "umbrella-blue",
    "visible": false,
    "due": "2026-12-09",
    "keywords": "חורף - 2026",
@@ -19,7 +103,7 @@
    "slug": "hanukkah-2026",
    "title": "חנוכה 2026",
    "icon": "menorah",
-   "visible": false,
+   "visible": true,
    "due": "2026-11-25",
    "keywords": "חנוכה - 2026",
    "buttons": [
@@ -33,7 +117,7 @@
    "slug": "nachliely-2026",
    "title": "הנחליאלי 2026",
    "icon": "nachliely",
-   "visible": false,
+   "visible": true,
    "due": "2026-11-11",
    "keywords": "הנחליאלי - 2026",
    "buttons": [
