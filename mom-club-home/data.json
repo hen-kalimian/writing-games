@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-25T05:30:41.748Z",
+ "updated": "2026-11-25T12:52:33.975Z",
  "items": [
   {
    "title": "10 כלים- קשיי קשב ולמידה 26.11",
@@ -185,6 +185,11 @@
    ]
   },
   {
+   "title": "הנחליאלי 2026",
+   "section": "פעילות",
+   "link": "/premium-moms/nachliely"
+  },
+  {
    "title": "הסודות ללמידה חיובית 30.9 חן",
    "section": "הקלטה",
    "link": "/premium-moms/%D7%94%D7%A9%D7%99%D7%98%D7%95%D7%AA-%D7%9C%D7%94%D7%91%D7%99%D7%90-%D7%99%D7%9C%D7%93%D7%99%D7%9D-%D7%9C%D7%9C%D7%9E%D7%95%D7%93-%D7%91%D7%9B%D7%99%D7%A3",
@@ -355,6 +360,11 @@
     "הורות מיטיבה",
     "סגנון הורות"
    ]
+  },
+  {
+   "title": "חנוכה 2026",
+   "section": "פעילות",
+   "link": "/premium-moms/hanukkah"
   },
   {
    "title": "טבלת תכנון שבועי עם הערות",
@@ -2804,6 +2814,16 @@
   }
  ],
  "topics": [
+  {
+   "title": "חנוכה 2026",
+   "icon": "menorah",
+   "link": "/premium-moms/hanukkah"
+  },
+  {
+   "title": "הנחליאלי 2026",
+   "icon": "nachliely",
+   "link": "/premium-moms/nachliely"
+  },
   {
    "title": "בחירות 2026",
    "icon": "ballot-box",
