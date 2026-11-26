@@ -270,6 +270,7 @@ function go(i){
   token++; stopVoice(); clearTimeout(idleT); curAct = null; spkUpd(); __sh = new Map(); __shs = new Map();
   stage.innerHTML = ''; document.querySelectorAll('.fover').forEach(x => x.remove()); pulseNext(false); main.classList.remove('gest');
   cur = i; __seen.add(i);
+  /*__MAPSTART (26.11.26): כשהמשחק נפתח מתוך המיפוי על אות אחת, מודיעים כשהגיעו לסוף החלק שלה */ if (i === +(new URLSearchParams(location.search).get('stop') || -1) && parent !== window) parent.postMessage({ wgDone: 'lesson' }, location.origin);
   const s = SL[i];
   $('barfill').style.width = Math.round(100 * (s.song ? s.next : i) / LAST) + '%';
   prevBtn.disabled = i === 0;
@@ -927,7 +928,7 @@ async function goFull(){
 $('fs').onclick = goFull;
 document.addEventListener('fullscreenchange', rotCheck); document.addEventListener('webkitfullscreenchange', rotCheck);
 $('gofs').onclick = async () => { await goFull(); $('go').click(); };
-$('go').onclick = () => { tone([440], .02, .0001); $('start').style.display = 'none'; voice.src = 'data:audio/mpeg;base64,//uQxAAAAAAAAAAAAAAAAAAAAAAAWGluZwAAAA8AAAACAAACcQCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICA'; voice.play().catch(() => {}); rotCheck(); go(0); };
+$('go').onclick = () => { tone([440], .02, .0001); $('start').style.display = 'none'; voice.src = 'data:audio/mpeg;base64,//uQxAAAAAAAAAAAAAAAAAAAAAAAWGluZwAAAA8AAAACAAACcQCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICA'; voice.play().catch(() => {}); rotCheck(); go(+(new URLSearchParams(location.search).get('start')) || 0); };
 rotCheck();
 if (/[?&]autostart/.test(location.search)) { $('go').click(); }
 window.__ab = { go: go, cur: () => cur, state: () => ({ cur, done: [...done] }) };

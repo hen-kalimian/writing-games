@@ -630,6 +630,146 @@ body.pal .gt.done{background:#c9efdc;border-color:#7fcfb0;color:#1f6b4a}
 .openp p{font-size:1.02rem;line-height:1.6;margin:4px 0}
 .pcard textarea{width:100%;box-sizing:border-box;border:2px solid #fbd5e1;border-radius:14px;padding:10px;font:inherit;direction:rtl;background:#fffafc}
 .chips .wc.on{background:#fde1ea;border-color:#EF406E;color:#a3174a}
+/* 26.11.26: יער קסום, שביל, דמות ותיבת אוצר */
+.trail{position:relative;width:100%;height:260px;overflow:hidden;border-radius:24px;border:3px solid #fbc5d6;background:#eaf6ef;direction:ltr}
+.trw{position:absolute;left:0;bottom:0;background:url(../mapping/img/forest.jpg) center bottom/100% 100% no-repeat}
+.trst{position:absolute;width:6.2%;aspect-ratio:2/1;transform:translate(-50%,-50%);border-radius:50%;background:rgba(255,255,255,.9);border:3px solid #EF406E;box-shadow:0 0 14px 4px rgba(255,255,255,.75)}
+.trst.done{background:#fbc5d6}
+.trdig{position:absolute;width:5.6%;aspect-ratio:1/1;transform:translate(-50%,0);display:grid;place-items:center;border-radius:22%;background:#fff;border:3px solid #EF406E;box-shadow:0 6px 14px rgba(184,35,107,.35);font-family:Rubik,Arial,sans-serif;font-weight:800;color:#B8236B;line-height:1;z-index:4}
+.trdig.new{animation:trpop .8s cubic-bezier(.3,1.6,.5,1) both}
+@keyframes trpop{0%{transform:translate(-50%,60%) scale(.1);opacity:0}100%{transform:translate(-50%,0) scale(1);opacity:1}}
+.trhero{position:absolute;transform:translateX(-50%);z-index:3;pointer-events:none}
+.trhero img{display:block;width:100%;height:100%;object-fit:contain;object-position:center bottom;transform-origin:50% 100%;filter:drop-shadow(0 4px 3px rgba(60,40,50,.28))}
+.trhero.walk img{animation:trwalk .5s ease-in-out infinite}
+@keyframes trwalk{0%,100%{transform:translateY(0) rotate(-3deg)}25%{transform:translateY(-6%) rotate(0)}50%{transform:translateY(0) rotate(3deg)}75%{transform:translateY(-6%) rotate(0)}}
+.trchest{position:absolute;transform:translateX(-50%);z-index:2;filter:drop-shadow(0 0 14px rgba(255,236,170,.95))}
+.journey{position:fixed;inset:0;z-index:85;background:linear-gradient(180deg,#fff,#FEF0F3);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:12px;overflow:auto;text-align:center}
+.journey .jt{font:800 clamp(20px,4vw,30px)/1.35 Rubik,Arial,sans-serif;color:#B8236B;min-height:1.4em}
+.journey .trail{max-width:1100px;flex:none}
+.journey .vdisp{direction:ltr}.journey .vbox{width:52px;height:62px;font-size:2rem}.journey .vbox.on.new{background:var(--pink-strong);color:#fff;animation:pop .7s}
+.journey .jgo{min-height:52px;font-size:1.15rem;padding-inline:34px}.journey .jgo[hidden]{display:block!important;visibility:hidden}
+.journey .confetti{pointer-events:none}
+.herorow{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
+.herob{display:flex;flex-direction:column;align-items:center;gap:4px;width:min(150px,40vw);padding:8px;border:3px solid #fbc5d6;border-radius:22px;background:#fff;cursor:pointer;font:800 1.05rem Rubik,Arial,sans-serif;color:#B8236B}
+.herob img{height:min(140px,18vh);min-height:96px;width:auto;max-width:100%}
+.herob.on{border-color:#EF406E;background:#FDE1EA;box-shadow:0 0 0 4px #fbc5d6}
+.vaultintro{display:flex!important;flex-direction:column;gap:12px;align-items:center}.vaultintro>*{max-width:100%}.vaultintro .trail{align-self:stretch}
+/* תיבת האוצר */
+.vstage .chestscene{display:flex!important;flex-direction:column;align-items:center;justify-content:center;gap:8px;padding:96px 10px 66px;box-sizing:border-box;background:linear-gradient(180deg,rgba(255,255,255,.55),rgba(254,246,245,.75)),url(../mapping/img/forest.jpg) center bottom/cover no-repeat;overflow:auto}
+.chrow{display:flex;gap:18px;align-items:center;justify-content:center;flex-wrap:wrap;margin:auto 0}
+.chbox{position:relative;display:flex;align-items:flex-end;justify-content:center}
+.chbox .chimg{width:min(46vw,380px,52vh);height:auto;display:block;filter:drop-shadow(0 0 22px rgba(255,236,170,.9))}
+.chbox .chhero{height:min(22vh,190px);width:auto;margin-right:-14px}
+.chestscene.opened .chimg{width:min(86vw,520px,52vh);animation:chpop 1s cubic-bezier(.3,1.5,.5,1) both}
+.chestscene.opened .chbox .chhero{height:min(28vh,240px);animation:trwalk .6s ease-in-out 6}
+@keyframes chpop{from{transform:scale(.55) rotate(-4deg)}to{transform:none}}
+.kpad{width:min(300px,86vw);display:flex;flex-direction:column;gap:8px;background:rgba(255,255,255,.92);border:3px solid #fbc5d6;border-radius:20px;padding:10px 12px}
+.kpad .vslots{height:auto;gap:6px}.kpad .vslot{height:min(52px,7vh);max-width:52px;font-size:1.6rem}
+.kpad .vkeys{grid-template-rows:repeat(4,min(54px,7vh));gap:6px;direction:ltr}.kpad .vkeys .vk{font-size:1.5rem}
+.vscene.bad .kpad .vslots{animation:shake .4s}.kpad .vkeys{flex:none}.kpad .vkeys .vk{height:100%;min-height:0}.chestscene .vdg .vbox{height:40px;min-height:40px;display:grid;place-items:center;line-height:1}
+.chestscene .confetti{opacity:1}
+@media(max-width:700px) and (orientation:portrait){.chbox .chimg{width:min(52vw,30vh)}.chbox .chhero{height:min(14vh,130px)}.kpad .vslot{height:min(42px,5.6vh)}.kpad .vkeys{grid-template-rows:repeat(4,min(46px,6.2vh))}.chestscene.opened .chimg{width:min(74vw,40vh)}}
+@media(max-height:560px){.vstage .chestscene{padding:76px 6px 48px;gap:4px}.chrow{flex-wrap:nowrap;gap:10px}.chbox .chimg{width:min(24vw,34vh)}.chbox .chhero{height:28vh}.chestscene.opened .chimg{width:min(40vw,50vh)}.chestscene.opened .chbox .chhero{height:38vh}.kpad{width:min(330px,50vw);padding:6px 8px;gap:5px}.kpad .vslot{height:30px;font-size:1.1rem}.kpad .vkeys{grid-template-columns:repeat(6,1fr);grid-template-rows:repeat(2,38px);gap:4px}.kpad .vkeys .vk{font-size:1.15rem}
+.journey{gap:6px;padding:6px}.journey .jt{font-size:17px}.journey .vbox{width:34px;height:38px;font-size:1.25rem}.journey .jgo{min-height:40px;font-size:1rem}}
+/* משחקי מתנה בשלב הלמידה */
+.teach{text-align:center;display:flex;flex-direction:column;gap:12px}
+.teachrow{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;max-width:680px;width:100%;margin:0 auto}
+.teachb{display:flex;flex-direction:column;align-items:center;gap:6px;padding:8px;border:3px solid #fbc5d6;border-radius:20px;background:#fff;cursor:pointer;font:800 1.05rem Rubik,Arial,sans-serif;color:#B8236B}
+.teachb img{width:100%;aspect-ratio:4/3;object-fit:contain;border-radius:14px;background:#fff}
+.teachb.on{border-color:#EF406E;background:#FDE1EA;box-shadow:0 0 0 4px #fbc5d6}
+.teachnone{align-self:center}.teachnone.on{background:#FDE1EA;border-color:#EF406E}
+@media(max-width:520px){.teachrow{gap:7px}.teachb{font-size:.9rem;padding:5px}}
+.giftov{position:fixed;inset:0;z-index:90;background:#FEF6F5;display:flex;flex-direction:column}
+.giftbar{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:8px 12px;background:#fff;border-bottom:3px solid #fbc5d6}
+.giftbar b{font:800 1rem Rubik,Arial,sans-serif;color:#B8236B}
+.giftbar .btn.ready{animation:giftp 1.1s ease-in-out infinite}
+@keyframes giftp{0%,100%{transform:scale(1)}50%{transform:scale(1.07)}}
+.giftov iframe{flex:1;width:100%;border:0;min-height:0}
+@media (prefers-reduced-motion:reduce){.trhero.walk img,.giftbar .btn.ready,.chestscene.opened .chhero{animation:none}}
+@media print{.journey,.giftov{display:none!important}}
+/* ===== 26.11.26: שקפים בגודל המסך (מחשב וטאבלט לרוחב), בלי גלילה ===== */
+.deckbar{display:none}
+@media screen{html body.deck .pg-hide.pg-hide{display:none!important}}
+body.deck>.wrap{max-width:1200px;gap:8px;padding-top:6px;padding-bottom:66px}
+body.deck #main.wrap{gap:8px!important;padding:0}
+body.deck .top{flex-wrap:nowrap;gap:14px}
+body.deck .top>div:first-child{flex:1 1 auto;order:0}
+body.deck .top h1{font-size:1.25rem;margin:0}
+body.deck .top .note{max-width:none!important;margin:1px 0 0!important;font-size:.76rem!important;line-height:1.35}
+body.deck .top .acct{flex:none;flex-direction:column;gap:3px;font-size:.74rem}
+body.deck .top .acct .btn{padding:5px 10px;font-size:.78rem}
+body.deck .top .toplogo{height:52px!important;width:auto!important}
+body.deck #main>.card{padding:10px 14px}
+body.deck #main .card .row{margin:0}
+body.deck #main .btn{padding:6px 14px}
+body.deck #main .meta{grid-template-columns:repeat(6,minmax(0,1fr));gap:6px 8px;align-items:end}body.deck #main .meta label{font-size:.74rem}
+body.deck #main .meta input,body.deck #main .meta select{padding:6px 10px;min-height:0;height:38px}
+body.deck #main .startbtns{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:0}
+body.deck #main .bigbtn{padding:10px 12px;min-height:0}
+body.deck #main h2,body.deck #main h3{margin:2px 0}
+body.deck #main p.note{margin:2px 0 6px}
+body.deck .wzlayout .wztop{padding:2px 12px}
+body.deck .wzlogo{height:46px;margin:0}
+body.deck .wzlayout .btn{padding:6px 14px;min-height:0}
+body.deck .kidbar{padding:3px 12px}body.deck .kbtrack{height:10px}body.deck .kbs{font-size:1.1rem}
+body.deck .wzbody{padding:8px 12px;overflow-x:hidden}
+body.deck .wzmain{max-width:1100px;gap:8px}
+body.deck .wzmain>.card{padding:10px 14px;border-radius:20px;gap:8px}
+body.deck .wzmain>.card>h2{font-size:1.3rem;margin:0}
+body.deck .wzmain .panel{padding:10px 12px;gap:6px;border-radius:18px}
+body.deck .wzmain .panel>h3{font-size:1.15rem;margin:0}
+body.deck .wzmain .panel>h3 .num{width:30px;height:30px;font-size:1rem}
+body.deck .exbox{padding:4px 12px}body.deck .exq{font-size:1rem}body.deck .exn{font-size:.75rem;padding:2px 8px;margin:0}
+body.deck .wzmain .pad:not(.fs) canvas.dc{width:min(100%,calc((100vh - 345px) * 1000 / var(--h)));min-width:260px;height:auto;margin-inline:auto}
+body.deck .wzmain .tile,body.deck .wzmain .lbig2{font-size:2rem}
+body.deck .wzmain .lngrid{grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+body.deck .wzmain .nwgrid{grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+body.deck .learncard{display:grid!important;grid-template-columns:auto 1fr;align-items:center;gap:4px 16px;text-align:right}
+body.deck .learncard h2,body.deck .learncard .vq{grid-column:2;margin:0;text-align:right}
+body.deck .learncard .learnpic{grid-column:1;grid-row:1/span 3;height:70px!important;width:auto!important}
+body.deck .learncard .lhint{grid-column:2;margin:0;font-size:.85rem}
+body.deck .teach{gap:6px!important}body.deck .teach h2{margin:0}body.deck .teachb img{height:min(14vh,150px);aspect-ratio:auto}body.deck .teachb{gap:2px;padding:4px}
+body.deck .vaultintro{gap:6px!important;padding:8px 14px!important;grid-template-columns:none!important;display:flex!important}
+body.deck .vaultintro h2,body.deck .vaultintro h3{margin:0;font-size:1.1rem}
+body.deck .vaultintro .vq{margin:0;font-size:.95rem;line-height:1.4}
+body.deck .vaultintro .herob{flex-direction:row;width:auto;padding:2px 18px;gap:10px}
+body.deck .vaultintro .herob img{height:58px;min-height:0}
+body.deck .sylbig{font-size:min(9rem,22vh)!important;line-height:1.2;min-height:0;padding-block:4px}
+body.deck .sylcard{gap:6px;padding:10px!important}
+body.deck .deckbar{display:flex;flex:none;align-items:center;justify-content:center;gap:14px;flex-wrap:wrap;padding:5px 12px;background:#fff;border-top:2px solid #fbc5d6;direction:rtl}
+body.deck>.deckbar{position:fixed;left:0;right:0;bottom:0;z-index:30}
+body.deck .deckbar .wzctl{position:static;display:flex;flex-direction:row;flex-wrap:wrap;align-items:center;justify-content:center;gap:6px;padding:0;margin:0;border:0;box-shadow:none;background:none}
+body.deck .deckbar .wzctl .row{margin:0;gap:6px}
+.pager{display:flex;align-items:center;gap:10px}.pager span{font:700 .85rem Rubik,Arial,sans-serif;color:#B8236B;white-space:nowrap}
+.pager .btn{background:#FDE1EA;border-color:#F8A8BF;color:#B8236B}.pager .btn.solid{background:#D14175!important;color:#fff!important;border-color:#D14175!important}
+.pager .btn[hidden]{display:none}
+.deckbar.notlast .wzctl .btn.solid{display:none}
+.deckbar.later .wzctl [data-act=wzBack],.deckbar.later .wzctl [data-act=wzLback],.deckbar.later .wzctl [data-act=wzLrevBack]{display:none}
+body.deck .vaultintro{display:grid!important;grid-template-columns:minmax(0,1fr) minmax(0,1.3fr)!important;grid-auto-rows:min-content;align-content:center;column-gap:16px}
+body.deck .vaultintro>*{grid-column:1}body.deck .vaultintro>.trail{grid-column:2;grid-row:1/span 5;align-self:center;width:100%}
+body.deck .wzmain .tris{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}body.deck .wzmain .tri{padding:4px 8px;gap:6px}body.deck .wzmain .trl{font-size:.88rem;min-width:120px}body.deck .wzmain .trk{padding:3px 7px;font-size:.74rem}
+body.deck .wzmain .pad .wrhint,body.deck .wzmain .pad>.lbl{display:none}
+body.deck .wzmain .pad{display:grid;grid-template-columns:auto auto;justify-content:center;column-gap:10px;row-gap:3px}body.deck .wzmain .pad>*{grid-column:1/-1;justify-self:center}body.deck .wzmain .pad>canvas.dc{width:min(100%,calc((100vh - 400px) * 1000 / var(--h)));justify-self:center}
+body.deck .wzmain .pad .tools,body.deck .wzmain .pad .modes{margin:0;gap:5px}body.deck .wzmain .pad .btn,body.deck .wzmain .pad .mdb{padding:3px 10px;font-size:.76rem}
+body.deck>.wrap>footer,body.deck .wzmain>.rights{display:none}
+body.deck .wzmain .panel>h3:has(.num){display:none}
+body.deck .wzmain .card:empty{display:none}
+body.deck #main .grid2{grid-template-columns:1fr}
+body.deck #main .pad canvas.dc{width:min(100%,calc((100vh - 440px) * 1000 / var(--h)));min-width:260px;height:auto;margin-inline:auto}
+body.deck #main .tris{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}
+body.deck{padding-top:0;padding-bottom:0;min-height:0}
+body.deck>.wrap{padding-bottom:4px}body.deck.deckpaged>.wrap{padding-bottom:62px}
+body.deck .wzmain .exbox{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;column-gap:12px;row-gap:2px;padding:3px 12px}body.deck .exbox .exq{margin:0}body.deck .exbox .exn{margin:0}
+body.deck .learncard{padding:6px 14px!important}body.deck .learncard h2{font-size:1.1rem}
+body.deck .wzmain .nwc{padding:4px 6px;gap:2px}body.deck .wzmain .nww{font-size:min(1.9rem,6vh)!important;line-height:1.35;margin:0}body.deck .wzmain .nwc input{height:30px;min-height:0}body.deck .wzmain .nwc .cell{height:30px;min-height:0}
+body.deck .wzmain .ratecard{display:flex;flex-direction:row;flex-wrap:wrap;align-items:center;justify-content:center;gap:12px;padding:6px 14px!important}body.deck .wzmain .ratecard h3,body.deck .wzmain .ratecard .row{margin:0}body.deck .wzmain .ratecard .note{display:none}
+body.deck .wzmain .pwpick{gap:6px}body.deck .wzmain .pwp img{max-height:min(20vh,170px);width:auto}body.deck .wzmain .pwp{padding:6px}
+@media(max-width:1300px){body.deck .deckbar{gap:8px;padding:4px 8px}body.deck .deckbar .btn{font-size:.76rem!important;padding:4px 9px!important}body.deck .deckbar .wzctl,body.deck .deckbar .wzctl .row{gap:4px;flex-wrap:nowrap}.pager{gap:6px}.pager span{font-size:.74rem}}
+body.deck #main .matrix td,body.deck #main .matrix th{padding-block:1px}body.deck #main .matrix button{min-height:0;padding-block:3px}
+@media(max-height:560px){.vstage .kpad .vkeys{grid-auto-rows:38px;grid-template-rows:38px 38px!important;height:auto!important}.vstage .kpad .vkeys .vk{height:38px!important;min-height:38px!important}}
+.pgfade{animation:pgfade .45s ease both}@keyframes pgfade{from{opacity:0}to{opacity:1}}
+.pgout{opacity:0;transition:opacity .2s ease}
+@media print{.deckbar{display:none!important}}
 </style>
 </head>
 <body class="pal">
@@ -886,7 +1026,7 @@ function renderMap() {
     }
   }
   $('main').innerHTML = h;
-  initCanvases();
+  initCanvases(); deck();
 }
 
 /* ===== ציור ===== */
@@ -955,7 +1095,7 @@ async function exportPng() {
   const sh = $('sheet'); if (!sh) return;
   if (typeof html2canvas !== 'function') { toast('הכלי לשמירת תמונה לא נטען. בדקי חיבור לאינטרנט ונסי שוב'); return; }
   toast('מכינה תמונה...');
-  sh.classList.add('fixed'); await new Promise(r => setTimeout(r, 150));
+  deckReset(); document.body.classList.remove('deck'); sh.classList.add('fixed'); await new Promise(r => setTimeout(r, 150));
   try {
     const c = await html2canvas(sh, { scale: 2, backgroundColor: '#ffffff', logging: false });
     sh.classList.remove('fixed');
@@ -963,8 +1103,9 @@ async function exportPng() {
     const A = document.createElement('canvas'); A.width = 1588; A.height = 2246;
     const g = A.getContext('2d'); g.fillStyle = '#fff'; g.fillRect(0, 0, A.width, A.height);
     const k = Math.min(A.width / c.width, A.height / c.height); g.drawImage(c, (A.width - c.width * k) / 2, 0, c.width * k, c.height * k);
+    deck();
     A.toBlob(b => { const a = document.createElement('a'); a.href = URL.createObjectURL(b); a.download = (m.kind === 'kb' ? 'מיפוי סוף א עד ג ' : 'מיפוי גן חובה עד אמצע א ') + name + ' ' + fmt(m.date) + '.png'; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 4000); toast('התמונה נשמרה'); }, 'image/png');
-  } catch (e) { sh.classList.remove('fixed'); toast('לא הצלחתי לשמור תמונה. אפשר להדפיס ולשמור כ-PDF'); }
+  } catch (e) { sh.classList.remove('fixed'); deck(); toast('לא הצלחתי לשמור תמונה. אפשר להדפיס ולשמור כ-PDF'); }
 }
 
 /* ===================== מעקב ילדים ===================== */
@@ -1113,7 +1254,7 @@ function render() {
   else if (S.tab === 'prev') renderPrev();
   else if (S.tab === 'map' || S.tab === 'kb') { const kd = S.tab === 'kb' ? 'kb' : 'l9', idk = S.tab === 'kb' ? 'kbId' : 'mapId'; if (!curMap() && mapsOf(kd).length) S[idk] = mapsOf(kd).sort((a, b) => b.u - a.u)[0].id; renderMap(); }
   else { if (!curKid() && kids().length) S.childId = kids()[0].id; renderKids(); }
-  renderAcct();
+  renderAcct(); deck();
 }
 function setTab(t) { S.tab = t; persist(); try { history.replaceState(null, '', '#' + t); } catch (e) {} render(); }
 function sure(btn, label, fn) {
@@ -1444,6 +1585,34 @@ function wrapLayout(m, inner) {
     ${sum ? '' : kidBar(m)}<div class="wzbody">${wizNav(m)}<div class="wzmain${WZ_HINT || sum ? ' show' : ''}">${inner}<div class="rights noprint">כל הזכויות שמורות לחן קלימיאן</div></div></div></div>`;
 }
 
+/* ===== 26.11.26: שני משחקי מתנה להקניית חומר חדש (אותיות בקלות: ג או ה; קוראים בקלות: קמץ ופתח) ===== */
+const GIFTS = {
+  g: { t: 'האות ג', url: '../games/g4myj/index.html?start=2&stop=10' },
+  h: { t: 'האות ה', url: '../games/g4myj/index.html?start=11&stop=21' },
+  kp: { t: 'קמץ ופתח', url: '../games/g4yir/index.html' }
+};
+function teachCard(m) {
+  const g = (m.t4 && m.t4.game) || '';
+  return `<div class="card teach noprint"><h2>מה לומדים היום?</h2><p class="note">בוחרים משחק, והוא נפתח כאן. כשמסיימים לוחצים "חזרה למיפוי" ומסמנים אם הילד/ה הבין/ה והטמיע/ה.</p>
+    <div class="teachrow">${Object.keys(GIFTS).map(k => `<button type="button" class="teachb${g === k ? ' on' : ''}" data-act="wzGift" data-v="${k}"><img src="../mapping/img/teach-${k}.jpg" alt="">${GIFTS[k].t}</button>`).join('')}</div>
+    <button type="button" class="btn teachnone${g === 'none' ? ' on' : ''}" data-act="wzGift" data-v="none">אני רוצה ללמד בלי משחק דיגיטלי</button></div>`;
+}
+function pickGift(m, k) {
+  const names = Object.keys(GIFTS).map(x => GIFTS[x].t);
+  if (!m.t4.q || names.includes(m.t4.q)) m.t4.q = k === 'none' ? '' : GIFTS[k].t;
+  m.t4.game = k; touch(m, 'map:' + m.id); renderMap();
+  const toMarks = () => { const c = document.querySelector('.t4card'); if (c) c.scrollIntoView({ behavior: 'smooth', block: 'start' }); };
+  if (k === 'none') { toMarks(); toast('כתבי מה לימדת, וסמני אם הילד/ה הבין/ה והטמיע/ה'); return; }
+  const o = document.createElement('div'); o.className = 'giftov noprint';
+  o.innerHTML = `<div class="giftbar"><b>לומדים: ${GIFTS[k].t}</b><button type="button" class="btn solid giftback">חזרה למיפוי</button></div><iframe src="${GIFTS[k].url}" title="${GIFTS[k].t}" allow="autoplay; fullscreen" sandbox="allow-scripts allow-same-origin allow-popups"></iframe>`;
+  document.body.appendChild(o);
+  const f = o.querySelector('iframe'), onMsg = e => { if (e.source === f.contentWindow && e.data && e.data.wgDone) o.querySelector('.giftback').classList.add('ready'); };
+  addEventListener('message', onMsg);
+  /* בלי כפתור "מסך מלא" בתוך המשחק, כדי שלא ייצאו מהמיפוי */
+  f.addEventListener('load', () => { const hide = () => { try { f.contentDocument.querySelectorAll('#fs,#gofs,#back,#closebtn,[data-fsb]').forEach(e => e.style.setProperty('display', 'none', 'important')); } catch (e) {} }; hide(); setTimeout(hide, 600); setTimeout(hide, 2000); });
+  o.querySelector('.giftback').addEventListener('click', () => { removeEventListener('message', onMsg); o.remove(); toMarks(); toast('חזרנו למיפוי. סמני אם הילד/ה הבין/ה והטמיע/ה'); });
+}
+
 /* ===== כספת ===== */
 const confettiHtml = n => { const cols = ['#EF406E', '#FBC5D6', '#9fe3c8', '#9ad7f5', '#ffd966', '#c9a7f0']; return Array.from({ length: n }, () => `<i style="left:${Math.random() * 100}%;background:${cols[Math.floor(Math.random() * cols.length)]};animation-delay:${(Math.random() * 1.2).toFixed(2)}s;animation-duration:${(2.2 + Math.random() * 2).toFixed(2)}s;transform:rotate(${Math.floor(Math.random() * 360)}deg)"></i>`).join(''); };
 function applause() {
@@ -1457,24 +1626,52 @@ function applause() {
     src.connect(f); f.connect(g); g.connect(c.destination); src.start(); src.onended = () => { try { c.close(); } catch (e) {} };
   } catch (e) {}
 }
-function vaultPic() { return emo('../mapping/img/vault.png', 'vpic', '🔐'); }
+function vaultPic() { return emo('../mapping/img/chest-closed.png', 'vpic', '🎁'); }
+/* ===== 26.11.26: יער קסום: הדמות הולכת משמאל לימין בשביל, ומעל כל שלב שהסתיים מופיעה הספרה שנמצאה ===== */
+const heroOf = m => m.hero || (m.gender === 'ילד' ? 'boy' : 'girl');
+const heroImg = m => '../mapping/img/hero-' + heroOf(m) + '.png';
+const TRY = 0.885;   /* גובה השביל בתוך תמונת היער, מלמעלה */
+const trX = (n, i) => i < 0 ? 0.07 : i >= n ? 0.815 : 0.2 + i * (n > 1 ? 0.51 / (n - 1) : 0);   /* i=-1 התחלה, i=n ליד התיבה */
+const trChestX = 0.924;
+function trailHtml(m, pos, hide) {
+  const tk = TK(m), n = tk.length, done = (m.wz && m.wz.done) || {}, v = ensureVault(m);
+  const st = tk.map((k, i) => `<span class="trst${done[k] && k !== hide ? ' done' : ''}" style="left:${trX(n, i) * 100}%;top:${TRY * 100}%"></span>` + (done[k] && k !== hide ? trDig(n, i, v.code[i]) : '')).join('');
+  return `<div class="trail" data-x="${trX(n, pos)}"><div class="trw">${st}<img class="trchest" src="../mapping/img/chest-closed.png" alt="תיבת האוצר" style="left:${trChestX * 100}%;bottom:${(1 - TRY) * 100 - 3}%;width:13%"><div class="trhero" style="left:${trX(n, pos) * 100}%;bottom:${(1 - TRY) * 100 - 0.6}%;width:12%;height:36%"><img src="${heroImg(m)}" alt=""></div></div></div>`;
+}
+function trDig(n, i, d, cls) { return `<span class="trdig${cls || ''}" style="left:${trX(n, i) * 100}%;bottom:${(1 - TRY) * 100 + 37}%;font-size:var(--trf)">${d}</span>`; }
+/* התאמה לגודל המסך: בטלפון העולם רחב מהמסך והמצלמה הולכת עם הדמות */
+function layoutTrail(t, ms) {
+  const jr = !!t.closest('.journey'), short = innerHeight < 560;
+  const side = !jr && document.body.classList.contains('deck');   /* בשקף הפתיחה בשקפים השביל בעמודה ליד הטקסט */
+  const maxH = jr ? Math.max(140, Math.min(innerHeight * 0.58, innerHeight - (short ? 150 : 240))) : side ? Math.max(190, innerHeight - 345) : Math.max(short ? 150 : 210, innerHeight * 0.42);
+  t.style.maxWidth = Math.round(maxH * 16 / 9 * 1.2) + 'px'; t.style.marginInline = 'auto';
+  const W = t.clientWidth; if (!W) return;
+  const H = Math.round(Math.min(maxH, Math.max(W * 9 / 16, Math.min(300, maxH))));   /* בטלפון לאורך הגובה גדול מיחס התמונה */
+  const ww = Math.round(Math.max(W, H * 16 / 9)), wh = Math.round(ww * 9 / 16), el = t.querySelector('.trw');
+  t.style.height = Math.min(H, wh) + 'px'; el.style.width = ww + 'px'; el.style.height = wh + 'px'; el.style.setProperty('--trf', Math.round(ww * 0.034) + 'px');
+  const tx = Math.min(0, Math.max(W - ww, W / 2 - (+t.dataset.x) * ww));
+  el.style.transition = ms ? 'transform ' + ms + 'ms linear' : 'none'; el.style.transform = 'translateX(' + tx + 'px)';
+}
+const layoutTrails = () => document.querySelectorAll('.trail').forEach(t => layoutTrail(t));
+addEventListener('resize', layoutTrails);
+function walkTo(t, x, ms) { const h = t.querySelector('.trhero'); t.dataset.x = x; h.classList.add('walk'); h.style.transition = 'left ' + ms + 'ms linear'; h.style.left = (x * 100) + '%'; layoutTrail(t, ms); }
+function chime() { try { const AC = window.AudioContext || window.webkitAudioContext, c = new AC(); [523, 659, 784, 1047].forEach((f, i) => { const o = c.createOscillator(), g = c.createGain(), t = c.currentTime + i * 0.12; o.type = 'triangle'; o.frequency.value = f; g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(0.18, t + 0.03); g.gain.exponentialRampToValueAtTime(0.0001, t + 0.5); o.connect(g); g.connect(c.destination); o.start(t); o.stop(t + 0.55); }); setTimeout(() => c.close(), 1500); } catch (e) {} }
 let VS = { mid: null, seen: false, anim: false, open: false };
 const VKEYS = () => [1, 2, 3, 4, 5, 6, 7, 8, 9].map(d => `<button type="button" class="vk" data-act="wzKey" data-d="${d}">${d}</button>`).join('') + `<button type="button" class="vk del" data-act="wzKey" data-d="del" aria-label="מחיקה">⌫</button><button type="button" class="vk" data-act="wzKey" data-d="0">0</button><button type="button" class="vk go" data-act="wzKey" data-d="ok" aria-label="פתיחה">✓</button>`;
 function vaultScene(m, v, mode) {
-  const N = TK(m).length, shown = Array.from({ length: N }, (_, i) => `<span class="vslot${i < v.input.length || mode !== 'near' ? ' on' : ''}">${mode !== 'near' ? v.code[i] : (i < v.input.length ? v.input[i] : '')}</span>`).join('');
-  const cls = mode === 'near' ? (VS.anim ? 'zoomin' : 'near') : (VS.open ? 'playing' : 'final');
+  const N = TK(m).length, near = mode === 'near';
+  const slots = Array.from({ length: N }, (_, i) => `<span class="vslot${i < v.input.length ? ' on' : ''}">${i < v.input.length ? v.input[i] : ''}</span>`).join('');
   const tk = TK(m), done = m.wz.done || {};
   const hud = `<div class="vhud noprint"><div class="vhq"><b>הנחיית הבודקת:</b> "${esc(EXS.vault[0])}"</div><div class="vdisp vdg" dir="ltr">${tk.map((k, i) => `<span class="vbox">${done[k] ? v.code[i] : ''}</span>`).join('')}</div></div>`;
   const win = '<div class="vwinbox"><h2 class="vwin">זכית בהפתעה! כל הכבוד!</h2></div>';
-  return `<div class="vscene${v.bad ? ' bad' : ''}">${mode === 'near' ? hud : win}<div class="vbtns noprint"><button type="button" class="btn sm" data-act="wzBack">חזרה</button>${mode !== 'near' ? '<button type="button" class="btn solid vnext" data-act="wzNext">סיימנו, לסיכום</button>' : ''}</div><div class="vcam ${cls}">
-    <img class="vbody" src="../mapping/img/vault.png" alt=""><div class="vint"></div>${emo('../mapping/img/gift.png', 'vgift', '🎁')}
-    <div class="vdoor"><img class="vdoorimg" src="../mapping/img/vault.png" alt=""><div class="vpanel"><div class="vslots" dir="ltr">${shown}</div><div class="vkeys" dir="ltr">${VKEYS()}</div></div></div>
-    ${mode !== 'near' ? `<div class="confetti" aria-hidden="true">${confettiHtml(80)}</div>` : ''}
-  </div></div>`;
+  return `<div class="vscene chestscene${near ? '' : ' opened'}${v.bad ? ' bad' : ''}">${near ? hud : win}<div class="vbtns noprint"><button type="button" class="btn sm" data-act="wzBack">חזרה</button>${near ? '' : '<button type="button" class="btn solid vnext" data-act="wzNext">סיימנו, לסיכום</button>'}</div>
+    <div class="chrow"><div class="chbox"><img class="chhero" src="${heroImg(m)}" alt=""><img class="chimg" src="../mapping/img/chest-${near ? 'closed' : 'open'}.png" alt="תיבת האוצר"></div>
+    ${near ? `<div class="kpad noprint"><div class="vslots" dir="ltr">${slots}</div><div class="vkeys" dir="ltr">${VKEYS()}</div></div>` : ''}</div>
+    ${near ? '' : `<div class="confetti" aria-hidden="true">${confettiHtml(80)}</div>`}</div>`;
 }
 function vaultSlide(m) {
   const v = ensureVault(m), done = m.wz.done || {}, tk = TK(m), N = tk.length, got = tk.filter(k => done[k]).length;
-  if (VS.mid !== m.id || !VS.seen) { VS = { mid: m.id, seen: true, anim: !v.opened, open: false }; if (!v.opened) setTimeout(() => { VS.anim = false; }, 2800); }
+  if (VS.mid !== m.id || !VS.seen) VS = { mid: m.id, seen: true, anim: false, open: false };
   const strip = `<div class="vault-got"><b>הספרות שקיבלת (לפי הסדר)</b><div class="vdisp" dir="ltr">${tk.map((k, i) => `<span class="vbox">${done[k] ? v.code[i] : ''}</span>`).join('')}</div></div>`;
   if (v.opened) return `<div class="card vaultcard open vstage">${vaultScene(m, v, 'open')}<div class="note noexp noprint" style="font-size:.8rem">לבוחנת: הכיני לילד/ה הפתעה קטנה, מדליה, עוגייה או כל הפתעה אחרת.</div>${m.kind === 'kb' ? '' : ''}</div>`;
   return `<div class="card vaultcard vstage">${vaultScene(m, v, 'near')}<p class="note vnote">${got < N ? 'הילד/ה קיבל/ה ' + got + ' ספרות מתוך ' + N + '. אפשר להמשיך גם כך.' : 'כל הספרות נאספו.'}</p></div>`;
@@ -1482,14 +1679,26 @@ function vaultSlide(m) {
 const DIGW = ['אפס ספרות', 'ספרה אחת', 'שתי ספרות', 'שלוש ספרות', 'ארבע ספרות', 'חמש ספרות'];
 const NUMW = n => ({ 4: 'ארבע', 5: 'חמש' }[n] || String(n));
 function showDigit(m, idx, cb) {
-  const v = ensureVault(m), done = m.wz.done || {}, tk = TK(m), n = tk.filter(k => done[k]).length;
-  const boxes = tk.map((_, i) => i).map(i => `<span class="vbox${i === idx ? ' on new' : (done[tk[i]] ? ' on' : '')}">${i === idx || done[tk[i]] ? v.code[i] : ''}</span>`).join('');
-  const o = document.createElement('div'); o.className = 'digitpop';
-  const cols = ['#EF406E', '#FBC5D6', '#9fe3c8', '#9ad7f5', '#ffd966', '#c9a7f0'];
-  const conf = Array.from({ length: 56 }, () => `<i style="left:${Math.random() * 100}%;background:${cols[Math.floor(Math.random() * cols.length)]};animation-delay:${(Math.random() * 1.2).toFixed(2)}s;animation-duration:${(2.2 + Math.random() * 2).toFixed(2)}s;transform:rotate(${Math.floor(Math.random() * 360)}deg)"></i>`).join('');
-  o.innerHTML = `<div class="confetti" aria-hidden="true">${conf}</div><div class="dp">${vaultPic()}<div class="dpt">כל הכבוד! קיבלת ספרה לכספת</div><div class="vdisp dpbox">${boxes}</div><div class="note dpc">${n < tk.length ? DIGW[n] + ' מתוך ' + tk.length : 'כל ' + tk.length + ' הספרות נאספו!'}</div><button type="button" class="btn solid dpgo">לשלב הבא</button></div>`;
+  const v = ensureVault(m), done = m.wz.done || {}, tk = TK(m), n = tk.length;
+  if (idx < 0) { cb(); return; }
+  const boxes = hide => tk.map((k, i) => `<span class="vbox${done[k] && i !== hide ? ' on' : ''}${i === idx && hide !== idx ? ' new' : ''}">${done[k] && i !== hide ? v.code[i] : ''}</span>`).join('');
+  const o = document.createElement('div'); o.className = 'journey noprint';
+  o.innerHTML = `<div class="jt" aria-live="polite">הולכים בשביל...</div>${trailHtml(m, idx === 0 ? -1 : idx, tk[idx])}<div class="vdisp jbox">${boxes(idx)}</div><button type="button" class="btn solid jgo" hidden>${idx >= n - 1 ? 'לתיבת האוצר' : 'למשימה הבאה'}</button>`;
   document.body.appendChild(o);
-  o.querySelector('.dpgo').addEventListener('click', () => { o.remove(); cb(); });
+  const t = o.querySelector('.trail'), title = o.querySelector('.jt'), go = o.querySelector('.jgo'), timers = [];
+  const later = (fn, ms) => timers.push(setTimeout(fn, ms));
+  layoutTrail(t);
+  const found = () => {
+    t.querySelector('.trhero').classList.remove('walk');
+    const st = t.querySelectorAll('.trst')[idx]; st.classList.add('done');
+    st.insertAdjacentHTML('afterend', trDig(n, idx, v.code[idx], ' new'));
+    o.querySelector('.jbox').innerHTML = boxes(-1); title.textContent = 'כל הכבוד! מצאת את הספרה ' + v.code[idx];
+    o.insertAdjacentHTML('afterbegin', `<div class="confetti" aria-hidden="true">${confettiHtml(56)}</div>`); chime();
+    later(() => { const last = idx >= n - 1; title.textContent = last ? 'ממשיכים אל תיבת האוצר!' : 'ממשיכים אל העיגול הבא...'; walkTo(t, trX(n, idx + 1), last ? 2400 : 2000);
+      later(() => { t.querySelector('.trhero').classList.remove('walk'); title.textContent = last ? 'הגעת אל תיבת האוצר!' : 'כל הכבוד! מצאת את הספרה ' + v.code[idx]; go.hidden = false; }, last ? 2450 : 2050); }, 1900);
+  };
+  if (idx === 0) later(() => { walkTo(t, trX(n, 0), 2200); later(found, 2250); }, 500); else later(found, 700);
+  go.addEventListener('click', () => { timers.forEach(clearTimeout); o.remove(); cb(); });
 }
 
 /* ===== חלון הערות לדוח המסכם בסוף כל משימה ===== */
@@ -1636,7 +1845,7 @@ function wizScreen(m) {
     if (w.view === 'report') return wrapLayout(m, parentCard(m) + sigCard(m) + reportHtml(m) + `<div class="card noprint"><h2>הדפסת דו״ח סיכום מיפוי</h2><div class="actions"><button class="btn solid" type="button" data-act="print">הדפסה או שמירה כ-PDF</button><button class="btn" type="button" data-act="png">שמירה כקובץ תמונה A4</button></div>
       <p class="note">הדו״ח כתוב לפי מה שסומן והוקלד במיפוי, ומתעדכן לבד אם משנים משהו בשקופיות.</p>
       <div class="row"><button class="btn quiet" type="button" data-act="wzRepBack">חזרה לדף המיפוי</button><button class="btn quiet" type="button" data-act="wzEdit">חזרה לעריכה</button></div></div>`);
-    return wrapLayout(m, parentCard(m) + summaryHtml(m) + `<div class="card noprint"><h2>הדפסה ושמירה</h2><div class="actions"><button class="btn solid" type="button" data-act="wzRep">לדו״ח סיכום מיפוי בכתב (דף נפרד להדפסה)</button><button class="btn solid" type="button" data-act="png">שמירת דף המיפוי כתמונה A4 (עמוד אחד)</button><button class="btn" type="button" data-act="print">הדפסת דף המיפוי (עמוד אחד) או שמירה כ-PDF</button></div>
+    return wrapLayout(m, parentCard(m) + summaryHtml(m) + `<div class="card noprint"><h2>הדפסה ושמירה</h2><div class="actions"><button class="btn solid" type="button" data-act="wzRep">לדו״ח סיכום מיפוי בכתב (דף נפרד להדפסה)</button><button class="btn solid" type="button" data-act="png">שמירת הנספח כתמונה A4 (כל המשימות, עמוד אחד)</button><button class="btn" type="button" data-act="print">הדפסת הנספח (עמוד אחד) או שמירה כ-PDF</button></div>
       <p class="note">אם משנים משהו בשקופיות אחרי ההדפסה, דף הסיכום מתעדכן לבד. פותחים אותו שוב ומדפיסים.</p>
       <div class="row"><button class="btn quiet" type="button" data-act="wzEdit">חזרה לעריכה</button><button class="btn quiet" type="button" data-act="wzDone">סיום ויציאה לדף המיפוי</button></div></div>`);
   }
@@ -1644,14 +1853,15 @@ function wizScreen(m) {
   let body = '', ctl = wizControls(m);
   if (key === 'intro') {
     const v = ensureVault(m);
-    body = `<div class="card vaultintro"><h2>בכספת מחכה הפתעה</h2>${vaultPic()}
+    body = `<div class="card vaultintro"><h2>בכספת מחכה הפתעה</h2>
       <p class="vq">מה יש בכספת? כדי לפתוח אותה צריך קוד של ${TK(m).length} ספרות. בכל משימה שנעשה ביחד תקבל/י ספרה אחת. בסוף תקיש/י את הקוד ותפתח/י את הכספת.</p>
-      <div class="digits">${TK(m).map(j => `<span class="vbox">?</span>`).join('')}</div>
-      <div class="vpad" aria-hidden="true">${[1, 2, 3, 4, 5, 6, 7, 8, 9].map(d => `<span class="vk">${d}</span>`).join('')}<span class="vk"></span><span class="vk">0</span><span class="vk"></span></div>
-      <div class="note noexp noprint">לבוחנת: הקוד נקבע אוטומטית ומופיע בתפריט הצד לפי מה שהילד/ה צבר/ה. כל משימה נותנת ספרה אחת (בסך הכול ${TK(m).length}). בסוף הילד/ה מקיש/ה את הקוד על הכספת עצמה, והפתעה מחכה בפנים.</div></div>`;
+      <h3>מי יוצא להרפתקה ביער הקסום?</h3>
+      <div class="herorow noprint">${[['girl', 'ילדה'], ['boy', 'ילד']].map(x => `<button type="button" class="herob${m.hero === x[0] ? ' on' : ''}" data-act="wzHero" data-v="${x[0]}" aria-pressed="${m.hero === x[0]}"><img src="../mapping/img/hero-${x[0]}.png" alt="">${x[1]}</button>`).join('')}</div>
+      ${trailHtml(m, -1)}
+      <div class="note noexp noprint">לבוחנת: הקוד נקבע אוטומטית ומופיע בתפריט הצד לפי מה שהילד/ה צבר/ה. כל משימה נותנת ספרה אחת (בסך הכול ${TK(m).length}). אחרי כל משימה הדמות מתקדמת בשביל, ובסוף הילד/ה מקיש/ה את הקוד על תיבת האוצר.</div></div>`;
     ctl = wizControls(m, { nextLabel: 'מתחילים' });
   } else if (key === 'parents') body = `<div class="card"><h2>פרטי הילד/ה</h2>${P.meta}</div><div class="card">${m.kind === 'kb' ? `<div class="panel"><h3>תובנות משיחת ההורים</h3>${ta('parents', m, true)}</div>` : P.parents}</div>`;
-  else if (key === 't4') body = `<div class="card learncard"><h2>פעילות 4</h2><p class="vq">לומדים יחד משהו חדש</p>${emo('../mapping/img/learn.png', 'vpic learnpic', '👩‍🏫')}<div class="lhint"><b>לבוחנת:</b> אם הכול היה קל לילד/ה, למדי אותו/ה לקרוא סימן ניקוד חדש לפי שיטת קוראים בקלות. אם היה מאתגר, בחרי מספר, אות או סימן ניקוד ראשוני ולמדי אותו/ה לפי שיטת אותיות בקלות.</div></div><div class="card"><div class="note noexp noprint">בשלב הזה הבוחנת מלמדת חומר חדש לפי הצורך של הילד/ה, ורק רושמת מה לימדה ואיך הילד/ה הגיב/ה. זה נכנס לסיכום.</div>${P.t4}</div>`;
+  else if (key === 't4') body = `<div class="card learncard"><h2>פעילות 4</h2><p class="vq">לומדים יחד משהו חדש</p><img class="vpic learnpic" src="${heroImg(m)}" alt=""><div class="lhint"><b>לבוחנת:</b> אם הכול היה קל לילד/ה, למדי אותו/ה לקרוא סימן ניקוד חדש לפי שיטת קוראים בקלות. אם היה מאתגר, בחרי מספר, אות או סימן ניקוד ראשוני ולמדי אותו/ה לפי שיטת אותיות בקלות.</div></div>${teachCard(m)}<div class="card t4card"><div class="note noexp noprint">בשלב הזה הבוחנת מלמדת חומר חדש לפי הצורך של הילד/ה, ורק רושמת מה לימדה ואיך הילד/ה הגיב/ה. זה נכנס לסיכום.</div>${P.t4}</div>`;
   else if (key === 't2') body = pwSlide(m) + stCard('היגדים לסימון: כתיבה פונטית', T2X, 't2.x', m);
   else if (key === 't1' || key === 't3') body = `<div class="card">${P[key]}</div>`;
   else if (key === 'lw' && ensureLt(m).rev) {
@@ -1879,7 +2089,7 @@ function summaryHtml(m) {
   const doneN = TASKKEYS.filter(k => (w.done || {})[k]).length;
   const lres = lt ? `<div class="lsum">${lt.L.map(l => `<div class="lres"><div class="lbig">${l}</div><div class="lline">כתיבה <b class="${stCls(lt.wr[l])}">${SYMX[lt.wr[l]] || '○'}</b></div><div class="lline">שם האות <b class="${stCls(lt.nm[l])}">${lt.wr[l] === 1 && !lt.nm[l] ? '—' : (SYMX[lt.nm[l]] || '○')}</b></div><div class="lline">זיהוי <b class="${lt.pt[l] === 1 ? 'g' : lt.pt[l] === 3 ? 'x' : ''}">${!lt.pt[l] && (lt.wr[l] === 1 || lt.nm[l] === 1) ? '—' : (lt.pt[l] === 1 ? '✓' : lt.pt[l] === 3 ? '✗' : '○')}</b></div>${strokeImg(lt.d[l], 110, 70, dhOf(m, 'lt.d.' + l))}</div>`).join('')}</div>` : '<div class="note">לא בוצע שלב אותיות</div>';
   return `<div class="sheet sumsheet" id="sheet">
-  <div class="title">סיכום מיפוי: הכנה לכיתה א׳</div>
+  <div class="title">נספח: כל המשימות שהילד/ה ביצע/ה</div>
   <div class="sub">מיפוי מגן חובה ועד אמצע כיתה א׳ · חן קלימיאן, לדבר עם ילדים</div>
   <div class="sdet"><div><b>שם:</b> ${esc(m.name)}</div><div><b>גיל:</b> ${esc(m.age)}</div><div><b>תאריך:</b> ${fmt(m.date)}</div><div><b>מסגרת:</b> ${esc(m.school)}</div><div><b>הבוחנת:</b> ${esc(m.examiner)}</div><div><b>משימות שהושלמו:</b> ${doneN} מתוך ${TASKKEYS.length}${m.vault && m.vault.opened ? ' · הכספת נפתחה' : ''}</div></div>
   ${openParaHtml(m)}${(stmtOut(m, T2X, 't2.x') || stmtOut(m, LTX, 'lt.x')) ? `<div class="panel"><h3>היגדים נוספים</h3>${stmtOut(m, T2X, 't2.x')}${stmtOut(m, LTX, 'lt.x')}</div>` : ''}
@@ -2040,7 +2250,9 @@ function wzAct(a, b, m) {
   const cur = () => ST(m)[m.wz.step][0];
   const markDone = () => { if (!m.wz.done) m.wz.done = {}; m.wz.done[cur()] = true; };
   if (a === 'wzStart') { m.wz.on = true; m.wz.phase = null; wzGo(m, m.wz.step); }
-  else if (a === 'wzNext') { const k0 = cur(); markDone(); let to = m.wz.step + 1; if (k0 === 'ln' && !lNeedP(ensureLt(m)).length) { m.wz.done.lp = true; to++; } wzGo(m, to); }
+  else if (a === 'wzHero') keep(() => { m.hero = b.dataset.v; });
+  else if (a === 'wzGift') pickGift(m, b.dataset.v);
+  else if (a === 'wzNext') { const k0 = cur(); if (k0 === 'intro' && !m.hero) { toast('קודם בוחרים דמות: ילדה או ילד'); return; } markDone(); let to = m.wz.step + 1; if (k0 === 'ln' && !lNeedP(ensureLt(m)).length) { m.wz.done.lp = true; to++; } wzGo(m, to); }
   else if (a === 'pwLvl') keep(() => { const k = b.dataset.lv; m.t2.lv = k; m.t2.w = LVL[k].w.map(x => x[0]); m.t2.order = []; m.t2.cur = null; m.t2.d = [[], [], []]; });
   else if (a === 'pwPick') keep(() => { const i = +b.dataset.i; if (!m.t2.order) m.t2.order = []; if (!m.t2.order.includes(i)) m.t2.order.push(i); m.t2.cur = i; });
   else if (a === 'pwOpen') keep(() => { m.t2.cur = +b.dataset.i; });
@@ -2100,6 +2312,89 @@ function wzAct(a, b, m) {
   else if (a === 'wzEdit') { m.wz.phase = null; m.wz.step = IDX(m, 'fin'); touch(m, 'map:' + m.id); renderMap(); window.scrollTo(0, 0); }
   else if (a === 'wzDone') { m.wz.on = false; m.wz.phase = null; touch(m, 'map:' + m.id); renderMap(); window.scrollTo(0, 0); }
 }
+
+/* ===== 26.11.26: חלוקה לשקפים בגודל המסך ===== */
+const DK = { key: '', page: 0, n: 1 };
+const deckOn = () => !PROGRESS && S.tab !== 'kids' && innerWidth >= 860 && innerHeight >= 460 && innerWidth > innerHeight;
+const DKATOM = '.wrow,.pad,.tri,.nwc,.lnc,.lrc,.bdrow,.field,.row,.cbs,.exbox,.vaultintro,.vaultcard,.sylcard,.sylbig,.herorow,.trail,.teachrow,.pwpick,.pwpics,.pwdone,.meta,.startbtns,.chips,.lvls,.lres,.rsec,.sig2,.openp,.ex,.wtop,.mkrow,.stl,.sdet,.sline,.ratecard,.learncard,.lngrid>button,.digits,.prow,.ptabs,table,ul,figure,label';
+function deckReset() {
+  document.querySelectorAll('.pg-hide').forEach(e => e.classList.remove('pg-hide'));
+  document.querySelectorAll('.deckbar').forEach(f => { const c = f.querySelector('.wzctl'), main = document.querySelector('.wzmain'); if (c && main) main.insertBefore(c, main.querySelector(':scope>.rights')); f.remove(); });
+}
+function deckUnits(root) {
+  const out = [];
+  const walk = el => {
+    for (const k of el.children) {
+      const r = k.getBoundingClientRect(); if (!r.height || getComputedStyle(k).position === 'fixed') continue;
+      if (!k.innerText.trim() && !k.matches('img,canvas,input,textarea,select,button') && !k.querySelector('img,canvas,input,textarea,select,button')) continue;
+      const text = Array.from(k.childNodes).some(n => n.nodeType === 3 && n.textContent.trim());
+      if (k.matches(DKATOM) || !k.children.length || text || r.height < 90) out.push(k); else walk(k);
+    }
+  };
+  walk(root); return out;
+}
+function deckSplit(root, A) {
+  const units = deckUnits(root), box = units.map(u => u.getBoundingClientRect()), pg = [];
+  let p = 0, start = null;
+  units.forEach((u, i) => {
+    if (start === null) start = box[i].top;
+    if (box[i].bottom - start > A && box[i].top > start + 8) {
+      p++; let j = i;
+      /* שורה בטבלה או ברשת עוברת יחד, וכותרת לא נשארת לבד בתחתית */
+      while (j > 0 && pg[j - 1] === p - 1 && (Math.abs(box[j - 1].top - box[i].top) < 6 || units[j - 1].matches('h1,h2,h3,.sec,.exbox + h3'))) { j--; pg[j] = p; }
+      start = box[j].top; if (j < i) start = Math.min(start, box[i].top);
+    }
+    pg[i] = p;
+  });
+  const ids = [...new Set(pg)];   /* בלי עמודים ריקים */
+  return { units, pg: pg.map(x => ids.indexOf(x)), n: Math.max(1, ids.length) };
+}
+function deckShow(root, sp, foot) {
+  const cur = Math.max(0, Math.min(sp.n - 1, DK.page)); DK.page = cur;
+  sp.units.forEach((u, i) => u.classList.toggle('pg-hide', sp.pg[i] !== cur));
+  const wraps = new Map();
+  sp.units.forEach((u, i) => { for (let a = u.parentElement; a && a !== root; a = a.parentElement) wraps.set(a, wraps.get(a) || sp.pg[i] === cur); });
+  wraps.forEach((on, a) => a.classList.toggle('pg-hide', !on));
+  const pager = foot.querySelector('.pager'), [prev, next] = pager.querySelectorAll('button');
+  pager.hidden = sp.n < 2; pager.querySelector('span').textContent = 'עמוד ' + (cur + 1) + ' מתוך ' + sp.n;
+  prev.hidden = cur === 0; next.hidden = cur >= sp.n - 1;
+  foot.classList.toggle('notlast', cur < sp.n - 1); foot.classList.toggle('later', cur > 0);
+  if (!foot.querySelector('.wzctl')) { foot.style.display = sp.n < 2 ? 'none' : ''; document.body.classList.toggle('deckpaged', sp.n > 1); }
+}
+function deck() {
+  deckReset(); const on = deckOn(); document.body.classList.toggle('deck', on); document.body.classList.remove('deckpaged'); layoutTrails(); if (!on) return;
+  const wz = document.querySelector('.wzlayout'), m = curMap();
+  const root = wz ? wz.querySelector('.wzmain') : $('main'); if (!root || !root.children.length) return;
+  const key = wz ? [m.id, m.wz.step, m.wz.phase, m.wz.view].join('|') : S.tab + '|' + (typeof PREV === 'string' ? PREV : '') + '|' + (m ? m.id : '');
+  const fresh = key !== DK.key; if (fresh) { DK.key = key; DK.page = 0; }
+  const foot = document.createElement('div'); foot.className = 'deckbar noprint';
+  foot.innerHTML = '<div class="pager"><button type="button" class="btn" data-deck="-1">לעמוד הקודם</button><span></span><button type="button" class="btn solid" data-deck="1">לעמוד הבא</button></div>';
+  if (wz) { const c = root.querySelector(':scope>.wzctl'); if (c) foot.appendChild(c); wz.appendChild(foot); } else document.body.appendChild(foot);
+  const avail = () => wz ? wz.querySelector('.wzbody').clientHeight - 20 : innerHeight - root.getBoundingClientRect().top - scrollY - 92;
+  foot.querySelector('.pager span').textContent = 'עמוד 1 מתוך 9';   /* כדי שגובה הסרגל התחתון יילקח בחשבון */
+  let A = avail(), sp = deckSplit(root, A);
+  const tooTall = () => { const b = wz ? wz.querySelector('.wzbody') : document.documentElement; return b.scrollHeight - b.clientHeight > 2; };
+  for (let t = 0; t < 8; t++) {
+    let bad = false;
+    for (let i = 0; i < sp.n; i++) { const keep = DK.page; DK.page = i; deckShow(root, sp, foot); if (tooTall()) bad = true; DK.page = keep; if (bad) break; }
+    deckReset_hidden(); if (!bad) break;
+    A = Math.round(A * 0.93); sp = deckSplit(root, A);
+  }
+  DK.n = sp.n; DK.sp = sp; DK.root = root; DK.foot = foot;
+  deckShow(root, sp, foot);
+  if (fresh) { root.classList.remove('pgfade'); void root.offsetWidth; root.classList.add('pgfade'); }
+}
+function deckReset_hidden() { document.querySelectorAll('.pg-hide').forEach(e => e.classList.remove('pg-hide')); }
+document.addEventListener('click', e => {
+  const b = e.target.closest && e.target.closest('[data-deck]'); if (!b || !DK.sp) return;
+  const d = +b.dataset.deck; DK.root.classList.remove('pgfade'); DK.root.classList.add('pgout');
+  setTimeout(() => { DK.page += d; deckShow(DK.root, DK.sp, DK.foot); const sc = DK.root.closest('.wzbody'); if (sc) sc.scrollTop = 0; else scrollTo(0, 0); DK.root.classList.remove('pgout'); void DK.root.offsetWidth; DK.root.classList.add('pgfade'); }, 210);
+});
+let dkT = null;
+addEventListener('resize', () => { clearTimeout(dkT); dkT = setTimeout(() => { if (!document.querySelector('.pad.fs,.giftov') && !/^(INPUT|TEXTAREA)$/.test((document.activeElement || {}).tagName || '')) deck(); }, 200); });
+addEventListener('beforeprint', () => { deckReset(); document.body.classList.remove('deck'); });
+addEventListener('afterprint', () => deck());
+if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => deck());
 
 /* ===================== פתיחה ===================== */
 load();
