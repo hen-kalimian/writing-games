@@ -659,9 +659,9 @@ body.pal .gt.done{background:#c9efdc;border-color:#7fcfb0;color:#1f6b4a}
 .chrow{display:flex;gap:18px;align-items:center;justify-content:center;flex-wrap:wrap;margin:auto 0}
 .chbox{position:relative;display:flex;align-items:flex-end;justify-content:center}
 .chbox .chimg{width:min(46vw,380px,52vh);height:auto;display:block;filter:drop-shadow(0 0 22px rgba(255,236,170,.9))}
-.chbox .chhero{height:min(22vh,190px);width:auto;margin-right:-14px}
+.chbox .chhero{height:min(22vh,190px);width:auto;margin-right:-14px;transform:scaleX(-1)}
 .chestscene.opened .chimg{width:min(86vw,520px,52vh);animation:chpop 1s cubic-bezier(.3,1.5,.5,1) both}
-.chestscene.opened .chbox .chhero{height:min(28vh,240px);animation:trwalk .6s ease-in-out 6}
+.chestscene.opened .chbox .chhero{height:min(28vh,240px)}
 @keyframes chpop{from{transform:scale(.55) rotate(-4deg)}to{transform:none}}
 .kpad{width:min(300px,86vw);display:flex;flex-direction:column;gap:8px;background:rgba(255,255,255,.92);border:3px solid #fbc5d6;border-radius:20px;padding:10px 12px}
 .kpad .vslots{height:auto;gap:6px}.kpad .vslot{height:min(52px,7vh);max-width:52px;font-size:1.6rem}
@@ -685,7 +685,7 @@ body.pal .gt.done{background:#c9efdc;border-color:#7fcfb0;color:#1f6b4a}
 .giftbar .btn.ready{animation:giftp 1.1s ease-in-out infinite}
 @keyframes giftp{0%,100%{transform:scale(1)}50%{transform:scale(1.07)}}
 .giftov iframe{flex:1;width:100%;border:0;min-height:0}
-@media (prefers-reduced-motion:reduce){.trhero.walk img,.giftbar .btn.ready,.chestscene.opened .chhero{animation:none}}
+@media (prefers-reduced-motion:reduce){.trhero.walk img,.giftbar .btn.ready{animation:none}}
 @media print{.journey,.giftov{display:none!important}}
 /* ===== 26.11.26: שקפים בגודל המסך (מחשב וטאבלט לרוחב), בלי גלילה ===== */
 .deckbar{display:none}
@@ -733,7 +733,10 @@ body.deck .vaultintro{gap:6px!important;padding:8px 14px!important;grid-template
 body.deck .vaultintro h2,body.deck .vaultintro h3{margin:0;font-size:1.1rem}
 body.deck .vaultintro .vq{margin:0;font-size:.95rem;line-height:1.4}
 body.deck .vaultintro .herob{flex-direction:row;width:auto;padding:2px 18px;gap:10px}
-body.deck .vaultintro .herob img{height:58px;min-height:0}
+body.deck .vaultintro .herob img{height:clamp(58px,11vh,100px);min-height:0}
+body.deck .vaultintro .herorow{display:grid;grid-template-columns:repeat(2,minmax(140px,170px));justify-content:center;gap:10px}
+body.deck .vaultintro .herob{justify-content:center}
+@media(max-width:700px) and (orientation:portrait){.herob{width:calc(50% - 8px)}.herob img{height:96px;min-height:0}}
 body.deck .sylbig{font-size:min(9rem,22vh)!important;line-height:1.2;min-height:0;padding-block:4px}
 body.deck .sylcard{gap:6px;padding:10px!important}
 body.deck .deckbar{display:flex;flex:none;align-items:center;justify-content:center;gap:14px;flex-wrap:wrap;padding:5px 12px;background:#fff;border-top:2px solid #fbc5d6;direction:rtl}
@@ -1631,7 +1634,7 @@ function vaultPic() { return emo('img/chest-closed.png', 'vpic', '🎁'); }
 const heroOf = m => m.hero || (m.gender === 'ילד' ? 'boy' : 'girl');
 const heroImg = m => 'img/hero-' + heroOf(m) + '.png';
 const TRY = 0.885;   /* גובה השביל בתוך תמונת היער, מלמעלה */
-const trX = (n, i) => i < 0 ? 0.07 : i >= n ? 0.815 : 0.2 + i * (n > 1 ? 0.51 / (n - 1) : 0);   /* i=-1 התחלה, i=n ליד התיבה */
+const trX = (n, i) => i < 0 ? 0.07 : i >= n ? 0.815 : 0.17 + i * (n > 1 ? 0.46 / (n - 1) : 0);   /* i=-1 התחלה, i=n ליד התיבה */
 const trChestX = 0.924;
 function trailHtml(m, pos, hide) {
   const tk = TK(m), n = tk.length, done = (m.wz && m.wz.done) || {}, v = ensureVault(m);
@@ -1694,8 +1697,8 @@ function showDigit(m, idx, cb) {
     st.insertAdjacentHTML('afterend', trDig(n, idx, v.code[idx], ' new'));
     o.querySelector('.jbox').innerHTML = boxes(-1); title.textContent = 'כל הכבוד! מצאת את הספרה ' + v.code[idx];
     o.insertAdjacentHTML('afterbegin', `<div class="confetti" aria-hidden="true">${confettiHtml(56)}</div>`); chime();
-    later(() => { const last = idx >= n - 1; title.textContent = last ? 'ממשיכים אל תיבת האוצר!' : 'ממשיכים אל העיגול הבא...'; walkTo(t, trX(n, idx + 1), last ? 2400 : 2000);
-      later(() => { t.querySelector('.trhero').classList.remove('walk'); title.textContent = last ? 'הגעת אל תיבת האוצר!' : 'כל הכבוד! מצאת את הספרה ' + v.code[idx]; go.hidden = false; }, last ? 2450 : 2050); }, 1900);
+    later(() => { const last = idx >= n - 1; title.textContent = last ? 'ממשיכים אל תיבת האוצר!' : 'ממשיכים אל העיגול הבא...'; walkTo(t, trX(n, idx + 1), last ? 1700 : 1900);
+      later(() => { t.querySelector('.trhero').classList.remove('walk'); title.textContent = last ? 'הגעת אל תיבת האוצר!' : 'כל הכבוד! מצאת את הספרה ' + v.code[idx]; go.hidden = false; }, last ? 1730 : 1930); }, 1900);
   };
   if (idx === 0) later(() => { walkTo(t, trX(n, 0), 2200); later(found, 2250); }, 500); else later(found, 700);
   go.addEventListener('click', () => { timers.forEach(clearTimeout); o.remove(); cb(); });
@@ -1856,7 +1859,7 @@ function wizScreen(m) {
     body = `<div class="card vaultintro"><h2>בכספת מחכה הפתעה</h2>
       <p class="vq">מה יש בכספת? כדי לפתוח אותה צריך קוד של ${TK(m).length} ספרות. בכל משימה שנעשה ביחד תקבל/י ספרה אחת. בסוף תקיש/י את הקוד ותפתח/י את הכספת.</p>
       <h3>מי יוצא להרפתקה ביער הקסום?</h3>
-      <div class="herorow noprint">${[['girl', 'ילדה'], ['boy', 'ילד']].map(x => `<button type="button" class="herob${m.hero === x[0] ? ' on' : ''}" data-act="wzHero" data-v="${x[0]}" aria-pressed="${m.hero === x[0]}"><img src="img/hero-${x[0]}.png" alt="">${x[1]}</button>`).join('')}</div>
+      <div class="herorow noprint">${[['girl', 'ילדה'], ['boy', 'ילד'], ['rabbit', 'ארנב'], ['dog', 'כלב']].map(x => `<button type="button" class="herob${m.hero === x[0] ? ' on' : ''}" data-act="wzHero" data-v="${x[0]}" aria-pressed="${m.hero === x[0]}"><img src="img/hero-${x[0]}.png" alt="">${x[1]}</button>`).join('')}</div>
       ${trailHtml(m, -1)}
       <div class="note noexp noprint">לבוחנת: הקוד נקבע אוטומטית ומופיע בתפריט הצד לפי מה שהילד/ה צבר/ה. כל משימה נותנת ספרה אחת (בסך הכול ${TK(m).length}). אחרי כל משימה הדמות מתקדמת בשביל, ובסוף הילד/ה מקיש/ה את הקוד על תיבת האוצר.</div></div>`;
     ctl = wizControls(m, { nextLabel: 'מתחילים' });
@@ -2252,7 +2255,7 @@ function wzAct(a, b, m) {
   if (a === 'wzStart') { m.wz.on = true; m.wz.phase = null; wzGo(m, m.wz.step); }
   else if (a === 'wzHero') keep(() => { m.hero = b.dataset.v; });
   else if (a === 'wzGift') pickGift(m, b.dataset.v);
-  else if (a === 'wzNext') { const k0 = cur(); if (k0 === 'intro' && !m.hero) { toast('קודם בוחרים דמות: ילדה או ילד'); return; } markDone(); let to = m.wz.step + 1; if (k0 === 'ln' && !lNeedP(ensureLt(m)).length) { m.wz.done.lp = true; to++; } wzGo(m, to); }
+  else if (a === 'wzNext') { const k0 = cur(); if (k0 === 'intro' && !m.hero) { toast('קודם בוחרים דמות'); return; } markDone(); let to = m.wz.step + 1; if (k0 === 'ln' && !lNeedP(ensureLt(m)).length) { m.wz.done.lp = true; to++; } wzGo(m, to); }
   else if (a === 'pwLvl') keep(() => { const k = b.dataset.lv; m.t2.lv = k; m.t2.w = LVL[k].w.map(x => x[0]); m.t2.order = []; m.t2.cur = null; m.t2.d = [[], [], []]; });
   else if (a === 'pwPick') keep(() => { const i = +b.dataset.i; if (!m.t2.order) m.t2.order = []; if (!m.t2.order.includes(i)) m.t2.order.push(i); m.t2.cur = i; });
   else if (a === 'pwOpen') keep(() => { m.t2.cur = +b.dataset.i; });
