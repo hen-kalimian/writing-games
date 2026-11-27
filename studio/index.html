@@ -122,6 +122,12 @@ main{max-width:760px;margin:0 auto}
 #contbar .cr{display:flex;gap:8px;justify-content:center;margin-top:8px}
 #contbar .cr button{font:600 14px Rubik,Arial;border:2px solid var(--pink-deep);background:#fff;color:var(--rose);border-radius:20px;padding:6px 14px;cursor:pointer}
 #contbar .cr button.stop{background:var(--pink-deep);color:#fff}
+/* 27.11.26 (חן): מה שהוקלט מכווץ */
+.rdone{margin:0 0 10px}
+.rdone summary{cursor:pointer;list-style:none;display:flex;align-items:center;gap:8px;padding:8px 12px;border:1.5px solid var(--mint-deep);border-radius:12px;background:var(--mint-wash);font-size:15px}
+.rdone summary::-webkit-details-marker{display:none}
+.rdone summary .mx{margin-inline-start:auto;font-size:12px;color:var(--muted)}
+.rdone[open] summary{margin-bottom:8px}
 /* 8.11.26: לשוניות לא גמורות באדום פסטלי עדין, גמורות בירוק ובסוף; קבוצה גמורה מכווצת גם את תצוגת המשחק; חיפוש */
 .tabs button.todo{background:#FDE8E8;border-color:#F3B3B3;color:#A8474D}
 .tabs button.todo.on{background:#F9CFCF;border-color:#E88C92;color:#8E2F36}
@@ -149,7 +155,7 @@ main{max-width:760px;margin:0 auto}
   <div class="cnt" id="cnt"></div>
 </header>
 <div class="tip" id="tip">טיפ להקלטה נקייה: חדר שקט, הטלפון במרחק כף יד מהפה, ושנייה של שקט לפני ואחרי שמדברים (אני חותכת את השקט לבד).</div>
-<div class="tip" style="text-align:center;background:#effaf5;border-color:#a8e6cf"><a href="video.html" style="color:#b8236b;font-weight:700;text-decoration:none">סרטוני קריאה: הקלטה תוך כדי צפייה בעמוד (קמץ פתח)</a></div>
+<div class="tip" style="text-align:center;background:#effaf5;border-color:#a8e6cf"><a href="video.html" style="color:#b8236b;font-weight:700;text-decoration:none">סרטוני קריאה: הקלטה תוך כדי צפייה בעמוד (פירמידות)</a></div>
 <div class="search" id="search"><div class="sbox"><input id="q" type="search" placeholder="חיפוש הקלטה (מילה, הנחיה, הברה...)" autocomplete="off" enterkeyhint="search"><button type="button" class="sx" id="sx" title="ניקוי חיפוש">✕</button></div><div class="chips" id="chips"><button type="button" data-f="all" class="on">הכול</button><button type="button" data-f="todo">חסרות</button><button type="button" data-f="done">הוקלטו</button></div></div>
 <nav class="tabs" id="tabs"></nav>
 <main id="main"></main>
@@ -191,7 +197,7 @@ const del = store.get('hen-studio-del', {});
 const isDel = it => !!(del[it.id] && !(sent[it.id] > del[it.id]) && !(HEN[it.k] > del[it.id]));
 /*__RESET (חן, 18.11.26): reset.json מחזיר כרטיסים להקלטה מחדש, גם אם בדפדפן שלה כתוב שהם כבר נשמרו*/try { const rs = await fetch('reset.json?v=' + Date.now()).then(r => r.ok ? r.json() : null); if (rs) { let ch = 0; rs.ids.forEach(id => { if (sent[id] && sent[id] < rs.ts) { delete sent[id]; ch = 1; } }); if (ch) store.set(SENT, sent); } } catch (e) {}
 function status(it) { if (isDel(it)) return ''; return HEN[it.k] && HEN[it.k] > (it.redo || 0) && (!sent[it.id] || HEN[it.k] >= sent[it.id]) ? 'done' : sent[it.id] ? 'sent' : ''; }
-function progress() { const n = D.items.filter(i => status(i)).length; $('bar').style.width = (100 * n / D.items.length) + '%'; $('cnt').textContent = 'הוקלטו ' + n + ' מתוך ' + D.items.length; }
+function progress() { const n = D.items.filter(i => status(i)).length; $('bar').style.width = (100 * n / D.items.length) + '%'; $('cnt').textContent = 'הוקלטו ' + n + ' מתוך ' + D.items.length + ' · נותרו להקליט ' + (D.items.length - n); }
 /* 8.11.26 (חן): עדיפות הקלטה. קודם ההנחיות עצמן במשחקים לתוכנית, אחר כך התשובות והמילים, ובסוף חבילות התוכן. לשוניות שהושלמו (ירוקות) יורדות לסוף */
 const PRIO = ['noisy', 'cont', 'kb', 'qs', 'more', 'new', 'all', 'names', 'syl', 'words', 'pics', 'answers', 'packgen', 'packs'];
 const byPrio = (a, b) => PRIO.indexOf(a.s.id) - PRIO.indexOf(b.s.id);
@@ -232,10 +238,18 @@ function tile(it) {
     (it.sec === 'kb' && !st ? '<button type="button" class="btn soft" data-a="tts" title="הקול הממוחשב שיש היום">ממוחשב</button>' : '') + '</div></div></section>';
 }
 const BATCH = {}, openedB = {}, BN = 20; /* 18.11.26: קבוצות של 20 */
+const openedD = {};
+/* 27.11.26 (חן): מה שהיה מוקלט בטעינת העמוד מתכווץ לשורה אחת; מה שנותר להקליט נשאר פתוח. מה שמוקלט עכשיו לא זז */
+function foldTiles(bid, its, all) {
+  const old = all ? [] : its.filter(i => LS[i.id] && status(i)), rest = its.filter(i => !old.includes(i));
+  return (rest.length ? '<div class="tiles">' + rest.map(tile).join('') + '</div>' : '') +
+    (old.length ? '<details class="rdone" data-d="' + bid + '"' + (openedD[bid] ? ' open' : '') + '><summary>✓ הוקלטו ' + old.length + '<span class="mx">לחיצה פותחת</span></summary><div class="tiles">' + old.map(tile).join('') + '</div></details>' : '');
+}
+document.addEventListener('toggle', e => { const d = e.target; if (d.dataset && d.dataset.d) openedD[d.dataset.d] = d.open; }, true);
 function batchHtml(bid) {
   const B = BATCH[bid], its = B.ids.map(id => D.items.find(i => i.id === id)), all = its.every(i => status(i));
   if (all && !openedB[bid]) return '<div class="batch" id="' + bid + '" data-b="' + bid + '"><div class="bmini" data-bopen="' + bid + '" title="לחיצה פותחת את הקבוצה"><span class="v">' + CHECK + '</span><span>' + esc(B.label) + ': ' + its.length + ' מתוך ' + its.length + ' הוקלטו</span><span class="mx">לחיצה פותחת</span></div></div>';
-  return '<div class="batch" id="' + bid + '" data-b="' + bid + '"><div class="bhead"><span>' + esc(B.label) + ' · <b class="bcnt">' + its.filter(i => status(i)).length + ' מתוך ' + its.length + ' הוקלטו</b>' + (all ? '' : ' · נסגרת לבד כשכולן מוקלטות') + '</span><button type="button" class="bcont" data-bcont="' + bid + '">הקלטה רציפה</button><button type="button" class="bclose" data-bclose="' + bid + '"' + (all ? '' : ' hidden') + '>סגירת הקבוצה</button></div><div class="tiles">' + its.map(tile).join('') + '</div></div>';
+  return '<div class="batch" id="' + bid + '" data-b="' + bid + '"><div class="bhead"><span>' + esc(B.label) + ' · <b class="bcnt">' + its.filter(i => status(i)).length + ' מתוך ' + its.length + ' הוקלטו</b>' + (all ? '' : ' · נסגרת לבד כשכולן מוקלטות') + '</span><button type="button" class="bcont" data-bcont="' + bid + '">הקלטה רציפה</button><button type="button" class="bclose" data-bclose="' + bid + '"' + (all ? '' : ' hidden') + '>סגירת הקבוצה</button></div>' + foldTiles(bid, its, all) + '</div>';
 }
 function batches(key, items) {
   items = [...items].sort((a, b) => (LS[a.id] || 0) - (LS[b.id] || 0)); /* 18.11.26: מה שמחכה להקלטה למעלה, מה שהוקלט למטה, לפי המצב בטעינת העמוד (לא קופץ תוך כדי הקלטה) */
@@ -317,7 +331,7 @@ async function save(id) {
 var CONT = { on: false };
 const wordsOf = it => String(it.nik0 || it.nik || it.text || '').replace(/[֑-ׇ.…?!,]/g, ' ').split(/\s+/).filter(Boolean).length || 1;
 function cbShow(msg, p) { const b = document.getElementById('contbar'); if (!b) return; b.classList.add('on'); document.getElementById('cbT').textContent = msg; if (p != null) document.getElementById('cbP').style.width = Math.max(0, Math.min(100, p)) + '%'; }
-function cbCur(id) { document.querySelectorAll('.tile.cur').forEach(e => e.classList.remove('cur')); const t = id && document.getElementById(id); if (t) { t.classList.add('cur'); t.scrollIntoView({ block: 'center', behavior: 'smooth' }); } }
+function cbCur(id) { document.querySelectorAll('.tile.cur').forEach(e => e.classList.remove('cur')); const t = id && document.getElementById(id); if (t) { const d = t.closest('details'); if (d) d.open = true; t.classList.add('cur'); t.scrollIntoView({ block: 'center', behavior: 'smooth' }); } }
 async function contStart(bid) {
   if (CONT.on) contEnd('restart'); if (rec) stopRec();
   const B = BATCH[bid]; if (!B) return;

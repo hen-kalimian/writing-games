@@ -19,6 +19,15 @@ h2{font:700 17px Rubik,Arial;margin:22px 0 8px;color:#b8236b}
 .tile b{display:block;font-size:16px}.tile small{color:var(--muted)}
 .tile.done{background:#effaf5;border-color:var(--mint)}.tile.done::after{content:"✓ הוקלט";position:absolute;top:6px;inset-inline-start:8px;font-size:12px;color:var(--mint-deep);font-weight:700}
 .wrap{max-width:640px;margin:0 auto}
+.sum{max-width:640px;margin:12px auto 0;background:var(--pink-wash);border:2px solid var(--pink-line);border-radius:18px;padding:10px 14px;text-align:center}
+.sum b{font-size:18px;color:#b8236b}
+.tile.todo{border-color:var(--pink);background:#fff}.tile.todo::after{content:"נותר להקליט";position:absolute;top:6px;inset-inline-start:8px;font-size:12px;color:#b8236b;font-weight:700}
+.tile.todo,.tile.done{padding-top:26px}
+h2 em{font-style:normal;font-size:13px;color:var(--muted);font-weight:700;margin-inline-start:6px}
+details{max-width:640px;margin:8px auto}
+summary{cursor:pointer;list-style:none;background:#effaf5;border:1.5px solid var(--mint);border-radius:14px;padding:9px 14px;font-weight:700;color:var(--mint-deep);display:flex;justify-content:space-between;gap:8px}
+summary::-webkit-details-marker{display:none}summary span{font-size:12px;color:var(--muted);font-weight:500;white-space:nowrap}
+details[open] summary{margin-bottom:8px}
 .lock{max-width:520px;margin:60px auto;text-align:center;font-size:18px}
 #stage{position:fixed;inset:0;background:var(--bg);z-index:10;overflow:auto;display:none;padding:env(safe-area-inset-top) 12px 24px}
 #stage.on{display:block}
@@ -64,26 +73,37 @@ if (secret) { store.set('hen-studio-k', secret); if (location.hash) history.repl
 if (!secret) { $('main').innerHTML = '<div class="lock">הדף נפתח רק מהקישור האישי של האולפן.</div>'; throw 0; }
 const sent = store.get(SENT, {});
 const COUNT = 3;
-let signs = [], data = {}, cur = null, rec = null, stream = null, chunks = [], take = null, raf = 0, autoT = 0, running = false;
+let done = {}, signs = [], data = {}, cur = null, rec = null, stream = null, chunks = [], take = null, raf = 0, autoT = 0, running = false;
 
+const isDone = id => !!(sent[id] || done[id]);
+const opened = new Set();
 async function load() {
+  try { const r = await fetch('vid/recorded.json?v=' + Date.now()); if (r.ok) done = await r.json(); } catch (e) {}
   signs = await (await fetch('vid/index.json?v=' + Date.now())).json();
   for (const s of signs) data[s.code] = await (await fetch('vid/scenes_' + s.code + '.json?v=' + Date.now())).json();
   home();
 }
 function home() {
-  $('main').innerHTML = signs.map(s => {
-    const sc = data[s.code].scenes.filter(x => !x.hidden), g = st => sc.filter(x => x.stage === st);
-    const tiles = list => '<div class="grid">' + list.map(x => `<button class="tile ${sent[x.id] ? 'done' : ''}" data-id="${x.id}"><b>${x.title}</b><small>כ-${Math.round(x.dur)} שניות ברצף</small></button>`).join('') + '</div>';
-    return `<h2>${s.name}</h2>${tiles(sc)}`;
+  const tiles = list => '<div class="grid">' + list.map(x => `<button class="tile ${isDone(x.id) ? 'done' : 'todo'}" data-id="${x.id}"><b>${x.title}</b><small>כ-${Math.round(x.dur)} שניות ברצף</small></button>`).join('') + '</div>';
+  const fold = (key, label, list) => `<details data-key="${key}"${opened.has(key) ? ' open' : ''}><summary>✓ ${label}<span>לחיצה פותחת</span></summary>${tiles(list)}</details>`;
+  let total = 0, got = 0; const left = [];
+  const html = signs.map(s => {
+    const sc = data[s.code].scenes.filter(x => !x.hidden), yes = sc.filter(x => isDone(x.id)), no = sc.filter(x => !isDone(x.id));
+    total += sc.length; got += yes.length;
+    if (!no.length) return fold(s.code, `${s.name}: הכול הוקלט (${yes.length})`, sc);
+    left.push(s.name);
+    return `<h2>${s.name}<em>נותרו ${no.length} מתוך ${sc.length}</em></h2>${tiles(no)}` + (yes.length ? fold(s.code + '-part', `הוקלטו ${yes.length}`, yes) : '');
   }).join('');
+  const sum = got === total ? `<b>הכול הוקלט (${total})</b>` : `<b>נותרו להקליט ${total - got}</b><br>הוקלטו ${got} מתוך ${total}. נותר ב: ${left.join(' · ')}`;
+  $('main').innerHTML = '<div class="sum">' + sum + '</div>' + html;
+  document.querySelectorAll('details').forEach(d => d.addEventListener('toggle', () => d.open ? opened.add(d.dataset.key) : opened.delete(d.dataset.key)));
 }
 document.addEventListener('click', e => { const t = e.target.closest('.tile'); if (t) openScene(t.dataset.id); });
 function findScene(id) { for (const k in data) { const s = data[k].scenes.find(x => x.id === id); if (s) return s; } }
 function setSt(m, c) { $('st').className = 'st ' + (c || ''); $('st').textContent = m || ''; }
 function openScene(id) {
   cur = findScene(id); take = null; $('img').src = cur.img; $('ttl').textContent = cur.title; $('hint').textContent = cur.hint; $('hl').style.display = 'none'; $('prog').style.width = '0';
-  setSt(sent[id] ? 'כבר הוקלט. אפשר להקליט שוב והחדש יחליף' : '', sent[id] ? 'ok' : ''); controls('idle'); $('stage').classList.add('on'); scrollTo(0, 0);
+  setSt(isDone(id) ? 'כבר הוקלט. אפשר להקליט שוב והחדש יחליף' : '', isDone(id) ? 'ok' : ''); controls('idle'); $('stage').classList.add('on'); scrollTo(0, 0);
 }
 function controls(mode) {
   const c = $('ctl');
