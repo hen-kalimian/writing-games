@@ -1,0 +1,71 @@
+{
+ "index.html": {
+  "iframes": [],
+  "h": [
+   "פורים - 2027"
+  ],
+  "p": [
+   "בגנים ובבתי הספר חוגגים עכשיו את פורים: תחפושות, מסכות, רעשנים ומשלוח מנות לחברים. כאן תמצאו משחק, דפי פעילות וצביעה ויצירה לכל גיל."
+  ]
+ },
+ "age-2-3.html": {
+  "iframes": [
+   "game-find.html",
+   "game-quiz-a23.html",
+   "https://www.youtube-nocookie.com/embed/7sCEV0RdAt8?rel=0&modestbranding=1",
+   "https://www.youtube-nocookie.com/embed/S7MerxNUUzY?rel=0&modestbranding=1",
+   "coloring-a23.html"
+  ],
+  "h": [
+   "פורים - 2027 · גיל 2-3",
+   "דף פעילות להדפסה",
+   "משחק דיגיטלי",
+   "חידון דיגיטלי",
+   "שיר לשירה יחד",
+   "הרעיון שלי עבור אימהות המועדון",
+   "דף צביעה להדפסה",
+   "דף צביעה דיגיטלי"
+  ],
+  "p": []
+ },
+ "age-4-5.html": {
+  "iframes": [
+   "game-maze.html",
+   "game-quiz-a45.html",
+   "https://www.youtube-nocookie.com/embed/7sCEV0RdAt8?rel=0&modestbranding=1",
+   "https://www.youtube-nocookie.com/embed/7MLT44b2YiM?rel=0&modestbranding=1",
+   "coloring-a45.html"
+  ],
+  "h": [
+   "פורים - 2027 · גיל 4-5",
+   "דף פעילות להדפסה",
+   "משחק דיגיטלי",
+   "חידון דיגיטלי",
+   "שיר לשירה יחד",
+   "הרעיון שלי עבור אימהות המועדון",
+   "דף צביעה להדפסה",
+   "דף צביעה דיגיטלי"
+  ],
+  "p": []
+ },
+ "age-6-8.html": {
+  "iframes": [
+   "game-runner.html",
+   "game-quiz-a68.html",
+   "https://www.youtube-nocookie.com/embed/7sCEV0RdAt8?rel=0&modestbranding=1",
+   "https://www.youtube-nocookie.com/embed/W1rnGCrc0NY?rel=0&modestbranding=1",
+   "coloring-a68.html"
+  ],
+  "h": [
+   "פורים - 2027 · גיל 6-8",
+   "דף פעילות להדפסה",
+   "משחק דיגיטלי",
+   "חידון דיגיטלי",
+   "שיר לשירה יחד",
+   "הרעיון שלי עבור אימהות המועדון",
+   "דף צביעה להדפסה",
+   "דף צביעה דיגיטלי"
+  ],
+  "p": []
+ }
+}

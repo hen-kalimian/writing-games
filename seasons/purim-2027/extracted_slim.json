@@ -1,0 +1,439 @@
+{
+ "game-find.html": {
+  "rounds": [
+   {
+    "say": "אֵיפֹה הַתַּחְפּוֹשֶׂת?",
+    "art": "costume",
+    "want": 1,
+    "kind": "pick",
+    "other": null,
+    "others": [
+     "teddy",
+     "ball"
+    ],
+    "which": "big"
+   },
+   {
+    "say": "אֵיפֹה הַמַּסֵּכָה?",
+    "art": "mask",
+    "want": 1,
+    "kind": "pick",
+    "other": null,
+    "others": [
+     "hands",
+     "teddy"
+    ],
+    "which": "big"
+   },
+   {
+    "say": "אֵיפֹה יֵשׁ הַרְבֵּה רַעֲשָׁנִים?",
+    "art": "grogger",
+    "want": 4,
+    "kind": "count",
+    "other": null,
+    "others": [],
+    "which": "big"
+   },
+   {
+    "say": "מִי לֹא מַתְאִים?",
+    "art": "hamantasch",
+    "want": 1,
+    "kind": "odd",
+    "other": "ball",
+    "others": [],
+    "which": "big"
+   },
+   {
+    "say": "אֵיפֹה מִשְׁלוֹחַ הַמָּנוֹת?",
+    "art": "mishloach-manot",
+    "want": 1,
+    "kind": "pick",
+    "other": null,
+    "others": [
+     "teddy",
+     "hands"
+    ],
+    "which": "big"
+   },
+   {
+    "say": "מִי הֲכִי גָּדוֹל?",
+    "art": "costume",
+    "want": 1,
+    "kind": "size3",
+    "other": null,
+    "others": [],
+    "which": "big"
+   },
+   {
+    "say": "אֵיפֹה הָרַעֲשָׁן?",
+    "art": "grogger",
+    "want": 1,
+    "kind": "pick",
+    "other": null,
+    "others": [
+     "ball",
+     "hands"
+    ],
+    "which": "big"
+   },
+   {
+    "say": "אֵיפֹה הַמַּסֵּכָה הַגְּדוֹלָה?",
+    "art": "mask",
+    "want": 1,
+    "kind": "big",
+    "other": null,
+    "others": [],
+    "which": "big"
+   },
+   {
+    "say": "אֵיפֹה יֵשׁ הַרְבֵּה אָזְנֵי הָמָן?",
+    "art": "hamantasch",
+    "want": 3,
+    "kind": "count",
+    "other": null,
+    "others": [],
+    "which": "big"
+   },
+   {
+    "say": "מִי הֲכִי קָטָן?",
+    "art": "mishloach-manot",
+    "want": 1,
+    "kind": "size3",
+    "other": null,
+    "others": [],
+    "which": "small"
+   }
+  ],
+  "done": "כָּל הַכָּבוֹד! מָצָאתֶם הַכֹּל",
+  "mascot": "hedgehog"
+ },
+ "game-maze.html": {
+  "levels": [
+   {
+    "fact": "בְּפוּרִים מִתְחַפְּשִׂים וְשָׂמִים מַסֵּכָה",
+    "art": "costume",
+    "cols": 7,
+    "rows": 9,
+    "clouds": 0
+   },
+   {
+    "fact": "בְּפוּרִים קוֹרְאִים אֶת מְגִלַּת אֶסְתֵּר בְּבֵית הַכְּנֶסֶת",
+    "art": "megillah",
+    "cols": 7,
+    "rows": 10,
+    "clouds": 1
+   },
+   {
+    "fact": "בְּפוּרִים שׁוֹלְחִים מִשְׁלוֹחֵי מָנוֹת לַחֲבֵרִים וְלַשְּׁכֵנִים",
+    "art": "mishloach-manot",
+    "cols": 8,
+    "rows": 11,
+    "clouds": 2
+   }
+  ],
+  "intro": "אִסְפוּ אֶת הַכֹּל",
+  "how": "מַחְלִיקִים אֶת הָאֶצְבַּע עַל הַמָּבוֹךְ, אוֹ לוֹחֲצִים עַל הַחִצִּים",
+  "start": "מַתְחִילִים",
+  "next": "לַשָּׁלָב הַבָּא",
+  "again": "לְשַׂחֵק שׁוּב",
+  "done": "כָּל הַכָּבוֹד! אֲסַפְתֶּם הַכֹּל",
+  "levelWord": "שָׁלָב"
+ },
+ "game-runner.html": {
+  "levels": [
+   {
+    "goal": "רַעֲשָׁנִים",
+    "need": 4,
+    "targets": [
+     {
+      "art": "grogger",
+      "say": "רַעֲשָׁן"
+     }
+    ],
+    "decoys": [
+     "mask",
+     "costume"
+    ],
+    "speed": 3.2,
+    "puddles": 1
+   },
+   {
+    "goal": "אָזְנֵי הָמָן",
+    "need": 5,
+    "targets": [
+     {
+      "art": "hamantasch",
+      "say": "אֹזֶן הָמָן"
+     }
+    ],
+    "decoys": [
+     "mishloach-manot",
+     "ball"
+    ],
+    "speed": 3.7,
+    "puddles": 2
+   },
+   {
+    "goal": "מִשְׁלוֹחֵי מָנוֹת",
+    "need": 5,
+    "targets": [
+     {
+      "art": "mishloach-manot",
+      "say": "מִשְׁלוֹחַ מָנוֹת"
+     }
+    ],
+    "decoys": [
+     "hamantasch",
+     "teddy",
+     "costume"
+    ],
+    "speed": 4.2,
+    "puddles": 2
+   },
+   {
+    "goal": "מְגִלּוֹת",
+    "need": 5,
+    "targets": [
+     {
+      "art": "megillah",
+      "say": "מְגִלָּה"
+     }
+    ],
+    "decoys": [
+     "crown",
+     "cymbals",
+     "palace"
+    ],
+    "speed": 4.7,
+    "puddles": 3
+   },
+   {
+    "goal": "כְּתָרִים וּמְצִלְתַּיִם",
+    "need": 6,
+    "targets": [
+     {
+      "art": "crown",
+      "say": "כֶּתֶר"
+     },
+     {
+      "art": "cymbals",
+      "say": "מְצִלְתַּיִם"
+     }
+    ],
+    "decoys": [
+     "megillah",
+     "mask",
+     "palace"
+    ],
+    "speed": 5.2,
+    "puddles": 3
+   }
+  ],
+  "intro": "לוֹחֲצִים כְּדֵי לִקְפֹּץ",
+  "start": "מַתְחִילִים",
+  "next": "לַשָּׁלָב הַבָּא",
+  "again": "לְשַׂחֵק שׁוּב",
+  "retry": "עוֹד פַּעַם",
+  "done": "כָּל הַכָּבוֹד! סִיַּמְתֶּם אֶת כָּל הַשְּׁלָבִים",
+  "levelWord": "שָׁלָב"
+ },
+ "game-quiz-a23.html": {
+  "title": "חִידוֹן פּוּרִים",
+  "questions": [
+   {
+    "q": "אֵיפֹה הַתַּחְפּוֹשֶׂת?",
+    "options": [
+     {
+      "art": "costume"
+     },
+     {
+      "art": "teddy"
+     },
+     {
+      "art": "ball"
+     }
+    ],
+    "answer": 0
+   },
+   {
+    "q": "אֵיפֹה הַמַּסֵּכָה?",
+    "options": [
+     {
+      "art": "mask"
+     },
+     {
+      "art": "hands"
+     },
+     {
+      "art": "teddy"
+     }
+    ],
+    "answer": 0
+   },
+   {
+    "q": "אֵיפֹה הָרַעֲשָׁן?",
+    "options": [
+     {
+      "art": "grogger"
+     },
+     {
+      "art": "ball"
+     },
+     {
+      "art": "hands"
+     }
+    ],
+    "answer": 0
+   },
+   {
+    "q": "אֵיפֹה אֹזֶן הָמָן?",
+    "options": [
+     {
+      "art": "hamantasch"
+     },
+     {
+      "art": "teddy"
+     },
+     {
+      "art": "ball"
+     }
+    ],
+    "answer": 0
+   },
+   {
+    "q": "אֵיפֹה מִשְׁלוֹחַ הַמָּנוֹת?",
+    "options": [
+     {
+      "art": "mishloach-manot"
+     },
+     {
+      "art": "hands"
+     },
+     {
+      "art": "teddy"
+     }
+    ],
+    "answer": 0
+   }
+  ]
+ },
+ "game-quiz-a45.html": {
+  "title": "חִידוֹן פּוּרִים",
+  "questions": [
+   {
+    "q": "מָה שָׂמִים עַל הַפָּנִים בְּפוּרִים?",
+    "options": [
+     "מַסֵּכָה",
+     "כּוֹבַע",
+     "מִשְׁקָפַיִם"
+    ],
+    "answer": 0,
+    "art": "mask"
+   },
+   {
+    "q": "מָה לוֹבְשִׁים בְּפוּרִים?",
+    "options": [
+     "תַּחְפֹּשֶׂת",
+     "פִּיגָ'מָה",
+     "מְעִיל"
+    ],
+    "answer": 0,
+    "art": "costume"
+   },
+   {
+    "q": "אֵיךְ קוֹרְאִים לַצַּעֲצוּעַ שֶׁמְּסוֹבְבִים כְּדֵי לְהַרְעִישׁ בְּפוּרִים?",
+    "options": [
+     "רַעֲשָׁן",
+     "תֹּף",
+     "פַּעֲמוֹן"
+    ],
+    "answer": 0,
+    "art": "grogger"
+   },
+   {
+    "q": "אֵיךְ קוֹרְאִים לָעֻגִיָּה הַמְּשֻׁלֶּשֶׁת שֶׁל פּוּרִים?",
+    "options": [
+     "אֹזֶן הָמָן",
+     "עוּגִיַּת שׁוֹקוֹלָד",
+     "בִּיסְקְוִיט"
+    ],
+    "answer": 0,
+    "art": "hamantasch"
+   },
+   {
+    "q": "מָה שׁוֹלְחִים לַחֲבֵרִים בְּפוּרִים?",
+    "options": [
+     "מִשְׁלוֹחַ מָנוֹת",
+     "מִכְתָּב",
+     "חֲבִילָה מֵהַדֹּאַר"
+    ],
+    "answer": 0,
+    "art": "mishloach-manot"
+   }
+  ]
+ },
+ "game-quiz-a68.html": {
+  "title": "חִידוֹן פּוּרִים",
+  "questions": [
+   {
+    "q": "מָה קּוֹרְאִים בְּבֵית הַכְּנֶסֶת בְּפוּרִים?",
+    "options": [
+     "מְגִלַּת אֶסְתֵּר",
+     "סֵפֶר תְּהִלִּים",
+     "הַגָּדָה שֶׁל פֶּסַח"
+    ],
+    "answer": 0,
+    "art": "megillah"
+   },
+   {
+    "q": "מִי הָיָה הַמֶּלֶךְ בִּמְגִלַּת אֶסְתֵּר?",
+    "options": [
+     "אֲחַשְׁוֵרוֹשׁ",
+     "דָּוִד הַמֶּלֶךְ",
+     "שְׁלֹמֹה הַמֶּלֶךְ"
+    ],
+    "answer": 0,
+    "art": "crown"
+   },
+   {
+    "q": "מִי הָיָה הַיְּהוּדִי שֶׁהִצִּיל אֶת עַם יִשְׂרָאֵל בִּמְגִלַּת אֶסְתֵּר?",
+    "options": [
+     "מָרְדֳּכַי",
+     "יוֹסֵף",
+     "משֶׁה"
+    ],
+    "answer": 0,
+    "art": "megillah"
+   },
+   {
+    "q": "בְּסוֹף סִפּוּר פּוּרִים, מָה קָּרָה לַגְּזֵרָה הָרָעָה?",
+    "options": [
+     "הִיא הִתְהַפְּכָה לְטוֹבָה",
+     "הִיא הִתְקַיְּמָה",
+     "אַף אֶחָד לֹא יָדַע עָלֶיהָ"
+    ],
+    "answer": 0,
+    "art": "megillah"
+   },
+   {
+    "q": "אֵיפֹה הִתְרַחֵשׁ סִפּוּר מְגִלַּת אֶסְתֵּר?",
+    "options": [
+     "בְּאַרְמוֹן הַמֶּלֶךְ בְּשׁוּשָׁן",
+     "בְּמִצְרַיִם",
+     "בִּירוּשָׁלַיִם"
+    ],
+    "answer": 0,
+    "art": "palace"
+   }
+  ]
+ },
+ "coloring-a23.html": {
+  "ERROR": "no var D found"
+ },
+ "coloring-a45.html": {
+  "ERROR": "no var D found"
+ },
+ "coloring-a68.html": {
+  "ERROR": "no var D found"
+ }
+}
